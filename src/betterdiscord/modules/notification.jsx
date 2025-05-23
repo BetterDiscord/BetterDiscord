@@ -1,9 +1,10 @@
-import {getModule} from "@webpack";
+import {getBySource} from "@webpack";
 import React, {ReactDOM} from "@modules/react";
 import Button from "@ui/base/button";
 import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
+import DiscordModules from "./discordmodules";
 import DOMManager from "./dommanager";
 
 const Icon = ({type}) => {
@@ -27,6 +28,7 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
+    static patch = getBySource([ "\"Shakeable is shaken when not mounted\"" ], {cacheID: "core-notification-patch", searchDefault: false})?.Z;
     static root = null;
 
     static initialize() {
@@ -125,8 +127,6 @@ const PersistentNotificationContainer = React.memo(() => {
     );
 });
 
-const spring = getModule(x => x?.animated?.div);
-
 const NotificationItem = ({notification, position}) => {
     const {
         id,
@@ -159,9 +159,9 @@ const NotificationItem = ({notification, position}) => {
 
     };
 
-    const slideProps = spring.useSpring(getSlideAnimation());
+    const slideProps = DiscordModules.Spring.useSpring(getSlideAnimation());
 
-    const progressProps = spring.useSpring({
+    const progressProps = DiscordModules.Spring.useSpring({
         width: "0%",
         from: {width: "100%"},
         config: {duration},
@@ -187,7 +187,7 @@ const NotificationItem = ({notification, position}) => {
     };
 
     return (
-        <spring.animated.div
+        <DiscordModules.Spring.animated.div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onClick={(e) => {
@@ -237,7 +237,7 @@ const NotificationItem = ({notification, position}) => {
                     ))}
                 </div>
             )}
-            <spring.animated.div
+            <DiscordModules.Spring.animated.div
                 className="bd-notification-progress"
                 style={{
                     ...progressProps,
@@ -249,7 +249,7 @@ const NotificationItem = ({notification, position}) => {
                     }[type]
                 }}
             />
-        </spring.animated.div>
+        </DiscordModules.Spring.animated.div>
     );
 };
 

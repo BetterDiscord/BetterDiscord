@@ -11,10 +11,11 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getByKeys, getLazy} from "@webpack";
+import {Filters, getLazy} from "@webpack";
+import DiscordModules from "@modules/discordmodules";
 import {findInTree} from "@common/utils";
 
-const SimpleMarkdownWrapper = getByKeys(["parse", "defaultRules"]);
+const SimpleMarkdownWrapper = DiscordModules.SimpleMarkdownWrapper;
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;
@@ -185,7 +186,7 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
 
     async patchEmbeds() {
-        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys(["renderEmbeds"]), {searchExports: true});
+        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys(["renderEmbeds"]), {searchExports: true, cacheId: "core-addonstore-MessageAccessories"});
 
         this.after(MessageAccessories.prototype, "renderEmbeds", (_, [message], res) => {
             if (!Settings.get(this.collection, this.category, "addonEmbeds")) {

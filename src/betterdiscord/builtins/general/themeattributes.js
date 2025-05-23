@@ -2,9 +2,9 @@ import Builtin from "@structs/builtin";
 import {getByStrings, getModule} from "@webpack";
 import {findInTree} from "@common/utils";
 
-const MessageComponent = getByStrings([ "isSystemMessage", "hasReply" ], {defaultExport: false});
-const TabBarComponent = getByStrings([ "({getFocusableElements:()=>{let" ], {searchExports: true});
-const UserProfileComponent = getModule((m) => m.render?.toString?.().includes("pendingThemeColors"));
+const MessageComponent = getByStrings([ "isSystemMessage", "hasReply" ], {defaultExport: false, cacheId: "core-themeattributes-Message"});
+const TabBarComponent = getByStrings([ "({getFocusableElements:()=>{let" ], {searchExports: true, cacheId: "core-themeattributes-TabBar"});
+const UserProfileComponent = getModule((m) => m.render?.toString?.().includes("pendingThemeColors"), {cacheId: "core-themeattributes-UserProfile"});
 
 export default new class ThemeAttributes extends Builtin {
     get name() {return "ThemeAttributes";}

@@ -4,7 +4,7 @@ import Store from "./base";
 import Config from "./config";
 
 
-type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
+type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store" | "webpack";
 
 export default new class JsonStore extends Store {
     cache: Record<Files, Record<string, unknown> | undefined> = {
@@ -12,7 +12,8 @@ export default new class JsonStore extends Store {
         "plugins": undefined,
         "themes": undefined,
         "misc": undefined,
-        "addon-store": undefined
+        "addon-store": undefined,
+        "webpack": undefined
     };
 
     pluginCache: Record<string, Record<string, unknown>> = {};

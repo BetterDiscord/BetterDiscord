@@ -6,7 +6,7 @@ import React from "@modules/react";
 
 let startupComplete = false;
 
-const ModulesBundle = getByKeys(["MenuItem", "Menu"]);
+const ModulesBundle = getByKeys(["MenuItem", "Menu"], {cacheId: "core-contextmenu-ModulesBundle"});
 const MenuComponents = {
     Separator: ModulesBundle?.MenuSeparator,
     CheckboxItem: ModulesBundle?.MenuCheckboxItem,
@@ -66,7 +66,7 @@ if (!startupComplete) {
         MenuComponents.Group ??= contextMenuComponents[match[1]];
     }
 
-    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
+    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true, cacheId: "core-contextmenu-Menu"});
 }
 
 startupComplete = Object.values(MenuComponents).every(v => v);
@@ -75,7 +75,7 @@ const ContextMenuActions = (() => {
     const out = {};
 
     try {
-        const ActionsModule = getModule((mod, target, id) => modules[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false});
+        const ActionsModule = getModule((mod, target, id) => modules[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false, cacheId: "core-contextmenu-Actions"});
 
         for (const key of Object.keys(ActionsModule)) {
             if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -110,7 +110,7 @@ class MenuPatcher {
         if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
 
         const {module, key} = (() => {
-            const foundModule = getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
+            const foundModule = getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false, cacheId: "core-contextmenu-toPatch"});
             const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
             return {module: foundModule, key: foundKey};

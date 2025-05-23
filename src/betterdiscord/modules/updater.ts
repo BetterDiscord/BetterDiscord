@@ -23,13 +23,11 @@ import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
+import DiscordModules from "./discordmodules";
 import type AddonManager from "./addonmanager";
 import type {Release} from "github";
 import type {Addon} from "betterdiscordweb";
-import {getByKeys} from "@webpack";
 
-
-const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -186,7 +184,7 @@ export class CoreUpdater {
                 label: t("Notices.moreInfo"),
                 onClick: () => {
                     close();
-                    UserSettingsWindow?.open?.("updates");
+                    DiscordModules.UserSettingsWindow?.open?.("updates");
                 }
             }]
         });
@@ -323,7 +321,7 @@ class AddonUpdater {
                 label: t("Notices.moreInfo"),
                 onClick: () => {
                     close();
-                    UserSettingsWindow?.open?.("updates");
+                    DiscordModules.UserSettingsWindow?.open?.("updates");
                 }
             }]
         });

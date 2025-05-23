@@ -8,14 +8,13 @@ import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import DiscordModules from "@modules/discordmodules";
 import Modals from "@ui/modals";
-import {getByKeys} from "@webpack";
 import {findInTree} from "@common/utils";
 import {CustomCSS} from "@builtins/builtins";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = getByKeys(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -147,6 +146,6 @@ export default new class BDContextMenu extends Builtin {
 
     async openCategory(id) {
         ContextMenu.close();
-        UserSettingsWindow?.open?.(id);
+        DiscordModules.UserSettingsWindow?.open?.(id);
     }
 };

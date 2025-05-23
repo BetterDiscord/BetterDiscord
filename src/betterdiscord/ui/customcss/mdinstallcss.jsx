@@ -4,18 +4,18 @@ import React from "@modules/react";
 import Settings from "@stores/settings";
 import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
-import {getModule} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@modules/notification";
 import Toasts from "@ui/toasts.js";
 import Modals from "@ui/modals.js";
+import DiscordModules from "@modules/discordmodules";
 import {findInTree} from "@common/utils";
 
 class InstallCSS {
     static activeNotifications = new Map();
 
     static initialize() {
-        const patch = getModule(m => m.defaultRules && m.parse).defaultRules.codeBlock;
+        const patch = DiscordModules.SimpleMarkdownWrapper.defaultRules.codeBlock;
         Patcher.after("InstallCSS", patch, "react", (_, [args], child) => {
             const isEnabled = Settings.get("customcss", "customcss");
             if (!isEnabled) return;

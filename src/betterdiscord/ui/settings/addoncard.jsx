@@ -47,10 +47,10 @@ const LayerManager = {
     }
 };
 
-const UserStore = getByKeys(["getCurrentUser"]);
-const ChannelStore = getByKeys(["getDMFromUserId"]);
-const PrivateChannelActions = getByKeys(["openPrivateChannel"]);
-const ChannelActions = getByKeys(["selectPrivateChannel"]);
+const UserStore = getByKeys(["getCurrentUser"], {cacheId: "core-addoncard-UserStore"});
+const ChannelStore = getByKeys(["getDMFromUserId"], {cacheId: "core-addoncard-ChannelStore"});
+const PrivateChannelActions = getByKeys(["openPrivateChannel"], {cacheId: "core-addoncard-PrivateChannelActions"});
+const ChannelActions = getByKeys(["selectPrivateChannel"], {cacheId: "core-addoncard-ChannelActions"});
 const getString = value => typeof value == "string" ? value : value.toString();
 
 function makeButton(title, children, action, {isControl = false, danger = false, disabled = false} = {}) {
