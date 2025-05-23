@@ -74,7 +74,7 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOpti
         const id = WebpackStore.data[cacheId];
         const module = webpackRequire.c[id];
 
-        if(module) {
+        if (module) {
             const matched = getMatched<T>(module, filter, options);
             if (matched) return matched;
         }

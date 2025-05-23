@@ -175,7 +175,7 @@ export default class Modals {
         }
 
         if (!Array.isArray(content)) content = [content];
-        content = content.map(c => typeof(c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
+        content = content.map(c => typeof (c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
         const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {
@@ -271,7 +271,7 @@ export default class Modals {
     static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactElement) | ReactElement | ComponentType) {
 
         let child = panel;
-        if (panel instanceof Node || typeof(panel) === "string") {
+        if (panel instanceof Node || typeof (panel) === "string") {
             child = class ReactWrapper extends React.Component<any, {hasError: boolean;}> {
                 element: Element | string;
                 elementRef: RefObject<Element | string | null>;
@@ -295,12 +295,12 @@ export default class Modals {
                     return React.createElement("div", {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef,
-                        dangerouslySetInnerHTML: typeof(this.element) === "string" ? {__html: this.element} : undefined
+                        dangerouslySetInnerHTML: typeof (this.element) === "string" ? {__html: this.element} : undefined
                     });
                 }
             };
         }
-        if (typeof(child) === "function") child = React.createElement(child);
+        if (typeof (child) === "function") child = React.createElement(child);
 
         const options = {
             className: "bd-addon-modal",
@@ -327,7 +327,7 @@ export default class Modals {
     }
 
     static openModal(render: (props?: unknown) => ReactElement, options: {modalKey?: string | number;} = {}) {
-        if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
+        if (typeof (this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);
         Events.emit("open-modal", render, options);

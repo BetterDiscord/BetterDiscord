@@ -103,7 +103,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings([".BUILT_IN?", "categoryListRef:"], {defaultExport: false, cacheId: "core-commandmanager-Sidebar"});
 
         Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
             if (!this.#sections.size) return;
@@ -137,7 +137,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {cacheId: "core-commandmanager-IndexStore"});
 
         Patcher.after("CommandManager", mod, key, (that, args, res) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -266,7 +266,7 @@ class CommandManager {
     }
 
     static #patchAuthorizer() {
-        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
+        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {cacheId: "core-commandmanager-Authorizer"});
 
         Patcher.instead("CommandManager", module, key, (that, args, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {

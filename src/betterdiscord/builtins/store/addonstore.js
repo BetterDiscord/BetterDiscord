@@ -186,7 +186,7 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
 
     async patchEmbeds() {
-        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys(["renderEmbeds"]), {searchExports: true});
+        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys(["renderEmbeds"]), {searchExports: true, cacheId: "core-addonstore-MessageAccessories"});
 
         this.after(MessageAccessories.prototype, "renderEmbeds", (_, [message], res) => {
             if (!Settings.get(this.collection, this.category, "addonEmbeds")) {

@@ -189,7 +189,7 @@ export default new class SettingsRenderer {
 
             // Do some sanity checking to make sure this is both the right component
             // and that it's in the format we expect
-            if (typeof(renderer) !== "function" || !currentCopy) return;
+            if (typeof (renderer) !== "function" || !currentCopy) return;
 
             const [pluginCount, setPluginCount] = React.useState(getAddonCount("plugin"));
             const [themeCount, setThemeCount] = React.useState(getAddonCount("theme"));

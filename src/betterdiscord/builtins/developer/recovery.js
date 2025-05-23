@@ -9,7 +9,7 @@ import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import {getByPrototypes, getByStrings, getMangled} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
