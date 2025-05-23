@@ -22,7 +22,6 @@ export default forwardRef(function CssEditor({css, openNative, update, save, onC
     useImperativeHandle(ref, () => {
         return {
             resize() {editorRef.current.resize();},
-            showSettings() {editorRef.current.showSettings();},
             get value() {return editorRef.current.getValue();},
             set value(newValue) {editorRef.current.setValue(newValue);},
             get hasUnsavedChanges() {return hasUnsavedChanges;}

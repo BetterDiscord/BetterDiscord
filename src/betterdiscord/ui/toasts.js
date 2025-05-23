@@ -8,7 +8,7 @@ import {getByKeys} from "@webpack";
 
 export default class Toasts {
 
-    static get ChannelsClass() {return getByKeys(["sidebar", "hasNotice"], {cacheId: "core-toasts-sidebarClasses"}).sidebar.split(" ")[0];}
+    static get ChannelsClass() {return getByKeys(["sidebar", "panels"], {cacheId: "core-toasts-sidebarClasses"}).sidebar.split(" ")[0];}
     static get MembersWrapClass() {return getByKeys(["membersWrap"], {cacheId: "core-toasts-membersClasses"}).membersWrap.split(" ")[0];}
 
     static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}

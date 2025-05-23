@@ -1,5 +1,6 @@
 import Bun, {$} from "bun";
 import path from "node:path";
+import fs from "node:fs";
 import pkg from "../package.json";
 
 import styleLoader from "bun-style-loader";
@@ -23,6 +24,8 @@ const moduleConfigs: Record<string, EntryPoint> = {
     betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
     main: {"in": "src/electron/main/index.js", "out": "main"},
     preload: {"in": "src/electron/preload/index.js", "out": "preload"},
+    editorPreload: {"in": "src/editor/preload.ts", "out": "editor/preload"},
+    editor: {"in": "src/editor/script.ts", "out": "editor/script"},
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -46,7 +49,7 @@ async function runBuild() {
         alias: {
             react: "@modules/react",
         },
-        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os"],
+        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os", "url"],
         target: ["chrome128", "node20"],
         loader: {
             ".js": "jsx",
@@ -60,14 +63,24 @@ async function runBuild() {
         legalComments: "none",
         define: {
             "process.env.__VERSION__": JSON.stringify(pkg.version),
+            "process.env.__MONACO_VERSION__": JSON.stringify(pkg.dependencies["monaco-editor"]),
             "process.env.__BRANCH__": JSON.stringify(BRANCH_NAME),
             "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH),
             "process.env.__BUILD__": JSON.stringify(DEVELOPMENT)
         }
     });
 
+    if (!fs.existsSync("dist")) fs.mkdirSync("dist");
+    if (!fs.existsSync("dist/editor")) fs.mkdirSync("dist/editor");
+    fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
 
     if (process.argv.includes("--watch")) {
+        fs.watchFile("src/editor/index.html", () => {
+            console.log("[watch] copying editor.html");
+            fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
+            console.log("[watch] Copied editor.html");
+        }).unref();
+
         await ctx.watch();
     }
     else {

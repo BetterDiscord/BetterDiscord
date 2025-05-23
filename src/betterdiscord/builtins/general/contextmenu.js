@@ -11,6 +11,7 @@ import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
 import Modals from "@ui/modals";
 import {findInTree} from "@common/utils";
+import {CustomCSS} from "@builtins/builtins";
 
 
 const ContextMenu = new ContextMenuPatcher();
@@ -53,7 +54,7 @@ export default new class BDContextMenu extends Builtin {
         if (Settings.get("settings", "customcss", "customcss")) {
             items.push({
                 label: t("Panels.customcss"),
-                action: () => this.openCategory("customcss")
+                action: () => CustomCSS.open()
             });
         }
 

@@ -36,7 +36,11 @@ import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 
 import type ReactType from "react";
-import type ReactDOMType from "react-dom";
+import type ReactDOMBaseType from "react-dom";
+import type ReactDOMClientType from "react-dom/client";
+
+type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
+
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -85,7 +89,7 @@ const React: typeof ReactType = DiscordModules.React;
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM: typeof ReactDOMType = DiscordModules.ReactDOM;
+const ReactDOM: ReactDOMType = DiscordModules.ReactDOM;
 
 /**
  * A reference string for BD's version.
@@ -101,7 +105,7 @@ const version: string = Config.get("version");
 export default class BdApi {
     Patcher: Patcher = PatcherAPI;
     Data: Data = DataAPI;
-    DOM: DOM = DOMAPI; 
+    DOM: DOM = DOMAPI;
     Logger: Logger = DefaultLogger;
     Commands: CommandAPI = CommandsAPI;
     React = React;
@@ -125,7 +129,7 @@ export default class BdApi {
     static Utils: typeof Utils;
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
-    static Net: { fetch: typeof fetch };
+    static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -154,7 +158,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    Net = {fetch}; 
+    Net = {fetch};
 }
 
 /**
@@ -185,7 +189,7 @@ BdApi.Webpack = Webpack;
  * An instance of {@link Data} to manage data.
  * @type Data
  */
- BdApi.Data = DataAPI;
+BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.

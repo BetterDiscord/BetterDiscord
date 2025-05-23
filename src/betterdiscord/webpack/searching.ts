@@ -1,7 +1,7 @@
 import type {Webpack} from "discord";
-import {webpackRequire} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 import WebpackStore from "@stores/webpack";
+import {webpackRequire} from "./require";
 
 // eslint-disable-next-line no-useless-escape
 const stackPluginRegex = /\/([^\/]+)\.plugin\.js:(\d+):(\d+)/g;
@@ -103,9 +103,9 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
 
-    const keys = Object.keys(webpackRequire.c);
-    for (let i = 0; i < keys.length; i++) {
-        const module = webpackRequire.c[keys[i]];
+    const webpackModules = Object.values(webpackRequire.c);
+    for (let i = 0; i < webpackModules.length; i++) {
+        const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
 

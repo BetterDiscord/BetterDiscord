@@ -14,15 +14,15 @@ export default class FloatingWindows {
     static initialize() {
         const container = <FloatingWindowContainer />;
         const wrapped = AppLayerProvider
-                        ? React.createElement(AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-2v_Sit")]}, container)
-                        : container;
+            ? React.createElement(AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-2v_Sit")]}, container)
+            : container;
         const div = DOMManager.parseHTML(`<div id="floating-windows-layer">`);
         DOMManager.bdBody.append(div);
-        // eslint-disable-next-line react/no-deprecated
-        ReactDOM.render(wrapped, div);
+        const root = ReactDOM.createRoot(div);
+        root.render(wrapped);
         hasInitialized = true;
     }
-    
+
     static open(window) {
         if (!hasInitialized) this.initialize();
         return Events.emit("open-window", window);
