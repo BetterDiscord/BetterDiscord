@@ -35,38 +35,31 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
+        // Start some asynchronous tasks in parallel
+        const accentColorPromise = IPC.getSystemAccentColor();
+        const addonStoreInit = AddonStore.initialize();
+        const localeInit = LocaleManager.initialize();
+        const settingsInit = Settings.initialize();
+        const cssInit = Promise.resolve(DOMManager.injectStyle("bd-stylesheet", Styles.toString()));
 
-        // Load css early
-        Logger.log("Startup", "Injecting BD Styles");
-        DOMManager.injectStyle("bd-stylesheet", Styles.toString());
+        Logger.log("Startup", "Started parallel inits: Styles, Settings, Locale, AddonStore");
 
-        Logger.log("Startup", "Initializing AddonStore");
-        AddonStore.initialize();
+        // Inject accent color when available
+        accentColorPromise.then(color => {
+            DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${color};}`);
+        });
 
-        Logger.log("Startup", "Initializing LocaleManager");
-        LocaleManager.initialize();
-
-        Logger.log("Startup", "Initializing Settings");
-        Settings.initialize();
         SettingsRenderer.initialize();
-
-        Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
-
-        Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
-
-        Logger.log("Startup", "Initializing NotificationUI");
         NotificationUI.initialize();
-
-        Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
 
         Logger.log("Startup", "Initializing Editor");
+        const { default: Editor } = await import("./editor");
         await Editor.initialize();
 
         Logger.log("Startup", "Initializing FloatingWindows");
@@ -78,11 +71,9 @@ export default new class Core {
         }
 
         Logger.log("Startup", "Loading Plugins");
-        // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
 
         Logger.log("Startup", "Loading Themes");
-        // const themeErrors = [];
         const themeErrors = ThemeManager.initialize();
 
         Logger.log("Startup", "Initializing Updater");
@@ -91,15 +82,17 @@ export default new class Core {
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
 
-        // Show loading errors
-        Logger.log("Startup", "Collecting Startup Errors");
-        Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
+        Logger.log("Startup", "Showing Addon Errors");
+        Modals.showAddonErrors({ plugins: pluginErrors, themes: themeErrors });
 
         const previousVersion = JsonStore.get("misc", "version");
         if (Config.get("version") !== previousVersion) {
             Modals.showChangelogModal(Changelog);
             JsonStore.set("misc", "version", Config.get("version"));
         }
+
+        // Ensure all async initializers finish (Settings, Locale, etc.)
+        await Promise.all([addonStoreInit, localeInit, settingsInit, cssInit]);
     }
 
     waitForConnection() {
@@ -109,3 +102,4 @@ export default new class Core {
         });
     }
 };
+
