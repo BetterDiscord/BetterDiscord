@@ -37,6 +37,11 @@ class Data {
      *
      * @param {string} pluginName Name of the plugin saving data
      * @return {boolean} success Did the data recache
+     *
+     * @warning ⚠️ **Use of the recaching is discouraged!**
+     *
+     * Recache loads can block the filesystem and significantly degrade performance.
+     * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
      */
     recache(pluginName: string) {
         if (this.#callerName) {
@@ -50,9 +55,15 @@ class Data {
      *
      * @param {string} pluginName Name of the plugin loading data
      * @param {string} key Which piece of data to load
-     * @param {string} uncached Uncaches the last data returned
+     * @param {string} uncached uncaches the last returned data if true
      * @returns {any} The stored data
+     *
+     * @warning ⚠️ **Use of the `uncached` parameter is discouraged!**
+     *
+     * Uncached loads can block the filesystem and significantly degrade performance.
+     * Use `uncached` only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
      */
+
     load(pluginName: string, key: string, uncached: boolean = false) {
         if (this.#callerName) {
             key = pluginName;
