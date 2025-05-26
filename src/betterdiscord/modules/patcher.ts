@@ -9,7 +9,7 @@ import DiscordModules from "./discordmodules";
 import {getByKeys} from "@webpack";
 
 
-interface GenericPatch {
+export interface GenericPatch {
     name: string;
     module: object;
     functionName: string;
@@ -20,13 +20,13 @@ interface GenericPatch {
     children: GenericChildPatch[];
 }
 
-interface Patch<M extends object, K extends Extract<keyof M, string>> extends GenericPatch {
+export interface Patch<M extends object, K extends Extract<keyof M, string>> extends GenericPatch {
     module: M;
     functionName: K;
     originalFunction: M[K] extends (...a: any[]) => any ? M[K] : never;
 }
 
-interface GenericChildPatch {
+export interface GenericChildPatch {
     caller: string;
     type: "before" | "instead" | "after";
     id: number;
@@ -38,18 +38,18 @@ interface GenericChildPatch {
 //     callback: T;
 // }
 
-type BeforeCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>) => void;
-type InsteadCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, originalFunction: F) => any;
-type AfterCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, returnValue: ReturnType<F>) => any;
-type PatchCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = BeforeCallback<F> | InsteadCallback<F> | AfterCallback<F>;
+export type BeforeCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>) => void;
+export type InsteadCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, originalFunction: F) => any;
+export type AfterCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, returnValue: ReturnType<F>) => any;
+export type PatchCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = BeforeCallback<F> | InsteadCallback<F> | AfterCallback<F>;
 
-interface PatchOptions {
+export interface PatchOptions {
     displayName?: string;
     forcePatch?: boolean;
     type?: "before" | "instead" | "after";
 }
 
-interface PatchOptions {
+export interface PatchOptions {
     displayName?: string;
     forcePatch?: boolean;
     type?: "before" | "instead" | "after";

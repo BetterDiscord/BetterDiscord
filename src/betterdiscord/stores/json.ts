@@ -92,9 +92,9 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-    getData(pluginName: string, key: string) {
+    getData<T>(pluginName: string, key: string): T {
         this.#ensurePluginData(pluginName); //       Ensure plugin data, if any, is cached
-        return this.pluginCache[pluginName][key]; // Return blindly to allow falsey values
+        return this.pluginCache[pluginName][key] as T; // Return blindly to allow falsey values
     }
 
     setData(pluginName: string, key: string, value: unknown) {

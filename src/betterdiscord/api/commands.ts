@@ -10,12 +10,12 @@ import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes
 class CommandAPI {
     #callerName = "";
 
-    constructor(callerName) {
+    constructor(callerName?: string) {
         if (!callerName) return;
         this.#callerName = callerName;
     }
 
-    Types = {
+    static Types = {
         OptionTypes,
         CommandTypes,
         InputTypes,
@@ -28,9 +28,9 @@ class CommandAPI {
      * @param {object} [command] Command object (optional if caller is preset)
      * @returns {Function|undefined} Unregister function
      */
-    register(callerOrCommand, command) {
-        const caller = this.#callerName || callerOrCommand;
-        const commandObj = this.#callerName ? callerOrCommand : command;
+    register(callerOrCommand: string | object, command: object) {
+        const caller = (this.#callerName || callerOrCommand) as string;
+        const commandObj = (this.#callerName ? callerOrCommand : command) as object;
 
         if (!this.#validateRegistration(caller, commandObj)) {
             return;
@@ -44,7 +44,7 @@ class CommandAPI {
      * @param {string} callerOrCommandId Caller name or command ID if caller is preset
      * @param {string} [commandId] Command ID (optional if caller is preset)
      */
-    unregister(callerOrCommandId, commandId) {
+    unregister(callerOrCommandId: string, commandId: string) {
         const caller = this.#callerName || callerOrCommandId;
         const finalCommandId = this.#callerName ? callerOrCommandId : commandId;
 
@@ -58,7 +58,7 @@ class CommandAPI {
     /**
      * @private
      */
-    #validateRegistration(caller, command) {
+    #validateRegistration(caller: string, command: any) {
         if (caller === "BetterDiscord") throw new Error("Plugins cannot register commands as BetterDiscord");
         return typeof caller === "string" && typeof command === "object" && command?.id && command?.name && command?.execute;
     }
@@ -66,7 +66,7 @@ class CommandAPI {
     /**
      * @private
      */
-    #validateUnregistration(caller, commandId) {
+    #validateUnregistration(caller: string, commandId: string) {
         return typeof caller === "string" && (!commandId || typeof commandId === "string");
     }
 
@@ -74,17 +74,17 @@ class CommandAPI {
      * Unregisters all commands for a specific caller
      * @param {string} caller Name of the caller whose commands should be unregistered
      */
-    unregisterAll(caller) {
+    unregisterAll(caller: string) {
         if (this.#callerName) caller = this.#callerName;
         CommandManager.unregisterAll(caller);
     }
 
     /**
-     * Gets all commands registered by a specific caller 
+     * Gets all commands registered by a specific caller
      * @param {string} caller Name of the caller whose commands should be retrieved
      * @returns {Array} Array of command objects registered by the caller
      */
-    getCommandsByCaller(caller) {
+    getCommandsByCaller(caller: string) {
         if (this.#callerName) caller = this.#callerName;
         return CommandManager.getCommandsByCaller(caller);
     }

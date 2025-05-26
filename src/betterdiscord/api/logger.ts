@@ -19,7 +19,7 @@ const LogTypes = {
     info: "info"
 };
 
-const parseType = type => LogTypes[type] || "log";
+const parseType = (type: string) => (LogTypes[type as keyof typeof LogTypes] || "log") as keyof typeof LogTypes;
 
 
 /**
@@ -38,9 +38,9 @@ class Logger {
      * @param {string} pluginName - Name of the plugin
      * @param {string} nameStyle - CSS to style the plugin name
      * @param {string} messageStyle - CSS to style the main message
-     * @returns 
+     * @returns
      */
-    constructor(pluginName = undefined, nameStyle = undefined, messageStyle = undefined) {
+    constructor(pluginName?: string, nameStyle?: string, messageStyle?: string) {
         if (!pluginName) return;
         this.#pluginName = pluginName;
         if (nameStyle) this.#nameStyle = nameStyle;
@@ -54,7 +54,7 @@ class Logger {
      * @param {string} message - Message or error to have logged.
      * @param {Error} error - Error object to log with the message.
      */
-    stacktrace(pluginName, message, error) {
+    stacktrace(pluginName: string, message: any, error: Error) {
         if (this.#pluginName) {
             error = message;
             message = pluginName;
@@ -65,43 +65,43 @@ class Logger {
 
     /**
      * Logs an error message.
-     * 
+     *
      * @param {string} pluginName Name of the calling module
      * @param  {...any} message Messages to have logged.
      */
-    error(pluginName, ...message) {this.#_log(pluginName, message, "error");}
+    error(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "error");}
 
     /**
      * Logs a warning message.
      *
-     * @param {string} module - Name of the calling module.
+     * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    warn(pluginName, ...message) {this.#_log(pluginName, message, "warn");}
+    warn(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "warn");}
 
     /**
      * Logs an informational message.
      *
-     * @param {string} module - Name of the calling module.
+     * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    info(pluginName, ...message) {this.#_log(pluginName, message, "info");}
+    info(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "info");}
 
     /**
      * Logs used for debugging purposes.
      *
-     * @param {string} module - Name of the calling module.
+     * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    debug(pluginName, ...message) {this.#_log(pluginName, message, "debug");}
+    debug(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "debug");}
 
     /**
      * Logs used for basic loggin.
      *
-     * @param {string} module - Name of the calling module.
+     * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    log(pluginName, ...message) {this.#_log(pluginName, message);}
+    log(pluginName: string, ...message: any[]) {this.#_log(pluginName, message);}
 
     /**
      * Logs strings using different console levels and a module label.
@@ -110,7 +110,7 @@ class Logger {
      * @param {any|Array<any>} message - Messages to have logged.
      * @param {module:Logger.LogTypes} type - Type of log to use in console.
      */
-    #_log(pluginName, message, type = "log") {
+    #_log(pluginName: string, message: any, type: keyof typeof LogTypes = "log") {
         type = parseType(type);
 
         // Normalize messages to be an array for later spreading
@@ -118,7 +118,7 @@ class Logger {
 
         // If a name was set via constructor move the "name" to be part of the message
         if (pluginName && this.#pluginName) message = [pluginName, ...message];
-        
+
         const displayName = this.#pluginName || pluginName;
         console[type](`%c[${displayName}]%c`, this.#nameStyle, this.#messageStyle, ...message);
     }

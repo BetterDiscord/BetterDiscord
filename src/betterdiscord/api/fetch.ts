@@ -4,9 +4,13 @@ const redirects = new Set(["manual", "follow"]);
 const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD", "CONNECT", "TRACE"]);
 const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
+
 class FetchResponse extends Response {
-    constructor(options) {
-        super(bodylessStatusCodes.has(options.status) ? null : options.content, {
+
+    _options: Partial<FetchData & {status?: number;}>;
+
+    constructor(options: Partial<FetchData & {status?: number;}>) {
+        super(bodylessStatusCodes.has(options.status ?? 0) ? null : options.content as any, {
             headers: new Headers(options.headers),
             method: options.method ?? "GET",
             body: options.content,
@@ -16,22 +20,22 @@ class FetchResponse extends Response {
         this._options = options;
     }
 
-    get url() {return this._options.url;}
-    get redirected() {return this._options.redirected;}
+    get url() {return this._options.url!;}
+    get redirected() {return this._options.redirected!;}
 }
 
-const convertSignal = signal => {
-    const listeners = new Set();
+const convertSignal = (signal: AbortSignal) => {
+    const listeners = new Set<() => void>();
 
     signal.addEventListener("abort", () => {
         listeners.forEach(l => l());
     });
 
     return {
-        addEventListener(_, listener) {
+        addEventListener(_: any, listener: () => void) {
             listeners.add(listener);
         }
-    };
+    } as AbortSignal;
 };
 
 /**
@@ -41,18 +45,40 @@ const convertSignal = signal => {
  * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
  * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
- * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable.
  * @property {number} [timeout] - Request timeout time.
  */
+
+// TODO: de-dup with preload and make @common/types
+interface FetchOptions {
+    method: "GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
+    headers: Record<string, string>;
+    redirect: "manual" | "follow";
+    maxRedirects: number;
+    signal: AbortSignal;
+    body: Uint8Array | string;
+    timeout: number;
+}
+
+interface FetchData extends FetchOptions {
+    content: Buffer[] | Buffer;
+    headers: Record<string, any>;
+    statusCode: number;
+    url: string;
+    statusText: string;
+    redirected: boolean;
+    signal: AbortSignal;
+}
+
 
 /**
  * @param {string} url
  * @param {FetchOptions} options
  * @returns {Promise<FetchResponse>}
  */
-export default function fetch(url, options = {}) {
+export default function fetch(url: string, options: Partial<FetchOptions> = {}) {
     return new Promise((resolve, reject) => {
-        const data = {};
+        const data: Partial<FetchData> = {};
 
         if (typeof options.headers === "object") {
             data.headers = options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers;
@@ -84,7 +110,7 @@ export default function fetch(url, options = {}) {
 
                 const req = new FetchResponse({
                     method: options.method ?? "GET",
-                    status: resultData.statusCode,
+                    status: resultData?.statusCode,
                     ...options,
                     ...resultData
                 });

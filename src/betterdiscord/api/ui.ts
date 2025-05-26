@@ -9,6 +9,7 @@ import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
 import NotificationUI from "@ui/notifications";
+import type {ReactElement} from "react";
 
 
 /**
@@ -19,6 +20,7 @@ import NotificationUI from "@ui/notifications";
  */
 let cntr = 0;
 
+// TODO: merge types after converting ui folder
 const UI = {
     /**
      * Shows a generic but very customizable modal.
@@ -26,11 +28,11 @@ const UI = {
      * @param {string} title Title of the modal
      * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
      */
-    alert(title, content) {
+    alert(title: string, content: string | ReactElement | Array<string | ReactElement>) {
         Modals.alert(title, content);
     },
 
-    showNotification(notificationObj) {
+    showNotification(notificationObj: {id: string; title: string; content: string; type?: "info" | "success" | "error" | "warning"; duration?: number; icon?: string;}) {
         if (!Settings.get("settings", "general", "notificationEnabled")) return;
         cntr++;
         const id = notificationObj.id || `notification-${cntr}`;
@@ -62,7 +64,7 @@ const UI = {
          * @param {boolean} [options.disabled=false] Whether the tooltip should be disabled from showing on hover
          * @returns {Tooltip} The tooltip that was generated.
          */
-    createTooltip(node, content, options = {}) {
+    createTooltip(node: HTMLElement, content: string | HTMLElement, options = {}) {
         return Tooltip.create(node, content, options);
     },
 
@@ -80,7 +82,7 @@ const UI = {
      * @param {callable} [options.onClose=NOOP] Callback to occur when exiting the modal
      * @returns {string} The key used for this modal.
      */
-    showConfirmationModal(title, content, options = {}) {
+    showConfirmationModal(title: string, content: string | ReactElement | Array<string | ReactElement>, options: {confirmText?: string; cancelText?: string; onConfirm?: () => void; onCancel?: () => void; onClose?: () => void;} = {}) {
         return Modals.showConfirmationModal(title, content, options);
     },
 
@@ -108,7 +110,18 @@ const UI = {
      * @param {Array<Changes>} [options.changes] List of changes to show (see description for details)
      * @returns {string} The key used for this modal.
      */
-    showChangelogModal(options) {
+    showChangelogModal(options: {
+        transitionState?: number;
+        footer?: string;
+        title?: string;
+        subtitle?: string;
+        onClose?(): void;
+        video?: string;
+        poster?: string;
+        banner?: string;
+        blurb?: string;
+        changes?: object;
+    }) {
         return Modals.showChangelogModal(options);
     },
 
@@ -116,7 +129,7 @@ const UI = {
      * Shows a modal for joining a guild like you would natively through Discord.
      * @param {string} inviteCode the invite code
      */
-    showInviteModal(inviteCode) {
+    showInviteModal(inviteCode: string) {
         return Modals.showGuildJoinModal(inviteCode);
     },
 
@@ -130,7 +143,7 @@ const UI = {
      * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: `3000`.
      * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the BD setting
      */
-    showToast(content, options = {}) {
+    showToast(content: string, options: {type?: string; icon?: boolean; timeout?: number; forceShow?: boolean;} = {}) {
         Toasts.show(content, options);
     },
 
@@ -144,7 +157,7 @@ const UI = {
      * @param {number} [options.timeout=10000] Timeout until the notice is closed. Will not fire when set to `0`.
      * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
      */
-    showNotice(content, options = {}) {
+    showNotice(content: string, options: {type?: string; buttons?: Array<{label: string; onClick: (immediately?: boolean) => void;}>; timeout?: number;} = {}) {
         return Notices.show(content, options);
     },
 
@@ -167,7 +180,8 @@ const UI = {
      * @param {boolean} [options.modal=false] Whether the dialog should act as a modal to the main window
      * @returns {Promise<object>} Result of the dialog
      */
-    async openDialog(options) {
+    // TODO: merge types with other 2 processes
+    async openDialog(options: any) {
         const data = await ipc.openDialog(options);
         if (data.error) throw new Error(data.error);
 
@@ -190,7 +204,7 @@ const UI = {
      * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default for radio type)
      * @returns A SettingItem with a an input as the child
      */
-    buildSettingItem(setting) {
+    buildSettingItem(setting: any) {
         return buildSetting(setting);
     },
 
@@ -218,10 +232,11 @@ const UI = {
      * @param {CallableFunction} [props.getDrawerState] Optionially used to recall drawer states
      * @returns React element usable for a settings panel
      */
-    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}) {
+    // TODO: remove any
+    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}: any) {
         if (!settings?.length) throw new Error("No settings provided!");
 
-        return React.createElement(ErrorBoundary, {id: "buildSettingsPanel", name: "BdApi.UI"}, settings.map(setting => {
+        return React.createElement(ErrorBoundary, {id: "buildSettingsPanel", name: "BdApi.UI"}, settings.map((setting: any) => {
             if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
 
             if (setting.type === "category") {
@@ -230,14 +245,14 @@ const UI = {
                 return React.createElement(Group, {
                     ...setting,
                     onChange: onChange,
-                    onDrawerToggle: state => onDrawerToggle?.(setting.id, state),
+                    onDrawerToggle: (state: any) => onDrawerToggle?.(setting.id, state),
                     shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
                 });
             }
 
             return buildSetting({
                 ...setting,
-                onChange: value => {
+                onChange: (value: any) => {
                     setting?.onChange?.(value);
                     onChange(null, setting.id, value);
                 }

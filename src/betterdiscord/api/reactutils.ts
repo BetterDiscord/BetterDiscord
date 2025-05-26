@@ -1,5 +1,6 @@
 import DiscordModules from "@modules/discordmodules";
 import React from "@modules/react";
+import type {RefObject} from "react";
 
 interface PatchedReactHooks {
     useMemo<T>(factory: () => T): T;
@@ -41,6 +42,7 @@ const patchedReactHooks: PatchedReactHooks = {
         return callback;
     },
     useContext<T>(context: React.Context<T>) {
+        // @ts-expect-error blame arven
         return context._currentValue as T;
     },
     useEffect() {},
@@ -88,8 +90,11 @@ interface ReactUtils {
  * @name ReactUtils
  */
 const ReactUtils: ReactUtils = {
+    /**
+     * @deprecated
+     */
     get rootInstance() {
-        return document.getElementById("app-mount")?._reactRootContainer?._internalRoot?.current;
+        return (document.getElementById("app-mount") as any)?._reactRootContainer?._internalRoot?.current;
     },
 
     /**
@@ -98,7 +103,7 @@ const ReactUtils: ReactUtils = {
      * @param {HTMLElement} node Node to get the internal React data from
      * @returns {object|undefined} Either the found data or `undefined`
      */
-    getInternalInstance(node: HTMLElement): object | undefined {
+    getInternalInstance(node: HTMLElement): object | null {
         if ((node as any).__reactFiber$) return (node as any).__reactFiber$;
         const key = Object.keys(node).find(
             k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")
@@ -159,6 +164,7 @@ const ReactUtils: ReactUtils = {
         return class ReactWrapper extends React.Component {
             element: HTMLElement | HTMLElement[];
             state: {hasError: boolean;};
+            ref: RefObject<HTMLDivElement | null> = React.createRef();
 
             constructor(props: any) {
                 super(props);
@@ -171,7 +177,8 @@ const ReactUtils: ReactUtils = {
             }
 
             componentDidMount() {
-                const refElement = (this.refs as any).element;
+                const refElement = this.ref?.current;
+                if (!refElement) return;
                 if (Array.isArray(this.element)) {
                     this.element.forEach(el => refElement.appendChild(el));
                 }
@@ -183,12 +190,13 @@ const ReactUtils: ReactUtils = {
             render() {
                 return this.state.hasError ? null : DiscordModules.React.createElement("div", {
                     className: "react-wrapper",
-                    ref: "element"
+                    ref: this.ref
                 });
             }
         };
     },
 
+    // @ts-expect-error blame arven
     wrapInHooks<P extends object>(
         functionComponent: React.FunctionComponent<P>,
         customPatches: Partial<PatchedReactHooks> = {}
@@ -201,6 +209,7 @@ const ReactUtils: ReactUtils = {
             Object.assign(reactDispatcher, patchedReactHooks, customPatches);
 
             try {
+                // @ts-expect-error blame arven
                 return functionComponent(props, context);
             }
             // eslint-disable-next-line no-useless-catch

@@ -23,53 +23,54 @@ class DOM {
 
     #callerName = "";
 
-    constructor(callerName) {
+    constructor(callerName?: string) {
         if (!callerName) return;
         this.#callerName = callerName;
     }
 
     /**
      * Adds a `<style>` to the document with the given ID.
-     * 
+     *
      * @param {string} id ID to use for style element
      * @param {string} css CSS to apply to the document
      */
-    addStyle(id, css) {
-        if (this.#callerName && arguments.length === 2) {
-            id = arguments[0];
-            css = arguments[1];
-        }
-        else if (this.#callerName) {
+    addStyle(id: string): void;
+    addStyle(id: string, css?: string) {
+
+        if (this.#callerName && arguments.length === 1) {
             css = id;
             id = this.#callerName;
         }
+
+        if (!css) throw new Error("No css provided");
 
         DOMManager.injectStyle(id, css);
     }
 
     /**
      * Removes a `<style>` from the document corresponding to the given ID.
-     * 
+     *
      * @param {string} id ID used for the style element
      */
-    removeStyle(id) {
-        if (this.#callerName && arguments.length === 1) {
-            id = arguments[0];
-        }
-        else if (this.#callerName) {
+    removeStyle(): void;
+    removeStyle(id?: string) {
+
+        if (this.#callerName && arguments.length === 0) {
             id = this.#callerName;
         }
-        
+
+        if (!id) throw new Error("No id provided");
+
         DOMManager.removeStyle(id);
     }
 
     /**
      * Adds a listener for when the node is removed from the document body.
-     * 
+     *
      * @param {HTMLElement} node Node to be observed
      * @param {function} callback Function to run when removed
      */
-    onRemoved(node, callback) {
+    onRemoved(node: HTMLElement, callback: (...a: any[]) => any) {
         return DOMManager.onRemoved(node, callback);
     }
 
@@ -80,26 +81,26 @@ class DOM {
      * @param {string} selector - node to wait for
      * @param {callable} callback - function to be performed on event
      */
-    onAdded(selector, callback) {
+    onAdded(selector: string, callback: (...a: any[]) => any) {
         return DOMManager.onAdded(selector, callback);
     }
 
     /**
      * Utility to help smoothly animate using JavaScript.
-     * 
+     *
      * @param {function} update Render function indicating the style should be updated
      * @param {number} duration Duration in ms to animate for
      * @param {object} [options] Options to customize the animation
      * @param {function} [options.timing] Optional function calculating progress based on current time fraction. Linear by default.
      */
-    animate(update, duration, options = {}) {
+    animate(update: (p: number) => void, duration: number, options: {timing?: (_: number) => number;} = {}) {
         return DOMManager.animate({update, duration, timing: options.timing});
     }
 
     /**
-     * Utility function to make creating DOM elements easier. Acts similarly 
+     * Utility function to make creating DOM elements easier. Acts similarly
      * to `React.createElement`
-     * 
+     *
      * @param {string} tag HTML tag name to create
      * @param {object} [options] Options object to customize the element
      * @param {string} [options.className] Class name to add to the element
@@ -108,7 +109,7 @@ class DOM {
      * @param {(Node|string|(Node|string)[])[]} [children] Child nodes to add
      * @returns {HTMLElement} The created HTML element
      */
-    createElement(tag, options = {}, ...children) {
+    createElement(tag: keyof HTMLElementTagNameMap, options = {}, ...children: Array<Node | string>) {
         return DOMManager.createElement(tag, options, ...children);
     }
 
@@ -116,15 +117,15 @@ class DOM {
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
-     * 
+     *
      * If the second parameter is false, then the return value will be the list of parsed
      * nodes and there were multiple top level nodes, otherwise the single node is returned.
-     * 
+     *
      * @param {string} html HTML to be parsed
      * @param {boolean} [fragment=false] Whether or not the return should be the raw `DocumentFragment`
      * @returns {(DocumentFragment|NodeList|HTMLElement)} The result of HTML parsing
      */
-    parseHTML(html, fragment = false) {
+    parseHTML(html: string, fragment = false) {
         return DOMManager.parseHTML(html, fragment);
     }
 }
