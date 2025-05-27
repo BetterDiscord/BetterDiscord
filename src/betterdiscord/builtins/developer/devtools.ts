@@ -7,13 +7,13 @@ export default new class DevToolsListener extends Builtin {
     get category() {return "developer";}
     get id() {return "devTools";}
 
-    initialize() {
-        super.initialize(...arguments);
+    async initialize() {
+        super.initialize();
         this.toggleDevTools = this.toggleDevTools.bind(this);
         document.addEventListener("keydown", this.toggleDevTools);
     }
 
-    toggleDevTools(e) {
+    toggleDevTools(e: KeyboardEvent) {
         const metaKey = process.platform === "darwin" ? e.metaKey : e.ctrlKey;
         if (metaKey && e.shiftKey && e.key === "I") {
             e.stopPropagation();

@@ -1,19 +1,21 @@
 import Builtin from "@structs/builtin";
 
-import IPC from "@modules/ipc";
-import Modals from "@ui/modals";
 import {t} from "@common/i18n";
+import IPC from "@modules/ipc";
 
-export default new class RemoveMinimumSize extends Builtin {
-    get name() {return "RemoveMinimumSize";}
-    get category() {return "window";}
-    get id() {return "removeMinimumSize";}
+import Modals from "@ui/modals";
 
-    enabled() {
+
+export default new class MediaKeys extends Builtin {
+    get name() {return "DisableMediaKeys";}
+    get category() {return "general";}
+    get id() {return "mediaKeys";}
+
+    async enabled() {
         this.showModal();
     }
 
-    disabled() {
+    async disabled() {
         this.showModal();
     }
 

@@ -5,19 +5,19 @@ export default new class DeveloperMode extends Builtin {
     get category() {return "developer";}
     get id() {return "debuggerHotkey";}
 
-    enabled() {
+    async enabled() {
         document.addEventListener("keydown", this.debugListener);
     }
 
-    disabled() {
+    async disabled() {
         document.removeEventListener("keydown", this.debugListener);
     }
 
-    debugListener(e) {
+    debugListener(e: KeyboardEvent) {
         if (e.key === "F7" || e.key == "F8") {
             debugger; // eslint-disable-line no-debugger
             e.preventDefault();
             e.stopImmediatePropagation();
-         }
+        }
     }
 };

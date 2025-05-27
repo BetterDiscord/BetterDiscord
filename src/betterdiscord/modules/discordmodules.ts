@@ -19,7 +19,7 @@ const DiscordModules = memoize({
     get React(): typeof React {return getByKeys(["createElement", "cloneElement"]) as typeof React;},
     get ReactDOM(): ReactDOM {return Object.assign({}, getByKeys(["createPortal"]), getByKeys(["createRoot"])) as ReactDOM;},
     get ReactSpring(): ReactSpring {return getByKeys(["useTransition", "animated"]) as ReactSpring;},
-    get ChannelActions() {return getByKeys(["selectChannel"]);},
+    get ChannelActions(): {selectVoiceChannel(a: any, b: any): void;} | undefined {return getByKeys(["selectChannel"]);},
     get LocaleStore() {return getStore("LocaleStore");},
     get UserStore() {return getStore("UserStore");},
     get InviteActions(): InviteActions | undefined {return getByKeys(["createInvite"]);},

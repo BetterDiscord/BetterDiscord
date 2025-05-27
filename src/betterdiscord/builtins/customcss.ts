@@ -20,7 +20,7 @@ import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
 
 
-const UserSettings = getByKeys(["updateAccount"]);
+const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"]);
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -30,6 +30,11 @@ export default new class CustomCSS extends Builtin {
     get nativeOpen() {return Settings.get(this.collection, this.category, "openAction") == "system";}
     get startAsExternal() {return Settings.get(this.collection, this.category, "openAction") == "external";}
     get file() {return path.resolve(Config.get("channelPath"), "custom.css");}
+
+    savedCss: string;
+    insertedCss: string;
+    isDetached: boolean;
+    watcher?: fs.FSWatcher;
 
     constructor() {
         super();
@@ -41,7 +46,7 @@ export default new class CustomCSS extends Builtin {
     async enabled() {
         Settings.registerPanel(this.id, t("Panels.customcss"), {
             order: 2,
-            element: () => [<SettingsTitle text={t("CustomCSS.editorTitle")} />, React.createElement(CSSEditor, {
+            element: () => [React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")}), React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
@@ -63,7 +68,7 @@ export default new class CustomCSS extends Builtin {
         this.watchContent();
     }
 
-    disabled() {
+    async disabled() {
         Settings.removePanel(this.id);
         this.unwatchContent();
         this.insertCSS("");
@@ -71,14 +76,14 @@ export default new class CustomCSS extends Builtin {
 
     watchContent() {
         if (this.watcher) return this.error("Already watching content.");
-        const timeCache = {};
+        const timeCache: Record<string, number> = {};
         this.log("Starting to watch content.");
         this.watcher = fs.watch(this.file, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename) return;
             await new Promise(r => setTimeout(r, 50));
             try {fs.statSync(this.file);}
             catch (err) {
-                if (err.code !== "ENOENT") return;
+                if ((err as ErrnoException).code !== "ENOENT") return;
                 delete timeCache[filename];
                 this.saveCSS("");
             }
@@ -104,7 +109,7 @@ export default new class CustomCSS extends Builtin {
         this.log("No longer watching content.");
     }
 
-    onChange(value) {
+    onChange(value: string) {
         if (!Settings.get("settings", "customcss", "liveUpdate")) return;
         this.insertCSS(value);
         this.saveCSS(value);
@@ -119,13 +124,13 @@ export default new class CustomCSS extends Builtin {
         }
     }
 
-    insertCSS(newCss) {
+    insertCSS(newCss: string) {
         if (typeof (newCss) === "undefined") newCss = this.insertedCss;
         else this.insertedCss = newCss;
         DOMManager.updateCustomCSS(newCss);
     }
 
-    saveCSS(newCss) {
+    saveCSS(newCss: string) {
         if (typeof (newCss) !== "undefined") this.savedCss = newCss;
         fs.writeFileSync(this.file, this.savedCss);
     }
@@ -142,7 +147,7 @@ export default new class CustomCSS extends Builtin {
         electron.shell.openExternal(`file://${this.file}`);
     }
 
-    openDetached(currentCSS) {
+    openDetached(currentCSS: string) {
         const editorRef = React.createRef();
         const editor = React.createElement(CSSEditor, {
             id: "bd-floating-editor",
@@ -177,7 +182,7 @@ export default new class CustomCSS extends Builtin {
             confirmationText: t("CustomCSS.confirmationText")
         });
         this.isDetached = true;
-        UserSettings.close();
+        UserSettings?.close();
         DiscordModules.Dispatcher?.dispatch({type: "LAYER_POP"});
     }
 

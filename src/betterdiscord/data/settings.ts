@@ -167,6 +167,7 @@ export interface SettingItem {
     disableWith?: string;
     defaultValue?: unknown;
     inline?: boolean;
+    hidden?: boolean;
 }
 
 export interface SwitchSetting extends SettingItem {

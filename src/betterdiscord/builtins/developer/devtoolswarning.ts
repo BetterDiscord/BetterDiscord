@@ -7,11 +7,11 @@ export default new class StopDevToolsWarning extends Builtin {
     get category() {return "developer";}
     get id() {return "devToolsWarning";}
 
-    enabled() {
+    async enabled() {
         RemoteAPI.setDevToolsWarningState(true);
     }
 
-    disabled() {
+    async disabled() {
         RemoteAPI.setDevToolsWarningState(false);
     }
 };

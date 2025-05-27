@@ -12,7 +12,7 @@ const timestamp = () => new Date().toISOString().replace("T", " ").replace("Z", 
 const levels = ["log", "info", "warn", "error", "debug"];
 const getCircularReplacer = () => {
     const seen = new WeakSet();
-    return (key, value) => {
+    return (_: unknown, value: any) => {
         if (typeof value === "object" && value !== null) {
             if (seen.has(value)) return "[Circular Reference]";
             seen.add(value);
@@ -21,7 +21,7 @@ const getCircularReplacer = () => {
     };
 };
 
-const occurrences = (source, substring) => {
+const occurrences = (source: string, substring: string) => {
     const regex = new RegExp(substring, "g");
     return (source.match(regex) || []).length;
 };
@@ -31,6 +31,9 @@ export default new class DebugLogs extends Builtin {
     get category() {return "developer";}
     get id() {return "debugLogs";}
 
+    logFile?: string;
+    stream?: fs.WriteStream;
+
     async enabled() {
         this.logFile = path.join(Config.get("channelPath"), "debug.log");
         await this.checkFilesize();
@@ -39,17 +42,17 @@ export default new class DebugLogs extends Builtin {
         for (const level of levels) {
             this.after(console, level, (_, originalArgs) => {
                 const data = this.sanitize(...originalArgs);
-                this.stream.write(`[${timestamp()}][CONSOLE:${level.toUpperCase()}] ${data}\n`);
+                this.stream?.write(`[${timestamp()}][CONSOLE:${level.toUpperCase()}] ${data}\n`);
             });
         }
     }
 
-    disabled() {
+    async disabled() {
         this.unpatchAll();
         if (this.stream) this.stream.end(`\n\n================= Ending Debug Log (${timestamp()}) =================`);
     }
 
-    sanitize(...args) {
+    sanitize(...args: any[]) {
         const sanitized = [];
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
@@ -70,20 +73,20 @@ export default new class DebugLogs extends Builtin {
     async checkFilesize() {
         try {
             // Not been created yet, no need to check filesize
-            if (!fs.existsSync(this.logFile)) return;
+            if (!this.logFile || !fs.existsSync(this.logFile)) return;
             const stats = fs.statSync(this.logFile);
             const mb = stats.size / (1024 * 1024);
             if (mb < 100) return; // Under 100MB, all good
-            return new Promise(resolve => Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.debuglog"), {
+            return new Promise<void>(resolve => Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.debuglog"), {
                 confirmText: t("Modals.okay"),
                 cancelText: t("Modals.cancel"),
                 danger: true,
-                onConfirm: () => fs.rmSync(this.logFile),
+                onConfirm: () => fs.rmSync(this.logFile!),
                 onClose: resolve
             }));
         }
         catch (e) {
-            this.error(e);
+            this.stacktrace("Could not get debug log filesize", e as Error);
         }
     }
 };

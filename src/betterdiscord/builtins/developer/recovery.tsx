@@ -13,6 +13,7 @@ import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
+// TODO: arven if you get a chance
 async function attemptRecovery() {
     const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true});
     const modalModule = getMangled(`,["contextKey"]),`, {CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")});
@@ -111,6 +112,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
         }
     };
 
+    // TODO: move UI to ui, keep separate from logic
     return (
         <div className="bd-error-container">
             <div className="bd-error-toggle-wrapper">

@@ -12,15 +12,15 @@ export default new class VoiceDisconnect extends Builtin {
         this.beforeUnload = this.beforeUnload.bind(this);
     }
 
-    enabled() {
+    async enabled() {
         window.addEventListener("beforeunload", this.beforeUnload);
     }
 
-    disabled() {
+    async disabled() {
         window.removeEventListener("beforeunload", this.beforeUnload);
     }
 
     beforeUnload() {
-        DiscordModules.ChannelActions.selectVoiceChannel(null, null);
+        DiscordModules.ChannelActions?.selectVoiceChannel(null, null);
     }
 };

@@ -14,6 +14,8 @@ import RemoteAPI from "@polyfill/remote";
 import {Filters, getByKeys, getLazy} from "@webpack";
 import {findInTree} from "@common/utils";
 
+
+// TODO: doggy can handle this translation
 const SimpleMarkdownWrapper = getByKeys(["parse", "defaultRules"]);
 let MessageAccessories;
 

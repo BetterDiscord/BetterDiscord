@@ -4,6 +4,7 @@ interface DiscordWindow {
     webpackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;
     DiscordNative: DiscordNativeAPI;
     monaco: typeof import("monaco-editor");
+    $type?: any; // From RDT
 
     __SENTRY__: {
         logger?: {disable(): void;};

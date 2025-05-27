@@ -7,15 +7,15 @@ export default new class InspectElement extends Builtin {
     get category() {return "developer";}
     get id() {return "inspectElement";}
 
-    enabled() {
+    async enabled() {
         document.addEventListener("keydown", this.inspectElement);
     }
 
-    disabled() {
+    async disabled() {
         document.removeEventListener("keydown", this.inspectElement);
     }
 
-    inspectElement(e) {
+    inspectElement(e: KeyboardEvent) {
         const metaKey = process.platform === "darwin" ? e.metaKey : e.ctrlKey;
         if (metaKey && e.shiftKey && e.key === "C") { // Ctrl/Cmd + Shift + C
             IPC.inspectElement();

@@ -20,7 +20,7 @@ export default new class ReactDevTools extends Builtin {
     }
 
 
-    initialize() {
+    async initialize() {
         super.initialize();
 
         let originalType = window.$type?.__originalFunction || window.$type;

@@ -10,7 +10,7 @@ export default new class NativeFrame extends Builtin {
     get category() {return "window";}
     get id() {return "frame";}
 
-    initialize() {
+    async initialize() {
         Events.on("setting-updated", (collection, category, id) => {
             if (collection != this.collection || category !== this.category || id !== "inAppTrafficLights") return;
             this.showModal();
@@ -19,13 +19,13 @@ export default new class NativeFrame extends Builtin {
         super.initialize();
     }
 
-    enabled() {
+    async enabled() {
         document.body.classList.add("bd-frame");
 
         this.showModal();
     }
 
-    disabled() {
+    async disabled() {
         document.body.classList.remove("bd-frame");
 
         this.showModal();
