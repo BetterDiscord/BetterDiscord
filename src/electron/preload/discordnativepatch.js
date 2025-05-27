@@ -42,7 +42,7 @@ const contextBridge = {
             api.window.USE_OSX_NATIVE_TRAFFIC_LIGHTS = process.platform === "darwin" && process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS === "false";
 
             api.window.setDevtoolsCallbacks(
-                () => {                    
+                () => {
                     isOpen = true;
                     if (!patchDevtoolsCallbacks) onOpened?.();
                 },
@@ -68,7 +68,7 @@ class DiscordNativePatch {
 
         // If devtools is open
         if (isOpen) {
-            // If you enable it, run the onClsoed function 
+            // If you enable it, run the onClsoed function
             if (value) onClosed?.();
             // If its disabled, run the onOpened function
             else onOpened?.();
@@ -76,11 +76,11 @@ class DiscordNativePatch {
     }
 
     // For native frame
-    // document.body does not exist when this is ran. 
+    // document.body does not exist when this is ran.
     // so we have to wait for it
     static injectCSS() {
         if (process.env.BETTERDISCORD_NATIVE_FRAME === "false") return;
-        
+
         // Have to use `global.` because the file is in node
         const mutationObserver = new global.MutationObserver(() => {
             if (global.document.body) {
@@ -88,7 +88,7 @@ class DiscordNativePatch {
 
                 const style = global.document.createElement("style");
                 style.textContent = `
-                    #app-mount > div[class*=titleBar_] { display: none !important; }
+                    #app-mount > div[class*=titleBar_], div[class^="winButtons_"] { display: none !important; }
                     .platform-osx nav[class^=wrapper_][class*=guilds_] {margin-top: 0;}
                     .platform-win div[class^=content_] > div[class^=sidebar_] {border-radius: 0;}
                 `;

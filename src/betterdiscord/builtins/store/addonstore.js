@@ -47,7 +47,7 @@ function extractAddonLinks(text, max = Infinity) {
      */
     const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [
         match.index, match.index + match[0].length
-     ]);
+    ]);
 
     /** @type {RegExpExecArray} */
     let exec;
@@ -59,7 +59,7 @@ function extractAddonLinks(text, max = Infinity) {
         const endIndex = exec.index + exec.length;
 
         let isInCodeblock = false;
-        for (const [ start, end ] of codeblocks) {
+        for (const [start, end] of codeblocks) {
             if (start < exec.index && endIndex < end) {
                 isInCodeblock = true;
                 break;
@@ -90,7 +90,7 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
 
     initialize() {
-        RemoteAPI.setProtocolListener((url) => {
+        RemoteAPI.addProtocolListener((url) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
 
             const match = url.match(APP_PROTOCOL_REGEX);
@@ -117,7 +117,7 @@ export default new class AddonStoreBuiltin extends Builtin {
             const instance = ReactUtils.getInternalInstance(message);
 
             const child = findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
-                walkable: [ "child" ]
+                walkable: ["child"]
             });
 
             if (typeof child !== "undefined") {
@@ -185,9 +185,9 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
 
     async patchEmbeds() {
-        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
+        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys(["renderEmbeds"]), {searchExports: true});
 
-        this.after(MessageAccessories.prototype, "renderEmbeds", (_, [ message ], res) => {
+        this.after(MessageAccessories.prototype, "renderEmbeds", (_, [message], res) => {
             if (!Settings.get(this.collection, this.category, "addonEmbeds")) {
                 return res;
             }
@@ -201,7 +201,7 @@ export default new class AddonStoreBuiltin extends Builtin {
             if (type) {
                 const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
 
-                if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{id: id[1], original: res}));
+                if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed, {id: id[1], original: res}));
 
                 return res;
             }
@@ -210,7 +210,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
             // Go through and either replace a prexisting embed or add a new one
             if (matches.length) {
-                const embeds = [ ...res ];
+                const embeds = [...res];
 
                 for (let key = 0; key < matches.length; key++) {
                     const {match, id} = matches[key];
