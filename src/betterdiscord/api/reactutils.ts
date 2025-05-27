@@ -196,12 +196,11 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    // @ts-expect-error blame arven
     wrapInHooks<P extends object>(
         functionComponent: React.FunctionComponent<P>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
-        return function wrappedComponent(props: P, context: any) {
+        return function wrappedComponent(props: P) {
             const reactInternals = (React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
             const reactDispatcher = reactInternals.ReactCurrentDispatcher.current;
             const originalDispatcher = {...reactDispatcher};
@@ -209,8 +208,8 @@ const ReactUtils: ReactUtils = {
             Object.assign(reactDispatcher, patchedReactHooks, customPatches);
 
             try {
-                // @ts-expect-error blame arven
-                return functionComponent(props, context);
+
+                return functionComponent(props);
             }
             // eslint-disable-next-line no-useless-catch
             catch (error) {

@@ -1,12 +1,34 @@
-import {getModule} from "@webpack";
 import React, {ReactDOM} from "@modules/react";
 import Button from "@ui/base/button";
 import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
-import DOMManager from "./dommanager";
+import DOMManager from "@modules/dommanager";
+import DiscordModules from "@modules/discordmodules";
+import type {MouseEvent} from "react";
+import type {Position} from "./settings/components/position";
 
-const Icon = ({type}) => {
+
+// TODO: let arven fix this
+export type NotificationType = "warning" | "error" | "info" | "success";
+export interface NotificationAction {
+    label: string;
+    onClick?(): void;
+}
+export interface Notification {
+    id: string;
+    title?: string;
+    content?: string;
+    type?: NotificationType;
+    duration?: number;
+    actions: NotificationAction[];
+    onDurationDone?(): void;
+    onClick?(): void;
+    exiting?: boolean;
+    icon?: React.FC;
+}
+
+const Icon = ({type}: {type: NotificationType;}) => {
     switch (type) {
         case "warning":
             return <TriangleAlertIcon color="var(--status-warning)" size="18px" />;
@@ -27,11 +49,11 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
-    static root = null;
+    static root: HTMLDivElement | null = null;
 
     static initialize() {
         const rootId = "bd-notifications-root";
-        let root = document.getElementById(rootId);
+        let root = document.getElementById(rootId) as HTMLDivElement;
         if (!root) {
             root = document.createElement("div");
             root.id = rootId;
@@ -79,8 +101,8 @@ class NotificationUI {
 }
 
 const PersistentNotificationContainer = React.memo(() => {
-    const [notifications, setNotifications] = React.useState([]);
-    const [position, setPosition] = React.useState("top-right");
+    const [notifications, setNotifications] = React.useState<Notification[]>([]);
+    const [position, setPosition] = React.useState<Position>("top-right");
 
     React.useEffect(() => {
         NotificationUI.setNotifications = setNotifications;
@@ -101,7 +123,7 @@ const PersistentNotificationContainer = React.memo(() => {
             "top-left": {top: 16, left: 16, flexDirection: "column"},
             "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
             "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
-        };
+        } as const;
         return positions[position];
     };
 
@@ -127,9 +149,9 @@ const PersistentNotificationContainer = React.memo(() => {
     );
 });
 
-const spring = getModule(x => x?.animated?.div);
+const spring = DiscordModules.ReactSpring;
 
-const NotificationItem = ({notification, position}) => {
+const NotificationItem = ({notification, position}: {notification: Notification; position: Position;}) => {
     const {
         id,
         title = "",
@@ -163,12 +185,13 @@ const NotificationItem = ({notification, position}) => {
 
     const slideProps = spring.useSpring(getSlideAnimation());
 
+    // TODO: arven, fix this
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
         config: {duration},
         pause: isPaused,
-        onChange: ({width}) => {
+        onChange: ({width}: {width: string;}) => {
             if (width === "0%") {
                 NotificationUI.hide(id);
                 notification.onDurationDone?.();
@@ -178,7 +201,7 @@ const NotificationItem = ({notification, position}) => {
     });
 
     React.useEffect(() => {
-        setExiting(notification.exiting);
+        setExiting(notification.exiting ?? false);
     }, [notification.exiting]);
 
     const handleClose = () => {
@@ -210,7 +233,7 @@ const NotificationItem = ({notification, position}) => {
                     {title}
                 </div>
                 <Text
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent) => {
                         e.stopPropagation();
                         handleClose();
                     }}

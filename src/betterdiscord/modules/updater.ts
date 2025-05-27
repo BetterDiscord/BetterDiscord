@@ -185,7 +185,7 @@ export class CoreUpdater {
             buttons: [{
                 label: t("Notices.moreInfo"),
                 onClick: () => {
-                    close();
+                    close?.();
                     UserSettingsWindow?.open?.("updates");
                 }
             }]
@@ -238,7 +238,7 @@ export class CoreUpdater {
 
 
 
-class AddonUpdater {
+export class AddonUpdater {
     manager: AddonManager;
     type: "plugin" | "theme";
     cache: Record<string, {name: string; version: string; id: number;}> | Record<string, never>;
@@ -322,7 +322,7 @@ class AddonUpdater {
             buttons: [{
                 label: t("Notices.moreInfo"),
                 onClick: () => {
-                    close();
+                    close?.();
                     UserSettingsWindow?.open?.("updates");
                 }
             }]

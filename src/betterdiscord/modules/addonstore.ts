@@ -383,7 +383,7 @@ class Addon {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error as Error);
 
                     Toasts.show(t("Addons.failedToDownload", {type: this.type, name: this.name}), {
-                        type: "danger"
+                        type: "error"
                     });
 
                     reject(error);
@@ -543,7 +543,7 @@ const addonStore = new class AddonStore {
                     Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error as Error);
 
                     Toasts.show(t("Addons.failedToFetch"), {
-                        type: "danger"
+                        type: "error"
                     });
 
                     // To allow future fetches
@@ -661,7 +661,7 @@ const addonStore = new class AddonStore {
             window.addEventListener("online", this._onLineListener);
 
             Toasts.show(t("Addons.failedToFetch"), {
-                type: "danger"
+                type: "error"
             });
 
             this.error = new Error("Failed to request addons: User is offline!");
@@ -724,7 +724,7 @@ const addonStore = new class AddonStore {
                 Logger.stacktrace("AddonStore", "Failed to request addons", error as Error);
 
                 Toasts.show(t("Addons.failedToFetch"), {
-                    type: "danger"
+                    type: "error"
                 });
 
                 this.error = error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`);

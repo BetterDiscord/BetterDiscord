@@ -1,4 +1,4 @@
-export default class AddonError<T extends {message?: string, stack?: string;} = object> extends Error {
+export default class AddonError<T extends {message?: string, stack?: string;} = {message?: string, stack?: string;}> extends Error {
     file: string;
     error: T;
     type: string;

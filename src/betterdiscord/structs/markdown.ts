@@ -1,27 +1,7 @@
 import DiscordModules from "@modules/discordmodules";
 import {extend} from "@common/utils";
 import type {ReactElement} from "react";
-
-
-type RuleTypes = "heading" | "nptable" | "lheading" | "hr" | "codeBlock" | "fence" | "blockQuote" | "list" | "def" | "table" | "newline" | "paragraph" | "escape" | "tableSeparator" | "autolink" | "mailto" | "url" | "link" | "image" | "reflink" | "refimage" | "em" | "strong" | "u" | "del" | "inlineCode" | "br" | "text";
-
-type Rules = {
-    [key in RuleTypes]: {
-        html?: (e: {content: string;}, t: (s: string, o: object) => string, n: object) => string;
-        match: ((s: string, o: {inline: boolean;}) => RegExpExecArray) & {regex: RegExp;};
-        order: number;
-        parse: (e: RegExpExecArray, t: (s: string, o: object) => string, n: object) => {content: string;};
-        react?: (e: RegExpExecArray, t: (s: string, o: object) => string, n: object) => ReactElement;
-        requiredFirstCharacters?: string[];
-    };
-};
-
-interface SimpleMarkdown {
-    defaultRules: Rules;
-    parserFor: (r: Rules) => (s: string, o?: {inline: boolean;}) => object;
-    ruleOutput: (r: Rules, t: string) => object;
-    reactFor: (o: object) => (o2: object) => ReactElement;
-}
+import type {Rules, SimpleMarkdown} from "discord/modules";
 
 
 export default class SimpleMarkdownExt {
@@ -35,7 +15,7 @@ export default class SimpleMarkdownExt {
     }
 
     static _initialize() {
-        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdown as SimpleMarkdown;
+        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdown!;
         const originalLink = SMD.defaultRules.link.react!;
         const newRules: SimpleMarkdown["defaultRules"] = extend({}, SMD.defaultRules, {
             link: {

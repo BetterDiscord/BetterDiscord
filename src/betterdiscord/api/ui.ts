@@ -1,7 +1,7 @@
 import ipc from "@modules/ipc";
 
 import Modals from "@ui/modals";
-import Toasts from "@ui/toasts";
+import Toasts, {type ToastOptions} from "@ui/toasts";
 import Notices from "@ui/notices";
 import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
@@ -143,7 +143,7 @@ const UI = {
      * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: `3000`.
      * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the BD setting
      */
-    showToast(content: string, options: {type?: string; icon?: boolean; timeout?: number; forceShow?: boolean;} = {}) {
+    showToast(content: string, options: ToastOptions = {}) {
         Toasts.show(content, options);
     },
 

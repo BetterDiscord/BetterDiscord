@@ -1,4 +1,5 @@
 import config from "@stores/config";
+import type {ChangelogProps} from "@ui/modals/changelog";
 
 // fixed, improved, added, progress
 export default {
@@ -56,4 +57,4 @@ export default {
             ]
         },
     ]
-};
+} as ChangelogProps;

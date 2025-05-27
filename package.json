@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
+        "@react-spring/web": "^10.0.1",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",
         "@types/react": "^19.1.2",

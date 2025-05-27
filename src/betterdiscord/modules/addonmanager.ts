@@ -66,7 +66,7 @@ export default abstract class AddonManager extends Store {
     get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
     get language() {return "";}
-    get prefix() {return "addon";}
+    get prefix() {return "";}
     get order() {return 2;}
 
     trigger(event: string, ...args: any[]) {

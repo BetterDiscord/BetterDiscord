@@ -40,7 +40,7 @@ export default new class PluginManager extends AddonManager {
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return Config.get("pluginsPath");}
-    get prefix() {return "plugin";}
+    get prefix() {return "plugin" as const;}
     get language() {return "javascript";}
     get order() {return 3;}
 
