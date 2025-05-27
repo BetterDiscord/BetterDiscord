@@ -91,7 +91,7 @@ export default new class AddonStoreBuiltin extends Builtin {
         Settings.on(this.collection, this.category, "addonEmbeds", () => this.forceUpdateChat());
     }
 
-    initialize() {
+    async initialize() {
         RemoteAPI.addProtocolListener((url) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
 
@@ -101,7 +101,7 @@ export default new class AddonStoreBuiltin extends Builtin {
             AddonStore.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
         });
 
-        return super.initialize(...arguments);
+        return super.initialize();
     }
 
     get name() {return "AddonStore";}

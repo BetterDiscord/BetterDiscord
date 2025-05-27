@@ -121,8 +121,8 @@ class MenuPatcher {
 
         Patcher.before("ContextMenuPatcher", module, key, (_, methodArguments) => {
             const promise = methodArguments[1];
-            methodArguments[1] = async function () {
-                const render = await promise.apply(this, arguments);
+            methodArguments[1] = async function (...args: any[]) {
+                const render = await promise.apply(this, args);
 
                 return props => {
                     const res = render(props);
@@ -146,13 +146,13 @@ class MenuPatcher {
         const proxyFunction = this.subPatches.get(target[method]) ?? (() => {
             const originalFunction = target[method];
             const depth = ++iteration;
-            function patch() {
-                const res = originalFunction.apply(this, arguments);
+            function patch(...args: any[]) {
+                const res = originalFunction.apply(this, args);
 
                 if (!res) return res;
 
                 if (res.props?.navId ?? res.props?.children?.props?.navId) {
-                    MenuPatcher.runPatches(res.props.navId ?? res.props?.children?.props?.navId, res, arguments[0]);
+                    MenuPatcher.runPatches(res.props.navId ?? res.props?.children?.props?.navId, res, args[0]);
                 }
                 else {
                     const layer = res.props.children ? res.props.children : res;

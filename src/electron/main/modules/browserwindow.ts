@@ -14,7 +14,7 @@ class BrowserWindow extends electron.BrowserWindow {
      * @returns
      */
     constructor(options) {
-        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options); // eslint-disable-line constructor-super
+        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
         const originalPreload = options.webPreferences.preload;
         options.webPreferences.preload = path.join(__dirname, "preload.js");
 
@@ -39,6 +39,7 @@ class BrowserWindow extends electron.BrowserWindow {
         BetterDiscord.setup(this);
         Editor.initialize(this);
 
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
         this.webContents.setWindowOpenHandler = new Proxy(this.webContents.setWindowOpenHandler, {
             apply(target, thisArg, argArray) {
@@ -73,6 +74,7 @@ class BrowserWindow extends electron.BrowserWindow {
                         return {action: "deny"};
                     }
 
+                    // eslint-disable-next-line prefer-rest-params
                     return handler.apply(this, arguments);
                 };
 
