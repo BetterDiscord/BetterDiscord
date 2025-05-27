@@ -6,7 +6,8 @@ const {execSync, spawn} = require("child_process");
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
 const release = releaseInput === "canary" ? "Discord Canary" : releaseInput === "ptb" ? "Discord PTB" : "Discord";
-const discordExeName = releaseInput === "canary" ? "DiscordCanary.exe" : releaseInput === "ptb" ? "DiscordPTB.exe" : "Discord.exe";
+let discordExeName = releaseInput === "canary" ? "DiscordCanary" : releaseInput === "ptb" ? "DiscordPTB" : "Discord";
+if (process.platform === "win32") discordExeName += ".exe";
 
 const discordPath = (function () {
     let latestExe = "";
@@ -16,14 +17,13 @@ const discordPath = (function () {
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
         latestExe = path.join(basedir, version, discordExeName);
     }
-    else {
-        let userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
-        if (process.platform === "darwin") userData = path.join(process.env.HOME, "Library", "Application Support");
-        const basedir = path.join(userData, release.toLowerCase().replace(" ", ""));
+    else if (process.platform === "linux") {
+        const basedir = "/usr/share/discord";
         if (!fs.existsSync(basedir)) return "";
-        const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
-        if (!version) return "";
-        latestExe = path.join(basedir, version, discordExeName);
+        latestExe = path.join(basedir, discordExeName);
+    }
+    else if (process.platform === "darwin") {
+        throw new Error(`Unsupported platform: ${process.platform}`);
     }
 
     if (fs.existsSync(latestExe)) return latestExe;
@@ -49,10 +49,10 @@ console.log(`    ✅ Found ${release} in ${discordPath}`);
 console.log("");
 
 console.log(`Starting ${release}`);
-const startCommand = process.platform === "win32" ? "cmd.exe" : "open";
-const startArgs = process.platform === "win32" ? ["/c", "start", "", discordPath] : [discordPath];
+const startCommand = process.platform === "win32" ? "cmd.exe" : process.platform === "linux" ? "discordPath" : "open";
+const startArgs = process.platform === "win32" ? ["/c", "start", "", discordPath] : process.platform === "linux" ? [] : [discordPath];
 try {
-    spawn(startCommand, startArgs, {detached: true, stdio: "ignore"});
+    spawn(startCommand, startArgs, {detached: true, stdio: "ignore"});// Linux not working
     console.log(`    ✅ Started ${release}`);
 }
 catch (error) {
