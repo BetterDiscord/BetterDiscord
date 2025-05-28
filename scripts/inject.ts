@@ -1,18 +1,18 @@
 const args = process.argv;
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const doSanityChecks = require("./validate");
-const buildPackage = require("./package");
+import doSanityChecks from "./helpers/validate";
+import buildPackage from "./helpers/package";
 
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
 const release = releaseInput === "canary" ? "Discord Canary" : releaseInput === "ptb" ? "Discord PTB" : "Discord";
 const bdPath = useBdRelease ? path.resolve(__dirname, "..", "dist", "betterdiscord.asar") : path.resolve(__dirname, "..", "dist");
-const discordPath = (function() {
+const discordPath = (function () {
     let resourcePath = "";
     if (process.platform === "win32") {
-        const basedir = path.join(process.env.LOCALAPPDATA, release.replace(/ /g, ""));
+        const basedir = path.join(process.env.LOCALAPPDATA!, release.replace(/ /g, ""));
         if (!fs.existsSync(basedir)) throw new Error(`Cannot find directory for ${release}`);
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
         // To account for discord_desktop_core-1 or any other number
@@ -20,8 +20,8 @@ const discordPath = (function() {
         resourcePath = path.join(basedir, version, "modules", coreWrap, "discord_desktop_core");
     }
     else {
-        let userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
-        if (process.platform === "darwin") userData = path.join(process.env.HOME, "Library", "Application Support");
+        let userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config");
+        if (process.platform === "darwin") userData = path.join(process.env.HOME!, "Library", "Application Support");
         const basedir = path.join(userData, release.toLowerCase().replace(" ", ""));
         if (!fs.existsSync(basedir)) return "";
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];

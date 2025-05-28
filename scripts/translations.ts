@@ -1,17 +1,19 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 const localeFolder = path.join(__dirname, "..", "assets", "locales");
 
-const https = require("https");
-const qs = require("querystring");
+import https from "https";
+import qs from "querystring";
 
+
+// TODO: this needs to be rewritten for new crowdsourcing
 const get = (opts, postData) => {
     if (postData) {
         postData = qs.stringify(postData);
         opts.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Content-Length": postData.length
-         };
+        };
     }
 
     if (!opts.method) opts.method = "GET";

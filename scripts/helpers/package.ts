@@ -1,13 +1,14 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-module.exports = function(dist) {
+
+export default function (dist: string) {
     console.log("");
     console.log("Ensuring valid package.json");
 
     const pkgFile = path.join(dist, "package.json");
     if (fs.existsSync(pkgFile)) {
-        const currentPkg = require(pkgFile);
+        const currentPkg = JSON.parse(fs.readFileSync(pkgFile).toString());
         if (currentPkg.name && currentPkg.main && currentPkg.main === "main.js") return console.log("    ✅ Existing package.json is valid");
         console.log("    ⚠️ Existing package.json is invalid");
     }
