@@ -229,13 +229,13 @@ class KeybindsManager {
      * @param {string} event Name of the event to register
      * @param {Keys} keys The keybinds to register
      * @param {Function} callback The callback to call when the keybind is pressed
-     * @param {Object} options Options for the keybind
+     * @param {GlobalKeybindOptions} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions = {blurred: true, focused: true, keydown: true, keyup: false}) {
+    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions) {
         const toBind = this.mapKeysToGlobalKeybinds(keys);
         const keybinds = this.globalKeybinds.get(pluginName);
-        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);// Otherwise we would have to create a new Map here
 
         for (const keysToBind of toBind) {
             const id = this.gloabalKeybindId++;
@@ -271,13 +271,13 @@ class KeybindsManager {
      * @param {string} event Name of the event to register
      * @param {Keys} keys The keybinds to register
      * @param {Function} callback The callback to call when the keybind is pressed
-     * @param {Object} options Options for the keybind
+     * @param {WindowKeybindOptions} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions = {keydown: true, keyup: false}) {
+    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions) {
         const toBind = this.mapKeysToWindowKeybinds(keys);
         const keybinds = this.windowKeybinds.get(pluginName);
-        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);// Otherwise we would have to create a new Map here
 
         for (const keysToBind of toBind) {
             const id = this.windowsKeybindId++;
@@ -356,7 +356,7 @@ class KeybindsManager {
 }
 
 /**
- * `Keybinds` is a simple utility class for the management of plugin global Keybinds. An instance is available on {@link BdApi}.
+ * `Keybinds` is a simple utility class for the management of plugin Keybinds. An instance is available on {@link BdApi}.
  * @type Keybinds
  * @summary {@link Keybinds} is a simple utility class for the management of plugin Keybinds.
  * @name Keybinds
@@ -370,59 +370,93 @@ export class Keybinds {
     }
 
     /**
-     * Registers a Keybind.
+     * Registers a Global Keybind.
      * @param {string} pluginName Name of the plugin to register the Keybind for
      * @param {string} event Name of the event to register
      * @param {Keys} keys The keys to register
      * @param {Function} callback The callback to call when the keybind is pressed
-     * @param {boolean} global Whether the Keybind is global or window
-     * @param {Object} options Options for the Keybind
+     * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    registerKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, global: boolean, options?: GlobalKeybindOptions | WindowKeybindOptions) {
+    regiterGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions = {blurred: true, focused: true, keydown: true, keyup: false}) {
         if (this.#callerName) {
-            options = global as unknown as WindowKeybindOptions | GlobalKeybindOptions;
-            global = callback as unknown as boolean;
+            options = callback as unknown as GlobalKeybindOptions;
             callback = keys as unknown as () => void;
             keys = event as unknown as Keys;
             event = pluginName as unknown as string;
             pluginName = this.#callerName;
         }
         try {
-            if (global) {
-                return KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options as GlobalKeybindOptions);
-            }
-            return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options as WindowKeybindOptions);
+            return KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, "Keybinds.registerKeybind", e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Global Keybind`, e);
             return false;
         }
-    };
+    }
 
     /**
-     * Unregisters a Keybind.
+     * Registers a Window Keybind.
+     * @param {string} pluginName Name of the plugin to register the Keybind for
+     * @param {string} event Name of the event to register
+     * @param {Keys} keys The keys to register
+     * @param {Function} callback The callback to call when the keybind is pressed
+     * @param {WindowKeybindOptions} options Options for the Keybind
+     * @returns {boolean} Whether the Keybind was registered
+     */
+    registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions = {keydown: true, keyup: false}) {
+        if (this.#callerName) {
+            options = callback as unknown as WindowKeybindOptions;
+            callback = keys as unknown as () => void;
+            keys = event as unknown as Keys;
+            event = pluginName as unknown as string;
+            pluginName = this.#callerName;
+        }
+        try {
+            return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options);
+        }
+        catch (e) {
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Window Keybind`, e);
+            return false;
+        }
+    }
+
+    /**
+     * Unregisters a Global Keybind.
      * @param {string} pluginName Name of the plugin to unregister the Keybind for
      * @param {string} event Name of the event to unregister
-     * @param {boolean} global Whether the Keybind is global or window; if not specified, it will be treated as both global and window
      * @returns {boolean} Whether the Keybind was unregistered
      */
-    unregisterKeybind(pluginName: string, event: string, global: boolean) {
+    unregisterGlobalKeybind(pluginName: string, event: string) {
         if (this.#callerName) {
-            global = event as unknown as boolean;
             event = pluginName;
             pluginName = this.#callerName;
         }
         try {
-            if (global || global === undefined) {
-                return KeybindsManager.unregisterGlobalKeybind(pluginName, event);
-            }
-            if (!global || global === undefined) {
-                return KeybindsManager.unregisterWindowKeybind(pluginName, event);
-            }
+            return KeybindsManager.unregisterGlobalKeybind(pluginName, event);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, "Keybinds.unregisterKeybind", e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e);
+            return false;
+        }
+    }
+
+    /**
+     * Unregisters a Window Keybind.
+     * @param {string} pluginName Name of the plugin to unregister the Keybind for
+     * @param {string} event Name of the event to unregister
+     * @returns {boolean} Whether the Keybind was unregistered
+     */
+    unregisterWindowKeybind(pluginName: string, event: string) {
+        if (this.#callerName) {
+            event = pluginName;
+            pluginName = this.#callerName;
+        }
+        try {
+            return KeybindsManager.unregisterWindowKeybind(pluginName, event);
+        }
+        catch (e) {
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Window Keybind`, e);
             return false;
         }
     }
@@ -435,7 +469,13 @@ export class Keybinds {
         if (this.#callerName) {
             pluginName = this.#callerName;
         }
-        return KeybindsManager.unregisterAllKeybinds(pluginName);
+        try {
+            return KeybindsManager.unregisterAllKeybinds(pluginName);
+        }
+        catch (e) {
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering all Keybinds`, e);
+            return false;
+        }
     }
 }
 
