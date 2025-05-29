@@ -320,13 +320,13 @@ class KeybindsManager {
         const keybinds = this.windowKeybinds.get(pluginName);
         if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
 
-        for (const keybind of keybinds.values()) {
+        for (const [id, keybind] of keybinds.entries()) {
             if (keybind.event === event) {
                 window.removeEventListener("keydown", keybind.callback);
                 window.removeEventListener("keyup", keybind.callback);
+                keybinds.delete(id);
             }
         };
-        keybinds.clear();
         return true;
     }
 
