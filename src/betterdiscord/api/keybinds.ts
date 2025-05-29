@@ -232,7 +232,7 @@ class KeybindsManager {
      * @param {GlobalKeybindOptions} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions) {
+    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions = {blurred: true, focused: true, keydown: true, keyup: false}) {
         const toBind = this.mapKeysToGlobalKeybinds(keys);
         const keybinds = this.globalKeybinds.get(pluginName);
         if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);// Otherwise we would have to create a new Map here
@@ -274,7 +274,7 @@ class KeybindsManager {
      * @param {WindowKeybindOptions} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions) {
+    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions = {keydown: true, keyup: false}) {
         const toBind = this.mapKeysToWindowKeybinds(keys);
         const keybinds = this.windowKeybinds.get(pluginName);
         if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);// Otherwise we would have to create a new Map here
@@ -378,7 +378,7 @@ export class Keybinds {
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    regiterGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions = {blurred: true, focused: true, keydown: true, keyup: false}) {
+    registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options?: GlobalKeybindOptions) {
         if (this.#callerName) {
             options = callback as unknown as GlobalKeybindOptions;
             callback = keys as unknown as () => void;
@@ -404,7 +404,7 @@ export class Keybinds {
      * @param {WindowKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions = {keydown: true, keyup: false}) {
+    registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options?: WindowKeybindOptions) {
         if (this.#callerName) {
             options = callback as unknown as WindowKeybindOptions;
             callback = keys as unknown as () => void;
