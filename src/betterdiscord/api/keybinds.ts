@@ -259,9 +259,9 @@ class KeybindsManager {
         for (const [id, keybind] of keybinds.entries()) {
             if (keybind.event === event) {
                 DiscordUtils.inputEventUnregister(id);
+                keybinds.delete(id);
             }
         }
-        keybinds.clear();
         return true;
     }
 
