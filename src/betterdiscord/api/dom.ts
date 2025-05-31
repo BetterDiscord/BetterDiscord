@@ -70,7 +70,7 @@ class DOM {
      * @param {HTMLElement} node Node to be observed
      * @param {function} callback Function to run when removed
      */
-    onRemoved(node: HTMLElement, callback: (...a: any[]) => any) {
+    onRemoved(node: HTMLElement, callback: () => void) {
         return DOMManager.onRemoved(node, callback);
     }
 
@@ -81,7 +81,7 @@ class DOM {
      * @param {string} selector - node to wait for
      * @param {callable} callback - function to be performed on event
      */
-    onAdded(selector: string, callback: (...a: any[]) => any) {
+    onAdded(selector: string, callback: () => void) {
         return DOMManager.onAdded(selector, callback);
     }
 

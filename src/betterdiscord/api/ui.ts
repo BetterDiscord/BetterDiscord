@@ -2,14 +2,15 @@ import ipc from "@modules/ipc";
 
 import Modals from "@ui/modals";
 import Toasts, {type ToastOptions} from "@ui/toasts";
-import Notices from "@ui/notices";
-import Tooltip from "@ui/tooltip";
+import Notices, {type NoticeOptions} from "@ui/notices";
+import Tooltip, {type TooltipOptions} from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
 import NotificationUI from "@ui/notifications";
 import type {ReactElement} from "react";
+import type {ChangelogProps} from "@ui/modals/changelog";
 
 
 /**
@@ -53,18 +54,18 @@ const UI = {
     },
 
     /**
-         * Creates a tooltip to automatically show on hover.
-         *
-         * @param {HTMLElement} node DOM node to monitor and show the tooltip on
-         * @param {string|HTMLElement} content String to show in the tooltip
-         * @param {object} options Additional options for the tooltip
-         * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] Correlates to the Discord styling/colors
-         * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] Can be any of top, right, bottom, left
-         * @param {boolean} [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
-         * @param {boolean} [options.disabled=false] Whether the tooltip should be disabled from showing on hover
-         * @returns {Tooltip} The tooltip that was generated.
-         */
-    createTooltip(node: HTMLElement, content: string | HTMLElement, options = {}) {
+     * Creates a tooltip to automatically show on hover.
+     *
+     * @param {HTMLElement} node DOM node to monitor and show the tooltip on
+     * @param {string|HTMLElement} content String to show in the tooltip
+     * @param {object} options Additional options for the tooltip
+     * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] Correlates to the Discord styling/colors
+     * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] Can be any of top, right, bottom, left
+     * @param {boolean} [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
+     * @param {boolean} [options.disabled=false] Whether the tooltip should be disabled from showing on hover
+     * @returns {Tooltip} The tooltip that was generated.
+     */
+    createTooltip(node: HTMLElement, content: string | HTMLElement, options: TooltipOptions = {}) {
         return Tooltip.create(node, content, options);
     },
 
@@ -110,18 +111,7 @@ const UI = {
      * @param {Array<Changes>} [options.changes] List of changes to show (see description for details)
      * @returns {string} The key used for this modal.
      */
-    showChangelogModal(options: {
-        transitionState?: number;
-        footer?: string;
-        title?: string;
-        subtitle?: string;
-        onClose?(): void;
-        video?: string;
-        poster?: string;
-        banner?: string;
-        blurb?: string;
-        changes?: object;
-    }) {
+    showChangelogModal(options: ChangelogProps) {
         return Modals.showChangelogModal(options);
     },
 
@@ -157,7 +147,7 @@ const UI = {
      * @param {number} [options.timeout=10000] Timeout until the notice is closed. Will not fire when set to `0`.
      * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
      */
-    showNotice(content: string, options: {type?: string; buttons?: Array<{label: string; onClick: (immediately?: boolean) => void;}>; timeout?: number;} = {}) {
+    showNotice(content: string, options: NoticeOptions = {}) {
         return Notices.show(content, options);
     },
 

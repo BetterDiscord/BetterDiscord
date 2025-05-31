@@ -25,7 +25,7 @@ import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
 import type AddonManager from "./addonmanager";
 import type {Release} from "github";
-import type {Addon} from "betterdiscordweb";
+import type {BdWebAddon} from "betterdiscordweb";
 import {getByKeys} from "@webpack";
 
 
@@ -46,7 +46,7 @@ const getJSON = (url: string) => {
     });
 };
 
-const reducer = (acc: Record<string, {name: string; version: string; id: number;}> | Record<string, never>, addon: Addon) => {
+const reducer = (acc: Record<string, {name: string; version: string; id: number;}> | Record<string, never>, addon: BdWebAddon) => {
     if (addon.version === "Unknown") return acc;
     acc[addon.file_name] = {name: addon.name, version: addon.version, id: addon.id};
     return acc;
@@ -268,7 +268,7 @@ export class AddonUpdater {
 
     async updateCache() {
         this.cache = {};
-        const addonData = (await getJSON(Web.store[(this.type + "s") as keyof typeof Web.store] as string)) as Addon[];
+        const addonData = (await getJSON(Web.store[(this.type + "s") as keyof typeof Web.store] as string)) as BdWebAddon[];
         addonData.reduce(reducer, this.cache as Record<string, never>);
     }
 

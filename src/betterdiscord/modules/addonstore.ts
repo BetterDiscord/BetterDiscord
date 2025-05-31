@@ -15,82 +15,8 @@ import InstallModal from "@ui/modals/installmodal";
 import Settings from "@stores/settings";
 import Web from "@data/web";
 import type AddonManager from "./addonmanager";
+import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
 
-/**
- * @typedef {{
- *      id: number,
- *      name: string,
- *      file_name: string,
- *      type: "theme" | "plugin",
- *      description: string,
- *      author: RawAddonAuthor,
- *      likes: number,
- *      downloads: number,
- *      tags: string[],
- *      thumbnail_url: string | null,
- *      initial_release_date: string,
- *      latest_release_date: string,
- *      guild: RawAddonGuild | null,
- *      version: string,
- *      latest_source_url: string
- * }} RawAddon
- */
-
-/**
- * @typedef {{
- *      github_id: string,
- *      github_name: string,
- *      display_name: string,
- *      discord_name: string,
- *      discord_avatar_hash: string,
- *      discord_snowflake: number,
- *      guild: RawAddonGuild | null
- * }} RawAddonAuthor
- */
-
-/**
- * @typedef {{
- *      name: string,
- *      snowflake: string,
- *      invite_link: string,
- *      avatar_hash: string
- * }} RawAddonGuild
- */
-
-interface RawAddonGuild {
-    name: string;
-    snowflake: string;
-    invite_link: string;
-    avatar_hash: string;
-}
-
-interface RawAddonAuthor {
-    github_id: string;
-    github_name: string;
-    display_name: string;
-    discord_name: string;
-    discord_avatar_hash: string;
-    discord_snowflake: number;
-    guild: RawAddonGuild | null;
-}
-
-interface RawAddon {
-    id: number;
-    name: string;
-    file_name: string;
-    type: "theme" | "plugin";
-    description: string;
-    author: RawAddonAuthor;
-    likes: number;
-    downloads: number;
-    tags: string[];
-    thumbnail_url?: string;
-    initial_release_date: string;
-    latest_release_date: string;
-    guild: RawAddonGuild | null;
-    version: string;
-    latest_source_url: string;
-}
 
 /**
  * @param {Addon} addon
@@ -115,7 +41,7 @@ class Guild {
     name: string;
     id: string;
     invite: string;
-    hash: string;
+    hash?: string;
 
     /**
      * @private
@@ -125,10 +51,10 @@ class Guild {
 
     /**
      * @public
-     * @param {RawAddonGuild} guild
+     * @param {BdWebGuild} guild
      * @returns {Guild}
      */
-    static from(guild: RawAddonGuild) {
+    static from(guild: BdWebGuild) {
         if (typeof this.cache[guild.snowflake] === "object") {
             const cached = this.cache[guild.snowflake];
 
@@ -144,9 +70,9 @@ class Guild {
 
     /**
      * @private
-     * @param {RawAddonGuild} guild
+     * @param {BdWebGuild} guild
      */
-    constructor(guild: RawAddonGuild) {
+    constructor(guild: BdWebGuild) {
         this.name = guild.name;
         this.id = guild.snowflake;
 
@@ -195,7 +121,7 @@ class Addon {
     latestSourceUrl: string;
 
     // @ts-expect-error unused but good for debug
-    private _addon: RawAddon;
+    private _addon: BdWebAddon;
 
     /**
      * @private
@@ -206,10 +132,10 @@ class Addon {
     /**
      * Update pre-existing addon class without create a new one
      * @public
-     * @param {RawAddon} addon
+     * @param {BdWebAddon} addon
      * @returns {Addon}
      */
-    static from(addon: RawAddon) {
+    static from(addon: BdWebAddon) {
         // Dont create a new one if addon already exists
         // Just sync data
         if (typeof this.cache[addon.id] === "object") {
@@ -239,9 +165,9 @@ class Addon {
     /**
      * Do not directly call
      * @private
-     * @param {RawAddon} addon
+     * @param {BdWebAddon} addon
      */
-    constructor(addon: RawAddon) {
+    constructor(addon: BdWebAddon) {
         this.id = addon.id;
         this.name = addon.name;
 
@@ -461,7 +387,7 @@ class Addon {
 
 const addonStore = new class AddonStore {
     initialize() {
-        this._cache = (JsonStore.get("addon-store") as {addons: Record<string, RawAddon>; known: string[]; version: string;}) || {addons: {}, known: [], version: ""};
+        this._cache = (JsonStore.get("addon-store") as {addons: Record<string, BdWebAddon>; known: string[]; version: string;}) || {addons: {}, known: [], version: ""};
 
         if (this._cache.version !== Web.API_VERSION) {
             this._cache = {
@@ -480,12 +406,12 @@ const addonStore = new class AddonStore {
     // Caching stuff
     /**
      * @type {{
-     *      addons: Record<string, RawAddon>,
+     *      addons: Record<string, BdWebAddon>,
      *      known: string[],
      *      version: string
      * }}
      */
-    _cache: {addons: Record<string, RawAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
+    _cache: {addons: Record<string, BdWebAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
     /** @private */
     _useCache() {
         for (const key in this._cache.addons) {
@@ -537,7 +463,7 @@ const addonStore = new class AddonStore {
                     this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
                     this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
 
-                    resolve(Addon.from(data as RawAddon));
+                    resolve(Addon.from(data as BdWebAddon));
                 }
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error as Error);
@@ -694,12 +620,12 @@ const addonStore = new class AddonStore {
                     throw err || req;
                 }
 
-                const json = JSON.parse(body) as RawAddon[];
+                const json = JSON.parse(body) as BdWebAddon[];
 
                 const isFirstRun = this._cache.known.length === 0 && Object.keys(this._cache.addons).length === 0;
 
                 /** @type {typeof this._cache} */
-                const data: {addons: Record<string, RawAddon>, version: string, known: string[];} = {
+                const data: {addons: Record<string, BdWebAddon>, version: string, known: string[];} = {
                     known: this._cache.known || {},
                     addons: {},
                     version: Web.API_VERSION

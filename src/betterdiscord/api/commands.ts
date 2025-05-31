@@ -15,7 +15,7 @@ class CommandAPI {
         this.#callerName = callerName;
     }
 
-    static Types = {
+    Types = {
         OptionTypes,
         CommandTypes,
         InputTypes,
@@ -92,7 +92,7 @@ class CommandAPI {
 
 
 Object.freeze(CommandAPI);
-Object.freeze(CommandAPI.Types);
 Object.freeze(CommandAPI.prototype);
+Object.freeze(CommandAPI.prototype.Types);
 Object.freeze(CommandAPI.constructor);
 export default CommandAPI;

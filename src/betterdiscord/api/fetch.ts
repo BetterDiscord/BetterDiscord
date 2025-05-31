@@ -7,7 +7,7 @@ const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
 class FetchResponse extends Response {
 
-    _options: Partial<FetchData & {status?: number;}>;
+    private _options: Partial<FetchData & {status?: number;}>;
 
     constructor(options: Partial<FetchData & {status?: number;}>) {
         super(bodylessStatusCodes.has(options.status ?? 0) ? null : options.content as any, {

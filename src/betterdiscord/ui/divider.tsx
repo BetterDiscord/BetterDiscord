@@ -1,9 +1,5 @@
 import React from "@modules/react";
+import clsx from "clsx";
 
 
-export type DividerProps = {
-    className?: string;
-    [prop: string]: any;
-};
-
-export default ({className, ...props}: DividerProps) => <hr {...props} className={`bd-divider ${className || ""}`} />;
+export default ({className, ...props}: React.JSX.IntrinsicElements["hr"]) => <hr {...props} className={clsx("bd-divider", className)} />;

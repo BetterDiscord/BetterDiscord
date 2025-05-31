@@ -1,3 +1,4 @@
+import type {Fiber} from "react-reconciler";
 import {DiscordNativeAPI} from "./discord/native";
 
 interface DiscordWindow {
@@ -40,7 +41,13 @@ declare global {
     const DiscordNative: DiscordNativeAPI;
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Window extends DiscordWindow {};
+
+    interface Node {
+        __reactFiber$?: Fiber,
+        __reactProps$?: any;
+    }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface Window extends DiscordWindow {};
+

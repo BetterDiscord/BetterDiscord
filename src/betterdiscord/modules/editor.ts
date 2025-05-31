@@ -53,7 +53,7 @@ const knownGlobalClasses = [
 
 interface BrowserClipboardServiceType {
     prototype: {
-        readText: (t?: string) => void | Promise<void>;
+        readText: (t?: string) => string | Promise<string>;
     };
 }
 

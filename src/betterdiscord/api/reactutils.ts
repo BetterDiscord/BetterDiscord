@@ -1,6 +1,7 @@
 import DiscordModules from "@modules/discordmodules";
 import React from "@modules/react";
 import type {RefObject} from "react";
+import type {Fiber} from "react-reconciler";
 
 interface PatchedReactHooks {
     useMemo<T>(factory: () => T): T;
@@ -101,14 +102,13 @@ const ReactUtils: ReactUtils = {
      * Gets the internal React data of a specified node.
      *
      * @param {HTMLElement} node Node to get the internal React data from
-     * @returns {object|undefined} Either the found data or `undefined`
+     * @returns {Fiber|undefined} Either the found data or `undefined`
      */
-    getInternalInstance(node: HTMLElement): object | null {
-        if ((node as any).__reactFiber$) return (node as any).__reactFiber$;
-        const key = Object.keys(node).find(
-            k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")
-        );
-        return key ? (node as any)[key] : null;
+    getInternalInstance(node: HTMLElement): Fiber | null {
+        if (node.__reactFiber$) return node.__reactFiber$;
+        const key = Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"));
+        if (key) return node[key as keyof typeof node] as Fiber;
+        return null;
     },
 
     /**
