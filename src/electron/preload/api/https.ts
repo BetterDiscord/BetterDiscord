@@ -8,7 +8,7 @@ const redirectCodes = new Set([301, 302, 307, 308]);
 const headersToClone = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders", "end"];
 
 type RequestOptions = https.RequestOptions & {formData?: Buffer | string;};
-type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer) => void;
+type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer | string) => void;
 type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
 
 const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {

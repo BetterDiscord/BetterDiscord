@@ -20,8 +20,10 @@ const originalFs = Object.assign({}, fs);
 originalFs.writeFileSync = (path, data, options) => fs.writeFileSync(path, data, Object.assign({}, options, {originalFs: true}));
 originalFs.writeFile = (path, data, options) => fs.writeFile(path, data, Object.assign({}, options, {originalFs: true}));
 
-export const createRequire = function (path) {
-    return mod => {
+type PolyfillRequire = ((mod: string) => any) & {cache?: Record<string, any>; resolve?(path: string): any;};
+
+export const createRequire = function (path: string): PolyfillRequire {
+    return (mod: string) => {
         // Ignore relative require attempts because Discord
         // erroneously does this a lot apparently which
         // causes us to do filesystem accesses in our default
@@ -45,18 +47,19 @@ export const createRequire = function (path) {
             case "module": return Module;
             case "buffer": return buffer;
             case "crypto": return crypto;
-    
+
             default:
                 return Module._load(mod, path, createRequire);
         }
     };
 };
 
+// @ts-expect-error remove with polyfill
 const require = window.require = createRequire(".");
 require.cache = {};
-require.resolve = (path) => {
-    for (const key of Object.keys(require.cache)) {
-        if (key.startsWith(path)) return require.cache[key];
+require.resolve = (path: string) => {
+    for (const key of Object.keys(require.cache!)) {
+        if (key.startsWith(path)) return require.cache![key];
     }
 };
 

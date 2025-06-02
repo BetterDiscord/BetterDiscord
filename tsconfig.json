@@ -8,7 +8,7 @@
     "jsx": "react",
     "jsxFactory": "React.createElement",
     "jsxFragmentFactory": "React.Fragment",
-    "allowJs": true,
+    "allowJs": false,
 
     // Bundler mode
     "moduleResolution": "bundler",

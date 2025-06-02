@@ -20,7 +20,7 @@ export function writeFile(path: string, content: string | Uint8Array, options: f
     return doWriteFile(path, content, options);
 }
 
-export function readDirectory(path: string, options: object) {
+export function readDirectory(path: string, options?: object) {
     return fs.readdirSync(path, options);
 }
 
@@ -36,7 +36,7 @@ export function exists(path: string) {
     return fs.existsSync(path);
 }
 
-export function getRealPath(path: string, options: object) {
+export function getRealPath(path: string, options?: object) {
     return fs.realpathSync(path, options);
 }
 
@@ -82,7 +82,7 @@ export function watch(path: string, options: object, callback: (e: string, f: st
     };
 }
 
-export function getStats(path: string, options: object) {
+export function getStats(path: string, options?: object) {
     const stats = fs.statSync(path, options);
 
     return {
