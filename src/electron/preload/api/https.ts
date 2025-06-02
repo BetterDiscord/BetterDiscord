@@ -5,7 +5,7 @@ import * as http from "http";
 
 const methods = ["get", "put", "post", "delete", "head"];
 const redirectCodes = new Set([301, 302, 307, 308]);
-const headersToClone = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders", "end"];
+const dataToClone: Array<keyof http.IncomingMessage> = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders"];
 
 type RequestOptions = https.RequestOptions & {formData?: Buffer | string;};
 type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer | string) => void;
@@ -35,9 +35,9 @@ const makeRequest = (url: string, options: RequestOptions, callback: RequestCall
         });
 
         res.addListener("end", () => {
-            const headers = Object.fromEntries(headersToClone.map(h => [h, res.headers[h]]));
+            const data = Object.fromEntries(dataToClone.map(h => [h, res[h]]));
 
-            callback(error as Error, headers, Buffer.concat(chunks));
+            callback(error as Error, data, Buffer.concat(chunks));
             req.end();
         });
     });
