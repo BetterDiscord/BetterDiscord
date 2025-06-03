@@ -11,7 +11,7 @@
         "build:betterdiscord": "bun run build --module=betterdiscord",
         "build:production": "NODE_ENV=production bun run build --minify",
         "inject": "bun scripts/inject.js",
-        "restart": "bun scripts/restart.js",
+        "restart": "bun scripts/restart.ts",
         "lint": "bun run --bun eslint",
         "lint-css": "stylelint src/betterdiscord/styles/*.css && stylelint src/betterdiscord/styles/**/*.css",
         "test": "bun test tests/",
