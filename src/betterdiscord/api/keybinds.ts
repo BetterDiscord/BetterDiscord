@@ -390,7 +390,7 @@ export class Keybinds {
             return KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Global Keybind`, e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Global Keybind`, e as Error);
             return false;
         }
     }
@@ -416,7 +416,7 @@ export class Keybinds {
             return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Window Keybind`, e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Window Keybind`, e as Error);
             return false;
         }
     }
@@ -436,7 +436,7 @@ export class Keybinds {
             return KeybindsManager.unregisterGlobalKeybind(pluginName, event);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e as Error);
             return false;
         }
     }
@@ -456,7 +456,7 @@ export class Keybinds {
             return KeybindsManager.unregisterWindowKeybind(pluginName, event);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Window Keybind`, e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Window Keybind`, e as Error);
             return false;
         }
     }
@@ -473,7 +473,7 @@ export class Keybinds {
             return KeybindsManager.unregisterAllKeybinds(pluginName);
         }
         catch (e) {
-            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering all Keybinds`, e);
+            Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering all Keybinds`, e as Error);
             return false;
         }
     }

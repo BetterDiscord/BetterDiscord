@@ -42,11 +42,11 @@ export const Sizes = Object.freeze({
 });
 
 
-type ButtonProps = PropsWithChildren<{
+export type ButtonProps = PropsWithChildren<{
     className?: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
     onKeyDown?: KeyboardEventHandler<HTMLButtonElement>;
-    buttonRef?: RefObject<HTMLButtonElement>;
+    buttonRef?: RefObject<HTMLButtonElement | null>;
     disabled?: boolean;
     type?: "button" | "submit" | "reset";
     look?: typeof Looks[keyof typeof Looks];
@@ -90,7 +90,7 @@ export default function Button({
         onClick={disabled ? () => {} : handleClick}
         onKeyDown={disabled ? () => {} : onKeyDown}
         disabled={disabled}
-        >
+    >
         <div className="bd-button-content">{children}</div>
     </button>;
 }
