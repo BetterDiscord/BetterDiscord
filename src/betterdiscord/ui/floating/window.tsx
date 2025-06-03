@@ -1,8 +1,6 @@
 import React from "@modules/react";
 import {t} from "@common/i18n";
 
-import Screen from "@structs/screen";
-
 import Modals from "@ui/modals";
 
 import {XIcon, MaximizeIcon} from "lucide-react";
@@ -20,6 +18,13 @@ function confirmClose(confirmationText: string) {
             onCancel: () => {resolve(false);}
         });
     });
+}
+
+class Screen {
+    /** Document/window width */
+    static get width() {return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);}
+    /** Document/window height */
+    static get height() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
 }
 
 export interface FloatingWindowProps {
