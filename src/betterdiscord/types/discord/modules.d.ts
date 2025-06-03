@@ -1,4 +1,7 @@
 import type {ForwardRefExoticComponent, MemoExoticComponent, JSX} from "react";
+import * as ReactSpring from "@react-spring/web";
+
+
 
 export interface RemoteModule {
     releaseChannel: string;
@@ -6,6 +9,8 @@ export interface RemoteModule {
     buildNumber: number;
     architecture: string;
     parsedOSRelease: number[];
+    focus(): void;
+    minimize(): void;
 }
 
 export type GetClientInfo = () => {
@@ -57,9 +62,9 @@ export interface FluxStore {
 }
 
 export interface FluxStoreConstructor {
-    new (dispatcher: unknown, handlers: unknown): FluxStore,
+    new(dispatcher: unknown, handlers: unknown): FluxStore,
     getAll(): FluxStore[],
-    prototype: FluxStore
+    prototype: FluxStore;
 }
 
 export type CommonlyUsedStores = (
@@ -83,6 +88,9 @@ export interface Dispatcher {
 
 
 export type Memo = MemoExoticComponent<ForwardRefExoticComponent<null> & JSX.ElementClass>;
+
+
+export type ReactSpring = typeof ReactSpring;
 
 
 export interface DiscordPermissions {
@@ -140,7 +148,7 @@ export interface DiscordPermissions {
 }
 
 export interface InviteActions {
-    resolveInvite(code: string): {code: string; invite: {code: string}};
+    resolveInvite(code: string): {code: string; invite: {code: string;};};
     getInviteContext(): void;
     createInvite(): void;
     mobileCreateInvite(): void;
@@ -157,4 +165,27 @@ export interface InviteActions {
     openNativeAppModal(): void;
     openApp(): void;
     transitionToInviteChannelSync(): void;
+}
+
+
+export type RuleTypes = "heading" | "nptable" | "lheading" | "hr" | "codeBlock" | "fence" | "blockQuote" | "list" | "def" | "table" | "newline" | "paragraph" | "escape" | "tableSeparator" | "autolink" | "mailto" | "url" | "link" | "image" | "reflink" | "refimage" | "em" | "strong" | "u" | "del" | "inlineCode" | "br" | "text";
+
+export type Rule = {
+    html?: (e: {content: string;}, t: (s: string, o: object) => string, n: object) => string;
+    match: ((s: string, o: {inline: boolean;}) => RegExpExecArray) & {regex: RegExp;};
+    order: number;
+    parse: (e: RegExpExecArray, t: (s: string, o: object) => string, n: object) => {content: string;};
+    react?: (e: Record<string, any>, t: (s: string, o: object) => string, n: object) => ReactElement;
+    requiredFirstCharacters?: string[];
+};
+
+export type Rules = {
+    [key in RuleTypes]: Rule;
+};
+
+export interface SimpleMarkdown {
+    defaultRules: Rules;
+    parserFor: (r: Rules) => (s: string, o?: {inline: boolean;}) => object;
+    ruleOutput: (r: Rules, t: string) => object;
+    reactFor: (o: object) => (o2: object) => ReactElement;
 }

@@ -127,7 +127,7 @@ export default ts.config(
 
     // Setup rules for scripts
     {
-        files: ["scripts/*"],
+        files: ["scripts/*", "scripts/**/*"],
         rules: {
             "no-console": "off"
         }
