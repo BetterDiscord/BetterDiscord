@@ -59,7 +59,7 @@ export default new class SettingsManager extends Store {
         this.collections.splice(location, 1);
     }
 
-    registerPanel(id: string, name: string, options: {onClick?: () => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager;}) {
+    registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager;}) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1, type = "settings"} = options;
         const section: SettingsPanel = {

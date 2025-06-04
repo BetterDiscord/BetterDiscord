@@ -12,7 +12,7 @@ export function updateSettings(settings: any) {
 }
 
 export function onLiveUpdateChange(listener: (state: boolean) => void) {
-    function callback(event: unknown, state: boolean) {
+    function callback(_: unknown, state: boolean) {
         listener(state);
     }
 

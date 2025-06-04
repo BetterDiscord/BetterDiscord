@@ -25,7 +25,7 @@ import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
-import NotificationUI from "@modules/notification";
+// import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 
 export default new class Core {
@@ -57,8 +57,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
 
-        Logger.log("Startup", "Initializing NotificationUI");
-        NotificationUI.initialize();
+        // Logger.log("Startup", "Initializing NotificationUI");
+        // NotificationUI.initialize();
 
         Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
