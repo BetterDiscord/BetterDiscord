@@ -70,6 +70,7 @@ const checkExistingIssues = async (baseRepoUrl, identifier) => {
         const [owner, repo] = baseRepoUrl.replace("https://github.com/", "").split("/");
         const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?state=open`);
         const issues = await response.json();
+        console.log("issues", issues);
         return issues.some(issue => issue.body?.includes(identifier));
     }
     catch (error) {
@@ -84,6 +85,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [height, setHeight] = React.useState(0);
     const [hasExistingIssue, setHasExistingIssue] = React.useState(false);
+    const [isCheckingIssues, setIsCheckingIssues] = React.useState(false);
     const contentRef = React.useRef(null);
 
     React.useEffect(() => {
@@ -104,9 +106,13 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
 
     React.useEffect(() => {
         if (pluginInfo?.githubUrl) {
+            setIsCheckingIssues(true);
             const baseRepoUrl = parseGithubUrl(pluginInfo.githubUrl);
             const identifier = `$BDBug{${pluginInfo.name}}{${pluginInfo.version}}`;
-            checkExistingIssues(baseRepoUrl, identifier).then(setHasExistingIssue);
+            checkExistingIssues(baseRepoUrl, identifier).then((hasIssue) => {
+                setHasExistingIssue(hasIssue);
+                setIsCheckingIssues(false);
+            });
         }
     }, [pluginInfo]);
 
@@ -147,7 +153,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                     {isExpanded ? "Hide Error Details ▼" : "Show Error Details ▶"}
                 </Button>
                 <div className="bd-error-actions">
-                    {pluginInfo?.githubUrl && !hasExistingIssue && (
+                    {pluginInfo?.githubUrl && !isCheckingIssues && !hasExistingIssue && (
                         <Button
                             className="bd-error-github"
                             onClick={openGithubIssue}
