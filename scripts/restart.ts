@@ -1,7 +1,9 @@
 const args = process.argv;
 import fs from "fs";
 import path from "path";
-import {execSync, spawn} from "child_process";
+import findProcess from "find-process";
+import {kill} from "process";
+import {$} from "bun";
 
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
@@ -32,15 +34,21 @@ const discordPath = (function () {
 console.log("");
 
 console.log(`Stopping ${release}`);
-const killCommand = process.platform === "win32" ? "taskkill /F /IM " + discordExeName : "pkill -f " + discordExeName;
 try {
-    execSync(killCommand, {stdio: "ignore"});
-    console.log(`    ✅ Stopped ${release}`);
+    const results = await findProcess("name", discordExeName, true);
+    if (results.length === 0) {
+        console.log(`    ☑️ ${release} wasn't running`);
+    }
+    else {
+        for (const result of results) {
+            kill(result.pid);
+        }
+        console.log(`    ✅ Stopped ${release}`);
+    }
 }
 catch (error) {
-    const status = (error as {status?: number;}).status;
-    if (status === 128 && process.platform === "win32" || status === 1) console.log(`    ☑️ ${release} wasn't running`);
     console.log(`    ❌ Failed to stop ${release}`);
+    throw error;
 }
 console.log("");
 
@@ -50,10 +58,8 @@ console.log(`    ✅ Found ${release} in ${discordPath}`);
 console.log("");
 
 console.log(`Starting ${release}`);
-const startCommand = process.platform === "win32" ? "cmd.exe" : process.platform === "linux" ? "discordPath" : "open";
-const startArgs = process.platform === "win32" ? ["/c", "start", "", discordPath] : process.platform === "linux" ? [] : [discordPath];
 try {
-    spawn(startCommand, startArgs, {detached: true, stdio: "ignore"});// Linux not working
+    await $`${discordPath}`; // Still not working on linux
     console.log(`    ✅ Started ${release}`);
 }
 catch (error) {

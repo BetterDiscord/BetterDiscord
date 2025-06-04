@@ -45,6 +45,7 @@
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
         "fast-equals": "^5.2.2",
+        "find-process": "^1.4.10",
         "lucide-react": "^0.474.0",
         "monaco-editor": "0.52.2"
     },
