@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import findProcess from "find-process";
 import {kill} from "process";
-import {$} from "bun";
+import {spawn} from "child_process";
 
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
@@ -37,7 +37,7 @@ console.log(`Stopping ${release}`);
 try {
     const results = await findProcess("name", discordExeName, true);
     if (results.length === 0) {
-        console.log(`    ☑️ ${release} wasn't running`);
+        console.log(`    ☑️  ${release} wasn't running`);
     }
     else {
         for (const result of results) {
@@ -53,13 +53,20 @@ catch (error) {
 console.log("");
 
 console.log(`Searching ${release}`);
-if (!fs.existsSync(discordPath)) throw new Error(`    ❌ Failed to find ${release} executable path`);
-console.log(`    ✅ Found ${release} in ${discordPath}`);
+if (fs.existsSync(discordPath)) {
+    console.log(`    ✅ Found ${release} in ${discordPath}`);
+}
+else {
+    throw new Error(`    ❌ Failed to find ${release} executable path`);
+}
 console.log("");
 
 console.log(`Starting ${release}`);
 try {
-    await $`${discordPath}`; // Still not working on linux
+    spawn(discordPath, [], { // Not working on linux
+        detached: true,
+        stdio: "ignore"
+    }).unref();
     console.log(`    ✅ Started ${release}`);
 }
 catch (error) {
