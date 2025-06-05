@@ -51,6 +51,12 @@ const knownGlobalClasses = [
     "low-saturation"
 ];
 
+interface BrowserClipboardServiceType {
+    prototype: {
+        readText: (t?: string) => string | Promise<string>;
+    };
+}
+
 export default new class Editor {
     async initialize() {
         const baseUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${process.env.__MONACO_VERSION__}/min`;
@@ -155,8 +161,8 @@ export default new class Editor {
                     }
                 });
 
-                amdLoader(["vs/platform/clipboard/browser/clipboardService"], ({BrowserClipboardService}) => {
-                    Patcher.instead("monaco-editor", BrowserClipboardService.prototype, "readText", (that: any, [type]: [type?: string], original: (type: string | undefined) => void) => {
+                amdLoader(["vs/platform/clipboard/browser/clipboardService"], ({BrowserClipboardService}: {BrowserClipboardService: BrowserClipboardServiceType;}) => {
+                    Patcher.instead("monaco-editor", BrowserClipboardService.prototype, "readText", (that: any, [type]: [type?: string], original: (t?: string) => void) => {
                         if (type) {
                             return original.call(that, type);
                         }

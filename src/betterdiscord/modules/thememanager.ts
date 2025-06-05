@@ -37,7 +37,7 @@ export default new class ThemeManager extends AddonManager {
     get extension() {return ".theme.css";}
     get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
     get addonFolder() {return Config.get("themesPath");}
-    get prefix() {return "theme";}
+    get prefix() {return "theme" as const;}
     get language() {return "css";}
     get order() {return 4;}
 

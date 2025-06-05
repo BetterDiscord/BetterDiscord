@@ -1,4 +1,3 @@
-// @ts-expect-error this is an internal polyfill not yet typed
 import {ipcRenderer as ipc} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";

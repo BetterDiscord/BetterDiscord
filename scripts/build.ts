@@ -1,8 +1,6 @@
 import Bun, {$} from "bun";
 import path from "node:path";
-import fs from "node:fs";
 import pkg from "../package.json";
-
 import styleLoader from "bun-style-loader";
 import * as esbuild from "esbuild";
 
@@ -21,11 +19,12 @@ interface EntryPoint {
 }
 
 const moduleConfigs: Record<string, EntryPoint> = {
-    betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
-    main: {"in": "src/electron/main/index.js", "out": "main"},
-    preload: {"in": "src/electron/preload/index.js", "out": "preload"},
+    betterdiscord: {"in": "src/betterdiscord/index.ts", "out": "betterdiscord"},
+    main: {"in": "src/electron/main/index.ts", "out": "main"},
+    preload: {"in": "src/electron/preload/index.ts", "out": "preload"},
     editorPreload: {"in": "src/editor/preload.ts", "out": "editor/preload"},
     editor: {"in": "src/editor/script.ts", "out": "editor/script"},
+    editorHtml: {"in": "src/editor/index.html", "out": "editor/index"}
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -33,14 +32,8 @@ if (!modulesRequested.length) modulesRequested = Object.keys(moduleConfigs);
 
 const entryPoints = modulesRequested.map(m => moduleConfigs[m]);
 
-async function runBuild() {
-    const before = performance.now();
-    const names = modulesRequested.join(", ");
-
-    console.log("");
-    console.log(`Building ${names}...`);
-
-    const ctx = await esbuild.context({
+function buildOptions() {
+    return {
         entryPoints: entryPoints,
         bundle: true,
         outdir: path.join(rootDir, "dist"),
@@ -53,7 +46,8 @@ async function runBuild() {
         target: ["chrome128", "node20"],
         loader: {
             ".js": "jsx",
-            ".css": "css"
+            ".css": "css",
+            ".html": "copy"
         },
         plugins: [styleLoader() as unknown as esbuild.Plugin],
         logLevel: "info",
@@ -68,24 +62,22 @@ async function runBuild() {
             "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH),
             "process.env.__BUILD__": JSON.stringify(DEVELOPMENT)
         }
-    });
+    } satisfies esbuild.BuildOptions;
+}
 
-    if (!fs.existsSync("dist")) fs.mkdirSync("dist");
-    if (!fs.existsSync("dist/editor")) fs.mkdirSync("dist/editor");
-    fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
+async function runBuild() {
+    const before = performance.now();
+    const names = modulesRequested.join(", ");
+
+    console.log("");
+    console.log(`Building ${names}...`);
 
     if (process.argv.includes("--watch")) {
-        fs.watchFile("src/editor/index.html", () => {
-            console.log("[watch] copying editor.html");
-            fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
-            console.log("[watch] Copied editor.html");
-        }).unref();
-
+        const ctx = await esbuild.context(buildOptions());
         await ctx.watch();
     }
     else {
-        await ctx.rebuild();
-        await ctx.dispose();
+        await esbuild.build(buildOptions());
     }
 
     const after = performance.now();

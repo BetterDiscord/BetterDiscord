@@ -66,5 +66,5 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
 }
 
 export function useForceUpdate() {
-    return useReducer<(num: number) => number>((num) => num + 1, 0);
+    return useReducer<number, any>((num) => num + 1, 0);
 }

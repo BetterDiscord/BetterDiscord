@@ -40,7 +40,7 @@ export default new class PluginManager extends AddonManager {
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return Config.get("pluginsPath");}
-    get prefix() {return "plugin";}
+    get prefix() {return "plugin" as const;}
     get language() {return "javascript";}
     get order() {return 3;}
 
@@ -153,7 +153,7 @@ export default new class PluginManager extends AddonManager {
             this.state[addon.id] = false;
             this.trigger("disabled", addon);
             Toasts.error(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
+            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
@@ -170,7 +170,7 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             Toasts.error(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
+            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("stopped", addon.id);
@@ -197,7 +197,7 @@ export default new class PluginManager extends AddonManager {
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof (plugin?.onSwitch) === "function") {
                 try {plugin.onSwitch();}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
+                catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
             }
         }
     }
@@ -208,7 +208,7 @@ export default new class PluginManager extends AddonManager {
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof plugin?.observer === "function") {
                 try {plugin.observer(mutation);}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
+                catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
             }
         }
     }

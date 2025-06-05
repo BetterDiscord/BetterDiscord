@@ -1,39 +1,39 @@
-export interface Addon {
+export interface BdWebAddon {
     id: number;
     name: string;
     file_name: string;
-    type: AddonType;
+    type: BdWebAddonType;
     description: string;
     version: string;
-    author: Author;
+    author: BdWebAuthor;
     likes: number;
     downloads: number;
-    tags: Tag[];
-    thumbnail_url: null | string;
+    tags: BdWebTag[];
+    thumbnail_url?: string;
     latest_source_url: string;
     initial_release_date: Date;
     latest_release_date: Date;
-    guild: Guild | null;
+    guild: BdWebGuild | null;
 }
 
-export interface Author {
+export interface BdWebAuthor {
     github_id: string;
     github_name: string;
     display_name: string;
     discord_name: string;
     discord_avatar_hash: null | string;
     discord_snowflake: string;
-    guild: Guild | null;
+    guild: BdWebGuild | null;
 }
 
-export interface Guild {
+export interface BdWebGuild {
     name: string;
     snowflake: string;
     invite_link: string;
-    avatar_hash: null | string;
+    avatar_hash?: string;
 }
 
-export enum Tag {
+export enum BdWebTag {
     Activity = "activity",
     Channels = "channels",
     Chat = "chat",
@@ -59,4 +59,4 @@ export enum Tag {
     Voice = "voice",
 }
 
-export type AddonType = "plugin" | "theme";
+export type BdWebAddonType = "plugin" | "theme";

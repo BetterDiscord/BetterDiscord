@@ -71,7 +71,7 @@ export default class Editor {
             }
 
             let shouldWarn = false;
-            window.webContents.ipc.handle(IPCEvents.EDITOR_SHOULD_SHOW_WARNING, (event, $shouldWarn) => {
+            window.webContents.ipc.handle(IPCEvents.EDITOR_SHOULD_SHOW_WARNING, (_, $shouldWarn) => {
                 shouldWarn = $shouldWarn;
             });
 
@@ -96,7 +96,7 @@ export default class Editor {
                 }
             });
 
-            window.webContents.ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, (event, liveUpdate) => {
+            window.webContents.ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, (_, liveUpdate) => {
                 if (this._window) {
                     this._window.webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, liveUpdate);
                 }

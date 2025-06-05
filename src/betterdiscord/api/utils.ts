@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import {comparator} from "@structs/semver";
-import {debounce, extend, findInTree} from "@common/utils";
+import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 
 
 /**
@@ -75,10 +75,8 @@ const Utils = {
      * @param {object} obj - object to get nested value from
      * @param {string} keyPath - key path to the desired value
      */
-    getNestedValue<T, P extends Path<T>>(obj: T, keyPath: P): PathValue<T, P> {
-        return keyPath.split(".").reduce(function (ob, prop) {
-            return ob && ob[prop];
-        }, obj);
+    getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
+        return getNestedProp(object, path);
     },
 
     /**
@@ -92,23 +90,23 @@ const Utils = {
 } as const;
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
-type Path<T> = T extends object ? {[K in keyof T]:
-    `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`
-}[keyof T] : never;
+// type Path<T> = T extends object ? {[K in keyof T]:
+//     `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`
+// }[keyof T] : never;
 
 // https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts
-type PathValue<
-    T,
-    P extends Path<T>,
-> = P extends `${infer Key}.${infer Rest}`
-    ? Key extends keyof T
-    ? Rest extends Path<T[Key]>
-    ? PathValue<T[Key], Rest>
-    : never
-    : never
-    : P extends keyof T
-    ? T[P]
-    : never;
+// type PathValue<
+//     T,
+//     P extends Path<T>,
+// > = P extends `${infer Key}.${infer Rest}`
+//     ? Key extends keyof T
+//     ? Rest extends Path<T[Key]>
+//     ? PathValue<T[Key], Rest>
+//     : never
+//     : never
+//     : P extends keyof T
+//     ? T[P]
+//     : never;
 
 Object.freeze(Utils);
 

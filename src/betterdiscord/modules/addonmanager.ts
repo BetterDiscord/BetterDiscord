@@ -7,7 +7,7 @@ import AddonError from "@structs/addonerror";
 
 import Settings from "@stores/settings";
 import Events from "./emitter";
-import JsonStore from "@stores/json";
+import JsonStore, {type Files} from "@stores/json";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
@@ -66,7 +66,7 @@ export default abstract class AddonManager extends Store {
     get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
     get language() {return "";}
-    get prefix() {return "addon";}
+    get prefix() {return "";}
     get order() {return 2;}
 
     trigger(event: string, ...args: any[]) {
@@ -95,13 +95,13 @@ export default abstract class AddonManager extends Store {
     abstract stopAddon(idOrAddon: string | Addon): AddonError | undefined | void;
 
     loadState() {
-        const saved = JsonStore.get(`${this.prefix}s`);
+        const saved = JsonStore.get(`${this.prefix}s` as Files);
         if (!saved) return;
         Object.assign(this.state, saved);
     }
 
     saveState() {
-        JsonStore.set(`${this.prefix}s`, this.state);
+        JsonStore.set(`${this.prefix}s` as Files, this.state);
     }
 
     watcher?: fs.FSWatcher;
@@ -238,7 +238,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }

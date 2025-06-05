@@ -1,5 +1,6 @@
 import config from "@stores/config";
 
+
 export default [
     {
         type: "category",
@@ -153,7 +154,7 @@ export default [
 ] as SettingsCategory[];
 
 
-export type SettingType = "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";
+export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";
 
 export interface SettingItem {
     type: SettingType;
@@ -166,6 +167,7 @@ export interface SettingItem {
     disableWith?: string;
     defaultValue?: unknown;
     inline?: boolean;
+    hidden?: boolean;
 }
 
 export interface SwitchSetting extends SettingItem {
@@ -181,7 +183,7 @@ export interface DropdownSetting<T> extends SettingItem {
 }
 
 export interface SliderSetting extends SettingItem {
-    type: "dropdown";
+    type: "slider";
     value: number;
     min: number;
     max: number;
@@ -239,6 +241,8 @@ export interface FileSetting extends SettingItem {
     accept?: string;
     multiple?: boolean;
 }
+
+export type Setting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
 
 export interface SettingsCategory {
     type: "category";

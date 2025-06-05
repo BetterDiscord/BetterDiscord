@@ -22,17 +22,17 @@ import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
 // import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
-import ChangelogModal from "./modals/changelog";
+import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
-import type {ComponentType, ReactElement, RefObject} from "react";
+import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
 import type AddonError from "@structs/addonerror";
 
 
 const queue: Array<() => void> = [];
 
 interface ModalActions {
-    openModal: (e: () => ReactElement) => string | number;
+    openModal: (e: (p?: any) => ReactNode, o?: object) => string | number;
     closeModal: (key: string | number) => void;
 }
 
@@ -95,7 +95,7 @@ export default class Modals {
                         button.action(e);
                     }
                     catch (error) {
-                        Logger.stacktrace("Modals", "Could not fire button listener", error);
+                        Logger.stacktrace("Modals", "Could not fire button listener", error as Error);
                     }
 
                     handleClose();
@@ -119,7 +119,7 @@ export default class Modals {
             }
             catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`) as HTMLElement);
-                Logger.stacktrace("Modals", "Could not render modal", error);
+                Logger.stacktrace("Modals", "Could not render modal", error as Error);
             }
 
             DOMManager.onRemoved(container, () => {
@@ -218,18 +218,7 @@ export default class Modals {
     }
 
     // TODO: move typing to changelog after converting
-    static showChangelogModal(options: {
-        transitionState?: number;
-        footer?: string;
-        title?: string;
-        subtitle?: string;
-        onClose?(): void;
-        video?: string;
-        poster?: string;
-        banner?: string;
-        blurb?: string;
-        changes?: object;
-    } = {}) {
+    static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
             return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
@@ -263,12 +252,12 @@ export default class Modals {
             });
         }
         finally {
-            minimize();
-            focus();
+            minimize!();
+            focus!();
         }
     }
 
-    static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactElement) | ReactElement | ComponentType) {
+    static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactNode) | ReactNode | ComponentType) {
 
         let child = panel;
         if (panel instanceof Node || typeof (panel) === "string") {
@@ -326,7 +315,7 @@ export default class Modals {
         this.hasInitialized = true;
     }
 
-    static openModal(render: (props?: unknown) => ReactElement, options: {modalKey?: string | number;} = {}) {
+    static openModal(render: (props?: unknown) => ReactNode, options: {modalKey?: string | number;} = {}) {
         if (typeof (this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);

@@ -23,9 +23,9 @@ class Data {
      * @param {string} key Which piece of data to store
      * @param {any} data The data to be saved
      */
-    save(pluginName: string, key: string, data: unknown) {
+    save<T>(pluginName: string, key: string, data: T) {
         if (this.#callerName) {
-            data = key;
+            data = key as T;
             key = pluginName;
             pluginName = this.#callerName;
         }
@@ -39,7 +39,7 @@ class Data {
      * @param {string} key Which piece of data to load
      * @returns {any} The stored data
      */
-    load(pluginName: string, key: string) {
+    load<T>(pluginName: string, key: string): T {
         if (this.#callerName) {
             key = pluginName;
             pluginName = this.#callerName;

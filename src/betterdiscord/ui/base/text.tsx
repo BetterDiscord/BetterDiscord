@@ -38,8 +38,9 @@ type TextProps = PropsWithChildren<{
     selectable?: boolean;
     strong?: boolean;
     style?: CSSProperties;
+    [other: string]: any;
 }>;
-export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}: TextProps) {
+export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style, ...props}: TextProps) {
     return <Tag
         className={
             clsx(
@@ -50,6 +51,7 @@ export default function Text({tag: Tag = "div", className = "", children = null,
                 }
             )}
         style={style}
+        {...props}
     >
         {children}
     </Tag>;

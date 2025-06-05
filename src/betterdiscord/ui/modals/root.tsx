@@ -36,7 +36,7 @@ export default function ModalRoot({className, transitionState, children, size = 
     const preferences: any = React.useContext(AccessibilityContext ?? {});
     const reducedMotion = preferences?.reducedMotion?.enabled ?? document.documentElement?.classList.contains("reduce-motion");
 
-    const springStyles = DiscordModules.Spring.useSpring({
+    const springStyles = DiscordModules.ReactSpring.useSpring({
         opacity: visible ? 1 : 0,
         transform: visible || reducedMotion ? "scale(1)" : "scale(0.7)",
         config: {
@@ -47,12 +47,12 @@ export default function ModalRoot({className, transitionState, children, size = 
     });
 
     return <FocusLock disableTrack={true}>
-        <DiscordModules.Spring.animated.div
-                className={clsx("bd-modal-root", size, className, style)}
-                style={springStyles}
-            >
-        {children}
-    </DiscordModules.Spring.animated.div>
+        <DiscordModules.ReactSpring.animated.div
+            className={clsx("bd-modal-root", size, className, style)}
+            style={springStyles}
+        >
+            {children}
+        </DiscordModules.ReactSpring.animated.div>
     </FocusLock>;
     // const [visible, setVisible] = React.useState(true);
 
