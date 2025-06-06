@@ -70,7 +70,6 @@ const checkExistingIssues = async (baseRepoUrl, identifier) => {
         const [owner, repo] = baseRepoUrl.replace("https://github.com/", "").split("/");
         const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?state=open`);
         const issues = await response.json();
-        console.log("issues", issues);
         return issues.some(issue => issue.body?.includes(identifier));
     }
     catch (error) {
