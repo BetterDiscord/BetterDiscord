@@ -53,7 +53,7 @@ const UI = {
         return () => NotificationUI.hide(id);
     },
 
-    hasNotification(id) {
+    hasNotification(id: string) {
         return NotificationUI.has(id);
     },
 
