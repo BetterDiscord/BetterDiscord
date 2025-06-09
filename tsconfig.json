@@ -50,4 +50,25 @@
     "scripts/*",
     "tests/**/*"
   ],
+  "typedocOptions": {
+    "name": "BetterDiscordAPI",
+    "entryPoints": ["src/betterdiscord/api/*.ts"],
+    "out": "docs",
+    "includeVersion": true,
+    "navigationLinks": {
+        "Trilium": "https://github.com/zadam/trilium"
+    },
+    "sidebarLinks": {},
+    "navigation": {
+        "includeCategories": true,
+        "includeGroups": false
+    },
+    "plugin": ["typedoc-plugin-merge-modules", "typedoc-plugin-missing-exports"],
+    "skipErrorChecking": true,
+    "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
+    "mergeModulesMergeMode": "project", // NEW option of TypeDoc added by this plugin
+    "placeInternalsInOwningModule": true,
+    "excludeExternals": true,
+    "externalPattern": ["node_modules/**/*", "src/betterdiscord/modules/*.ts"]
+  }
 }
