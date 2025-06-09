@@ -169,21 +169,17 @@ class CommandManager {
             res.props.children = React.cloneElement(child, {
                 renderCategoryListItem: (...args: any[]) => {
                     const ret = child.props.renderCategoryListItem(...args);
-                    const nextSection = props.sections[args[1] + 1];
 
-                    if (nextSection && nextSection.id === "-1") {
+                    if (!props.sections[args[1] - 1]?.isBD && props.sections[args[1]].isBD) {
                         return React.cloneElement(ret, {
                             children: [
-                                ...ret.props.children,
-                                React.createElement("hr", {className: iconClasses.builtInSeparator})
+                                React.createElement("hr", {className: iconClasses.builtInSeparator}),
+                                ...ret.props.children
                             ]
                         });
                     }
 
-                    return React.cloneElement(ret, {
-                        ...ret.props,
-                        icon: nextSection?.icon
-                    });
+                    return ret;
                 },
                 __bdPatched: true
             });
@@ -363,7 +359,6 @@ class CommandManager {
             integrationType: 0,
             integrationTitle: caller,
             inputType: InputTypes.BUILT_IN,
-            ...command,
             get id() {return commandId;},
             get __registerId() {return commandId;},
             get applicationId() {return caller;},
@@ -372,18 +367,23 @@ class CommandManager {
             get name() {return command.name || "";},
             get description() {return command.description || "";},
             get displayDescription() {return command.description || "";},
-            get options() {if (Array.isArray(command.options)) return CommandManager.#formatOptions(command.options);},
+            get options() {return CommandManager.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command),
             get section() {self.#ensureSection(caller); return self.#sections.get(caller);},
-            isBD: true
+            isBD: true,
+            __proto__: command
         };
     }
 
-    static #formatOptions(options: Option[]): Option[] {
+    private static optionsMap = new WeakMap<Option[], Option[]>();
+    static #formatOptions(options?: Option[]): Option[] {
         if (!options) return [];
 
-        return options.map((option: any) => ({
-            ...option,
+        if (this.optionsMap.has(options)) {
+            return this.optionsMap.get(options)!;
+        }
+
+        const opts = options.map((option: any) => ({
             get name() {return option.name;},
             get description() {return option.description;},
             get displayDescription() {return option.description;},
@@ -396,8 +396,13 @@ class CommandManager {
                     get displayName() {return choice.name;}
                 }));
             },
-            get displayName() {return option.name;}
+            get displayName() {return option.name;},
+            __proto__: option
         }));
+
+        this.optionsMap.set(options, opts);
+
+        return opts;
     }
 
     static #ensureSection(caller: string) {
