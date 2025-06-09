@@ -4,6 +4,7 @@ import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "../types/discord/modules";
+import type {Channel, Guild} from "../types/discord/structs";
 
 // TODO: create better types for this file, too many "any"
 
@@ -55,6 +56,44 @@ export const MessageEmbedTypes = {
     GAMING_PROFILE: "gaming_profile",
 };
 
+export const enum OptionType {
+    STRING = 3,
+    INTEGER = 4,
+    BOOLEAN = 5,
+    USER = 6,
+    CHANNEL = 7,
+    ROLE = 8,
+    MENTIONABLE = 9,
+    NUMBER = 10,
+    ATTACHMENT = 11
+}
+
+export interface Choice {
+    name: string,
+    value: string | number;
+}
+
+export interface Option {
+    description?: string,
+    name: string,
+    required?: boolean,
+    type: OptionType,
+    maxLength?: number,
+    minLength?: number,
+    maxValue?: number,
+    minValue?: number,
+    choices?: Choice[];
+}
+
+export interface Command {
+    name: string,
+    description?: string,
+    id: string,
+    options?: Option[],
+    execute(options: any[], {channel, guild}: {channel: Channel, guild?: Guild;}): void,
+    predicate?(): boolean;
+}
+
 const iconClasses = {
     ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
     builtInSeparator: getModule<any>(x => x.builtInSeparator)?.builtInSeparator
@@ -73,8 +112,15 @@ const isValidImageUrl = (url: string) => {
 };
 
 class CommandManager {
-    static #commands = new Map();
-    static #sections = new Map();
+    static #commands = new Map<string, Map<string, Command>>();
+    static #sections = new Map<string, {
+        id: string,
+        name: string,
+        type: 1,
+        key: string,
+        icon?: string | null,
+        isBD?: boolean;
+    }>();
 
     static User = getByStrings<any>(["hasHadPremium(){"]);
     static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true});
@@ -203,7 +249,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
+            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
         });
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
@@ -288,7 +334,7 @@ class CommandManager {
         });
     }
 
-    static registerCommand(caller: string, command: any) {
+    static registerCommand(caller: string, command: Command) {
         if (!caller || !command?.name || !command?.execute) {
             throw new Error("Command must have a caller, name, and execute function");
         }
@@ -309,11 +355,14 @@ class CommandManager {
         return () => this.unregisterCommand(caller, command.id);
     }
 
-    static #formatCommand(caller: string, command: any, commandId: string) {
+    static #formatCommand(caller: string, command: Command, commandId: string) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self: any = this;
 
         return {
+            integrationType: 0,
+            integrationTitle: caller,
+            inputType: InputTypes.BUILT_IN,
             ...command,
             get id() {return commandId;},
             get __registerId() {return commandId;},
@@ -323,17 +372,14 @@ class CommandManager {
             get name() {return command.name || "";},
             get description() {return command.description || "";},
             get displayDescription() {return command.description || "";},
-            get options() {return CommandManager.#formatOptions(command.options);},
+            get options() {if (Array.isArray(command.options)) return CommandManager.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command),
-            get integrationType() {return command.integrationType || 0;},
-            get integrationTitle() {return command.integrationTitle || caller;},
-            get inputType() {return command.inputType ?? InputTypes.BUILT_IN;},
             get section() {self.#ensureSection(caller); return self.#sections.get(caller);},
             isBD: true
         };
     }
 
-    static #formatOptions(options: any) {
+    static #formatOptions(options: Option[]): Option[] {
         if (!options) return [];
 
         return options.map((option: any) => ({
@@ -367,7 +413,7 @@ class CommandManager {
         }
     }
 
-    static #patchExecuteFunction(command: any) {
+    static #patchExecuteFunction(command: Command) {
         return (data: any, {channel, guild}: any) => {
             try {
                 const result = command.execute(data, {channel, guild});
