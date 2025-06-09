@@ -123,7 +123,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"], {cacheId: "core-settings-contentClasses"})?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});

@@ -56,8 +56,8 @@ export const MessageEmbedTypes = {
 };
 
 const iconClasses = {
-    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {cacheId: "core-commandmanager-iconClasses"}),
+    builtInSeparator: getModule<any>(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeperator"})?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
@@ -88,10 +88,10 @@ class CommandManager {
 
     static #patchCommandSystem() {
 
-        this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
-        this.MessagesModule = getModule(x => x.receiveMessage);
-        this.IconsModule = getModule(x => x.BOT_AVATARS);
+        this.User = getByStrings(["hasHadPremium(){"], {cacheId: "core-commandmanager-User"});
+        this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true, cacheId: "core-commandmanager-createBotMessage"});
+        this.MessagesModule = getModule(x => x.receiveMessage, {cacheId: "core-commandmanager-Messages"});
+        this.IconsModule = getModule(x => x.BOT_AVATARS, {cacheId: "core-commandmanager-Icons"});
 
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
@@ -111,7 +111,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false, cacheId: "core-commandmanager-Sidebar"});
 
         Patcher.after("CommandManager", SidebarModule!, "Z", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
@@ -145,7 +145,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {cacheId: "core-commandmanager-IndexStore"});
 
         Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -203,7 +203,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
+            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {cacheId: "core-commandmanager-appIconsTarget"})
         });
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
@@ -275,7 +275,7 @@ class CommandManager {
     }
 
     static #patchAuthorizer() {
-        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
+        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {cacheId: "core-commandmanager-Authorizer"});
 
         Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {
