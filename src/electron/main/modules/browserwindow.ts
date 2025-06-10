@@ -1,4 +1,4 @@
-import electron from "electron";
+import electron, {type BrowserWindowConstructorOptions} from "electron";
 import path from "path";
 
 import BetterDiscord from "./betterdiscord";
@@ -8,12 +8,13 @@ import * as IPCEvents from "@common/constants/ipcevents";
 // const EDITOR_URL_REGEX = /^betterdiscord:\/\/editor\/(?:custom-css|(theme|plugin)\/([^/]+))\/?/;
 
 class BrowserWindow extends electron.BrowserWindow {
+    private __originalPreload?: string;
 
     /**
      * @param {import("electron").BrowserWindowConstructorOptions} options
      * @returns
      */
-    constructor(options) {
+    constructor(options: BrowserWindowConstructorOptions) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
         const originalPreload = options.webPreferences.preload;
         options.webPreferences.preload = path.join(__dirname, "preload.js");
@@ -34,7 +35,16 @@ class BrowserWindow extends electron.BrowserWindow {
             delete options.titleBarStyle;
         }
 
+        const removeMinimumSize = Boolean(BetterDiscord.getSetting("window", "removeMinimumSize") ?? false);
+        if (removeMinimumSize) {
+            options.minWidth = 0;
+            options.minHeight = 0;
+        }
+
         super(options);
+        if (removeMinimumSize) {
+            this.setMinimumSize = () => {};
+        }
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
         Editor.initialize(this);
