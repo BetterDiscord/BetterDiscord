@@ -21,10 +21,7 @@ export default new class ThemeAttributes extends Builtin {
             args["data-is-self"] = !!author.email;
         });
         this.after(TabBarComponent?.Item?.prototype, "render", (thisObject, args, returnValue) => {
-            returnValue.props["data-tab-id"] = returnValue?._owner?.pendingProps?.id;
-        });
-        this.after(TabBarComponent, "Header", (thisObject, args, returnValue) => {
-            returnValue.props["data-header-id"] = returnValue.props.children.props.children;
+            returnValue.props["data-tab-id"] = thisObject?.props?.id;
         });
         this.after(UserProfileComponent, "render", (thisObject, [{user}], returnValue) => {
             returnValue.props["data-member-id"] = user.id;
