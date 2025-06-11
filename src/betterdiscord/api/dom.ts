@@ -1,5 +1,7 @@
 import DOMManager from "@modules/dommanager";
 
+type AddStyleArgs<Bound extends boolean> = Bound extends true ? [css: string] | [id: string, css: string] : [id: string, css: string];
+type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: string] : [id: string];
 
 /**
  * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
@@ -7,7 +9,7 @@ import DOMManager from "@modules/dommanager";
  * @summary {@link DOM} is a simple utility class for dom manipulation.
  * @name DOM
  */
-class DOM {
+class DOM<Bound extends boolean> {
 
     /**
      * Current width of the user's screen.
@@ -34,17 +36,17 @@ class DOM {
      * @param {string} id ID to use for style element
      * @param {string} css CSS to apply to the document
      */
-    addStyle(id: string): void;
-    addStyle(id: string, css?: string) {
-
-        if (this.#callerName && arguments.length === 1) {
-            css = id;
-            id = this.#callerName;
+    addStyle(...args: AddStyleArgs<Bound>) {
+        if (args.length === 1) {
+            if (this.#callerName) {
+                args.unshift(this.#callerName);
+            }
+            else {
+                throw new Error("No css provided");
+            }
         }
 
-        if (!css) throw new Error("No css provided");
-
-        DOMManager.injectStyle(id, css);
+        DOMManager.injectStyle(args[0], args[1]!);
     }
 
     /**
@@ -52,8 +54,8 @@ class DOM {
      *
      * @param {string} id ID used for the style element
      */
-    removeStyle(): void;
-    removeStyle(id?: string) {
+    removeStyle(...args: RemoveStyleArgs<Bound>) {
+        let id = args[0];
 
         if (this.#callerName && arguments.length === 0) {
             id = this.#callerName;
