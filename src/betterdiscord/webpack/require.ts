@@ -2,6 +2,7 @@ import type {Webpack} from "discord";
 import Logger from "@common/logger";
 
 export let webpackRequire: Webpack.Require;
+export let webpackExportsSymbol: symbol | string;
 
 export const lazyListeners = new Set<Webpack.Filter>();
 
@@ -61,6 +62,18 @@ window.webpackChunkdiscord_app.push([
     (__webpack_require__: any) => {
         if ("b" in __webpack_require__) {
             webpackRequire = __webpack_require__;
+
+            // Get webpacks AsyncModuleRuntimeModule internal export symbol
+            {
+                const module = {} as Webpack.Module<any>;
+                webpackRequire.a(module, (deps, a) => a());
+
+                const sym = Reflect.ownKeys(module.exports)
+                    .find(m => typeof m === "symbol" && m.description === "webpack exports");
+                if (typeof sym !== "undefined") {
+                    webpackExportsSymbol = sym;
+                }
+            }
         }
     }
 ]);
