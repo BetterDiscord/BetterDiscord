@@ -35,7 +35,7 @@ export const writeFile = function (path: string, data: string | Uint8Array, opti
     }
 };
 
-export const writeFileSync = function (path: string, data: string | Uint8Array, options: WriteFileOptions & {originalFs: boolean;}) {
+export const writeFileSync = function (path: string, data: string | Uint8Array, options?: WriteFileOptions & {originalFs: boolean;}) {
     Remote.filesystem.writeFile(path, data, options);
 };
 
