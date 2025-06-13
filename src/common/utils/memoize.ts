@@ -7,7 +7,7 @@ export default function memoizeObject<T extends Record<string | number | symbol,
     const proxy = new Proxy(object, {
         get: function (obj, mod) {
             if (typeof (mod) === "symbol") return null;
-            if (!(mod in obj)) return undefined;
+            if (!Object.prototype.hasOwnProperty.call(obj, mod)) return undefined;
             if (Object.getOwnPropertyDescriptor(obj, mod)?.get) {
                 const value = obj[mod];
                 delete obj[mod];

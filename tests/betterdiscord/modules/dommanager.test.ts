@@ -172,4 +172,4 @@ describe("DOMManager", () => {
             expect(theme.textContent).toBe(newCSS);
         });
     });
-});;
+});
