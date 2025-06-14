@@ -5,7 +5,7 @@
     border-radius: 3px;
     color: var(--text-normal);
     background-color: var(--input-background);
-    border: none;
+    border: 1px solid var(--input-border);
     padding: 10px;
     height: 40px;
 }
