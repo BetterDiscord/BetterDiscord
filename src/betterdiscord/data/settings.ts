@@ -163,7 +163,7 @@ export interface SettingItem {
     name?: string;
     note?: string;
     disabled?: boolean;
-    enableWith?: string;
+    enableWith?: string | {id: string; value?: any;};
     disableWith?: string;
     defaultValue?: unknown;
     inline?: boolean;

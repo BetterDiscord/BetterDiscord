@@ -19,7 +19,7 @@ import SettingsStore from "@stores/settings";
 import type {Setting, SettingItem} from "@data/settings";
 import type {PropsWithChildren, ReactNode} from "react";
 
-const {useCallback} = React;
+const {useCallback, useState, useEffect} = React;
 
 
 function SettingsProvider({collection, category, id, children}: PropsWithChildren<{collection: string; category: string; id: string;}>) {
@@ -42,10 +42,47 @@ export type GroupProps = PropsWithChildren<{
 }>;
 
 export default function Group({onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}: GroupProps) {
+    const [settingValues, setSettingValues] = useState<Record<string, any>>({});
+
+    useEffect(() => {
+        if (settings?.length > 0) {
+            const initialValues: Record<string, any> = {};
+            settings.forEach((setting: any) => {
+                initialValues[setting.id] = setting.value;
+            });
+            setSettingValues(initialValues);
+        }
+    }, [settings]);
+
     const change = useCallback((settingId: string, value: any) => {
+        setSettingValues(prev => ({...prev, [settingId]: value}));
+        
         if (id) onChange?.(id, settingId, value);
         else onChange?.(settingId, value);
     }, [id, onChange]);
+
+    const isSettingEnabled = useCallback((setting: any) => {
+        if (!setting.enableWith) return !setting.disabled;
+        
+        let enableWithId: string;
+        let enableWithValue: any;
+        
+        if (typeof setting.enableWith === 'string') {
+            enableWithId = setting.enableWith;
+            enableWithValue = undefined;
+        } else {
+            enableWithId = setting.enableWith.id;
+            enableWithValue = setting.enableWith.value;
+        }
+        
+        const referencedValue = settingValues[enableWithId];
+        
+        if (enableWithValue === undefined) {
+            return !!referencedValue && !setting.disabled;
+        } else {
+            return referencedValue === enableWithValue && !setting.disabled;
+        }
+    }, [settingValues]);
 
     return <Drawer collapsible={collapsible} name={name} shown={shown} onDrawerToggle={onDrawerToggle} showDivider={showDivider}>
         {settings?.length > 0 && settings.filter((s: any) => !s.hidden).map((setting: any) => {
@@ -53,7 +90,8 @@ export default function Group({onChange, id, name = "", shown, onDrawerToggle, s
                 setting?.onChange?.(value);
                 change(setting.id, value);
             };
-            const settingItem = buildSetting({...setting, onChange: callback});
+            const isEnabled = isSettingEnabled(setting);
+            const settingItem = buildSetting({...setting, onChange: callback, disabled: !isEnabled});
             if (!collection) return settingItem;
             return <SettingsProvider collection={collection} category={id} id={setting.id}>{settingItem}</SettingsProvider>;
         })}

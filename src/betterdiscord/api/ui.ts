@@ -192,6 +192,7 @@ const UI = {
      * @param {CallableFunction} [setting.onChange] Callback when the value changes (only argument is new value)
      * @param {boolean} [setting.disabled=false] Whether this setting is disabled
      * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default for radio type)
+     * @param {string|object} [setting.enableWith] Either an ID of another setting to enable this setting when truthy, or an object {id: string, value: any} to enable when the referenced setting has the specified value
      * @returns A SettingItem with a an input as the child
      */
     buildSettingItem(setting: any) {
