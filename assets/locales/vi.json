@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} bởi {{author}}",
         "byline": "bởi {{author}}",
-        "openFolder": "Mở thư mục {{type}}",
         "reload": "Tải lại",
         "addonSettings": "Cài đặt",
         "website": "Trang web",
@@ -158,7 +157,6 @@
         "version": "Phiên bản",
         "added": "Ngày thêm",
         "modified": "Ngày sửa đổi",
-        "search": "Tìm kiếm {{type}}",
         "editAddon": "Chỉnh sửa",
         "deleteAddon": "Xóa",
         "confirmDelete": "Bạn chắc chắn muốn xóa {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}} không thể được kích hoạt.",
         "unknownAuthor": "Tác giả không xác định",
         "noDescription": "Không có miêu tả.",
-        "alreadyExists": "Đã có {{type}} với tên {{name}} rồi!",
-        "alreadWatching": "Đã đang xem tiện ích.",
         "metaError": "Không thể phân tích META.",
         "missingNameData": "Thiếu dữ liệu tên META.",
         "metaNotFound": "Không thể tìm thấy META.",
         "compileError": "Không thể biên dịch. Vui lòng kiểm tra Console để biết thêm chi tiết.",
         "wasUnloaded": "{{name}} đã được gỡ.",
-        "blankSlateHeader": "Bạn không có {{type}}!",
-        "blankSlateMessage": "Lấy một số ở [trang web]({{link}}) và thêm vào thư mục {{type}}.",
         "isEnabled": "Đã kích hoạt",
         "wasLoaded": "{{name}} v{{version}} đã được thêm.",
         "listView": "Dạng Danh Sách",
@@ -236,7 +230,6 @@
         "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
         "updateSuccessful": "Cập Nhật Thành Công!",
         "updateAvailable": "BetterDiscord có cập nhật mới (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord đã phát hiện {{count}} cho {{type}} của bạn!",
         "addonUpdated": "{{name}} đã được cập nhật lên phiên bản {{version}}!",
         "checking": "Đang kiểm tra cập nhât...",
         "finishedChecking": "Kiểm tra cập nhật thành công!",
@@ -244,7 +237,6 @@
         "updateAll": "Cập Nhật Mọi Thứ!",
         "noUpdatesAvailable": "Không có cập nhật mới.",
         "versionAvailable": "Phiên bản {{version}} đã có sẵn!",
-        "upToDateBlankslate": "Tất cả {{type}} của bạn đều ở phiên bản mới nhất!",
         "updateButton": "Cập nhật!"
     }
 }

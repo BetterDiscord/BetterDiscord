@@ -318,7 +318,7 @@ export class AddonUpdater {
 
     showUpdateNotice() {
         if (!this.pending.length) return;
-        const close = Notices.info(t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}), {
+        const close = Notices.info(t("Updater.addonUpdatesAvailable", {count: this.pending.length, context: this.type}), {
             buttons: [{
                 label: t("Notices.moreInfo"),
                 onClick: () => {

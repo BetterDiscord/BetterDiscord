@@ -308,7 +308,7 @@ class Addon {
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error as Error);
 
-                    Toasts.show(t("Addons.failedToDownload", {type: this.type, name: this.name}), {
+                    Toasts.show(t("Addons.failedToDownload", {context: this.type, name: this.name}), {
                         type: "error"
                     });
 
