@@ -19,7 +19,7 @@ import SettingsStore from "@stores/settings";
 import type {Setting, SettingItem} from "@data/settings";
 import type {PropsWithChildren, ReactNode} from "react";
 
-const {useCallback, useState, useEffect} = React;
+const {useCallback, useState, useMemo} = React;
 
 
 function SettingsProvider({collection, category, id, children}: PropsWithChildren<{collection: string; category: string; id: string;}>) {
@@ -42,17 +42,16 @@ export type GroupProps = PropsWithChildren<{
 }>;
 
 export default function Group({onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}: GroupProps) {
-    const [settingValues, setSettingValues] = useState<Record<string, any>>({});
-
-    useEffect(() => {
-        if (settings?.length > 0) {
-            const initialValues: Record<string, any> = {};
-            settings.forEach((setting: any) => {
-                initialValues[setting.id] = setting.value;
-            });
-            setSettingValues(initialValues);
-        }
+    const initialValues = useMemo(() => {
+        if (!settings?.length) return {};
+        const values: Record<string, any> = {};
+        settings.forEach((setting: any) => {
+            values[setting.id] = setting.value;
+        });
+        return values;
     }, [settings]);
+
+    const [settingValues, setSettingValues] = useState<Record<string, any>>(initialValues);
 
     const change = useCallback((settingId: string, value: any) => {
         setSettingValues(prev => ({...prev, [settingId]: value}));
