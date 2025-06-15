@@ -68,13 +68,13 @@ export default new class BDContextMenu extends Builtin {
         if (Settings.get("settings", "customcss", "customcss")) {
             items.push({
                 label: t("Panels.customcss"),
-                action: () => CustomCSS.open()
+                action: async () => CustomCSS.open()
             });
         }
 
         // Plugins & Themes
-        items.push(this.buildAddonMenu(t("Panels.plugins"), pluginManager));
-        items.push(this.buildAddonMenu(t("Panels.themes"), themeManager));
+        items.push(this.buildAddonMenu("plugin", t("Panels.plugins"), pluginManager));
+        items.push(this.buildAddonMenu("theme", t("Panels.themes"), themeManager));
 
         // Parent SubMenu
         const bdSubMenu = ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items});
@@ -112,7 +112,7 @@ export default new class BDContextMenu extends Builtin {
      * @param {import("../../modules/addonmanager").default} manager
      * @returns
      */
-    buildAddonMenu(label: string, manager: AddonManager) {
+    buildAddonMenu(type: "plugin" | "theme", label: string, manager: AddonManager) {
         const names = manager.addonList.map(a => a.name || (a as any).getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         const toggles: Array<{type?: string; label?: any; disabled?: boolean; active?: boolean; action?: (e: any) => void;}> = names.map(name => {
             return {
@@ -141,7 +141,7 @@ export default new class BDContextMenu extends Builtin {
             if (toggles.length) toggles.push({type: "separator"}); // Add separator when addons exist
 
             toggles.push({
-                label: t("Addons.openStore", {type: label}),
+                label: t("Addons.openStore", {context: type}),
                 action: () => {
                     this.openCategory(label.toLowerCase());
                     // If the addon store instantly opens have it just stop basically

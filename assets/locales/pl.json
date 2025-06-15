@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
         "byline": "autorstwa {{author}}",
-        "openFolder": "Otwórz folder ({{type}})",
         "reload": "Odśwież",
         "addonSettings": "Ustawienia",
         "website": "Strona internetowa",
@@ -174,7 +173,6 @@
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
         "alreadyExists": "Masz już dodatek z nazwą {{name}}",
-        "alreadWatching": "Dodatki są już obserwowane.",
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
         "metaNotFound": "Nie odnaleziono metadanych.",
@@ -233,7 +231,6 @@
         "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
         "updateSuccessful": "Aktualizacja powiodła się!",
         "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
-        "addonUpdatesAvailable": "Są dostępne nowe aktualizacje dla twoich dodatków ({{count}})!",
         "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
         "checking": "Sprawdzanie dostępności aktualizacji!",
         "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
