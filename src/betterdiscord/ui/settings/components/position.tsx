@@ -19,23 +19,24 @@ export interface PositionProps {
 
 const Position = ({value: initialValue, onChange, disabled}: PositionProps) => {
     const [internalValue, setValue] = useState(initialValue);
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as Position;
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const handlePositionChange = (position: Position) => {
-        if (disabled) return;
+        if (isDisabled) return;
         onChange?.(position);
         setValue(position);
     };
 
     const getBoxClassName = (position: Position) => {
-        return `bd-box${disabled ? "-disabled" : ""} ${position} ${value === position ? "selected" : ""}`;
+        return `bd-box${isDisabled ? "-disabled" : ""} ${position} ${value === position ? "selected" : ""}`;
     };
 
     return (
         <div className="position-wrapper">
-            <div className={`bd-container${disabled ? "-disabled" : ""}`}>
+            <div className={`bd-container${isDisabled ? "-disabled" : ""}`}>
                 {positions.map((position) => (
                     <button
                         key={position}
@@ -44,8 +45,8 @@ const Position = ({value: initialValue, onChange, disabled}: PositionProps) => {
                         role="radio"
                         aria-checked={value === position}
                         aria-label={`Select ${position} position`}
-                        disabled={disabled}
-                        tabIndex={disabled ? -1 : 0}
+                        disabled={isDisabled}
+                        tabIndex={isDisabled ? -1 : 0}
                     />
                 ))}
             </div>

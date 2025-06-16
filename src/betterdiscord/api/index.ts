@@ -46,13 +46,13 @@ type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
-const PatcherAPI = new Patcher();
-const DataAPI = new Data();
-const DOMAPI = new DOM();
+const PatcherAPI = new Patcher<false>();
+const DataAPI = new Data<false>();
+const DOMAPI = new DOM<false>();
 const ContextMenuAPI = new ContextMenu();
-const CommandsAPI = new CommandAPI();
-const DefaultLogger = new Logger();
-const KeybindsAPI = new Keybinds();
+const CommandsAPI = new CommandAPI<false>();
+const DefaultLogger = new Logger<false>();
+const KeybindsAPI = new Keybinds<false>();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
@@ -105,22 +105,22 @@ const version: string = Config.get("version");
  * @name BdApi
  */
 export default class BdApi {
-    Patcher: Patcher = PatcherAPI;
-    Data: Data = DataAPI;
-    DOM: DOM = DOMAPI;
-    Logger: Logger = DefaultLogger;
-    Commands: CommandAPI = CommandsAPI;
-    Keybinds: Keybinds = KeybindsAPI;
+    Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
+    Data: Data<true> = DataAPI as Data<true>;
+    DOM: DOM<true> = DOMAPI as DOM<true>;
+    Logger: Logger<true> = DefaultLogger as Logger<true>;
+    Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    Keybinds: Keybinds<true> = KeybindsAPI as Keybinds<true>;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
 
-    static Patcher: Patcher;
-    static Data: Data;
-    static DOM: DOM;
-    static Logger: Logger;
-    static Commands: CommandAPI;
-    static Keybinds: Keybinds;
+    static Patcher: Patcher<false>;
+    static Data: Data<false>;
+    static DOM: DOM<false>;
+    static Logger: Logger<false>;
+    static Commands: CommandAPI<false>;
+    static Keybinds: Keybinds<false>;
     static React = React;
     static ReactDOM = ReactDOM;
     static version = version;

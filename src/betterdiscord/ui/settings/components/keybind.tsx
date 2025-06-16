@@ -26,9 +26,10 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
             ? reverseRemapArray((initialValue as number[]))
             : (initialValue as string[])
     );
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as string[];
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     useEffect(() => {
         window.addEventListener("keydown", keyDownHandler, true);
@@ -76,24 +77,24 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
     const clearKeybind = useCallback((event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
-        if (disabled) return;
+        if (isDisabled) return;
         if (onChange) onChange([]);
         setInternalValue([]);
         setIsRecording(false);
         setAccumulator([]);
-    }, [onChange, disabled]);
+    }, [onChange, isDisabled]);
 
     const onClick = useCallback((e: MouseEvent) => {
-        if (disabled) return;
+        if (isDisabled) return;
         if (e.currentTarget?.className?.includes?.("bd-keybind-clear") || e.currentTarget?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
         setIsRecording(!isRecording);
-    }, [isRecording, clearKeybind, disabled]);
+    }, [isRecording, clearKeybind, isDisabled]);
 
 
     const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
-    return <div className={"bd-keybind-wrap" + (isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
+    return <div className={"bd-keybind-wrap" + (isRecording ? " recording" : "") + (isDisabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
         <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
-        <input readOnly={true} type="text" className="bd-keybind-input" size={displayValue.length} value={displayValue} placeholder="No keybind set" disabled={disabled} />
+        <input readOnly={true} type="text" className="bd-keybind-input" size={displayValue.length} value={displayValue} placeholder="No keybind set" disabled={isDisabled} />
         {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
     </div>;
 };
