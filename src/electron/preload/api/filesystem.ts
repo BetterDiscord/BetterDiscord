@@ -9,7 +9,7 @@ export function readFile(path: string, options: object | BufferEncoding = "utf8"
     return fs.readFileSync(path, options);
 }
 
-export function writeFile(path: string, content: string | Uint8Array, options: fs.WriteFileOptions & {originalFs: boolean;}) {
+export function writeFile(path: string, content: string | Uint8Array, options?: fs.WriteFileOptions & {originalFs: boolean;}) {
     if (content instanceof Uint8Array) {
         content = Buffer.from(content);
     }
