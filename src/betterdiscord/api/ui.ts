@@ -53,7 +53,11 @@ const UI = {
         return () => NotificationUI.hide(id);
     },
 
-    /**
+    hasNotification(id: string) {
+        return NotificationUI.has(id);
+    },
+
+/**
      * Creates a tooltip to automatically show on hover.
      *
      * @param {HTMLElement} node DOM node to monitor and show the tooltip on
