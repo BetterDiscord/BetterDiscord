@@ -355,17 +355,28 @@ class KeybindsManager {
     }
 }
 
+type RegisterGlobalArgs = [event: string, keys: Keys, callback: () => void, options?: GlobalKeybindOptions];
+type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterGlobalArgs : RegisterGlobalArgs;
+
+type RegisterWindowArgs = [event: string, keys: Keys, callback: () => void, options?: WindowKeybindOptions];
+type RegisterWindowKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterWindowArgs : RegisterWindowArgs;
+
+type UnregisterArgs = [pluginName: string, event: string] | [event: string];
+type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | UnregisterArgs : UnregisterArgs;
+
+
 /**
  * `Keybinds` is a simple utility class for the management of plugin Keybinds. An instance is available on {@link BdApi}.
  * @type Keybinds
  * @summary {@link Keybinds} is a simple utility class for the management of plugin Keybinds.
  * @name Keybinds
  */
-export class Keybinds {
+export class Keybinds<Bounded extends boolean> {
     #callerName = "";
 
     constructor(callerName?: string) {
-        this.#callerName = callerName || "BD";
+        if (!callerName) return;
+        this.#callerName = callerName;
         KeybindsManager.setupPluginKeybinds(this.#callerName);
     }
 
@@ -378,16 +389,27 @@ export class Keybinds {
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options?: GlobalKeybindOptions) {
+    registerGlobalKeybind(...args: RegisterGlobalKeybind<Bounded>) {
+        let pluginName: string;
+        let event: string;
+        let keys: Keys;
+        let callback: () => void;
+        let options: GlobalKeybindOptions = {
+            keydown: true,
+            keyup: false,
+            blurred: false,
+            focused: false
+        };
+
         if (this.#callerName) {
-            options = callback as unknown as GlobalKeybindOptions;
-            callback = keys as unknown as () => void;
-            keys = event as unknown as Keys;
-            event = pluginName as unknown as string;
             pluginName = this.#callerName;
+            [event, keys, callback, options] = args as unknown as [string, Keys, () => void, GlobalKeybindOptions];
+        }
+        else {
+            [pluginName, event, keys, callback, options] = args as unknown as [string, string, Keys, () => void, GlobalKeybindOptions];
         }
         try {
-            return KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options);
+            return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Global Keybind`, e as Error);
@@ -404,13 +426,19 @@ export class Keybinds {
      * @param {WindowKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options?: WindowKeybindOptions) {
+    registerWindowKeybind(...args: RegisterWindowKeybind<Bounded>) {
+        let pluginName: string;
+        let event: string;
+        let keys: Keys;
+        let callback: () => void;
+        let options: WindowKeybindOptions = {keydown: true, keyup: false};
+
         if (this.#callerName) {
-            options = callback as unknown as WindowKeybindOptions;
-            callback = keys as unknown as () => void;
-            keys = event as unknown as Keys;
-            event = pluginName as unknown as string;
             pluginName = this.#callerName;
+            [event, keys, callback, options] = args as unknown as [string, Keys, () => void, WindowKeybindOptions];
+        }
+        else {
+            [pluginName, event, keys, callback, options] = args as unknown as [string, string, Keys, () => void, WindowKeybindOptions];
         }
         try {
             return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options);
@@ -427,13 +455,21 @@ export class Keybinds {
      * @param {string} event Name of the event to unregister
      * @returns {boolean} Whether the Keybind was unregistered
      */
-    unregisterGlobalKeybind(pluginName: string, event: string) {
-        if (this.#callerName) {
-            event = pluginName;
+    unregisterGlobalKeybind(...args: UnregisterKeybind<Bounded>) {
+        let pluginName: string;
+        let eventName: string;
+        if (this.#callerName && args.length === 1) {
             pluginName = this.#callerName;
+            eventName = args[0];
+        }
+        else if (args.length === 2) {
+            [pluginName, eventName] = args;
+        }
+        else {
+            throw new Error("Invalid arguments for unregisterWindowKeybind. Expected either [eventName] or [pluginName, eventName].");
         }
         try {
-            return KeybindsManager.unregisterGlobalKeybind(pluginName, event);
+            return KeybindsManager.unregisterGlobalKeybind(pluginName, eventName);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e as Error);
@@ -447,13 +483,21 @@ export class Keybinds {
      * @param {string} event Name of the event to unregister
      * @returns {boolean} Whether the Keybind was unregistered
      */
-    unregisterWindowKeybind(pluginName: string, event: string) {
-        if (this.#callerName) {
-            event = pluginName;
+    unregisterWindowKeybind(...args: UnregisterKeybind<Bounded>) {
+        let pluginName: string;
+        let eventName: string;
+        if (this.#callerName && args.length === 1) {
+            eventName = args[0];
             pluginName = this.#callerName;
         }
+        else if (args.length === 2) {
+            [pluginName, eventName] = args;
+        }
+        else {
+            throw new Error("Invalid arguments for unregisterWindowKeybind. Expected either [eventName] or [pluginName, eventName].");
+        }
         try {
-            return KeybindsManager.unregisterWindowKeybind(pluginName, event);
+            return KeybindsManager.unregisterWindowKeybind(pluginName, eventName);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Window Keybind`, e as Error);
