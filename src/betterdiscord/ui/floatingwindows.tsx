@@ -7,7 +7,7 @@ import FloatingWindowContainer from "./floating/container";
 import {getByDisplayName} from "@webpack";
 
 
-const AppLayerProvider = getByDisplayName("AppLayerProvider");
+const AppLayerProvider = getByDisplayName("AppLayerProvider", {cacheId: "core-floatingwindows-AppLayerProvider"});
 
 let hasInitialized = false;
 export default class FloatingWindows {

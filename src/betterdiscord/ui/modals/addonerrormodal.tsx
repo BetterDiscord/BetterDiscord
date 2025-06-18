@@ -12,11 +12,11 @@ import Content from "./content";
 import ModalRoot from "./root";
 import Footer from "./footer";
 import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
-import {getByKeys} from "@webpack";
+import DiscordModules from "@modules/discordmodules";
 import clsx from "clsx";
 import type AddonErrorType from "@structs/addonerror";
 
-const Parser = Object(getByKeys(["defaultRules", "parse"])).defaultRules;
+const Parser = Object(DiscordModules.SimpleMarkdownWrapper).defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 

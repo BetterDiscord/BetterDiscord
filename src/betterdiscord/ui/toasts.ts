@@ -18,8 +18,8 @@ export interface ToastOptions {
 // TODO: rewrite this nonsense
 export default class Toasts {
 
-    static get ChannelsClass() {return getByKeys<{sidebar: string;}>(["sidebar", "panels"])!.sidebar.split(" ")[0];}
-    static get MembersWrapClass() {return getByKeys<{membersWrap: string;}>(["membersWrap"])!.membersWrap.split(" ")[0];}
+    static get ChannelsClass() {return getByKeys<{sidebar: string;}>(["sidebar", "panels"], {cacheId: "core-toasts-sidebarClasses"})!.sidebar.split(" ")[0];}
+    static get MembersWrapClass() {return getByKeys<{membersWrap: string;}>(["membersWrap"], {cacheId: "core-toasts-membersClasses"})!.membersWrap.split(" ")[0];}
 
     static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}
 
