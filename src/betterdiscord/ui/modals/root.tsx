@@ -20,8 +20,8 @@ export const Styles = Object.freeze({
 });
 
 
-const AccessibilityContext: any = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true, cacheId: "core-modalsroot-AccessibilityContext"});
-const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true, cacheId: "core-modalsroot-FocusLock"}) ?? React.Fragment;
+const AccessibilityContext: any = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true, cacheId: "core-modalroot-AccessibilityContext"});
+const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true, cacheId: "core-modalroot-FocusLock"}) ?? React.Fragment;
 
 type RootProps = PropsWithChildren<{
     className?: string;

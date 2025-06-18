@@ -32,7 +32,7 @@
         filter: Filter,
         all?: boolean
     };
-    export type WithKeyOptions = Options & {
+    export type WithKeyOptions = SingleOptions & {
         target?: any
     };
 

@@ -96,7 +96,7 @@ export interface Command {
 
 const iconClasses = {
     ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {cacheId: "core-commandmanager-iconClasses"}),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeperator"})?.builtInSeparator
+    builtInSeparator: getModule<any>(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeparator"})?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
