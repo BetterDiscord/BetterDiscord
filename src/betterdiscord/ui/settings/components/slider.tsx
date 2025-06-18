@@ -23,22 +23,23 @@ export interface SliderProps {
 
 export default function Slider({value: initialValue, min, max, step, onChange, disabled, units = "", markers = []}: SliderProps) {
     const [internalValue, setValue] = useState(initialValue);
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as number;
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
     const inputRef = useRef<HTMLInputElement>(null);
 
     const change = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (disabled) return;
+        if (isDisabled) return;
         onChange?.(e.target.value);
         setValue(e.target.value);
-    }, [onChange, disabled]);
+    }, [onChange, isDisabled]);
 
     const jumpToValue = useCallback((val: number | string) => {
-        if (disabled) return;
+        if (isDisabled) return;
         onChange?.(val);
         setValue(val);
-    }, [onChange, disabled]);
+    }, [onChange, isDisabled]);
 
     const percent = useCallback((val: number) => {
         return (val - min) * 100 / (max - min);
@@ -61,7 +62,7 @@ export default function Slider({value: initialValue, min, max, step, onChange, d
 
     }, [max, min, jumpToValue, inputRef]);
 
-    return <div className={`bd-slider-wrap ${disabled ? "bd-slider-disabled" : ""} ${markers.length > 0 ? "bd-slider-markers" : ""}`}>
+    return <div className={`bd-slider-wrap ${isDisabled ? "bd-slider-disabled" : ""} ${markers.length > 0 ? "bd-slider-markers" : ""}`}>
         <input onChange={change} type="range" className="bd-slider-input" min={min} max={max} step={step} value={value} disabled={disabled} ref={inputRef} />
         <div className="bd-slider-label" style={{left: `${percent(value)}%`, transform: `translateX(${labelOffset}%)`}}>{value}{units}</div>
         <div className="bd-slider-track" style={{backgroundSize: percent(value) + "% 100%"}} onClick={trackClick}></div>

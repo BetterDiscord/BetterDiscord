@@ -14,20 +14,21 @@ export interface SwitchProps {
 
 export default function Switch({id = undefined, value: initialValue, disabled = undefined, onChange, internalState = true}: SwitchProps) {
     const [checked, setChecked] = useState(initialValue);
-    const contextValue = useContext(SettingsContext);
-    const shouldUseContext = contextValue !== none;
+    const {value: contextValue, disabled: contextDisable} = useContext(SettingsContext);
 
+    const shouldUseContext = contextValue !== none;
     const isChecked = (shouldUseContext ? contextValue : internalState ? checked : initialValue) as boolean;
+    const isDisabled = shouldUseContext ? contextDisable : disabled;
 
     const change = useCallback(() => {
         onChange?.(!isChecked);
         setChecked(!isChecked);
     }, [onChange, isChecked]);
 
-    const enabledClass = disabled ? " bd-switch-disabled" : "";
+    const enabledClass = isDisabled ? " bd-switch-disabled" : "";
     const checkedClass = isChecked ? " bd-switch-checked" : "";
     return <div className={`bd-switch` + enabledClass + checkedClass}>
-        <input id={id} type="checkbox" disabled={disabled} checked={isChecked} onChange={change} />
+        <input id={id} type="checkbox" disabled={isDisabled} checked={isChecked} onChange={change} />
         <div className="bd-switch-body">
             <svg className="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet">
                 <rect className="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect>

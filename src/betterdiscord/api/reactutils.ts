@@ -4,25 +4,55 @@ import type {RefObject} from "react";
 import type {Fiber} from "react-reconciler";
 
 interface PatchedReactHooks {
+    use<T>(usable: PromiseLike<T> | React.Context<T>): T;
     useMemo<T>(factory: () => T): T;
     useState<T>(initial: T | (() => T)): [T, () => void];
     useReducer<T>(reducer: (state: T, action: any) => T, initial: T): [T, () => void];
     useRef<T>(value?: T): {current: T | null;};
     useCallback<T extends (...args: any[]) => any>(callback: T): T;
     useContext<T>(context: React.Context<T>): T;
+    readContext<T>(context: React.Context<T>): T;
     useEffect(): void;
     useLayoutEffect(): void;
     useImperativeHandle(): void;
     useTransition(): [boolean, (callback: () => void) => void];
-    useActionState(): void;
+    useActionState: typeof React["useActionState"];
+    useFormState: typeof React["useActionState"];
     useInsertionEffect(): void;
     useDebugValue(): void;
     useDeferredValue<T>(value: T): T;
     useSyncExternalStore<T>(subscribe: () => void, getSnapshot: () => T): T;
     useId(): string;
+    useOptimistic: typeof React["useOptimistic"];
 }
 
+const USE_ERR_MSG = "Minified React error #460; visit https://react.dev/errors/460 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
+
+const NO_RESOLVE = Symbol("no-resolve");
+
 const patchedReactHooks: PatchedReactHooks = {
+    use<T>(usable: PromiseLike<T> | React.Context<T>) {
+        if (typeof (usable as PromiseLike<T>).then === "function") {
+            let value: any = NO_RESOLVE;
+
+            (usable as PromiseLike<T>).then((ret) => {
+                value = ret;
+            });
+
+            if (value === NO_RESOLVE) throw new Error(USE_ERR_MSG);
+            return value;
+        }
+        return (usable as any)._currentValue as T;
+    },
+    useFormState<T>(_action: (...args: unknown[]) => void, initialState: Awaited<T>, _permalink?: string): [state: Awaited<T>, dispatch: () => void, isPending: boolean] {
+        return [initialState, () => {}, false];
+    },
+    readContext<T>(context: React.Context<T>) {
+        return (context as any)._currentValue as T;
+    },
+    useOptimistic<T>(passthrough: T): [T, (action: T | ((pendingState: T) => T)) => void] {
+        return [passthrough, () => {}];
+    },
     useMemo<T>(factory: () => T) {
         return factory();
     },
@@ -43,8 +73,7 @@ const patchedReactHooks: PatchedReactHooks = {
         return callback;
     },
     useContext<T>(context: React.Context<T>) {
-        // @ts-expect-error blame arven
-        return context._currentValue as T;
+        return (context as any)._currentValue as T;
     },
     useEffect() {},
     useLayoutEffect() {},
@@ -52,7 +81,9 @@ const patchedReactHooks: PatchedReactHooks = {
     useTransition() {
         return [false, (callback: () => void) => callback()];
     },
-    useActionState() {},
+    useActionState<T>(_action: (...args: unknown[]) => void, initialState: Awaited<T>, _permalink?: string): [state: Awaited<T>, dispatch: () => void, isPending: boolean] {
+        return [initialState, () => {}, false];
+    },
     useInsertionEffect() {},
     useDebugValue() {},
     useDeferredValue<T>(value: T) {
@@ -201,18 +232,16 @@ const ReactUtils: ReactUtils = {
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
         return function wrappedComponent(props: P) {
-            const reactInternals = (React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-            const reactDispatcher = reactInternals.ReactCurrentDispatcher.current;
+            const reactDispatcher = (React as any).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE.H;
             const originalDispatcher = {...reactDispatcher};
 
             Object.assign(reactDispatcher, patchedReactHooks, customPatches);
 
             try {
-
                 return functionComponent(props);
             }
-            // eslint-disable-next-line no-useless-catch
             catch (error) {
+                if (error instanceof Error && error.message === USE_ERR_MSG) return;
                 throw error;
             }
             finally {

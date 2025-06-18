@@ -57,18 +57,19 @@ export interface ColorpickerProps {
 
 export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
     const [internalValue, setValue] = useState(initialValue);
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as string | number;
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: string | number;};}) => {
-        if (disabled) return;
+        if (isDisabled) return;
         onChange?.(resolveColor(e.target.value));
         setValue(e.target.value);
-    }, [onChange, disabled]);
+    }, [onChange, isDisabled]);
 
     const intValue: number = resolveColor(value, false);
-    return <div className={`bd-color-picker-container ${disabled ? "bd-color-picker-disabled" : ""}`}>
+    return <div className={`bd-color-picker-container ${isDisabled ? "bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
             {defaultValue && <DiscordModules.Tooltip text="Default" position="bottom">
                 {props => (

@@ -52,13 +52,9 @@ export default new class SettingsRenderer {
             onChange(categoryId, settingId, value);
 
             // Delay until after switch animation
-            // TODO: adjust settingscontext to do disable and more
             // customcss is here to let the tab show/hide
-            // devTools is here for toggles that enableWith
-            // checkForUpdates also here for enableWith
-            // notificationEnabled also for enableWith
-            // lift state to top level properly to avoid this
-            if (settingId === "customcss" || settingId === "devTools" || settingId === "checkForUpdates" || settingId === "notificationEnabled") {
+            // since that component is out of our control/scope
+            if (settingId === "customcss") {
                 setTimeout(this.forceUpdate.bind(this), 250);
             }
         };

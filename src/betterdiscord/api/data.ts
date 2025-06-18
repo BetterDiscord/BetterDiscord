@@ -1,5 +1,15 @@
 import JsonStore from "@stores/json";
 
+type BaseArgs<Bounded extends boolean> = [
+    ...(Bounded extends false ? [pluginName: string] : []),
+    key: string
+];
+
+
+type SaveArgs<Bounded extends boolean, T> = [
+    ...BaseArgs<Bounded>,
+    data: T
+];
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
@@ -7,7 +17,7 @@ import JsonStore from "@stores/json";
  * @summary {@link Data} is a simple utility class for the management of plugin data.
  * @name Data
  */
-class Data {
+class Data<Bounded extends boolean> {
 
     #callerName = "";
 
@@ -23,13 +33,12 @@ class Data {
      * @param {string} key Which piece of data to store
      * @param {any} data The data to be saved
      */
-    save<T>(pluginName: string, key: string, data: T) {
+    save<T>(...args: SaveArgs<Bounded, T>) {
         if (this.#callerName) {
-            data = key as T;
-            key = pluginName;
-            pluginName = this.#callerName;
+            return JsonStore.setData(this.#callerName, ...(args as unknown as SaveArgs<true, T>));
         }
-        return JsonStore.setData(pluginName, key, data);
+
+        return JsonStore.setData(...(args as unknown as SaveArgs<false, T>));
     }
 
     /**
@@ -39,12 +48,12 @@ class Data {
      * @param {string} key Which piece of data to load
      * @returns {any} The stored data
      */
-    load<T>(pluginName: string, key: string): T {
+    load<T>(...args: BaseArgs<Bounded>): T {
         if (this.#callerName) {
-            key = pluginName;
-            pluginName = this.#callerName;
+            return JsonStore.getData(this.#callerName, args[0]);
         }
-        return JsonStore.getData(pluginName, key);
+
+        return JsonStore.getData(args[0], args[1]);
     }
 
     /**
@@ -53,12 +62,12 @@ class Data {
      * @param {string} pluginName Name of the plugin deleting data
      * @param {string} key Which piece of data to delete.
      */
-    delete(pluginName: string, key: string) {
+    delete(...args: BaseArgs<Bounded>) {
         if (this.#callerName) {
-            key = pluginName;
-            pluginName = this.#callerName;
+            return JsonStore.deleteData(this.#callerName, args[0]);
         }
-        return JsonStore.deleteData(pluginName, key);
+
+        return JsonStore.deleteData(args[0], args[1]);
     }
 
 }

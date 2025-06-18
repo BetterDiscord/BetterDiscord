@@ -21,6 +21,10 @@ const LogTypes = {
 
 const parseType = (type: string) => (LogTypes[type as keyof typeof LogTypes] || "log") as keyof typeof LogTypes;
 
+type LogArgs<Bounded extends boolean> = [
+    ...(Bounded extends false ? [name: string] : []),
+    ...message: any[]
+];
 
 /**
  * `Logger` is a helper class to log data in a nice and consistent way. An instance is available on {@link BdApi}.
@@ -28,7 +32,7 @@ const parseType = (type: string) => (LogTypes[type as keyof typeof LogTypes] || 
  * @summary {@link Logger} is a simple utility for logging information.
  * @name Logger
  */
-class Logger {
+class Logger<Bounded extends boolean> {
 
     #pluginName = "";
     #nameStyle = "color: #3a71c1; font-weight: 700;";
@@ -69,7 +73,7 @@ class Logger {
      * @param {string} pluginName Name of the calling module
      * @param  {...any} message Messages to have logged.
      */
-    error(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "error");}
+    error(...messages: LogArgs<Bounded>) {this.#_log(messages, "error");}
 
     /**
      * Logs a warning message.
@@ -77,7 +81,7 @@ class Logger {
      * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    warn(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "warn");}
+    warn(...messages: LogArgs<Bounded>) {this.#_log(messages, "warn");}
 
     /**
      * Logs an informational message.
@@ -85,7 +89,7 @@ class Logger {
      * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    info(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "info");}
+    info(...messages: LogArgs<Bounded>) {this.#_log(messages, "info");}
 
     /**
      * Logs used for debugging purposes.
@@ -93,7 +97,7 @@ class Logger {
      * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    debug(pluginName: string, ...message: any[]) {this.#_log(pluginName, message, "debug");}
+    debug(...args: LogArgs<Bounded>) {this.#_log(args, "debug");}
 
     /**
      * Logs used for basic loggin.
@@ -101,7 +105,7 @@ class Logger {
      * @param {string} pluginName - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    log(pluginName: string, ...message: any[]) {this.#_log(pluginName, message);}
+    log(...messages: LogArgs<Bounded>) {this.#_log(messages);}
 
     /**
      * Logs strings using different console levels and a module label.
@@ -110,17 +114,15 @@ class Logger {
      * @param {any|Array<any>} message - Messages to have logged.
      * @param {module:Logger.LogTypes} type - Type of log to use in console.
      */
-    #_log(pluginName: string, message: any, type: keyof typeof LogTypes = "log") {
+    #_log(messages: LogArgs<Bounded>, type: keyof typeof LogTypes = "log") {
         type = parseType(type);
 
-        // Normalize messages to be an array for later spreading
-        if (!Array.isArray(message)) message = message ? [message] : [];
+        let pluginName = this.#pluginName;
+        if (!this.#pluginName) {
+            pluginName = messages.shift() as string;
+        }
 
-        // If a name was set via constructor move the "name" to be part of the message
-        if (pluginName && this.#pluginName) message = [pluginName, ...message];
-
-        const displayName = this.#pluginName || pluginName;
-        console[type](`%c[${displayName}]%c`, this.#nameStyle, this.#messageStyle, ...message);
+        console[type](`%c[${pluginName}]%c`, this.#nameStyle, this.#messageStyle, ...messages);
     }
 }
 

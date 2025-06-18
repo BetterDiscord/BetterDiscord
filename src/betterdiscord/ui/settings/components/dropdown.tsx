@@ -22,9 +22,10 @@ export interface SelectProps {
 
 export default function Select({value: initialValue, options, style, onChange, disabled}: SelectProps) {
     const [internalValue, setValue] = useState(initialValue ?? options[0].value);
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = contextValue !== none ? contextValue : internalValue;
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const change = useCallback((val: any) => {
         onChange?.(val);
@@ -42,13 +43,13 @@ export default function Select({value: initialValue, options, style, onChange, d
         event.preventDefault();
         event.stopPropagation();
 
-        if (disabled) return;
+        if (isDisabled) return;
 
         const next = !open;
         setOpen(next);
         if (!next) return;
         document.addEventListener("click", hideMenu);
-    }, [hideMenu, open, disabled]);
+    }, [hideMenu, open, isDisabled]);
 
 
     // ?? options[0] provides a double failsafe
@@ -61,8 +62,8 @@ export default function Select({value: initialValue, options, style, onChange, d
 
     const styleClass = style == "transparent" ? " bd-select-transparent" : "";
     const isOpen = open ? " menu-open" : "";
-    const isDisabled = disabled ? " bd-select-disabled" : "";
-    return <div className={`bd-select${styleClass}${isOpen}${isDisabled}`} onClick={showMenu}>
+    const disabledClass = isDisabled ? " bd-select-disabled" : "";
+    return <div className={`bd-select${styleClass}${isOpen}${disabledClass}`} onClick={showMenu}>
         <div className="bd-select-value">{selected.label}</div>
         <ChevronDown size="16px" className="bd-select-arrow" />
         {open && optionComponents}

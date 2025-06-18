@@ -2,6 +2,24 @@ import Logger from "@common/logger";
 
 import {default as MainPatcher, type AfterCallback, type BeforeCallback, type InsteadCallback} from "@modules/patcher";
 
+type BeforeArguments<Bounded extends boolean, M extends object, K extends Extract<keyof M, string>> = [
+    ...(Bounded extends false ? [caller: string] : []),
+    moduleToPatch: M,
+    functionName: K,
+    callback: M[K] extends (...a: any[]) => any ? BeforeCallback<M[K]> : never
+];
+type InsteadArguments<Bounded extends boolean, M extends object, K extends Extract<keyof M, string>> = [
+    ...(Bounded extends false ? [caller: string] : []),
+    moduleToPatch: M,
+    functionName: K,
+    callback: M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never
+];
+type AfterArguments<Bounded extends boolean, M extends object, K extends Extract<keyof M, string>> = [
+    ...(Bounded extends false ? [caller: string] : []),
+    moduleToPatch: M,
+    functionName: K,
+    callback: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never
+];
 
 /**
  * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.
@@ -10,8 +28,7 @@ import {default as MainPatcher, type AfterCallback, type BeforeCallback, type In
  * @summary {@link Patcher} is a utility class for modifying existing functions.
  * @name Patcher
  */
-class Patcher {
-
+class Patcher<Bounded extends boolean> {
     #callerName = "";
     constructor(callerName?: string) {
         if (!callerName) return;
@@ -28,41 +45,25 @@ class Patcher {
      * @param {function} callback Function to run before the original method. The function is given the `this` context and the `arguments` of the original function.
      * @returns {function} Function that cancels the original patch
      */
-    before<M extends object, K extends Extract<keyof M, string>>(
-        caller: M,
-        moduleToPatch: K,
-        functionName: M[K] extends (...a: any[]) => any ? BeforeCallback<M[K]> : never
-    ): (() => void) | null;
-    before<M extends object, K extends Extract<keyof M, string>>(
-        caller: string,
-        moduleToPatch: M,
-        functionName: K,
-        callback: M[K] extends (...a: any[]) => any ? BeforeCallback<M[K]> : never
-    ): (() => void) | null;
-    before<M extends object, K extends Extract<keyof M, string>>(
-        caller: string | M,
-        moduleToPatch: M | K,
-        functionName: K | (M[K] extends (...a: any[]) => any ? BeforeCallback<M[K]> : never),
-        callback?: M[K] extends (...a: any[]) => any ? BeforeCallback<M[K]> : never
-    ) {
-        if (!this.#callerName && !callback) throw new Error("Trying to use shorthand without a bound api");
+    before<M extends object, K extends Extract<keyof M, string>>(...args: BeforeArguments<Bounded, M, K>): (() => void) | null {
+        if (!this.#callerName && !args[3]) throw new Error("Trying to use shorthand without a bound api");
 
         if (this.#callerName) {
-            if (typeof functionName !== "function") throw new Error("3rd parameter should be function");
-            if (typeof moduleToPatch !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof caller !== "object") throw new Error("1st parameter should be module");
+            const [moduleToPatch, functionName, callback] = args as unknown as BeforeArguments<true, M, K>;
 
-            callback = functionName;
-            functionName = moduleToPatch;
-            moduleToPatch = caller;
-            caller = this.#callerName;
+            if (typeof callback !== "function") throw new Error("3rd parameter should be function");
+            if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
+            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+
+            return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "before"});
         }
-        else {
-            if (typeof callback !== "function") throw new Error("4th parameter should be function");
-            if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
-            if (typeof caller !== "string") throw new Error("1st parameter should be string");
-        }
+
+        const [caller, moduleToPatch, functionName, callback] = args as unknown as BeforeArguments<false, M, K>;
+        if (typeof callback !== "function") throw new Error("4th parameter should be function");
+        if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
+        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (typeof caller !== "string") throw new Error("1st parameter should be string");
+
 
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "before"});
     }
@@ -77,41 +78,25 @@ class Patcher {
      * @param {function} callback Function to run before the original method. The function is given the `this` context, `arguments` of the original function, and also the original function.
      * @returns {function} Function that cancels the original patch
      */
-    instead<M extends object, K extends Extract<keyof M, string>>(
-        caller: M,
-        moduleToPatch: K,
-        functionName: M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never
-    ): (() => void) | null;
-    instead<M extends object, K extends Extract<keyof M, string>>(
-        caller: string,
-        moduleToPatch: M,
-        functionName: K,
-        callback: M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never
-    ): (() => void) | null;
-    instead<M extends object, K extends Extract<keyof M, string>>(
-        caller: string | M,
-        moduleToPatch: M | K,
-        functionName: K | (M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never),
-        callback?: M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never
-    ) {
-        if (!this.#callerName && !callback) throw new Error("Trying to use shorthand without a bound api");
+    instead<M extends object, K extends Extract<keyof M, string>>(...args: InsteadArguments<Bounded, M, K>): (() => void) | null {
+        if (!this.#callerName && !args[3]) throw new Error("Trying to use shorthand without a bound api");
 
         if (this.#callerName) {
-            if (typeof functionName !== "function") throw new Error("3rd parameter should be function");
-            if (typeof moduleToPatch !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof caller !== "object") throw new Error("1st parameter should be module");
+            const [moduleToPatch, functionName, callback] = args as unknown as InsteadArguments<true, M, K>;
 
-            callback = functionName;
-            functionName = moduleToPatch;
-            moduleToPatch = caller;
-            caller = this.#callerName;
+            if (typeof callback !== "function") throw new Error("3rd parameter should be function");
+            if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
+            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+
+            return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "instead"});
         }
-        else {
-            if (typeof callback !== "function") throw new Error("4th parameter should be function");
-            if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
-            if (typeof caller !== "string") throw new Error("1st parameter should be string");
-        }
+
+        const [caller, moduleToPatch, functionName, callback] = args as unknown as InsteadArguments<false, M, K>;
+        if (typeof callback !== "function") throw new Error("4th parameter should be function");
+        if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
+        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (typeof caller !== "string") throw new Error("1st parameter should be string");
+
 
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "instead"});
     }
@@ -126,41 +111,25 @@ class Patcher {
      * @param {function} callback Function to run after the original method. The function is given the `this` context, the `arguments` of the original function, and the `return` value of the original function.
      * @returns {function} Function that cancels the original patch
      */
-    after<M extends object, K extends Extract<keyof M, string>>(
-        caller: M,
-        moduleToPatch: K,
-        functionName: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never
-    ): (() => void) | null;
-    after<M extends object, K extends Extract<keyof M, string>>(
-        caller: string,
-        moduleToPatch: M,
-        functionName: K,
-        callback: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never
-    ): (() => void) | null;
-    after<M extends object, K extends Extract<keyof M, string>>(
-        caller: string | M,
-        moduleToPatch: M | K,
-        functionName: K | (M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never),
-        callback?: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never
-    ) {
-        if (!this.#callerName && !callback) throw new Error("Trying to use shorthand without a bound api");
+    after<M extends object, K extends Extract<keyof M, string>>(...args: AfterArguments<Bounded, M, K>): (() => void) | null {
+        if (!this.#callerName && !args[3]) throw new Error("Trying to use shorthand without a bound api");
 
         if (this.#callerName) {
-            if (typeof functionName !== "function") throw new Error("3rd parameter should be function");
-            if (typeof moduleToPatch !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof caller !== "object") throw new Error("1st parameter should be module");
+            const [moduleToPatch, functionName, callback] = args as unknown as AfterArguments<true, M, K>;
 
-            callback = functionName;
-            functionName = moduleToPatch;
-            moduleToPatch = caller;
-            caller = this.#callerName;
+            if (typeof callback !== "function") throw new Error("3rd parameter should be function");
+            if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
+            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+
+            return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "after"});
         }
-        else {
-            if (typeof callback !== "function") throw new Error("4th parameter should be function");
-            if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
-            if (typeof caller !== "string") throw new Error("1st parameter should be string");
-        }
+
+        const [caller, moduleToPatch, functionName, callback] = args as unknown as AfterArguments<false, M, K>;
+        if (typeof callback !== "function") throw new Error("4th parameter should be function");
+        if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
+        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (typeof caller !== "string") throw new Error("1st parameter should be string");
+
 
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "after"});
     }
