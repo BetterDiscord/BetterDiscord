@@ -57,7 +57,7 @@ export function AddonHeader({children, count, searching}) {
                             <span>{t("Addons.store")}</span>
                         </>
                     )}
-                    {searching && <span> - {t("Addons.results", {count: String(count)})}</span>}
+                    {searching && <span> - {t("Addons.results", {count: count})}</span>}
                 </div>
             )}
         >
