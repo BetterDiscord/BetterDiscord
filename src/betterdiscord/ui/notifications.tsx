@@ -1,57 +1,70 @@
 import React, {ReactDOM} from "@modules/react";
 import Button from "@ui/base/button";
 import Settings from "@stores/settings";
+import Notifications from "@stores/notifications";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
 import type {MouseEvent} from "react";
 import type {Position} from "./settings/components/position";
+import {useInternalStore} from "@ui/hooks.ts";
+import {shallowEqual} from "fast-equals";
 
+const spring = DiscordModules.ReactSpring;
 
 // TODO: let arven fix this
 export type NotificationType = "warning" | "error" | "info" | "success";
+
 export interface NotificationAction {
     label: string;
+
     onClick?(): void;
 }
+
 export interface Notification {
     id: string;
     title?: string;
-    content?: string;
+    content?: string | React.FC;
     type?: NotificationType;
     duration?: number;
     actions: NotificationAction[];
-    onDurationDone?(): void;
+
+    onClose?(): void;
+
     onClick?(): void;
-    exiting?: boolean;
+
     icon?: React.FC;
 }
 
-const Icon = ({type}: {type: NotificationType;}) => {
+const positions: {
+    [x: string]: { top?: number, right?: number, bottom?: number, left?: number, flexDirection: string }
+} = {
+    "top-right": {top: 16, right: 16, flexDirection: "column"},
+    "top-left": {top: 16, left: 16, flexDirection: "column"},
+    "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
+    "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
+} as const;
+
+const Icon = ({type}: { type: NotificationType; }) => {
     switch (type) {
         case "warning":
-            return <TriangleAlertIcon color="var(--status-warning)" size="18px" />;
-
+            return <TriangleAlertIcon color="var(--status-warning)" size="18px"/>;
         case "error":
-            return <CircleAlertIcon color="var(--status-danger)" size="18px" />;
-
+            return <CircleAlertIcon color="var(--status-danger)" size="18px"/>;
         case "info":
-            return <InfoIcon color="#3B82F6" size="18px" />;
+            return <InfoIcon color="#3B82F6" size="18px"/>;
         case "success":
-            return <CircleCheckIcon color="var(--status-positive)" size="18px" />;
-
+            return <CircleCheckIcon color="var(--status-positive)" size="18px"/>;
         default:
             return null;
     }
 };
 
 class NotificationUI {
-    static notifications = [];
-    static setNotifications = null;
     static root: HTMLDivElement | null = null;
 
-    static initialize() {
+    constructor() {
         const rootId = "bd-notifications-root";
         let root = document.getElementById(rootId) as HTMLDivElement;
         if (!root) {
@@ -59,73 +72,39 @@ class NotificationUI {
             root.id = rootId;
             DOMManager.bdBody.appendChild(root);
         }
-        this.root = root;
+        NotificationUI.root = root;
 
-        ReactDOM.createRoot(root).render(<PersistentNotificationContainer />);
+        ReactDOM.createRoot(root).render(<PersistentNotificationContainer/>);
     }
 
-    static show(notificationObj) {
-        if (!this.root) this.initialize();
-
-        const notification = {
-            exiting: false,
-            ...notificationObj
-        };
-
-        this.notifications.push(notification);
-        if (NotificationUI.setNotifications) {
-            NotificationUI.setNotifications([...this.notifications]);
-        }
-
-        return () => this.hide(notification.id);
+    show(notificationData: Notification) {
+        this.upsertNotification(notificationData);
+        return () => this.hide(notificationData.id);
     }
 
-    static hide(id) {
-        const notificationIndex = this.notifications.findIndex(n => n.id === id);
-        if (notificationIndex !== -1) {
-            this.notifications[notificationIndex].exiting = true;
+    upsertNotification(notificationData: Notification) {
+        const currentNotifications = Notifications.notifications;
+        const filteredNotifications = currentNotifications.filter(
+            (notification: Notification) => notification.id !== notificationData.id
+        );
 
-            if (NotificationUI.setNotifications) {
-                NotificationUI.setNotifications([...this.notifications]);
-            }
+        Notifications.setNotifications([...filteredNotifications, notificationData]);
+    }
 
-            setTimeout(() => {
-                this.notifications = this.notifications.filter(n => n.id !== id);
+    hide(id: string) {
+        const currentNotifications = Notifications.notifications;
+        const exists = currentNotifications.some((n: Notification) => n.id === id);
 
-                if (NotificationUI.setNotifications) {
-                    NotificationUI.setNotifications([...this.notifications]);
-                }
-            }, 500);
+        if (exists) {
+            const filtered = currentNotifications.filter((n: Notification) => n.id !== id);
+            Notifications.setNotifications(filtered);
         }
     }
 }
 
-const PersistentNotificationContainer = React.memo(() => {
-    const [notifications, setNotifications] = React.useState<Notification[]>([]);
-    const [position, setPosition] = React.useState<Position>("top-right");
-
-    React.useEffect(() => {
-        NotificationUI.setNotifications = setNotifications;
-        const updatePosition = () => {
-            const notificationPosition = Settings.get("settings", "general", "notificationPosition");
-            setPosition(notificationPosition);
-        };
-        updatePosition();
-        Settings.on("settings", "general", "notificationPosition", updatePosition);
-        return () => {
-            NotificationUI.setNotifications = null;
-        };
-    }, []);
-
-    const getPositionStyles = () => {
-        const positions = {
-            "top-right": {top: 16, right: 16, flexDirection: "column"},
-            "top-left": {top: 16, left: 16, flexDirection: "column"},
-            "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
-            "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
-        } as const;
-        return positions[position];
-    };
+const PersistentNotificationContainer = () => {
+    const notifications = useInternalStore<Notification[]>(Notifications, () => Notifications.notifications.concat(), [], shallowEqual);
+    const position: string = useInternalStore(Settings, () => Settings.get("settings", "general", "notificationPosition"));
 
     return (
         <div
@@ -135,7 +114,7 @@ const PersistentNotificationContainer = React.memo(() => {
                 gap: "8px",
                 padding: "16px",
                 pointerEvents: "none",
-                ...getPositionStyles()
+                ...positions[position]
             }}
         >
             {notifications.map((notification) => (
@@ -147,11 +126,11 @@ const PersistentNotificationContainer = React.memo(() => {
             ))}
         </div>
     );
-});
+};
 
-const spring = DiscordModules.ReactSpring;
+const NotificationUIInstance = new NotificationUI();
 
-const NotificationItem = ({notification, position}: {notification: Notification; position: Position;}) => {
+const NotificationItem = ({notification, position}: { notification: Notification; position: Position; }) => {
     const {
         id,
         title = "",
@@ -186,28 +165,24 @@ const NotificationItem = ({notification, position}: {notification: Notification;
     const slideProps = spring.useSpring(getSlideAnimation());
 
     // TODO: arven, fix this
+    // fix what? :(.
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
         config: {duration},
         pause: isPaused,
-        onChange: ({width}: {width: string;}) => {
+        onChange: ({width}: { width: string; }) => {
             if (width === "0%") {
-                NotificationUI.hide(id);
-                notification.onDurationDone?.();
+                handleClose();
             }
         },
-        reset: isPaused
     });
-
-    React.useEffect(() => {
-        setExiting(notification.exiting ?? false);
-    }, [notification.exiting]);
 
     const handleClose = () => {
         setExiting(true);
+        notification.onClose?.();
         setTimeout(() => {
-            NotificationUI.hide(id);
+            NotificationUIInstance.hide(id);
         }, 500);
     };
 
@@ -215,21 +190,16 @@ const NotificationItem = ({notification, position}: {notification: Notification;
         <spring.animated.div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            onClick={(e) => {
-                e.stopPropagation();
-                notification.onClick?.();
-                handleClose();
-            }}
             style={{
                 ...slideProps,
                 pointerEvents: "auto"
             }}
             className={`bd-notification ${exiting ? "bd-notification-exit" : "bd-notification-enter"
-                } bd-notification-${type}`}
+            } bd-notification-${type}`}
         >
             <div className="bd-notification-topbar">
                 <div className="bd-notification-title">
-                    {notification.icon ? <notification.icon /> : <Icon type={type} />}
+                    {notification.icon ? <notification.icon/> : <Icon type={type}/>}
                     {title}
                 </div>
                 <Text
@@ -278,4 +248,4 @@ const NotificationItem = ({notification, position}: {notification: Notification;
     );
 };
 
-export default NotificationUI;
+export default NotificationUIInstance;
