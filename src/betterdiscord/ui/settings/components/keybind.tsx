@@ -4,23 +4,28 @@ import Button from "../../base/button";
 import {KeyboardIcon, XIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
 import type {MouseEvent} from "react";
+import {remapKeyCode, reverseRemapArray} from "../../../../betterdiscord/api/keybinds";
 
 const {useState, useCallback, useEffect, useContext} = React;
 
-
 export interface KeybindProps {
-    value: string[];
-    onChange?(newValue: string[]): void;
+    value: Array<string | number>;
+    onChange?(newValue: Array<string | number>): void;
     max?: number;
     clearable?: boolean;
+    useKeyCode?: boolean;
     disabled?: boolean;
 }
 
-export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, disabled}: KeybindProps) {
-    // TODO: make these their own states
-    const [state, setState] = useState<{isRecording: boolean; accum: string[];}>({isRecording: false, accum: []});
+export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, useKeyCode = false, disabled}: KeybindProps) {
+    const [isRecording, setIsRecording] = useState(false);
+    const [accumulator, setAccumulator] = useState<Array<string | number>>([]);
 
-    const [internalValue, setValue] = useState(initialValue);
+    const [internalValue, setInternalValue] = useState<string[] | number[]>(
+        useKeyCode
+            ? reverseRemapArray((initialValue as number[]))
+            : (initialValue as string[])
+    );
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as string[];
@@ -36,53 +41,60 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
     });
 
     const keyDownHandler = useCallback((event: KeyboardEvent) => {
-        if (!state.isRecording) return;
+        if (!isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
-        if (event.repeat || state.accum.includes(event.key)) return;
+        const key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
+        if (!useKeyCode && (event.repeat || accumulator.includes(key))) return;
 
-        state.accum.push(event.key);
-        if (state.accum.length == max) {
-            setState({isRecording: false, accum: []});
-            setValue(state.accum.slice(0));
-            onChange?.(state.accum);
+        accumulator.push(key);
+        if (accumulator.length == max) {
+            setIsRecording(false);
+            setAccumulator([]);
+            if (useKeyCode) setInternalValue(reverseRemapArray((accumulator as number[]).slice(0)));
+            else setInternalValue((accumulator as string[]).slice(0));
+            onChange?.(accumulator);
         }
-    }, [state, max, onChange]);
+    }, [isRecording, accumulator, max, onChange, useKeyCode]);
 
     const keyUpHandler = useCallback((event: KeyboardEvent) => {
-        if (!state.isRecording) return;
+        if (!isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
+        const key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
 
-        if (event.key === state.accum[0]) {
-            setState({isRecording: false, accum: []});
-            setValue(state.accum.slice(0));
-            onChange?.(state.accum);
+        if (key === accumulator[0]) {
+            setIsRecording(false);
+            setAccumulator([]);
+            if (useKeyCode) setInternalValue(reverseRemapArray((accumulator as number[]).slice(0)));
+            else setInternalValue((accumulator as string[]).slice(0));
+            onChange?.(accumulator);
         }
-    }, [state, onChange]);
+    }, [isRecording, accumulator, onChange, useKeyCode]);
 
     const clearKeybind = useCallback((event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
         if (isDisabled) return;
         if (onChange) onChange([]);
-        setValue([]);
-        setState({...state, isRecording: false, accum: []});
-    }, [onChange, state, isDisabled]);
+        setInternalValue([]);
+        setIsRecording(false);
+        setAccumulator([]);
+    }, [onChange, isDisabled]);
 
     const onClick = useCallback((e: MouseEvent) => {
         if (isDisabled) return;
         if (e.currentTarget?.className?.includes?.("bd-keybind-clear") || e.currentTarget?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
-        setState({...state, isRecording: !state.isRecording});
-    }, [state, clearKeybind, isDisabled]);
+        setIsRecording(!isRecording);
+    }, [isRecording, clearKeybind, isDisabled]);
 
 
     const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
-    return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "") + (isDisabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
-        <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
-        <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} placeholder="No keybind set" disabled={disabled} />
+    return <div className={"bd-keybind-wrap" + (isRecording ? " recording" : "") + (isDisabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
+        <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
+        <input readOnly={true} type="text" className="bd-keybind-input" size={displayValue.length} value={displayValue} placeholder="No keybind set" disabled={isDisabled} />
         {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
     </div>;
-}
+};
