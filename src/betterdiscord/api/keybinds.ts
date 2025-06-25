@@ -357,7 +357,6 @@ class KeybindsManager {
 
 type RegisterGlobalArgs = [event: string, keys: Keys, callback: () => void, options?: GlobalKeybindOptions];
 type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterGlobalArgs : RegisterGlobalArgs;
-
 type RegisterWindowArgs = [event: string, keys: Keys, callback: () => void, options?: WindowKeybindOptions];
 type RegisterWindowKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterWindowArgs : RegisterWindowArgs;
 
@@ -418,6 +417,26 @@ export class Keybinds<Bounded extends boolean> {
     }
 
     /**
+     * Registers a Keybind.
+     * @param {boolean} global Whether the Keybind is global or not
+     * @param {string} pluginName Name of the plugin to register the Keybind for
+     * @param {string} event Name of the event to register
+     * @param {Keys} keys The keys to register
+     * @param {Function} callback The callback to call when the keybind is pressed
+     * @param {GlobalKeybindOptions | WindowKeybindOptions} options Options for the Keybind
+     * @returns {boolean} Whether the Keybind was registered
+     */
+    registerKeybind(global: boolean, ...args: RegisterGlobalKeybind<Bounded>) {
+        if (global === undefined) {
+            throw new Error("Invalid arguments for registerKeybind. Expected either [pluginName, event, keys, callback, options] or [event, keys, callback, options] with a boolean for global.");
+        }
+        if (global) {
+            return this.registerGlobalKeybind(...args);
+        }
+        return this.registerWindowKeybind(...args);
+    }
+
+    /**
      * Registers a Window Keybind.
      * @param {string} pluginName Name of the plugin to register the Keybind for
      * @param {string} event Name of the event to register
@@ -475,6 +494,23 @@ export class Keybinds<Bounded extends boolean> {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e as Error);
             return false;
         }
+    }
+
+    /**
+     * Unregisters a Keybind.
+     * @param {boolean} global Whether the Keybind is global or not
+     * @param {string} pluginName Name of the plugin to unregister the Keybind for
+     * @param {string} event Name of the event to unregister
+     * @returns {boolean} Whether the Keybind was unregistered
+     */
+    unregisterKeybind(global: boolean, ...args: UnregisterKeybind<Bounded>) {
+        if (global === undefined) {
+            throw new Error("Invalid arguments for unregisterKeybind. Expected either [pluginName, event] or [event] with a boolean for global.");
+        }
+        if (global) {
+            return this.unregisterGlobalKeybind(...args);
+        }
+        return this.unregisterWindowKeybind(...args);
     }
 
     /**
