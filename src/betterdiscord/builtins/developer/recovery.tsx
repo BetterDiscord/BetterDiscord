@@ -9,7 +9,7 @@ import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import {getByPrototypes, getByStrings, getMangled} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
@@ -171,7 +171,6 @@ export default new class Recovery extends Builtin {
 
     async enabled() {
         this.patchErrorBoundry();
-        this.parseModule = getByKeys(["defaultRules", "parse"]);
     }
 
     async disabled() {
@@ -195,7 +194,7 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = getByPrototypes(["_handleSubmitReport"]);
+        const mod = getByPrototypes(["_handleSubmitReport"], {cacheId: "core-recovery-handleSubmitReport"});
 
         this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
@@ -204,7 +203,7 @@ export default new class Recovery extends Builtin {
             if (!buttons) return;
 
             const errorStack = instance.state;
-            const parsedError = errorStack ? this.parseModule.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
+            const parsedError = errorStack ? DiscordModules.SimpleMarkdownWrapper.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
             const foundIssue = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/.exec(errorStack.error?.stack);
             let pluginInfo = null;

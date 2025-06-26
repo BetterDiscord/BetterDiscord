@@ -183,7 +183,7 @@ const NotificationItem = ({notification, position}: {notification: Notification;
 
     };
 
-    const slideProps = spring.useSpring(getSlideAnimation());
+    const slideProps = DiscordModules.ReactSpring.useSpring(getSlideAnimation());
 
     // TODO: arven, fix this
     const progressProps = spring.useSpring({

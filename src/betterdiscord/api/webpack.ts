@@ -1,4 +1,4 @@
-import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
+import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, SingleOptions} from "discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
@@ -15,9 +15,8 @@ const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOption
     return [ args as T[], defaultOptions ];
 };
 
-interface WebpackOptions extends Options {
-    first?: boolean
-}
+type WebpackOptions = (SingleOptions & { first?: true }) |
+    (Options & { first: false });
 
 /**
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
