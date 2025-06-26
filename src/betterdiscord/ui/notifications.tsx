@@ -78,26 +78,28 @@ class NotificationUI {
     }
 
     show(notificationData: Notification) {
+        // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
+        // Or duplicate notifications.
+        if (Notifications.notifications.find((notif: Notification) => notif.id == notificationData.id)) return;
+
         this.upsertNotification(notificationData);
-        return () => this.hide(notificationData.id);
+        return {
+            id: notificationData.id,
+            close: () => this.hide(notificationData.id),
+            isVisible: () => Notifications.notifications.find((n: Notification) => n.id === notificationData.id) !== undefined
+        };
     }
 
     upsertNotification(notificationData: Notification) {
-        const currentNotifications = Notifications.notifications;
-        const filteredNotifications = currentNotifications.filter(
-            (notification: Notification) => notification.id !== notificationData.id
-        );
-
-        Notifications.setNotifications([...filteredNotifications, notificationData]);
+        Notifications.addNotification(notificationData);
     }
 
     hide(id: string) {
         const currentNotifications = Notifications.notifications;
-        const exists = currentNotifications.some((n: Notification) => n.id === id);
+        const notificationIndex = currentNotifications.findIndex((n: Notification) => n.id === id);
 
-        if (exists) {
-            const filtered = currentNotifications.filter((n: Notification) => n.id !== id);
-            Notifications.setNotifications(filtered);
+        if (notificationIndex !== -1) {
+            Notifications.removeNotification(currentNotifications[notificationIndex].id);
         }
     }
 }
@@ -121,7 +123,6 @@ const PersistentNotificationContainer = () => {
                 <NotificationItem
                     key={notification.id}
                     notification={notification}
-                    position={position}
                 />
             ))}
         </div>
@@ -130,7 +131,7 @@ const PersistentNotificationContainer = () => {
 
 const NotificationUIInstance = new NotificationUI();
 
-const NotificationItem = ({notification, position}: { notification: Notification; position: Position; }) => {
+const NotificationItem = ({notification}: { notification: Notification; position: Position; }) => {
     const {
         id,
         title = "",
@@ -140,32 +141,8 @@ const NotificationItem = ({notification, position}: { notification: Notification
         actions = [],
     } = notification;
 
-    const [exiting, setExiting] = React.useState(false);
     const [isPaused, setIsPaused] = React.useState(false);
 
-    const getSlideAnimation = () => {
-        const baseSlide = {
-            opacity: exiting ? 0 : 1,
-            config: {tension: 280, friction: 20}
-        };
-
-        if (position.includes("right")) {
-            return {
-                ...baseSlide,
-                transform: exiting ? "translateX(100%)" : "translateX(0%)"
-            };
-        }
-        return {
-            ...baseSlide,
-            transform: exiting ? "translateX(-100%)" : "translateX(0%)"
-        };
-
-    };
-
-    const slideProps = spring.useSpring(getSlideAnimation());
-
-    // TODO: arven, fix this
-    // fix what? :(.
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
@@ -179,11 +156,8 @@ const NotificationItem = ({notification, position}: { notification: Notification
     });
 
     const handleClose = () => {
-        setExiting(true);
+        NotificationUIInstance.hide(id);
         notification.onClose?.();
-        setTimeout(() => {
-            NotificationUIInstance.hide(id);
-        }, 500);
     };
 
     return (
@@ -191,11 +165,9 @@ const NotificationItem = ({notification, position}: { notification: Notification
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             style={{
-                ...slideProps,
                 pointerEvents: "auto"
             }}
-            className={`bd-notification ${exiting ? "bd-notification-exit" : "bd-notification-enter"
-            } bd-notification-${type}`}
+            className={`bd-notification bd-notification-${type}`}
         >
             <div className="bd-notification-topbar">
                 <div className="bd-notification-title">

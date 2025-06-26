@@ -11,7 +11,6 @@ import Settings from "@stores/settings";
 import NotificationUI from "@ui/notifications";
 import type {ReactElement} from "react";
 import type {ChangelogProps} from "@ui/modals/changelog";
-import Notifications from "@stores/notifications.ts";
 
 
 /**
@@ -54,8 +53,7 @@ const UI = {
 
         const finalNotification = {...defaultObj, ...notificationObj};
 
-        NotificationUI.show(finalNotification);
-        return () => NotificationUI.hide(notificationObj.id);
+        return NotificationUI.show(finalNotification);
     },
 
     /**
