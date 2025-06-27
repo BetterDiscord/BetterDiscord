@@ -80,14 +80,17 @@ class NotificationUI {
     show(notificationData: Notification) {
         // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
         // Or duplicate notifications.
-        if (Notifications.notifications.find((notif: Notification) => notif.id == notificationData.id)) return;
 
-        this.upsertNotification(notificationData);
-        return {
+        const newData = {
             id: notificationData.id,
             close: () => this.hide(notificationData.id),
             isVisible: () => Notifications.notifications.find((n: Notification) => n.id === notificationData.id) !== undefined
         };
+
+        if (Notifications.notifications.find((notif: Notification) => notif.id == notificationData.id)) return newData;
+
+        this.upsertNotification(notificationData);
+        return newData;
     }
 
     upsertNotification(notificationData: Notification) {
