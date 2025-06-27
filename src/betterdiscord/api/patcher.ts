@@ -21,6 +21,10 @@ type AfterArguments<Bounded extends boolean, M extends object, K extends Extract
     callback: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never
 ];
 
+function isModuleInvalid(moduleToPatch: any): boolean {
+    return typeof moduleToPatch !== "object" && typeof moduleToPatch !== "function" && moduleToPatch !== null;
+}
+
 /**
  * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for modifying the internals of Discord by adjusting return value or React renders, or arguments of internal functions.
@@ -53,7 +57,7 @@ class Patcher<Bounded extends boolean> {
 
             if (typeof callback !== "function") throw new Error("3rd parameter should be function");
             if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+            if (isModuleInvalid(moduleToPatch)) throw new Error("1st parameter should be module");
 
             return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "before"});
         }
@@ -61,7 +65,7 @@ class Patcher<Bounded extends boolean> {
         const [caller, moduleToPatch, functionName, callback] = args as unknown as BeforeArguments<false, M, K>;
         if (typeof callback !== "function") throw new Error("4th parameter should be function");
         if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (isModuleInvalid(moduleToPatch)) throw new Error("2nd parameter should be module");
         if (typeof caller !== "string") throw new Error("1st parameter should be string");
 
 
@@ -86,7 +90,7 @@ class Patcher<Bounded extends boolean> {
 
             if (typeof callback !== "function") throw new Error("3rd parameter should be function");
             if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+            if (isModuleInvalid(moduleToPatch)) throw new Error("1st parameter should be module");
 
             return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "instead"});
         }
@@ -94,7 +98,7 @@ class Patcher<Bounded extends boolean> {
         const [caller, moduleToPatch, functionName, callback] = args as unknown as InsteadArguments<false, M, K>;
         if (typeof callback !== "function") throw new Error("4th parameter should be function");
         if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (isModuleInvalid(moduleToPatch)) throw new Error("2nd parameter should be module");
         if (typeof caller !== "string") throw new Error("1st parameter should be string");
 
 
@@ -119,7 +123,7 @@ class Patcher<Bounded extends boolean> {
 
             if (typeof callback !== "function") throw new Error("3rd parameter should be function");
             if (typeof functionName !== "string") throw new Error("2nd parameter should be function name");
-            if (typeof moduleToPatch !== "object") throw new Error("1st parameter should be module");
+            if (isModuleInvalid(moduleToPatch)) throw new Error("1st parameter should be module");
 
             return MainPatcher.pushChildPatch(this.#callerName, moduleToPatch, functionName, callback, {type: "after"});
         }
@@ -127,7 +131,7 @@ class Patcher<Bounded extends boolean> {
         const [caller, moduleToPatch, functionName, callback] = args as unknown as AfterArguments<false, M, K>;
         if (typeof callback !== "function") throw new Error("4th parameter should be function");
         if (typeof functionName !== "string") throw new Error("3rd parameter should be function name");
-        if (typeof moduleToPatch !== "object") throw new Error("2nd parameter should be module");
+        if (isModuleInvalid(moduleToPatch)) throw new Error("2nd parameter should be module");
         if (typeof caller !== "string") throw new Error("1st parameter should be string");
 
 
