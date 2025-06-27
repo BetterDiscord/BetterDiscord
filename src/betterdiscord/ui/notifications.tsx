@@ -10,6 +10,7 @@ import type {MouseEvent, ReactNode} from "react";
 import type {Position} from "./settings/components/position";
 import {useInternalStore} from "@ui/hooks.ts";
 import {shallowEqual} from "fast-equals";
+import Markdown from "@ui/base/markdown.tsx";
 
 const spring = DiscordModules.ReactSpring;
 
@@ -187,7 +188,9 @@ const NotificationItem = ({notification}: { notification: Notification; position
                     ✕
                 </Text>
             </div>
-            <span className="bd-notification-body">{content}</span>
+            <span className="bd-notification-body">{<Markdown>
+                {content}
+            </Markdown>}</span>
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
                     {actions.map((action, index) => (
