@@ -21,7 +21,7 @@
 }
 
 .theme-light .bd-addon-error {
-    border-color: var(--bg-base-tertiary);
+    border-color: var(--background-base-lowest);
 }
 
 .bd-addon-error-header {
@@ -91,9 +91,9 @@
     text-indent: 0;
     white-space: pre-wrap;
     scrollbar-width: thin;
-    scrollbar-color: var(--bg-base-tertiary) var(--background-base-lower);
+    scrollbar-color: var(--background-base-lowest) var(--background-base-lower);
     background: var(--background-base-lower);
-    border: 1px solid var(--bg-base-tertiary);
+    border: 1px solid var(--background-base-lowest);
 }
 
 .bd-addon-error-stack pre {

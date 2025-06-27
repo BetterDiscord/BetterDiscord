@@ -16,7 +16,7 @@
 
 .theme-dark .bd-addon-store-card:hover,
 .theme-dark .bd-addon-store-card:hover .bd-addon-store-card-author-mask {
-    background-color: var(--bg-base-tertiary);
+    background-color: var(--background-base-lowest);
 }
 
 .full-motion .bd-addon-store-card {
@@ -172,7 +172,7 @@
 
 .bd-addon-store-card-tag {
     color: var(--interactive-normal);
-    background: var(--bg-base-tertiary);
+    background: var(--background-base-lowest);
     border: 1px solid var(--background-base-lower);
     padding: 2px 5px;
     border-radius: 8px;

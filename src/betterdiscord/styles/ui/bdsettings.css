@@ -55,7 +55,7 @@
 
 .bd-select:hover,
 .bd-select.menu-open {
-    border-color: var(--bg-base-tertiary);
+    border-color: var(--background-base-lowest);
 }
 
 .bd-select.bd-select-transparent {

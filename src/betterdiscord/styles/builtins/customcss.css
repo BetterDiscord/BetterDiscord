@@ -125,7 +125,7 @@
     width: 30% !important;
     padding: 12px !important;
     text-align: center !important;
-    background: var(--bg-base-tertiary) !important;
+    background: var(--background-base-lowest) !important;
     border: none !important;
     cursor: pointer;
     font-size: 14px;
@@ -205,14 +205,14 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: var(--bg-base-tertiary);
+    background: var(--background-base-lowest);
 }
 
 .bd-error-toggle {
     width: 30% !important;
     padding: 12px !important;
     text-align: center !important;
-    background: var(--bg-base-tertiary) !important;
+    background: var(--background-base-lowest) !important;
     border: none !important;
     cursor: pointer;
     font-size: 14px;

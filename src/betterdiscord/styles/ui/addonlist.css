@@ -170,7 +170,7 @@
     font-size: 85%;
     line-height: 1.125rem;
     white-space: pre-wrap;
-    background: var(--bg-base-tertiary);
+    background: var(--background-base-lowest);
 }
 
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,
@@ -355,7 +355,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: var(--bg-base-tertiary);
+    background: var(--background-base-lowest);
     color: var(--interactive-normal);
     padding: 8px;
 }
