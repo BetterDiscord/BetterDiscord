@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: center;
     align-self: flex-start;
-    background-color: #18191c;
+    background-color: var(--background-secondary-alt);
     width: 48px;
     height: 48px;
     border-radius: 50%;
