@@ -6,7 +6,7 @@ import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
-import type {MouseEvent} from "react";
+import type {MouseEvent, ReactNode} from "react";
 import type {Position} from "./settings/components/position";
 import {useInternalStore} from "@ui/hooks.ts";
 import {shallowEqual} from "fast-equals";
@@ -25,7 +25,7 @@ export interface NotificationAction {
 export interface Notification {
     id: string;
     title?: string;
-    content?: string | React.FC;
+    content?: string | ReactNode;
     type?: NotificationType;
     duration?: number;
     actions: NotificationAction[];
