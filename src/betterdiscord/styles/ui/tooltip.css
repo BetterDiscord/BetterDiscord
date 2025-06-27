@@ -30,12 +30,12 @@
 }
 
 .bd-tooltip-primary {
-    background-color: var(--background-floating);
-    color: var(--text-normal);
+    background-color: #18191c;
+    color: var(--text-default);
 }
 
 .bd-tooltip-primary .bd-tooltip-pointer {
-    border-top-color: var(--background-floating);
+    border-top-color: #18191c;
 }
 
 .bd-tooltip-info {

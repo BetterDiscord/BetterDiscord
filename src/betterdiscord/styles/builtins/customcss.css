@@ -1,7 +1,7 @@
 #bd-editor-panel {
     display: flex;
     flex-direction: column;
-    background: var(--bd-editor-background, var(--background-secondary));
+    background: var(--bd-editor-background, var(--background-base-lower));
 }
 
 #bd-editor-controls button {
@@ -33,7 +33,7 @@
     align-items: center;
     justify-content: space-between;
     background: var(--background-secondary-alt);
-    color: var(--text-normal);
+    color: var(--text-default);
     border: none;
     box-shadow: var(--elevation-low);
     padding: 5px;
@@ -125,7 +125,7 @@
     width: 30% !important;
     padding: 12px !important;
     text-align: center !important;
-    background: var(--background-tertiary) !important;
+    background: var(--bg-base-tertiary) !important;
     border: none !important;
     cursor: pointer;
     font-size: 14px;
@@ -156,8 +156,8 @@
     font-size: 12px;
     line-height: 1.5;
     color: var(--text-normal);
-    background: var(--background-secondary);
-    border-top: 1px solid var(--background-modifier-accent);
+    background: var(--background-base-lower);
+    border-top: 1px solid var(--app-border-frame);
     opacity: 1;
     transform-origin: top;
     transition: opacity 0.2s ease, transform 0.2s ease;
@@ -194,7 +194,7 @@
     width: 100%;
     max-width: 1500px;
     margin: 16px auto;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -205,19 +205,19 @@
     align-items: center;
     gap: 8px;
     padding: 8px;
-    background: var(--background-tertiary);
+    background: var(--bg-base-tertiary);
 }
 
 .bd-error-toggle {
     width: 30% !important;
     padding: 12px !important;
     text-align: center !important;
-    background: var(--background-tertiary) !important;
+    background: var(--bg-base-tertiary) !important;
     border: none !important;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-normal);
+    color: var(--text-default);
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
