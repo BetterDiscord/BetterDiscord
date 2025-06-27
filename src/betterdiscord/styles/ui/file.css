@@ -19,13 +19,13 @@
 .bd-file-input {
     flex: 1;
     outline: none;
-    color: var(--text-normal);
+    color: var(--text-default);
     font-size: 16px;
     font-weight: 600;
     width: 100%;
     cursor: pointer;
 }
-  
+
 .bd-file-input::-webkit-file-upload-button {
     height: 0;
     width: 0;

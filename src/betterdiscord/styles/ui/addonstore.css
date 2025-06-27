@@ -16,7 +16,7 @@
 
 .theme-dark .bd-addon-store-card:hover,
 .theme-dark .bd-addon-store-card:hover .bd-addon-store-card-author-mask {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-base-lowest);
 }
 
 .full-motion .bd-addon-store-card {
@@ -142,7 +142,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: var(--header-primary);
+    color: var(--header-base-low);
     font-family: var(--font-display);
     font-size: 16px;
     line-height: 1.25;
@@ -172,8 +172,8 @@
 
 .bd-addon-store-card-tag {
     color: var(--interactive-normal);
-    background: var(--background-tertiary);
-    border: 1px solid var(--background-secondary);
+    background: var(--background-base-lowest);
+    border: 1px solid var(--background-base-lower);
     padding: 2px 5px;
     border-radius: 8px;
     transition: border-color 200ms linear, color 200ms linear;
