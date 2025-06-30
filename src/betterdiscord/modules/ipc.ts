@@ -11,6 +11,7 @@ export default new class IPCRenderer {
         ipc.on(IPCEvents.NAVIGATE, () => Events.dispatch("navigate"));
         ipc.on(IPCEvents.MAXIMIZE, () => Events.dispatch("maximize"));
         ipc.on(IPCEvents.MINIMIZE, () => Events.dispatch("minimize"));
+        ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, this.callCallback);
     }
 
     openDevTools() {
@@ -64,5 +65,33 @@ export default new class IPCRenderer {
 
     openPath(path: string) {
         return ipc.send(IPCEvents.OPEN_PATH, path);
+    }
+
+    shortcutMap = new Map<string,() => void>();
+    callCallback = (_event: Electron.IpcRendererEvent, accelerator: string) => {
+        const cb = this.shortcutMap.get(accelerator);
+        if (cb) {
+            cb();
+        }
+        else {
+            this.unregisterGlobalShortcut(accelerator);
+        }
+    };
+    async registerGlobalShortcut(accelerator: string, callback: () => void) {
+        const registered = await ipc.invoke(IPCEvents.REGISTGER_GLOBAL_SHORTCUT, accelerator);
+
+        if (registered) {
+            this.shortcutMap.set(accelerator, callback);
+        }
+        return registered;
+    }
+    unregisterGlobalShortcut(accelerator: string) {
+        this.shortcutMap.delete(accelerator);
+        ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
+    }
+    unregisterAllGlobalShortcuts() {
+        for (const [accelerator, _] of this.shortcutMap) {
+            ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
+        }
     }
 };
