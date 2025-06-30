@@ -24,3 +24,6 @@ export const EDITOR_OPEN                = "bd-editor-open";
 export const EDITOR_SHOULD_SHOW_WARNING = "bd-editor-show-warning";
 export const EDITOR_SETTINGS_GET        = "bd-editor-settings-get";
 export const EDITOR_SETTINGS_UPDATE     = "bd-editor-settings-update";
+export const EXEC_GLOBAL_SHORTCUT       = "bd-exec-global-shortcut";
+export const REGISTGER_GLOBAL_SHORTCUT  = "bd-register-global-shortcut";
+export const UNREGISTER_GLOBAL_SHORTCUT = "bd-unregister-global-shortcut";
