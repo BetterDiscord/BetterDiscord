@@ -46,6 +46,9 @@ export class Keybinds<Bounded extends boolean> {
             [pluginName, keys, callback] = args as unknown as [string, Keys, () => void];
         }
         try {
+            if (!keys || keys.length === 0) {
+                throw new Error("Keybinds: No keys provided for Global Keybind");
+            }
             return await KeybindsManager.registerGlobalKeybind(pluginName, keys, callback);
         }
         catch (e) {
@@ -73,6 +76,9 @@ export class Keybinds<Bounded extends boolean> {
             throw new Error("Invalid arguments for unregisterWindowKeybind. Expected either [eventName] or [pluginName, eventName].");
         }
         try {
+            if (!keys || keys.length === 0) {
+                throw new Error("Keybinds: No keys provided for unregistering Global Keybind");
+            }
             KeybindsManager.unregisterGlobalKeybind(pluginName, keys);
         }
         catch (e) {
