@@ -55,7 +55,7 @@
 
 .bd-select:hover,
 .bd-select.menu-open {
-    border-color: var(--background-tertiary);
+    border-color: var(--background-base-lowest);
 }
 
 .bd-select.bd-select-transparent {
@@ -76,7 +76,7 @@
 
 .bd-select .bd-select-options {
     position: absolute;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     border-radius: 0 0 3px 3px;
     max-height: 300px;
     min-width: calc(100% + 2px);
@@ -191,7 +191,7 @@
 
 .bd-settings-group.collapsible .bd-settings-title::before {
     content: "";
-    background-color: var(--background-modifier-accent);
+    background-color: var(--app-border-frame);
     height: 2px;
     order: 2;
     flex: 1;
