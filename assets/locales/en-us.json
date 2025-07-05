@@ -357,9 +357,10 @@
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
+        "viewUpdates": "View Updates",
         "addonUpdatesAvailable": {
-            "one": "BetterDiscord has found an update for {{count}} of your {{type}}!",
-            "other": "BetterDiscord has found updates for {{count}} of your {{type}}!"
+            "one": "{{count}} {{type}} has an update!",
+            "other": "{{count}} {{type}}s have updates!"
         },
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
