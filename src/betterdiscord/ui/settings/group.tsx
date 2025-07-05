@@ -23,8 +23,20 @@ const {useCallback} = React;
 
 
 function SettingsProvider({collection, category, id, children}: PropsWithChildren<{collection: string; category: string; id: string;}>) {
-    const state = useInternalStore(SettingsStore, () => SettingsStore.get(collection, category, id));
-    return <SettingsContext.Provider value={state}>{children}</SettingsContext.Provider>;
+    const getSettingState = React.useCallback(() => {
+        const setting = SettingsStore.getSetting(collection, category, id);
+        return {
+            value: SettingsStore.get(collection, category, id),
+            disabled: setting?.disabled ?? false
+        };
+    }, [collection, category, id]);
+
+    const settingState = useInternalStore(SettingsStore, getSettingState);
+
+    // Only recreate context value when data actually changes
+    const context = React.useMemo(() => settingState, [settingState]);
+
+    return <SettingsContext.Provider value={context}>{children}</SettingsContext.Provider>;
 }
 
 export type GroupProps = PropsWithChildren<{

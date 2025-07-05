@@ -1,4 +1,13 @@
-import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandmanager";
+import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes, type Command} from "@modules/commandmanager";
+
+type RegisterArgs<Bounded extends boolean> = [
+    ...(Bounded extends false ? [caller: string] : []),
+    command: Command
+];
+type UnregisterArgs<Bounded extends boolean> = [
+    ...(Bounded extends false ? [caller: string] : []),
+    id: string
+];
 
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
@@ -7,7 +16,7 @@ import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes
  * @summary {@link CommandAPI} is a utility class for managing commands.
  * @name CommandAPI
  */
-class CommandAPI {
+class CommandAPI<Bounded extends boolean> {
     #callerName = "";
 
     constructor(callerName?: string) {
@@ -28,9 +37,9 @@ class CommandAPI {
      * @param {object} [command] Command object (optional if caller is preset)
      * @returns {Function|undefined} Unregister function
      */
-    register(callerOrCommand: string | object, command: object) {
-        const caller = (this.#callerName || callerOrCommand) as string;
-        const commandObj = (this.#callerName ? callerOrCommand : command) as object;
+    register(...args: RegisterArgs<Bounded>) {
+        const caller = (this.#callerName || args[0]) as string;
+        const commandObj = args[this.#callerName ? 0 : 1] as Command;
 
         if (!this.#validateRegistration(caller, commandObj)) {
             return;
@@ -44,15 +53,15 @@ class CommandAPI {
      * @param {string} callerOrCommandId Caller name or command ID if caller is preset
      * @param {string} [commandId] Command ID (optional if caller is preset)
      */
-    unregister(callerOrCommandId: string, commandId: string) {
-        const caller = this.#callerName || callerOrCommandId;
-        const finalCommandId = this.#callerName ? callerOrCommandId : commandId;
+    unregister(...args: UnregisterArgs<Bounded>) {
+        const caller = (this.#callerName || args[0]) as string;
+        const id = args[this.#callerName ? 0 : 1] as string;
 
-        if (!this.#validateUnregistration(caller, finalCommandId)) {
+        if (!this.#validateUnregistration(caller, id)) {
             return;
         }
 
-        CommandManager.unregisterCommand(caller, finalCommandId);
+        CommandManager.unregisterCommand(caller, id);
     }
 
     /**

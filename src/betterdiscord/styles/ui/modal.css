@@ -21,7 +21,7 @@
 }
 
 .bd-modal-inner {
-    background: var(--background-primary);
+    background: var(--background-base-low);
     border-radius: 4px;
     overflow: hidden;
     animation: bd-modal-open ease-out;
@@ -37,7 +37,7 @@
     display: flex;
     justify-content: flex-end;
     padding: 15px;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
 }
 
 .bd-modal-body {

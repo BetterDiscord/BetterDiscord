@@ -85,7 +85,7 @@
 }
 
 .bd-notice-button:hover {
-    color: var(--color, var(--background-mobile-primary));
+    color: var(--color, var(--background-mobile-secondary));
     background: #FFFFFF;
 }
 
