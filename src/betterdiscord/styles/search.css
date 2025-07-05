@@ -3,7 +3,7 @@
     border-radius: 3px;
     outline: none;
     border: 0;
-    background-color: var(--background-tertiary);
+    background-color: var(--background-base-lowest);
     color: var(--text-muted);
     display: flex;
     align-items: center;
@@ -13,7 +13,7 @@
     padding: 2px 3px;
     background: none;
     border: 0;
-    color: var(--text-normal);
+    color: var(--text-default);
     flex: 1;
 }
 

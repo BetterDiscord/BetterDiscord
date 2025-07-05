@@ -39,7 +39,7 @@
     margin-bottom: 20px;
     border-radius: 5px;
     overflow: hidden;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
 }
 
 .bd-addon-list.bd-grid-view .bd-addon-card {
@@ -170,7 +170,7 @@
     font-size: 85%;
     line-height: 1.125rem;
     white-space: pre-wrap;
-    background: var(--background-tertiary);
+    background: var(--background-base-lowest);
 }
 
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,
@@ -289,7 +289,7 @@
 }
 
 .bd-addon-controls .bd-button:active {
-    background-color: var(--background-modifier-accent);
+    background-color: var(--app-border-frame);
 }
 
 .bd-addon-controls .bd-button.selected {
@@ -342,7 +342,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: var(--background-secondary);
+    background-color: var(--background-base-lower);
     border-radius: var(--radius-sm);
     cursor: pointer;
     margin: 10px 0;
@@ -355,7 +355,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: var(--background-tertiary);
+    background: var(--background-base-lowest);
     color: var(--interactive-normal);
     padding: 8px;
 }
