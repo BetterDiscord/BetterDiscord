@@ -188,9 +188,9 @@ const NotificationItem = ({notification}: { notification: Notification; position
                     ✕
                 </Text>
             </div>
-            <span className="bd-notification-body">{<Markdown>
+            <span className="bd-notification-body">{typeof content == "string" ? <Markdown>
                 {content}
-            </Markdown>}</span>
+            </Markdown> : content}</span>
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
                     {actions.map((action, index) => (
