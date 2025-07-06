@@ -1,7 +1,8 @@
 import Logger from "@common/logger";
-import KeybindsManager from "@modules/keybindsmanager";
+import KeybindsManager, {mapKeysToAccelerator} from "@modules/keybindsmanager";
 
 type Keys = string[];
+type Shortcut = Electron.Accelerator | Keys;
 
 type RegisterGlobalArgs = [keys: Keys, callback: () => void];
 type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterGlobalArgs : RegisterGlobalArgs;
@@ -9,6 +10,21 @@ type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? [pl
 type UnregisterArgs = [pluginName: string, keys: Keys] | [keys: Keys];
 type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | UnregisterArgs : UnregisterArgs;
 
+function shortcutToAccelerator(keys: unknown): Electron.Accelerator | undefined {
+    let accelerator: Electron.Accelerator | undefined;
+    if (typeof keys === "string") {
+        if (!keys) {
+            return accelerator;
+        }
+        return keys as Electron.Accelerator;
+    }
+    else if (Array.isArray(keys) && keys.length > 0) {
+        if (keys.some(key => typeof key !== "string")) {
+            return accelerator;
+        }
+        return mapKeysToAccelerator(keys as Keys);
+    }
+}
 
 /**
  * `Keybinds` is a simple utility class for the management of plugin Keybinds. An instance is available on {@link BdApi}.
@@ -22,20 +38,20 @@ export class Keybinds<Bounded extends boolean> {
     constructor(callerName?: string) {
         if (!callerName) return;
         this.#callerName = callerName;
-        KeybindsManager.initializePluginKeybindings(this.#callerName);
+        KeybindsManager.initializePlugin(this.#callerName);
     }
 
     /**
      * Registers a Global Keybind.
      * @param {string} pluginName Name of the plugin to register the Keybind for
-     * @param {Keys} keys The keys to register
+     * @param {Electron.Accelerator | Keys} keys The keys to register
      * @param {Function} callback The callback to call when the keybind is pressed
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
     async registerGlobalKeybind(...args: RegisterGlobalKeybind<Bounded>) {
         let pluginName: string;
-        let keys: Keys;
+        let keys: Shortcut;
         let callback: () => void;
 
         if (this.#callerName) {
@@ -43,13 +59,14 @@ export class Keybinds<Bounded extends boolean> {
             [keys, callback] = args as unknown as [Keys, () => void];
         }
         else {
-            [pluginName, keys, callback] = args as unknown as [string, Keys, () => void];
+            [pluginName, keys, callback] = args as unknown as [string, Shortcut, () => void];
         }
         try {
-            if (!keys || keys.length === 0) {
-                throw new Error("Keybinds: No keys provided for Global Keybind");
+            const accelerator = shortcutToAccelerator(keys);
+            if (!accelerator) {
+                throw new Error("Keybinds: Invalid keys provided for registering Global Keybind");
             }
-            return await KeybindsManager.registerGlobalKeybind(pluginName, keys, callback);
+            return await KeybindsManager.registerGlobalAccelerator(pluginName, accelerator, callback);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while registering Global Keybind`, e as Error);
@@ -64,7 +81,7 @@ export class Keybinds<Bounded extends boolean> {
      */
     unregisterGlobalKeybind(...args: UnregisterKeybind<Bounded>) {
         let pluginName: string;
-        let keys: Keys;
+        let keys: Shortcut;
         if (this.#callerName && args.length === 1) {
             pluginName = this.#callerName;
             keys = args[0] as Keys;
@@ -76,10 +93,11 @@ export class Keybinds<Bounded extends boolean> {
             throw new Error("Invalid arguments for unregisterWindowKeybind. Expected either [eventName] or [pluginName, eventName].");
         }
         try {
-            if (!keys || keys.length === 0) {
-                throw new Error("Keybinds: No keys provided for unregistering Global Keybind");
+            const accelerator = shortcutToAccelerator(keys);
+            if (!accelerator) {
+                throw new Error("Keybinds: Invalid keys provided for unregistering Global Keybind");
             }
-            KeybindsManager.unregisterGlobalKeybind(pluginName, keys);
+            KeybindsManager.unregisterGlobalAccelerator(pluginName, accelerator);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering Global Keybind`, e as Error);
@@ -95,7 +113,7 @@ export class Keybinds<Bounded extends boolean> {
             pluginName = this.#callerName;
         }
         try {
-            KeybindsManager.unregisterAllKeybinds(pluginName);
+            KeybindsManager.unregisterAllGlobalAccelerators(pluginName);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${pluginName}] Error while unregistering all Keybinds`, e as Error);
