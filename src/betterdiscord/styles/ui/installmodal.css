@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--background-primary);
+    background-color: var(--background-base-low);
     transition: background-color 0.15s ease-out, color 0.15s ease-out;
     overflow: hidden;
     position: relative;
@@ -35,14 +35,14 @@
 
 .bd-install-modal-items {
     margin: 20px;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     padding: 12px;
     border-radius: 8px;
 }
 
 .bd-install-modal-item {
     padding: 12px;
-    color: var(--text-normal);
+    color: var(--text-default);
     gap: 12px;
 }
 
@@ -117,5 +117,5 @@
 
 .bd-install-modal-author-mask {
     padding: 4px;
-    background-color: var(--background-primary);
+    background-color: var(--background-base-low);
 }

@@ -18,7 +18,8 @@
 }
 
 .bd-notification {
-    color: var(--text-normal);
+    background: var(--background-base-lower,var(--background-secondary-alt));
+    color: var(--text-default);
     border-radius: 4px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
     overflow: hidden;
@@ -49,7 +50,7 @@
 .bd-notification-close {
     background: none;
     border: none;
-    color: var(--text-normal);
+    color: var(--text-default);
     cursor: pointer;
     font-size: 18px;
     transition: color 0.2s ease-in-out;
@@ -128,10 +129,10 @@
 }
 
 .bd-container {
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     border: 3px solid var(--brand-500);
     border-radius: 8px;
-    color: var(--text-normal);
+    color: var(--text-default);
     position: relative;
     width: 500px;
     height: 300px;
@@ -139,10 +140,10 @@
 }
 
 .bd-container-disabled {
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     border: 3px solid var(--red-400);
     border-radius: 8px;
-    color: var(--text-normal);
+    color: var(--text-default);
     position: relative;
     width: 500px;
     height: 300px;
@@ -216,6 +217,6 @@
     text-align: center;
 }
 
-.bd-text { margin: 0; color: var(--text-normal); }
+.bd-text { margin: 0; color: var(--text-default); }
 
-.bd-p { margin: 10px 0 0; color: var(--text-normal); }
+.bd-p { margin: 10px 0 0; color: var(--text-default); }
