@@ -22,4 +22,4 @@ export default new class Notifications extends Store {
     get notifications(): Notification[] {
         return this.notificationsArray;
     }
-}
+};

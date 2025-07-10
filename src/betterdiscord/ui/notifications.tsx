@@ -78,20 +78,40 @@ class NotificationUI {
         ReactDOM.createRoot(root).render(<PersistentNotificationContainer/>);
     }
 
-    show(notificationData: Notification) {
+    show(notif: Notification) {
         // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
         // Or duplicate notifications.
+        
+        let notificationData = Notifications.notifications.find(notification => notification.id === notif.id);
 
-        const newData = {
+        if (!notificationData) {
+            const kSelf = Symbol("kSelf");
+
+            notificationData = {
+                ...notif,
+                [kSelf]: true
+            };
+
+            this.upsertNotification(notificationData);
+        }
+
+        const kSelf = Reflect.ownKeys(notificationData).at(-1);
+
+        return {
             id: notificationData.id,
-            close: () => this.hide(notificationData.id),
-            isVisible: () => Notifications.notifications.find((n: Notification) => n.id === notificationData.id) !== undefined
-        };
+            isVisible: () => {
+                const currentNotifications = Notifications.notifications;
+                return currentNotifications.findIndex(notification => notification[kSelf]) !== -1;
+            },
+            close: () => {
+                const currentNotifications = Notifications.notifications;
+                const notificationIndex = currentNotifications.findIndex(notification => notification[kSelf]);
 
-        if (Notifications.notifications.find((notif: Notification) => notif.id == notificationData.id)) return newData;
-
-        this.upsertNotification(notificationData);
-        return newData;
+                if (notificationIndex !== -1) {
+                    this.hide(notificationData.id);
+                }
+            }
+        }
     }
 
     upsertNotification(notificationData: Notification) {
