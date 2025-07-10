@@ -181,7 +181,6 @@ export class CoreUpdater {
 
         if (!this.hasUpdate || !showNotice) return;
 
-        if (Notifications.has("BD-core-update")) return;
         Notifications.show({
             id: "BD-core-update",
             title: t("Updater.updateAvailable", {version: this.remoteVersion}),
@@ -328,23 +327,21 @@ export class AddonUpdater {
     showUpdateNotice() {
         if (!this.pending.length) return;
         
-        const addonNames = this.pending.map(filename => {
+        const addonDetails = this.pending.map(filename => {
             const info = this.cache[path.basename(filename)];
             return {
                 name: info ? info.name : filename,
                 version: info ? info.version : ""
             };
         });
-        
-        if (Notifications.has(`addon-updates-${this.type}`)) return;
 
         Notifications.show({
             id: `addon-updates-${this.type}`,
-            title: `Addon Updater`,
+            title: t("Updater.addonUpdatesAvailable.title"),
             content: [
                 t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
                 React.createElement("ul", {style: {marginTop: "8px", marginBottom: "0"}},
-                    addonNames.map(addon => 
+                    addonDetails.map(addon => 
                         React.createElement("li", {}, [
                             addon.name, " ", React.createElement("i", {}, `(${addon.version})`)
                         ])

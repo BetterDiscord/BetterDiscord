@@ -359,6 +359,7 @@
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
         "viewUpdates": "View Updates",
         "addonUpdatesAvailable": {
+            "title": "Addon Updater",
             "one": "{{count}} {{type}} has an update!",
             "other": "{{count}} {{type}}s have updates!"
         },
