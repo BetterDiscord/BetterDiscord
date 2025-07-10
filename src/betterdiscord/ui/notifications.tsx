@@ -81,7 +81,7 @@ class NotificationUI {
     show(notif: Notification) {
         // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
         // Or duplicate notifications.
-        
+
         let notificationData = Notifications.notifications.find(notification => notification.id === notif.id);
 
         if (!notificationData) {
@@ -111,7 +111,7 @@ class NotificationUI {
                     this.hide(notificationData.id);
                 }
             }
-        }
+        };
     }
 
     upsertNotification(notificationData: Notification) {
