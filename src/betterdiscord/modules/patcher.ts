@@ -18,6 +18,7 @@ export interface Options<ForcePatch extends boolean = true> {
     forcePatch?: ForcePatch;
     displayName?: string;
     priority?: number;
+    detached?: boolean;
 }
 
 function adaptOptions<
@@ -31,7 +32,8 @@ function adaptOptions<
         once: typeof options.once === "boolean" ? options.once : false,
         forcePatch: (typeof options.forcePatch === "boolean" ? options.forcePatch : true) as ForcePatch,
         displayName: typeof options.displayName === "string" ? options.displayName : displayName,
-        priority: typeof options.priority === "number" ? isNaN(options.priority) ? 0 : options.priority : 0
+        priority: typeof options.priority === "number" ? isNaN(options.priority) ? 0 : options.priority : 0,
+        detached: typeof options.detached === "boolean" ? options.detached : false
     };
 }
 
@@ -281,7 +283,9 @@ class BasePatcher {
             }
         };
 
-        (patches[callerName] ??= []).push(patch as Patch);
+        if (!adaptedOptions.detached) {
+            (patches[callerName] ??= []).push(patch as Patch);
+        }
         hook.pushPatch("before", patch);
 
         return patch.undo;
@@ -323,7 +327,9 @@ class BasePatcher {
             }
         };
 
-        (patches[callerName] ??= []).push(patch as Patch);
+        if (!adaptedOptions.detached) {
+            (patches[callerName] ??= []).push(patch as Patch);
+        }
         hook.pushPatch("instead", patch);
 
         return patch.undo;
@@ -365,7 +371,9 @@ class BasePatcher {
             }
         };
 
-        (patches[callerName] ??= []).push(patch as Patch);
+        if (!adaptedOptions.detached) {
+            (patches[callerName] ??= []).push(patch as Patch);
+        }
         hook.pushPatch("after", patch);
 
         return patch.undo;
