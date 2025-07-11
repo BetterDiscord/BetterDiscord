@@ -16,18 +16,22 @@ type FunctionThisParameterType<T extends FunctionType> = T extends (this: infer 
 export interface Options<ForcePatch extends boolean = true> {
     once?: boolean;
     forcePatch?: ForcePatch;
+    displayName?: string;
+    priority?: number;
 }
 
 function adaptOptions<
     ForcePatch extends boolean = false
->(options?: Options<ForcePatch> | undefined | null): Required<Options<ForcePatch>> {
+>(options: Options<ForcePatch> | undefined | null, displayName: string): Required<Options<ForcePatch>> {
     if (!options) {
         options = {};
     }
 
     return {
         once: typeof options.once === "boolean" ? options.once : false,
-        forcePatch: (typeof options.forcePatch === "boolean" ? options.forcePatch : true) as ForcePatch
+        forcePatch: (typeof options.forcePatch === "boolean" ? options.forcePatch : true) as ForcePatch,
+        displayName: typeof options.displayName === "string" ? options.displayName : displayName,
+        priority: typeof options.priority === "number" ? isNaN(options.priority) ? 0 : options.priority : 0
     };
 }
 
@@ -44,9 +48,8 @@ function createReplacer<T extends FunctionType>(fn: T, apply: (target: T, thisAr
             return apply(target, thisArg, argsArray as FunctionParameters<T>);
         },
         get(target, p, receiver) {
-            if (p === Symbol.for("betterdiscord.patcher")) {
+            if (typeof hook === "object" && p === Symbol.for("betterdiscord.patcher")) {
                 return hook;
-
             }
 
             const $value = Reflect.get(target, p, receiver);
@@ -85,7 +88,8 @@ function createReplacer<T extends FunctionType>(fn: T, apply: (target: T, thisAr
             }
 
             return $value;
-        }
+        },
+        [Symbol.for("betterdiscord.patcher")]: hook
     });
 
     originals.set(replacer, fn);
@@ -109,6 +113,7 @@ interface Hook<T extends FunctionType> {
     readonly instead: Array<Patch<"instead", T>>;
     readonly after: Array<Patch<"after", T>>;
     readonly callers: Record<string, Patch[]>;
+    pushPatch<Type extends PatchType>(type: Type, callback: Patch<Type, T>): void;
 }
 
 const hooks = new WeakMap<FunctionType, Hook<FunctionType>>();
@@ -144,6 +149,17 @@ function createHook<
             }
 
             return callers;
+        },
+        pushPatch<Type extends PatchType>(type: Type, patch: Patch<Type, T>) {
+            const patches = hook[type] as unknown as Array<Patch<Type, T>>;
+
+            patches.push(patch);
+
+            patches.sort((a, b) => {
+                if (b.options.priority > a.options.priority) return 1;
+                if (b.options.priority < a.options.priority) return -1;
+                return 0;
+            });
         }
     };
 
@@ -155,7 +171,7 @@ function createHook<
                 patch.callback(thisArg, argsArray);
             }
             catch (err) {
-                Logger.err("Patcher", `Could not fire before callback for ${patch.callerName}`, err);
+                Logger.err("Patcher", `Could not fire before callback ${patch.options.displayName} for ${patch.callerName}`, err);
             }
             finally {
                 if (patch.options.once) {
@@ -181,7 +197,7 @@ function createHook<
                         return patch.callback(this, args, original);
                     }
                     catch (err) {
-                        Logger.err("Patcher", `Could not fire instrad callback for ${patch.callerName}`, err);
+                        Logger.err("Patcher", `Could not fire instead callback ${patch.options.displayName} for ${patch.callerName}`, err);
                         return undefined as FunctionReturnType<T>;
                     }
                     finally {
@@ -210,7 +226,7 @@ function createHook<
                 }
             }
             catch (err) {
-                Logger.err("Patcher", `Could not fire after callback for ${patch.callerName}`, err);
+                Logger.err("Patcher", `Could not fire after callback ${patch.options.displayName} for ${patch.callerName}`, err);
             }
             finally {
                 if (patch.options.once) {
@@ -232,14 +248,14 @@ class BasePatcher {
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
     >(callerName: string, module: M, key: K, callback: BeforeCallback<M[K]>, options?: Options) {
-        const adoptedOptions = adaptOptions(options);
+        const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
 
-        const hook = createHook(module, key, adoptedOptions.forcePatch);
+        const hook = createHook(module, key, adaptedOptions.forcePatch);
         if (!hook) return () => {};
 
         const patch: Patch<"before", M[K]> = {
             callback,
-            options: adoptedOptions,
+            options: adaptedOptions,
             callerName,
             type: "before",
             undo: () => {
@@ -266,7 +282,7 @@ class BasePatcher {
         };
 
         (patches[callerName] ??= []).push(patch as Patch);
-        hook.before.push(patch);
+        hook.pushPatch("before", patch);
 
         return patch.undo;
     }
@@ -274,14 +290,14 @@ class BasePatcher {
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
     >(callerName: string, module: M, key: K, callback: InsteadCallback<M[K]>, options?: Options) {
-        const adoptedOptions = adaptOptions(options);
+        const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
 
-        const hook = createHook(module, key, adoptedOptions.forcePatch);
+        const hook = createHook(module, key, adaptedOptions.forcePatch);
         if (!hook) return () => {};
 
         const patch: Patch<"instead", M[K]> = {
             callback,
-            options: adaptOptions(options),
+            options: adaptedOptions,
             callerName,
             type: "instead",
             undo: () => {
@@ -308,7 +324,7 @@ class BasePatcher {
         };
 
         (patches[callerName] ??= []).push(patch as Patch);
-        hook.instead.push(patch);
+        hook.pushPatch("instead", patch);
 
         return patch.undo;
     }
@@ -316,14 +332,14 @@ class BasePatcher {
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
     >(callerName: string, module: M, key: K, callback: AfterCallback<M[K]>, options?: Options) {
-        const adoptedOptions = adaptOptions(options);
+        const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
 
-        const hook = createHook(module, key, adoptedOptions.forcePatch);
+        const hook = createHook(module, key, adaptedOptions.forcePatch);
         if (!hook) return () => {};
 
         const patch: Patch<"after", M[K]> = {
             callback,
-            options: adaptOptions(options),
+            options: adaptedOptions,
             callerName,
             type: "after",
             undo: () => {
@@ -350,7 +366,7 @@ class BasePatcher {
         };
 
         (patches[callerName] ??= []).push(patch as Patch);
-        hook.after.push(patch);
+        hook.pushPatch("after", patch);
 
         return patch.undo;
     }
