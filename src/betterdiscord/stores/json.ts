@@ -2,6 +2,7 @@ import fs from "@polyfill/fs";
 import path from "path";
 import Store from "./base";
 import Config from "./config";
+import Logger from "@common/logger.ts";
 
 
 export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
@@ -65,7 +66,6 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-
     // Plugin data
     #getPluginFile(pluginName: string) {
         return path.resolve(Config.get("pluginsPath"), pluginName + ".config.json");
@@ -87,13 +87,29 @@ export default new class JsonStore extends Store {
         }
     }
 
+    recache(pluginName: string) {
+        this.#ensurePluginData(pluginName);
+        try {
+            this.pluginCache[pluginName] = JSON.parse(fs.readFileSync(this.#getPluginFile(pluginName)).toString());
+            this.emit();
+            return true;
+        } 
+        catch (err) {
+            Logger.err("JsonStore", "recache: ", err);
+            return false;
+        }
+    }
+    
     #savePluginData(pluginName: string) {
         fs.writeFileSync(this.#getPluginFile(pluginName), JSON.stringify(this.pluginCache[pluginName], null, 4));
         this.emit();
     }
 
-    getData<T>(pluginName: string, key: string): T {
+    getData<T>(pluginName: string, key: string, recache: unknown): T {
         this.#ensurePluginData(pluginName); //       Ensure plugin data, if any, is cached
+        if (recache) {
+            this.recache(pluginName);
+        }
         return this.pluginCache[pluginName][key] as T; // Return blindly to allow falsey values
     }
 
