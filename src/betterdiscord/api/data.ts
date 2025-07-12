@@ -51,7 +51,7 @@ class Data<Bounded extends boolean> {
      */
     load<T>(...args: BaseArgs<Bounded>): T {
         if (this.#callerName) {
-            return JsonStore.getData(this.#callerName, args[0], args[2]);
+            return JsonStore.getData(this.#callerName, args[0], args[1]);
         }
 
         return JsonStore.getData(args[0], args[1], args[2]);
