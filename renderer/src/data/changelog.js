@@ -12,13 +12,9 @@ export default {
             title: "Hot Hot Hotfixes 🔥",
             type: "fixed",
             items: [
-                "All of BetterDiscord will actually load now after Discord's recent changes.",
-                "BetterDiscord notice banners will now be banners again instead of showing up squashed in the corner.",
-                "Toasts will show and be aligned properly.",
-                "Plugins and themes should be loaded correctly on Discord Canary.",
-                "BetterDiscord itself should work on Canary too!",
-                "Slash Commands from BetterDiscord should be working again for those that had problesm.",
-                "Pasting into the CSS editor actually pastes instead of being ignored.",
+                "BetterDiscord should load again.",
+                "Fixed editing custom css with external editors.",
+                "Certain edge cases with UI rendering has been repaired.",
             ]
         },
     ]
