@@ -11,12 +11,12 @@
 }
 
 .theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lower-alt);
 }
 
 .theme-dark .bd-addon-store-card:hover,
 .theme-dark .bd-addon-store-card:hover .bd-addon-store-card-author-mask {
-    background-color: var(--background-tertiary);
+    background-color: var(--background-base-lowest);
 }
 
 .full-motion .bd-addon-store-card {
@@ -40,7 +40,7 @@
 }
 
 .theme-dark .bd-addon-store-card-author-mask {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lower-alt);
 }
 
 .full-motion .bd-addon-store-card-author-mask {
@@ -172,8 +172,8 @@
 
 .bd-addon-store-card-tag {
     color: var(--interactive-normal);
-    background: var(--background-tertiary);
-    border: 1px solid var(--background-secondary);
+    background: var(--background-base-lowest);
+    border: 1px solid var(--background-base-lower);
     padding: 2px 5px;
     border-radius: 8px;
     transition: border-color 200ms linear, color 200ms linear;
@@ -254,7 +254,7 @@ button.bd-addon-store-card-button {
 }
 
 .theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lower-alt);
 }
 
 img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="https://betterdiscord.app/resources/ui/content_thumbnail.svg"] {

@@ -11,11 +11,11 @@
     margin: -0.2em 0;
     border-radius: 4px;
     font-size: 85%;
-    border: 1px solid var(--background-tertiary);
+    border: 1px solid var(--background-base-lowest);
     line-height: 1.125rem;
     white-space: pre-wrap;
-    background: var(--background-secondary);
-    border: 1px solid var(--background-tertiary);
+    background: var(--background-base-lower);
+    border: 1px solid var(--background-base-lowest);
 }
 
 .bd-changelog-modal .bd-modal-content {

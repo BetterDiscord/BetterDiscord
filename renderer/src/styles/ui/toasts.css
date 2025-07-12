@@ -19,7 +19,7 @@
 .bd-toast {
     animation: bd-toast-up 300ms ease;
     transform: translateY(-10px);
-    background-color: var(--background-primary);
+    background-color: var(--background-base-low);
     padding: 10px;
     border-radius: 5px;
     box-shadow: var(--elevation-medium), var(--elevation-stroke);

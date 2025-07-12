@@ -1,9 +1,9 @@
 .bd-text-normal {
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .bd-text-muted {
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .bd-text-error {
