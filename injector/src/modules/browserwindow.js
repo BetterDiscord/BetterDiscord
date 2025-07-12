@@ -21,12 +21,23 @@ class BrowserWindow extends electron.BrowserWindow {
 
         process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
         process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
-        
+
         if (inAppTrafficLights) {
             delete options.titleBarStyle;
         }
 
+        const removeMinimumSize = Boolean(BetterDiscord.getSetting("window", "removeMinimumSize") ?? false);
+        if (removeMinimumSize) {
+            options.minWidth = 0;
+            options.minHeight = 0;
+        }
+
         super(options);
+
+        if (removeMinimumSize) {
+            this.setMinimumSize = () => {};
+        }
+
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
     }
