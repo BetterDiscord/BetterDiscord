@@ -30,12 +30,13 @@
 }
 
 .bd-tooltip-primary {
-    background-color: var(--background-floating);
-    color: var(--text-normal);
+    background-color: var(--background-base-low);
+    color: var(--text-default);
+    border: 1px solid var(--border-subtle);
 }
 
 .bd-tooltip-primary .bd-tooltip-pointer {
-    border-top-color: var(--background-floating);
+    border-top-color: var(--background-base-lowest);
 }
 
 .bd-tooltip-info {

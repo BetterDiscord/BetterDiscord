@@ -7,7 +7,7 @@
     display: flex;
     background-color: var(--deprecated-text-input-bg);
     border: 1px solid var(--deprecated-text-input-border);
-    color: var(--text-normal);
+    color: var(--text-default);
     font-size: 14px;
     padding: 5px;
     margin: 0;

@@ -19,7 +19,7 @@
 .bd-file-input {
     flex: 1;
     outline: none;
-    color: var(--text-normal);
+    color: var(--text-default);
     font-size: 16px;
     font-weight: 600;
     width: 100%;

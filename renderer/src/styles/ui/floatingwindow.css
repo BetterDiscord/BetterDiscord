@@ -29,7 +29,7 @@
     overflow: auto;
     resize: both;
     padding-bottom: 10px;
-    background: var(--background-tertiary);
+    background: var(--background-base-lowest);
 }
 
 .floating-window-titlebar {
@@ -39,13 +39,13 @@
     justify-content: space-between;
     align-items: center;
     color: #FFFFFF;
-    background: var(--background-tertiary); /* #2F3129background-color: #202225; */
+    background: var(--background-base-lowest); /* #2F3129background-color: #202225; */
 }
 
 .floating-window-content {
     display: flex;
     flex-direction: column;
-    background: var(--background-secondary);
+    background: var(--background-base-lower);
     color: #FFFFFF;
     flex: 1;
     overflow: hidden;
@@ -113,7 +113,7 @@
 .floating-window #bd-editor-controls {
     z-index: 10;
     height: auto;
-    background: var(--background-secondary-alt);
+    background: var(--background-base-lower);
     border: none;
     box-shadow: var(--elevation-low);
 }

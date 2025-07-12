@@ -1,9 +1,9 @@
 .bd-text-normal {
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .bd-text-muted {
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .bd-text-error {
@@ -27,11 +27,11 @@
 }
 
 .bd-text-yellow {
-    color: var(--text-warning);
+    color: var(--text-feedback-warning);
 }
 
 .bd-text-green {
-    color: var(--text-positive);
+    color: var(--text-feedback-positive);
 }
 
 .bd-text-red {
