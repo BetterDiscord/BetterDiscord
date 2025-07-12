@@ -36,7 +36,7 @@
 }
 
 .bd-tooltip-primary .bd-tooltip-pointer {
-    border-top-color: var(--background-secondary-alt);
+    border-top-color: var(--background-base-lowest);
 }
 
 .bd-tooltip-info {

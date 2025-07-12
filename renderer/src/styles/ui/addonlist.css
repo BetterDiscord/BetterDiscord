@@ -39,7 +39,7 @@
     margin-bottom: 20px;
     border-radius: 5px;
     overflow: hidden;
-    background: var(--background-base-lowest);
+    background: var(--background-base-lower);
 }
 
 .bd-addon-list.bd-grid-view .bd-addon-card {
@@ -48,7 +48,7 @@
 
 .bd-addon-list .bd-addon-header {
     color: var(--header-primary);
-    background: var(--background-base-lower-alt);
+    background: var(--background-base-lowest);
     padding: 16px;
     font-size: 14px;
     line-height: 20px;
