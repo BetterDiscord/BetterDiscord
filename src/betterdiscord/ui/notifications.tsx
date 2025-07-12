@@ -7,7 +7,6 @@ import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "luc
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
 import type {MouseEvent, ReactNode} from "react";
-import type {Position} from "./settings/components/position";
 import {useInternalStore} from "@ui/hooks.ts";
 import {shallowEqual} from "fast-equals";
 import Markdown from "@ui/base/markdown.tsx";
