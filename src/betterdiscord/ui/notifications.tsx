@@ -155,7 +155,7 @@ const PersistentNotificationContainer = () => {
 
 const NotificationUIInstance = new NotificationUI();
 
-const NotificationItem = ({notification}: { notification: Notification; position: Position; }) => {
+const NotificationItem = ({notification}: { notification: Notification }) => {
     const {
         id,
         title = "",
