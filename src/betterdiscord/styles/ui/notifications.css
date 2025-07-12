@@ -18,7 +18,7 @@
 }
 
 .bd-notification {
-    background: var(--background-base-lower,var(--background-secondary-alt)) /*var(--background-primary)*/;
+    background: var(--background-base-lower,var(--background-secondary-alt));
     color: var(--text-default);
     border-radius: 4px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
