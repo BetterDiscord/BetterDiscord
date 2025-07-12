@@ -246,25 +246,26 @@ function createHook<
 }
 const patches: Record<string, Patch[]> = {};
 class BasePatcher {
-    public before<
+    private addPatch<
+        T extends PatchType,
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
-    >(callerName: string, module: M, key: K, callback: BeforeCallback<M[K]>, options?: Options) {
+    >(type: T, callerName: string, module: M, key: K, callback: T extends "before" ? BeforeCallback<M[K]> : T extends "instead" ? InsteadCallback<M[K]> : AfterCallback<M[K]>, options?: Options) {
         const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
 
         const hook = createHook(module, key, adaptedOptions.forcePatch);
         if (!hook) return () => {};
 
-        const patch: Patch<"before", M[K]> = {
+        const patch: Patch<T, M[K]> = {
             callback,
             options: adaptedOptions,
             callerName,
-            type: "before",
+            type,
             undo: () => {
                 $: {
                     if (!patches[callerName]) break $;
 
-                    const index = patches[callerName].indexOf(patch as Patch);
+                    const index = patches[callerName].indexOf(patch as unknown as Patch);
 
                     if (index === -1) {
                         break $;
@@ -273,110 +274,41 @@ class BasePatcher {
                     patches[callerName]!.splice(index, 1);
                 }
 
-                const index = hook.before.indexOf(patch);
+                const index = hook[type].indexOf(patch as any);
 
                 if (index === -1) {
                     return;
                 }
 
-                hook.before.splice(index, 1);
+                hook[type].splice(index, 1);
             }
         };
 
         if (!adaptedOptions.detached) {
-            (patches[callerName] ??= []).push(patch as Patch);
+            (patches[callerName] ??= []).push(patch as unknown as Patch);
         }
-        hook.pushPatch("before", patch);
+        hook.pushPatch(type, patch);
 
         return patch.undo;
+    }
+
+    public before<
+        M extends Record<PropertyKey, any>,
+        K extends KeysMatching<M>
+    >(callerName: string, module: M, key: K, callback: BeforeCallback<M[K]>, options?: Options) {
+        return this.addPatch("before", callerName, module, key, callback, options);
     }
     public instead<
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
     >(callerName: string, module: M, key: K, callback: InsteadCallback<M[K]>, options?: Options) {
-        const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
-
-        const hook = createHook(module, key, adaptedOptions.forcePatch);
-        if (!hook) return () => {};
-
-        const patch: Patch<"instead", M[K]> = {
-            callback,
-            options: adaptedOptions,
-            callerName,
-            type: "instead",
-            undo: () => {
-                $: {
-                    if (!patches[callerName]) break $;
-
-                    const index = patches[callerName].indexOf(patch as Patch);
-
-                    if (index === -1) {
-                        break $;
-                    }
-
-                    patches[callerName]!.splice(index, 1);
-                }
-
-                const index = hook.instead.indexOf(patch);
-
-                if (index === -1) {
-                    return;
-                }
-
-                hook.instead.splice(index, 1);
-            }
-        };
-
-        if (!adaptedOptions.detached) {
-            (patches[callerName] ??= []).push(patch as Patch);
-        }
-        hook.pushPatch("instead", patch);
-
-        return patch.undo;
+        return this.addPatch("instead", callerName, module, key, callback, options);
     }
     public after<
         M extends Record<PropertyKey, any>,
         K extends KeysMatching<M>
     >(callerName: string, module: M, key: K, callback: AfterCallback<M[K]>, options?: Options) {
-        const adaptedOptions = adaptOptions(options, module?.[key]?.name || "Anonymous");
-
-        const hook = createHook(module, key, adaptedOptions.forcePatch);
-        if (!hook) return () => {};
-
-        const patch: Patch<"after", M[K]> = {
-            callback,
-            options: adaptedOptions,
-            callerName,
-            type: "after",
-            undo: () => {
-                $: {
-                    if (!patches[callerName]) break $;
-
-                    const index = patches[callerName].indexOf(patch as Patch);
-
-                    if (index === -1) {
-                        break $;
-                    }
-
-                    patches[callerName]!.splice(index, 1);
-                }
-
-                const index = hook.after.indexOf(patch);
-
-                if (index === -1) {
-                    return;
-                }
-
-                hook.after.splice(index, 1);
-            }
-        };
-
-        if (!adaptedOptions.detached) {
-            (patches[callerName] ??= []).push(patch as Patch);
-        }
-        hook.pushPatch("after", patch);
-
-        return patch.undo;
+        return this.addPatch("after", callerName, module, key, callback, options);
     }
 
     public unpatchAll(callerName: string) {
