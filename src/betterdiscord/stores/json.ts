@@ -105,7 +105,7 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-    getData<T>(pluginName: string, key: string, recache: unknown): T {
+    getData<T>(pluginName: string, key: string, recache: boolean): T {
         this.#ensurePluginData(pluginName); //       Ensure plugin data, if any, is cached
         if (recache) {
             this.recache(pluginName);
