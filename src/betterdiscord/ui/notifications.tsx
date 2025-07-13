@@ -1,25 +1,24 @@
 import React, {ReactDOM} from "@modules/react";
-import Button from "@ui/base/button";
+import Button, {type ButtonProps, Colors, Looks} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";
 import Text from "@ui/base/text";
-import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
+import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
 import type {MouseEvent, ReactNode} from "react";
 import {useInternalStore} from "@ui/hooks.ts";
 import {shallowEqual} from "fast-equals";
 import Markdown from "@ui/base/markdown.tsx";
+import ErrorBoundary from "@ui/errorboundary.tsx";
 
 const spring = DiscordModules.ReactSpring;
 
 // TODO: let arven fix this
 export type NotificationType = "warning" | "error" | "info" | "success";
 
-export interface NotificationAction {
+interface ButtonActions extends ButtonProps {
     label: string;
-
-    onClick?(): void;
 }
 
 export interface Notification {
@@ -28,7 +27,7 @@ export interface Notification {
     content?: string | ReactNode;
     type?: NotificationType;
     duration?: number;
-    actions: NotificationAction[];
+    actions: ButtonActions[];
 
     onClose?(): void;
 
@@ -187,48 +186,55 @@ const NotificationItem = ({notification}: { notification: Notification }) => {
         <spring.animated.div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            style={{
-                pointerEvents: "auto"
-            }}
             className={`bd-notification bd-notification-${type}`}
         >
-            <div className="bd-notification-topbar">
-                <div className="bd-notification-title">
+            <div className={"bd-notification-content"}>
+                <div className="bd-notification-icon">
                     {notification.icon ? <notification.icon/> : <Icon type={type}/>}
-                    {title}
                 </div>
-                <Text
-                    onClick={(e: MouseEvent) => {
-                        e.stopPropagation();
-                        handleClose();
-                    }}
-                    className="bd-notification-close"
-                >
-                    ✕
-                </Text>
+                <div>
+                    <div className="bd-notification-title">
+                        {title}
+                        <span
+                            className={"bd-notification-content-text"}>{React.Children.map(content, m => typeof m === "string"
+                            ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}</span>
+                    </div>
+                </div>
             </div>
-            <span className="bd-notification-body">{typeof content == "string" ? <Markdown>
-                {content}
-            </Markdown> : content}</span>
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
-                    {actions.map((action, index) => (
-                        <Button
+                    {actions.map((action, index) => {
+                        const color = Colors[action?.color?.toUpperCase()] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
+                        const look = Looks[action?.look?.toUpperCase()] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
+
+                        return <Button
+                            {...action}
                             key={index}
-                            color={Button.Colors.PRIMARY}
-                            size={Button.Sizes.SMALL}
+                            color={color}
+                            look={look}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                action.onClick?.();
-                                handleClose();
+                                action.onClick?.(e);
+                                if (!e.defaultPrevented) {
+                                    handleClose();
+                                }
                             }}
                             className="bd-notification-action"
                         >
                             {action?.label}
-                        </Button>
-                    ))}
+                        </Button>;
+                    })}
                 </div>
             )}
+            <Text
+                onClick={(e: MouseEvent) => {
+                    e.stopPropagation();
+                    handleClose();
+                }}
+                className="bd-notification-close"
+            >
+                ✕
+            </Text>
             <spring.animated.div
                 className="bd-notification-progress"
                 style={{
