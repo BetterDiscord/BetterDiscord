@@ -20,6 +20,7 @@ export type NotificationType = "warning" | "error" | "info" | "success";
 interface ButtonActions extends ButtonProps {
     label: string;
     dontClose?: boolean;
+    dontCloseOnActionIfHoldingShiftKey: boolean;
 }
 
 export interface Notification {
@@ -216,7 +217,7 @@ const NotificationItem = ({notification}: { notification: Notification }) => {
                             onClick={(e) => {
                                 e.stopPropagation();
                                 action.onClick?.(e);
-                                if (!action.dontClose) {
+                                if (!action.dontClose && !(action.dontCloseOnActionIfHoldingShiftKey && e.shiftKey)) {
                                     handleClose();
                                 }
                             }}
