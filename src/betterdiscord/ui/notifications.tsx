@@ -19,6 +19,7 @@ export type NotificationType = "warning" | "error" | "info" | "success";
 
 interface ButtonActions extends ButtonProps {
     label: string;
+    dontClose?: boolean;
 }
 
 export interface Notification {
@@ -215,7 +216,7 @@ const NotificationItem = ({notification}: { notification: Notification }) => {
                             onClick={(e) => {
                                 e.stopPropagation();
                                 action.onClick?.(e);
-                                if (!e.defaultPrevented) {
+                                if (!action.dontClose) {
                                     handleClose();
                                 }
                             }}
