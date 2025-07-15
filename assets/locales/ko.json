@@ -21,6 +21,37 @@
                 "mediaKeys": {
                     "name": "미디어 키 비활성화",
                     "note": "영상을 재생한 후, 디스코드가 미디어 키를 가로채는 것을 방지합니다"
+                },
+                "bdContextMenu": {
+                    "name": "설정 컨텍스트 메뉴",
+                    "note": "설정 컨텍스트 메뉴에 'BetterDiscord' 하위 섹션을 추가합니다."
+                },
+                "themeAttributes": {
+                    "name": "테마 속성",
+                    "note": "테마 작업을 돕기 위해 다양한 요소에 속성을 추가합니다."
+                },
+                "notificationPosition": {
+                    "name": "알림 위치",
+                    "note": "알림이 나타날 위치를 선택할 수 있습니다."
+                },
+                "notificationEnabled": {
+                    "name": "알림 표시",
+                    "note": "화면에 알림이 표시되는 것을 허용하거나 방지합니다."
+                }
+            },
+            "store": {
+                "name": "애드온 스토어",
+                "bdAddonStore": {
+                    "name": "애드온 스토어 활성화",
+                    "note": "BetterDiscord 애드온 스토어를 활성화합니다."
+                },
+                "alwaysEnable": {
+                    "name": "항상 활성화",
+                    "note": "활성화하면 애드온 스토어를 통해 다운로드한 애드온이 기본적으로 활성화됩니다."
+                },
+                "addonEmbeds": {
+                    "name": "애드온 임베드",
+                    "note": "채팅에 애드온 스토어 카드를 임베드합니다."
                 }
             },
             "window": {
@@ -36,6 +67,10 @@
                 "frame": {
                     "name": "창 프레임",
                     "note": "기본 창에 기본 OS 창 프레임을 추가합니다"
+                },
+                "inAppTrafficLights": {
+                    "name": "앱 내 트래픽 라이트 사용",
+                    "note": "OS 트래픽 라이트 대신 앱 내장 트래픽 라이트를 사용합니다"
                 }
             },
             "addons": {
@@ -49,8 +84,17 @@
                     "note": "수정할 때 플러그인과 테마가 나타나는 곳",
                     "options": {
                         "detached": "분리 창",
+                        "external": "외부 창",
                         "system": "시스템 편집기"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "자동 업데이트 확인",
+                    "note": "애드온과 BetterDiscord 코어의 업데이트를 주기적으로 확인합니다"
+                },
+                "updateInterval": {
+                    "name": "업데이트 확인 간격",
+                    "note": "애드온/코어 업데이트를 확인하는 주기"
                 }
             },
             "customcss": {
@@ -77,6 +121,7 @@
                     "options": {
                         "settings": "설정 메뉴",
                         "detached": "분리된 창",
+                        "external": "외부 창",
                         "system": "시스템 편집기"
                     }
                 }
@@ -106,13 +151,31 @@
                 "devTools": {
                     "name": "개발자 도구",
                     "note": "ctrl+shift+i를 사용하여 개발자 도구를 활성화합니다"
+                },
+                "recovery": {
+                    "name": "복구",
+                    "note": "다시 로드하지 않고 디스코드를 저장하려는 시도를 활성화합니다",
+                    "button": "디스코드 복구 시도",
+                    "report": "Github에 신고",
+                    "safeMode": "안전 모드로 재시작"
                 }
             },
             "editor": {
                 "name": "편집기 선호",
+                "theme": {
+                    "name": "테마",
+                    "note": "코드 편집기의 테마",
+                    "options": {
+                        "system": "시스템",
+                        "vs-dark": "어두운 테마",
+                        "vs": "밝은 테마",
+                        "hc-black": "고대비 검은색",
+                        "hc-light": "고대비 밝은색"
+                    }
+                },
                 "lineNumbers": {
                     "name": "행 번호",
-                    "note": "편집기 측면에 행 번호 표시를 활성화합니"
+                    "note": "편집기 측면에 행 번호 표시를 활성화합니다"
                 },
                 "fontSize": {
                     "name": "폰트 크기",
@@ -128,7 +191,15 @@
                 },
                 "quickSuggestions": {
                     "name": "빠른 제안",
-                    "note": "입력할 때 자동 완성 제안 표시를 활성화합니"
+                    "note": "입력할 때 자동 완성 제안 표시를 활성화합니다"
+                },
+                "insertSpaces": {
+                    "name": "공백 삽입",
+                    "note": "탭 대신 공백을 삽입합니다"
+                },
+                "tabSize": {
+                    "name": "탭 크기",
+                    "note": "탭과 동일한 공백의 개수"
                 },
                 "renderWhitespace": {
                     "name": "공백 표시",
@@ -146,6 +217,10 @@
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
         "openFolder": "{{type}} 폴더 열기",
+        "openStore": "{{type}} 스토어 열기",
+        "storeMessage": "공식 커뮤니티 {{type}}를 탐색하고 설치하세요",
+        "store": "스토어",
+        "viewInstalled": "설치된 {{type}} 보기",
         "reload": "리로드",
         "addonSettings": "설정",
         "website": "웹사이트",
@@ -158,22 +233,40 @@
         "version": "버전",
         "added": "추가된 날짜",
         "modified": "수정된 날짜",
+        "releaseDate": "출시일",
+        "lastUpdated": "마지막 업데이트",
+        "isEnabled": "활성화됨",
+        "popularity": "인기도",
+        "isInstalled": "설치됨",
+        "downloads": "다운로드",
+        "likes": "좋아요",
+        "listView": "목록 보기",
+        "gridView": "바둑판 보기",
+        "enableAll": "모두 활성화",
+        "disableAll": "모두 비활성화",
+        "enableAllWarning": "모든 {{type}}를 활성화하면 일시적인 지연과 예상치 못한 오류가 발생할 수 있습니다.\n\n(이 프롬프트를 건너뛰려면 Shift를 누른 상태로 클릭하세요!)",
         "search": "{{type}} 검색",
+        "results": {
+            "zero": "결과 없음",
+            "one": "{{count}}개 결과",
+            "other": "{{count}}개 결과"
+        },
         "editAddon": "수정",
         "deleteAddon": "삭제",
-        "confirmDelete": "{{name}}(을)를 삭제하시겠습니까?",
+        "downloadAddon": "다운로드",
+        "confirmDelete": "{{name}}를 삭제하시겠습니까?",
         "confirmationText": "{{name}}에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다.",
         "enabled": "{{name}}이 활성화되었습니다",
         "disabled": "{{name}}이 비활성화되었습니다",
-        "couldNotEnable": "{{name}}(을)를 활성화하지 못했습니다",
-        "couldNotDisable": "{{name}}(을)를 비활성화하지 못했습니다",
-        "couldNotStart": "{{name}}(을)를 시작하지 못했습니다",
-        "couldNotStop": "{{name}}(을)를 정지하지 못했습니다",
+        "couldNotEnable": "{{name}}를 활성화하지 못했습니다",
+        "couldNotDisable": "{{name}}를 비활성화하지 못했습니다",
+        "couldNotStart": "{{name}}를 시작하지 못했습니다",
+        "couldNotStop": "{{name}}를 정지하지 못했습니다",
         "settingsError": "{{name}} 의 설정을 열 수 없습니다",
-        "methodError": "{{method}}(을)를 실행할 수 없습니다",
+        "methodError": "{{method}}를 실행할 수 없습니다",
         "unknownAuthor": "알 수 없는 제작자",
         "noDescription": "설명이 제공되지 않았습니다",
-        "alreadyExists": "{{type}}(은)는 이미 {{name}}으로 존재합니다",
+        "alreadyExists": "{{type}}는 이미 {{name}}으로 존재합니다",
         "alreadWatching": "이미 애드온을 보는 중입니다",
         "metaError": "META 파싱에 실패했습니다",
         "missingNameData": "META 이름 데이터 찾을 수 없음",
@@ -182,8 +275,26 @@
         "wasUnloaded": "{{name}}가 언로드되었습니다",
         "blankSlateHeader": "{{type}}가 없습니다",
         "blankSlateMessage": "[이 웹사이트]({{link}})에서 몇 가지를 {{type}} 폴더에 추가하세요",
-        "isEnabled": "활성화됨",
-        "wasLoaded": "{{name}} v{{version}} 가 로드됨."
+        "blankSlateHeaderGeneric": "아무것도 없습니다!",
+        "blankSlateMessageGeneric": "아마 몇 개 구해야 할 것 같습니다.",
+        "wasLoaded": "{{name}} v{{version}}가 로드됨",
+        "failedToDownload": "{{type}} {{name}} 다운로드에 실패했습니다",
+        "successfullyDownload": "{{name}} 다운로드에 성공했습니다",
+        "alreadyInstalled": "{{name}}는 이미 설치되어 있습니다",
+        "failedToFetch": "애드온을 가져올 수 없습니다",
+        "new": "새로운",
+        "updated": "업데이트됨",
+        "downloadCount": {
+            "one": "{{count}}회 다운로드",
+            "other": "{{count}}회 다운로드"
+        },
+        "likeCount": {
+            "one": "{{count}}개 좋아요",
+            "other": "{{count}}개 좋아요"
+        },
+        "tags": "태그",
+        "preview": "미리보기",
+        "official": "공식"
     },
     "CustomCSS": {
         "confirmationText": "사용자 지정 CSS에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다",
@@ -192,10 +303,17 @@
         "openNative": "시스템 편집기에서 열기",
         "openDetached": "분리된 창에서 열기",
         "settings": "편집기 설정",
-        "editorTitle": "사용자  CSS 편집기"
+        "editorTitle": "사용자 지정 CSS 편집기",
+        "cssInstallSuccess": "CSS가 사용자 지정 CSS에 성공적으로 추가되었습니다.",
+        "cssInstalled": "CSS 설치됨!",
+        "cssInstallError": "CSS를 사용자 지정 CSS에 추가하는데 실패했습니다.",
+        "cssReverted": "CSS가 되돌려졌습니다.",
+        "cssReverting": "10초 후에 변경사항이 되돌려집니다",
+        "cssKept": "CSS 변경사항이 영구적으로 유지됩니다"
     },
     "Modals": {
         "confirmAction": "확실합니까?",
+        "installCss": "이 CSS를 사용자 지정 CSS에 추가하시겠습니까?",
         "okay": "확인",
         "done": "완료",
         "cancel": "취소",
@@ -209,20 +327,23 @@
         "restartNow": "지금 재시작하기",
         "restartLater": "나중에 재시작하기",
         "additionalInfo": "추가 정보",
-        "restartPrompt": "적용을 위해 디스코드가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
+        "restartPrompt": "적용을 위해 디스코드가 재시작되어야 합니다. 지금 재시작하시겠습니까?",
+        "changelog": "변경 로그",
+        "debuglog": "디버그 로그 파일이 100MB를 초과했습니다. 로그를 지우시겠습니까?",
+        "automaticallyEnable": "자동으로 활성화"
     },
     "ReactDevTools": {
         "notFound": "확장 프로그램을 찾을 수 없음",
         "notFoundDetails": "PC에서 반응 개발자 도구 확장 프로그램을 찾을 수 없습니다. 기본 Chrome 설치 위치에 확장 프로그램을 설치해주세요."
     },
     "Sorting": {
-        "sortBy": "유형: ",
-        "order": "순서: ",
+        "sortBy": "유형",
+        "order": "순서",
         "ascending": "오름차순",
         "descending": "내림차순"
     },
     "WindowPrefs": {
-        "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows에서는 에어로 스내핑과 최대화가 고장날 수 있습니다.\n\n적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?",
+        "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows에서는 에어로 스냅(Aero Snap)과 최대화가 고장날 수 있습니다.\n\n적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?",
         "disabledInfo": "적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?"
     },
     "Notices": {
@@ -230,18 +351,38 @@
     },
     "Updater": {
         "updateFailed": "업데이트가 실패했습니다!",
-        "updateFailedMessage": "BetterDiscord가 업데이트에 실패했습니다. 저희 웹사이트 (https://betterdiscord.app/) 에서 설치기를 받아 재설치하십시오.",
+        "updateFailedMessage": "BetterDiscord가 업데이트에 실패했습니다. 저희 웹사이트 (https://betterdiscord.app/) 에서 설치프로그램를 받아 재설치하십시오.",
         "updateSuccessful": "업데이트가 성공적으로 완료되었습니다!",
         "updateAvailable": "BetterDiscord에 새로운 업데이트가 있습니다 (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord가 {{.type}}의 업데이트를 {{count}}개 발견했습니다!",
-        "addonUpdated": "{{name}} 이 버전 {{version}} 으로 업데이트 되었습니다!",
-        "checking": "업데이트를 확인하고 있습니다!",
-        "finishedChecking": "업데이트 확인을 마쳤습니다!",
-        "checkForUpdates": "업데이트 확인하기!",
-        "updateAll": "모두 업데이트 되었습니다!",
+        "addonUpdatesAvailable": {
+            "one": "BetterDiscord가 {{type}}의 업데이트를 {{count}}개 발견했습니다!",
+            "other": "BetterDiscord가 {{type}}의 업데이트를 {{count}}개 발견했습니다!"
+        },
+        "addonUpdated": "{{name}}이 버전 {{version}}으로 업데이트 되었습니다!",
+        "addonUpdateFailed": "{{name}} 업데이트에 실패했습니다. 나중에 다시 시도해 주세요.",
+        "checking": "업데이트를 확인중...",
+        "finishedChecking": "업데이트 확인 완료!",
+        "checkForUpdates": "업데이트 확인",
+        "updateAll": "모두 업데이트",
         "noUpdatesAvailable": "사용 가능한 업데이트가 없습니다.",
-        "versionAvailable": "버전 {{version}} 을 사용할 수 있습니다!",
-        "upToDateBlankslate": "당신의 {{type}} 는 모두 최신버전입니다!",
+        "versionAvailable": "버전 {{version}}을 사용할 수 있습니다!",
+        "upToDateBlankslate": "당신의 {{type}}는 모두 최신버전입니다!",
         "updateButton": "업데이트!"
+    },
+    "Settings": {
+        "customColor": "사용자 지정 색상",
+        "resetSettings": "설정 초기화",
+        "resetSettingsWarning": "설정을 초기화하면 모든 설정이 원래 상태로 돌아가며, 이는 되돌릴 수 없습니다."
+    },
+    "Socials": {
+        "twitter": "팔로우하기!",
+        "github": "Star 주기!"
+    },
+    "Paginator": {
+        "back": "이전",
+        "next": "다음"
+    },
+    "Toasts": {
+        "recoveryFailed": "복구가 완료되지 않았습니다. 일부 작업이 완료되지 못했습니다."
     }
 }
