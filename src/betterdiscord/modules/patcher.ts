@@ -115,7 +115,6 @@ interface Hook<T extends FunctionType> {
     readonly instead: Array<Patch<"instead", T>>;
     readonly after: Array<Patch<"after", T>>;
     readonly callers: Record<string, Patch[]>;
-    pushPatch<Type extends PatchType>(type: Type, callback: Patch<Type, T>): void;
 }
 
 const hooks = new WeakMap<FunctionType, Hook<FunctionType>>();
@@ -151,17 +150,6 @@ function createHook<
             }
 
             return callers;
-        },
-        pushPatch<Type extends PatchType>(type: Type, patch: Patch<Type, T>) {
-            const patches = hook[type] as unknown as Array<Patch<Type, T>>;
-
-            patches.push(patch);
-
-            patches.sort((a, b) => {
-                if (b.options.priority > a.options.priority) return 1;
-                if (b.options.priority < a.options.priority) return -1;
-                return 0;
-            });
         }
     };
 
@@ -287,7 +275,14 @@ class BasePatcher {
         if (!adaptedOptions.detached) {
             (patches[callerName] ??= []).push(patch as unknown as Patch);
         }
-        hook.pushPatch(type, patch);
+
+        hook[type].push(patch as any);
+
+        hook[type].sort((a, b) => {
+            if (b.options.priority > a.options.priority) return 1;
+            if (b.options.priority < a.options.priority) return -1;
+            return 0;
+        });
 
         return patch.undo;
     }
