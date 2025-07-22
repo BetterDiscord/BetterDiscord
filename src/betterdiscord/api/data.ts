@@ -44,8 +44,9 @@ class Data<Bounded extends boolean> {
     /**
      * Loads previously stored data.
      *
-     * @param {string} pluginName Name of the plugin loading data (optional if the instance is bounded)
+     * @param {string} pluginName Name of the plugin loading data
      * @param {string} key Which piece of data to load
+     * @param {boolean} recache forces reload of data from disk if true
      * @returns {any} The stored data
      */
     load<T>(...args: BaseArgs<Bounded>): T {
