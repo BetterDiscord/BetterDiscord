@@ -33,5 +33,5 @@
     height: 1px;
     margin: 0;
     border: none;
-    border-top: thin solid var(--background-modifier-accent);
+    border-top: thin solid var(--app-border-frame);
 }

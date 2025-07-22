@@ -5,18 +5,18 @@
     overflow: hidden;
     border-radius: 8px;
     position: relative;
-    background-color: var(--activity-card-background);
+    background-color: var(--background-base-lowest);
     max-width: 320px;
     min-height: 320px;
 }
 
 .theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lowest);
 }
 
 .theme-dark .bd-addon-store-card:hover,
 .theme-dark .bd-addon-store-card:hover .bd-addon-store-card-author-mask {
-    background-color: var(--background-tertiary);
+    background-color: var(--app-background-frame);
 }
 
 .full-motion .bd-addon-store-card {
@@ -36,11 +36,11 @@
 
 .bd-addon-store-card-author-mask {
     padding: 4px;
-    background-color: var(--activity-card-background);
+    background-color: var(--background-base-lower);
 }
 
 .theme-dark .bd-addon-store-card-author-mask {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lower);
 }
 
 .full-motion .bd-addon-store-card-author-mask {
@@ -172,8 +172,8 @@
 
 .bd-addon-store-card-tag {
     color: var(--interactive-normal);
-    background: var(--background-tertiary);
-    border: 1px solid var(--background-secondary);
+    background: var(--background-base-lowest);
+    border: 1px solid var(--background-base-lower);
     padding: 2px 5px;
     border-radius: 8px;
     transition: border-color 200ms linear, color 200ms linear;
@@ -250,12 +250,14 @@ button.bd-addon-store-card-button {
 .bd-addon-store-card-loading {
     padding: 4px;
     border-radius: 50%;
-    background-color: var(--activity-card-background);
+    background-color: var(--background-base-lower);
 }
 
-.theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
-}
+/* .theme-dark .bd-addon-store-card {
+    background-color: var(--background-base-lower);
+} 
+DUPLICATE?    
+*/ 
 
 img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="https://betterdiscord.app/resources/ui/content_thumbnail.svg"] {
     object-fit: contain;
