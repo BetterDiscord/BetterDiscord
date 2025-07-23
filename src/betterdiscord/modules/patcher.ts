@@ -1,5 +1,3 @@
-/* eslint-disable no-labels */
-
 import Logger from "@common/logger";
 
 export type KeysMatching<T, ForcePatch extends boolean = true> = ForcePatch extends true ? {
@@ -44,13 +42,15 @@ export type BeforeCallback<F extends FunctionType> = (that: FunctionThisParamete
 const map = new WeakMap<FunctionType, WeakMap<FunctionType, FunctionType>>();
 const originals = new WeakMap<FunctionType, FunctionType>();
 
+const BD_PATCHER_KEY = "betterdiscord.patcher";
+
 function createReplacer<T extends FunctionType>(fn: T, apply: (target: T, thisArg: FunctionThisParameterType<T>, argsArray: FunctionParameters<T>) => FunctionReturnType<T>, hook?: Hook<T>) {
     const replacer = new Proxy(fn, {
         apply(target, thisArg, argsArray) {
             return apply(target, thisArg, argsArray as FunctionParameters<T>);
         },
         get(target, p, receiver) {
-            if (typeof hook === "object" && p === Symbol.for("betterdiscord.patcher")) {
+            if (typeof hook === "object" && p === Symbol.for(BD_PATCHER_KEY)) {
                 return hook;
             }
 
@@ -91,7 +91,7 @@ function createReplacer<T extends FunctionType>(fn: T, apply: (target: T, thisAr
 
             return $value;
         },
-        [Symbol.for("betterdiscord.patcher")]: hook
+        [Symbol.for(BD_PATCHER_KEY)]: hook
     });
 
     originals.set(replacer, fn);
@@ -173,15 +173,17 @@ function createHook<
         let returnValue: FunctionReturnType<T>;
 
         if (hook.instead.length) {
-            const insteadPatches: any[] = [];
+            const insteadPatches: Array<(this: FunctionThisParameterType<T>, ...args: FunctionParameters<T>) => FunctionReturnType<T>> = [];
+
             for (let index = 0; index < hook.instead.length; index++) {
                 const patch = hook.instead[index];
-                const nextPatch = hook.instead[index + 1];
 
                 insteadPatches.push(function (this: FunctionThisParameterType<T>, ...args: FunctionParameters<T>): FunctionReturnType<T> {
                     try {
-                        if (nextPatch) {
-                            return patch.callback(this, args, createReplacer(original, insteadPatches[index + 1]));
+                        const nextPatch = insteadPatches[index + 1];
+
+                        if (typeof nextPatch === "function") {
+                            return patch.callback(this, args, createReplacer(original, (_target, thisArg, args) => nextPatch.apply(thisArg, args)));
                         }
 
                         return patch.callback(this, args, original);
@@ -250,16 +252,12 @@ class BasePatcher {
             callerName,
             type,
             undo: () => {
-                $: {
-                    if (!patches[callerName]) break $;
-
+                if (patches[callerName]) {
                     const index = patches[callerName].indexOf(patch as unknown as Patch);
 
-                    if (index === -1) {
-                        break $;
+                    if (index !== -1) {
+                        patches[callerName]!.splice(index, 1);
                     }
-
-                    patches[callerName]!.splice(index, 1);
                 }
 
                 const index = hook[type].indexOf(patch as any);
