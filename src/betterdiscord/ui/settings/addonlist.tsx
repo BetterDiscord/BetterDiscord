@@ -28,7 +28,7 @@ import type {ChangeEvent, MouseEvent, ReactNode} from "react";
 
 
 type ViewTypes = "grid" | "list";
-type SortTypes = "name" | "author" | "version" | "added" | "modified" | "isEnabled";
+type SortTypes = "name" | "author" | "version" | "added" | "modified" | "isEnabled" | "isDisabled";
 
 const buildSortOptions = () => ([
     {label: t("Addons.name"), value: "name"},
@@ -36,7 +36,8 @@ const buildSortOptions = () => ([
     {label: t("Addons.version"), value: "version"},
     {label: t("Addons.added"), value: "added"},
     {label: t("Addons.modified"), value: "modified"},
-    {label: t("Addons.isEnabled"), value: "isEnabled"}
+    {label: t("Addons.isEnabled"), value: "isEnabled"},
+    {label: t("Addons.isDisabled"), value: "isDisabled"}
 ] as Array<{label: string; value: SortTypes;}>);
 
 
@@ -177,38 +178,81 @@ export default function AddonList({title, store}: {title: string; store: AddonMa
     }, [addonList, store]);
 
     const renderedCards = useMemo(() => {
-        let sorted = addonList.sort((a, b) => {
-            const sortByEnabled = sort === "isEnabled";
-            const first = sortByEnabled ? addonState[a.id] : a[sort];
-            const second = sortByEnabled ? addonState[b.id] : b[sort];
-            const stringSort = (str1: string, str2: string) => str1.toLocaleLowerCase().localeCompare(str2.toLocaleLowerCase());
-            if (typeof (first) === "string" && typeof (second) === "string") return stringSort(first, second);
-            if (typeof (first) === "boolean" && typeof (second) === "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
-            if (first > second) return 1;
-            if (second > first) return -1;
-            return 0;
-        });
+      let sorted = addonList.sort((a, b) => {
+        const sortByEnabled  = sort === "isEnabled";
+        const sortByDisabled = sort === "isDisabled";
+        let first: any, second: any;
 
-        if (!ascending) sorted.reverse();
-
-        if (query) {
-            sorted = sorted.filter(addon => {
-                let matches = addon.name.toLocaleLowerCase().includes(query);
-                matches = matches || addon.author.toLocaleLowerCase().includes(query);
-                matches = matches || addon.description.toLocaleLowerCase().includes(query);
-                if (!matches) return false;
-                return true;
-            });
+        if (sortByEnabled || sortByDisabled) {
+          const stateA = addonState[a.id];
+          const stateB = addonState[b.id];
+          first  = sortByEnabled  ? stateA  : !stateA;
+          second = sortByEnabled  ? stateB  : !stateB;
+        } else {
+          first  = (a as any)[sort];
+          second = (b as any)[sort];
         }
 
-        return sorted.map(addon => {
-            const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-            const getSettings = hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance);
-            return <ErrorBoundary id={addon.id} name="AddonCard">
-                <AddonCard store={store} disabled={addon.partial} type={store.prefix as "plugin" | "theme"} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} />
-            </ErrorBoundary>;
-        });
-    }, [store, addonList, addonState, onChange, triggerDelete, triggerEdit, query, ascending, sort]);
+        const stringSort = (s1: string, s2: string) =>
+          s1.toLowerCase().localeCompare(s2.toLowerCase());
+
+        if (typeof first === "string" && typeof second === "string") {
+          return stringSort(first, second);
+        }
+
+        if (typeof first === "boolean" && typeof second === "boolean") {
+          return first === second
+            ? stringSort(a.name, b.name)
+            : first
+              ? -1
+              : 1;
+        }
+
+        if (first > second) return 1;
+        if (second > first) return -1;
+        return 0;
+      });
+
+      if (!ascending) {
+        sorted = sorted.reverse();
+      }
+
+      if (query) {
+        const q = query.toLowerCase();
+        sorted = sorted.filter(addon =>
+          addon.name.toLowerCase().includes(q) ||
+          addon.author.toLowerCase().includes(q) ||
+          addon.description.toLowerCase().includes(q)
+        );
+      }
+
+      return sorted.map(addon => {
+        const hasSettings = (addon as Plugin)
+          .instance?.getSettingsPanel instanceof Function;
+        const getSettings = hasSettings
+          ? (addon as Plugin).instance.getSettingsPanel!.bind(
+              (addon as Plugin).instance
+            )
+          : undefined;
+
+        return (
+          <ErrorBoundary id={addon.id} name="AddonCard" key={addon.id}>
+            <AddonCard
+              store={store}
+              addon={addon}
+              disabled={addon.partial}
+              type={store.prefix as "plugin" | "theme"}
+              onChange={() => onChange(addon.id)}
+              enabled={addonState[addon.id]}
+              editAddon={() => triggerEdit(addon.id)}
+              deleteAddon={() => triggerDelete(addon.id)}
+              hasSettings={hasSettings}
+              getSettingsPanel={getSettings}
+            />
+          </ErrorBoundary>
+        );
+      });
+    }, [addonList, addonState, sort, ascending, query, store, onChange, triggerEdit, triggerDelete]);
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;

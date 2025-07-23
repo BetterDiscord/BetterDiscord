@@ -121,6 +121,8 @@
         "version": "Version",
         "added": "Hinzufügedatum",
         "modified": "Bearbeitungsdatum",
+        "isEnabled": "Aktiviert",
+        "isDisabled": "Deaktiviert",
         "search": "{{type}} suchen",
         "editAddon": "Bearbeiten",
         "deleteAddon": "Löschen",
