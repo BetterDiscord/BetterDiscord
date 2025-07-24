@@ -236,6 +236,6 @@
     opacity: 1;
 }
 
-.bd-social + .bd-social {
+.bd-changelog-modal .bd-social:not(:first-child) {
     margin-left: 10px;
 }
