@@ -16,6 +16,7 @@ export default new class ConfigStore extends Store {
         dataPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data"),
         pluginsPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "plugins"),
         themesPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "themes"),
+        pluginDataPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data", "plugins"),
         channelPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data", window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable"),
     };
 
