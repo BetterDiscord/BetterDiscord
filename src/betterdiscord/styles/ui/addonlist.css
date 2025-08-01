@@ -48,7 +48,7 @@
 
 .bd-addon-list .bd-addon-header {
     color: var(--header-primary);
-    background: var(--background-secondary-alt);
+    background: var(--background-base-lowest);
     padding: 16px;
     font-size: 14px;
     line-height: 20px;

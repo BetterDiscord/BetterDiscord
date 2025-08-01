@@ -17,7 +17,7 @@
 }
 
 .theme-dark .bd-addon-error {
-    border-color: var(--background-secondary-alt);
+    border-color: var(--background-base-lower);
 }
 
 .theme-light .bd-addon-error {
@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: center;
     align-self: flex-start;
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lowest);
     width: 48px;
     height: 48px;
     border-radius: 50%;

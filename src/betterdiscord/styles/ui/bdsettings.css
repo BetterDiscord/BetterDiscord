@@ -19,7 +19,7 @@
 }
 
 .bd-select-wrapper {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -36,7 +36,7 @@
 .bd-select {
     position: relative;
     cursor: pointer;
-    color: var(--text-normal);
+    color: var(--text-default);
     font-size: 14px;
     display: flex;
     align-items: center;
