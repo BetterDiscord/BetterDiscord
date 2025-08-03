@@ -10,7 +10,7 @@
     margin-bottom: 8px;
     cursor: pointer;
     user-select: none;
-    background-color: var(--background-secondary);
+    background-color: var(--background-base-lower);
     border-radius: 3px;
     color: var(--interactive-normal);
 }
