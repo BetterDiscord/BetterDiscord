@@ -130,7 +130,7 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-normal);
+    color: var(--text-default);
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
@@ -155,7 +155,7 @@
     font-family: monospace;
     font-size: 12px;
     line-height: 1.5;
-    color: var(--text-normal);
+    color: var(--text-default);
     background: var(--background-base-lower);
     border-top: 1px solid var(--app-border-frame);
     opacity: 1;
