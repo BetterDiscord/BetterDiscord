@@ -124,7 +124,7 @@ function createHook<
     K extends KeysMatching<M>,
     T extends M[K]
 >(module: M, key: K, forcePatch: boolean): Hook<T> | null {
-    let original: T = module[key];
+    let original: T = module?.[key];
     if (!original && forcePatch) {
         original = (() => {}) as T;
     }
