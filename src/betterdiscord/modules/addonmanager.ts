@@ -454,9 +454,19 @@ export default abstract class AddonManager extends Store {
             language: this.language
         });
 
+        // Prevent Discord from stealing focus
+        const originalFocus = HTMLElement.prototype.focus;
+        const focusOverride = function() {
+            if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
+                return originalFocus.call(this);
+            }
+            return;
+        };
+
         FloatingWindows.open({
             onClose: () => {
                 this.windows.delete(fullPath);
+                HTMLElement.prototype.focus = originalFocus; // Restore normal focus
             },
             onResize: () => {
                 if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
