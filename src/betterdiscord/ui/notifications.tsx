@@ -38,14 +38,14 @@ export interface Notification {
     icon?: React.FC;
 }
 
-const positions: {
-    [x: string]: { top?: number, right?: number, bottom?: number, left?: number, flexDirection: string }
-} = {
+const positions = {
     "top-right": {top: 16, right: 16, flexDirection: "column"},
     "top-left": {top: 16, left: 16, flexDirection: "column"},
     "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
     "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
-} as const;
+} satisfies {
+    [x: string]: { top?: number, right?: number, bottom?: number, left?: number, flexDirection: string }
+};
 
 const Icon = ({type}: { type: NotificationType; }) => {
     switch (type) {
