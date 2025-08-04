@@ -463,6 +463,9 @@ export default abstract class AddonManager extends Store {
             return;
         };
 
+        HTMLElement.prototype.focus = focusOverride;
+
+        try {
         FloatingWindows.open({
             onClose: () => {
                 this.windows.delete(fullPath);
@@ -486,5 +489,9 @@ export default abstract class AddonManager extends Store {
             },
             confirmationText: t("Addons.confirmationText", {name: addon.name})
         });
+        } catch (error) {
+            HTMLElement.prototype.focus = originalFocus;
+            throw error;
+        }
     }
 }
