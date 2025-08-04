@@ -71,12 +71,12 @@ export default new class IPCRenderer {
     async registerGlobalShortcut(accelerator: string) {
         return await ipc.invoke(IPCEvents.REGISTER_GLOBAL_SHORTCUT, accelerator);
     }
-    unregisterGlobalShortcut(accelerator: string) {
-        ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
+    async unregisterGlobalShortcut(accelerator: string) {
+        await ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
     }
-    unregisterAllGlobalShortcuts(accelerators: string[]) {
+    async unregisterAllGlobalShortcuts(accelerators: string[]) {
         for (const accelerator of accelerators) {
-            ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
+            await ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
         }
     }
 };

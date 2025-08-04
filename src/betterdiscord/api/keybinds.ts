@@ -39,7 +39,9 @@ export class Keybinds<Bounded extends boolean> {
     #callerName = "";
 
     constructor(callerName?: string) {
-        if (callerName) {this.#callerName = callerName;}
+        if (callerName) {
+            this.#callerName = callerName;
+        }
         KeybindsManager.initializePlugin(this.#callerName);
     }
 

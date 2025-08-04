@@ -7,8 +7,8 @@ type Keys = string[];
  * @param {Keys} keys Array of keys to map
  * @returns {Electron.Accelerator} The accelerator string representing the keys
  */
-export function mapKeysToAccelerator(keys: Keys): Electron.Accelerator {
-    // TODO: Add support for more numpad keys
+export function mapKeysToAccelerator(keys: Keys): Electron.Accelerator | "" {
+    // TODO: Add support for numpad keys
     if (!keys || keys.length === 0) return "";
     keys = keys.map((key) => {
         if (key.length === 1) {
@@ -42,12 +42,12 @@ export class KeybindsManager {
     globalAccelerators: Map<string, Set<Electron.Accelerator>>;
 
     static shortcutMap: Map<string, () => void> = new Map();
-    static callCallback = (_event: Electron.IpcRendererEvent, accelerator: string) => {
+    static callCallback(_event: Electron.IpcRendererEvent, accelerator: string) {
         const cb = this.shortcutMap.get(accelerator);
         if (cb) {
             cb();
         }
-    };
+    }
 
     constructor() {
         this.globalAccelerators = new Map();
@@ -123,7 +123,9 @@ export class KeybindsManager {
         const acceleratorsArray: string[] = Array.from(accelerators);
         ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
         accelerators.clear();
-        KeybindsManager.shortcutMap.clear();
+        for (const accelerator of acceleratorsArray) {
+            KeybindsManager.shortcutMap.delete(accelerator);
+        }
     }
 };
 
