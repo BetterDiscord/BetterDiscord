@@ -86,7 +86,7 @@ class InstallCSS {
                     label: "Keep",
                     onClick: () => this.keepChanges(notificationId)
                 }],
-                onDurationDone: () => this.revertCSS(notificationId)
+                onClose: () => this.revertCSS(notificationId)
             });
         }
         catch (error) {

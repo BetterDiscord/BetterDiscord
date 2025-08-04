@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: var(--text-normal);
+    color: var(--text-default);
     align-items: center;
     position: relative;
     margin: 0 10px;
@@ -30,7 +30,7 @@
 .bd-slider-wrap.bd-slider-disabled > .bd-slider-input::-webkit-slider-thumb {
     pointer-events: none;
 }
-  
+
 .bd-slider-label {
     background: black;
     font-weight: 700;
@@ -45,7 +45,7 @@
 .bd-slider-input:hover + .bd-slider-label {
     opacity: 1;
 }
-  
+
 .bd-slider-input {
     /* height: 8px; */
     appearance: none;
@@ -58,7 +58,7 @@
     width: 100%;
     z-index: 2;
 }
-  
+
   /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .bd-slider-input::-webkit-slider-thumb {
     appearance: none;
@@ -79,7 +79,7 @@
     height: 8px;
     border-radius: 4px;
     min-width: 350px;
-    border-radius: 5px;   
+    border-radius: 5px;
     background: hsl(217,calc(var(--saturation-factor, 1)*7.6%),33.5%);
     transition: opacity .2s;
     background-image: linear-gradient(#3E82E5, #3E82E5);
