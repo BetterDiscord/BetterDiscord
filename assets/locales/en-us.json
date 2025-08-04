@@ -358,8 +358,8 @@
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
         "viewUpdates": "View Updates",
+        "addonUpdaterNotificationTitle": "Addon Updater",
         "addonUpdatesAvailable": {
-            "title": "Addon Updater",
             "one": "{{count}} {{type}} has an update!",
             "other": "{{count}} {{type}}s have updates!"
         },
