@@ -1,4 +1,4 @@
-/* eslint-disable no-multi-spaces */
+ 
 
 
 export const MINIMIZE = "bd-window-minimize";

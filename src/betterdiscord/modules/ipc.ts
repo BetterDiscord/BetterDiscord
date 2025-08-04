@@ -67,7 +67,7 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
 
-    shortcutMap = new Map<string, () => void>();
+    shortcutMap = new Map<string,() => void>();
     callCallback = (_event: Electron.IpcRendererEvent, accelerator: string) => {
         const cb = this.shortcutMap.get(accelerator);
         if (cb) {
