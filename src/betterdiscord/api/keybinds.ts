@@ -5,10 +5,13 @@ type Keys = string[];
 type Shortcut = Electron.Accelerator | Keys;
 
 type RegisterGlobalArgs = [keys: Keys, callback: () => void];
-type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | RegisterGlobalArgs : RegisterGlobalArgs;
+type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? RegisterGlobalArgs : [pluginName: string, ...RegisterGlobalArgs];
 
-type UnregisterArgs = [pluginName: string, keys: Keys] | [keys: Keys];
-type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? [pluginName: string] | UnregisterArgs : UnregisterArgs;
+type UnregisterArgs = [keys: Keys];
+type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? UnregisterArgs : [pluginName: string, ...UnregisterArgs];
+
+type UnregisterAllArgs = [];
+type UnregisterAllKeybinds<Bounded extends boolean> = Bounded extends true ? UnregisterAllArgs : [pluginName: string];
 
 function shortcutToAccelerator(keys: unknown): Electron.Accelerator | undefined {
     let accelerator: Electron.Accelerator | undefined;
@@ -49,7 +52,7 @@ export class Keybinds<Bounded extends boolean> {
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    async registerGlobalKeybind(...args: RegisterGlobalKeybind<Bounded>) {
+    async register(...args: RegisterGlobalKeybind<Bounded>) {
         let pluginName: string;
         let keys: Shortcut;
         let callback: () => void;
@@ -79,7 +82,7 @@ export class Keybinds<Bounded extends boolean> {
      * @param {string} pluginName Name of the plugin to unregister the Keybind for
      * @param {Keys} keys The keys to unregister
      */
-    unregisterGlobalKeybind(...args: UnregisterKeybind<Bounded>) {
+    unregister(...args: UnregisterKeybind<Bounded>) {
         let pluginName: string;
         let keys: Shortcut;
         if (this.#callerName && args.length === 1) {
@@ -108,9 +111,16 @@ export class Keybinds<Bounded extends boolean> {
      * Unregisters all Keybinds for the plugin.
      * @param {string} pluginName Name of the plugin to unregister the Keybinds for
      */
-    unregisterAllKeybinds(pluginName: string) {
+    unregisterAllKeybinds(...args: UnregisterAllKeybinds<Bounded>) {
+        let pluginName: string;
         if (this.#callerName) {
             pluginName = this.#callerName;
+        }
+        else {
+            if (args.length !== 1) {
+                throw new Error("Invalid arguments for unregisterAllKeybinds. Expected [pluginName].");
+            }
+            [pluginName] = args;
         }
         try {
             KeybindsManager.unregisterAllGlobalAccelerators(pluginName);
