@@ -67,7 +67,7 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
 
-    shortcutMap = new Map<string,() => void>();
+    shortcutMap = new Map<string, () => void>();
     callCallback = (_event: Electron.IpcRendererEvent, accelerator: string) => {
         const cb = this.shortcutMap.get(accelerator);
         if (cb) {
@@ -78,7 +78,7 @@ export default new class IPCRenderer {
         }
     };
     async registerGlobalShortcut(accelerator: string, callback: () => void) {
-        const registered = await ipc.invoke(IPCEvents.REGISTGER_GLOBAL_SHORTCUT, accelerator);
+        const registered = await ipc.invoke(IPCEvents.REGISTER_GLOBAL_SHORTCUT, accelerator);
 
         if (registered) {
             this.shortcutMap.set(accelerator, callback);

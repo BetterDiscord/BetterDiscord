@@ -93,7 +93,7 @@ export class Keybinds<Bounded extends boolean> {
             [pluginName, keys] = args;
         }
         else {
-            throw new Error("Invalid arguments for unregisterWindowKeybind. Expected either [eventName] or [pluginName, eventName].");
+            throw new Error("Invalid arguments for unregistering Global Keybind. Expected either [keys] or [pluginName, keys].");
         }
         try {
             const accelerator = shortcutToAccelerator(keys);

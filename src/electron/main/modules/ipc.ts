@@ -207,7 +207,7 @@ export default class IPCMain {
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
             ipc.handle(IPCEvents.EDITOR_OPEN, openEditor);
             ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
-            ipc.handle(IPCEvents.REGISTGER_GLOBAL_SHORTCUT, registerGlobalShortcut);
+            ipc.handle(IPCEvents.REGISTER_GLOBAL_SHORTCUT, registerGlobalShortcut);
             ipc.handle(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, unregisterGlobalShortcut);
         }
         catch (err) {

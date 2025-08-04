@@ -69,7 +69,7 @@ export default new class KeybindsManager {
     /**
      * Unregisters all Global Accelerators for all plugins.
      */
-    unregesterAllPluginsGlobalAccelerators() {
+    unregisterAllPluginsGlobalAccelerators() {
         for (const [, accelerators] of this.globalAccelerators) {
             for (const accelerator of accelerators) {
                 ipc.unregisterGlobalShortcut(accelerator);
@@ -103,7 +103,7 @@ export default new class KeybindsManager {
      * Registers a global Accelerator.
      * @param {string} pluginName Name of the plugin to register the Accelerator for
      * @param {string} accelerator The accelerator to register
-     * @param {Function} callback The callback to call when the accelerator is triggrered
+     * @param {Function} callback The callback to call when the accelerator is triggered
      * @returns {boolean} Whether the Accelerator was registered
      */
     async registerGlobalAccelerator(pluginName: string, accelerator: Electron.Accelerator, callback: () => void) {
@@ -114,6 +114,7 @@ export default new class KeybindsManager {
             accelerators.add(accelerator);
             return true;
         }
+        return false;
     }
 
     /**
