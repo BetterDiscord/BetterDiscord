@@ -67,6 +67,11 @@
     padding: 5px 10px;
 }
 
+.bd-notification-updates-list {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
 .bd-notification-footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 3fr));

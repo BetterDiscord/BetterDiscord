@@ -340,8 +340,8 @@ export class AddonUpdater {
             title: t("Updater.addonUpdatesAvailable.title"),
             content: [
                 t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
-                React.createElement("ul", {style: {marginTop: "8px", marginBottom: "0"}},
-                    addonDetails.map(addon => 
+               React.createElement("ul", {className: "bd-notification-updates-list"},
+               addonDetails.map(addon => 
                         React.createElement("li", {}, [
                             addon.name, " ", React.createElement("i", {}, `(${addon.version})`)
                         ])
