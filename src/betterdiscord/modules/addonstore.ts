@@ -14,7 +14,7 @@ import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import Settings from "@stores/settings";
 import Web from "@data/web";
-import type AddonManager from "./addonmanager";
+import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
 
 
@@ -22,7 +22,7 @@ import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
  * @param {Addon} addon
  * @returns {Promise<boolean>}
  */
-function showConfirmDelete(addon: import("d:/BetterDiscord/BetterDiscord/src/betterdiscord/modules/addonmanager").Addon) {
+function showConfirmDelete(addon: import("./addonmanager").Addon) {
     return new Promise(resolve => {
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
@@ -292,7 +292,14 @@ class Addon {
                     }
 
                     if (shouldEnable) {
-                        this.manager.state[this.name] = true;
+                        // Shouldn't need a try..catch but better safe than sorry
+                        try {
+                            const meta = AddonManager.prototype.extractMeta(text, this.filename);
+                            this.manager.state[meta.name as string || this.name] = true;
+                        }
+                        catch {
+                            this.manager.state[this.name] = true;
+                        }
 
                         this.manager.saveState();
                     }
