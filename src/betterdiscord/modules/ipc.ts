@@ -3,6 +3,7 @@ import {ipcRenderer as ipc} from "electron";
 import * as IPCEvents from "@common/constants/ipcevents";
 
 import Events from "./emitter";
+import {KeybindsManager} from "./keybindsmanager";
 
 
 export default new class IPCRenderer {
@@ -11,7 +12,7 @@ export default new class IPCRenderer {
         ipc.on(IPCEvents.NAVIGATE, () => Events.dispatch("navigate"));
         ipc.on(IPCEvents.MAXIMIZE, () => Events.dispatch("maximize"));
         ipc.on(IPCEvents.MINIMIZE, () => Events.dispatch("minimize"));
-        ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, this.callCallback);
+        ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, KeybindsManager.callCallback);
     }
 
     openDevTools() {
@@ -67,30 +68,14 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
 
-    shortcutMap = new Map<string,() => void>();
-    callCallback = (_event: Electron.IpcRendererEvent, accelerator: string) => {
-        const cb = this.shortcutMap.get(accelerator);
-        if (cb) {
-            cb();
-        }
-        else {
-            this.unregisterGlobalShortcut(accelerator);
-        }
-    };
-    async registerGlobalShortcut(accelerator: string, callback: () => void) {
-        const registered = await ipc.invoke(IPCEvents.REGISTER_GLOBAL_SHORTCUT, accelerator);
-
-        if (registered) {
-            this.shortcutMap.set(accelerator, callback);
-        }
-        return registered;
+    async registerGlobalShortcut(accelerator: string) {
+        return await ipc.invoke(IPCEvents.REGISTER_GLOBAL_SHORTCUT, accelerator);
     }
     unregisterGlobalShortcut(accelerator: string) {
-        this.shortcutMap.delete(accelerator);
         ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
     }
-    unregisterAllGlobalShortcuts() {
-        for (const [accelerator, _] of this.shortcutMap) {
+    unregisterAllGlobalShortcuts(accelerators: string[]) {
+        for (const accelerator of accelerators) {
             ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
         }
     }

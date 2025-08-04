@@ -39,8 +39,7 @@ export class Keybinds<Bounded extends boolean> {
     #callerName = "";
 
     constructor(callerName?: string) {
-        if (!callerName) return;
-        this.#callerName = callerName;
+        if (callerName) {this.#callerName = callerName;}
         KeybindsManager.initializePlugin(this.#callerName);
     }
 
@@ -57,12 +56,15 @@ export class Keybinds<Bounded extends boolean> {
         let keys: Shortcut;
         let callback: () => void;
 
-        if (this.#callerName) {
+        if (args.length === 2) {
             pluginName = this.#callerName;
             [keys, callback] = args as unknown as [Keys, () => void];
         }
-        else {
+        else if (args.length === 3) {
             [pluginName, keys, callback] = args as unknown as [string, Shortcut, () => void];
+        }
+        else {
+            throw new Error("Invalid arguments for registering Global Keybind. Expected either [keys, callback] or [pluginName, keys, callback].");
         }
         try {
             const accelerator = shortcutToAccelerator(keys);
@@ -85,7 +87,7 @@ export class Keybinds<Bounded extends boolean> {
     unregister(...args: UnregisterKeybind<Bounded>) {
         let pluginName: string;
         let keys: Shortcut;
-        if (this.#callerName && args.length === 1) {
+        if (args.length === 1) {
             pluginName = this.#callerName;
             keys = args[0] as Keys;
         }
