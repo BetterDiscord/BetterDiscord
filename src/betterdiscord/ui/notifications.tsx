@@ -38,25 +38,16 @@ export interface Notification {
     icon?: React.FC;
 }
 
-const positions = {
-    "top-right": {top: 16, right: 16, flexDirection: "column"},
-    "top-left": {top: 16, left: 16, flexDirection: "column"},
-    "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
-    "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
-} satisfies {
-    [x: string]: { top?: number, right?: number, bottom?: number, left?: number, flexDirection: string }
-};
-
-const Icon = ({type}: { type: NotificationType; }) => {
+const Icon = ({type}: {type: NotificationType;}) => {
     switch (type) {
         case "warning":
-            return <TriangleAlertIcon color="var(--status-warning)" size="18px"/>;
+            return <TriangleAlertIcon color="var(--status-warning)" size="18px" />;
         case "error":
-            return <CircleAlertIcon color="var(--status-danger)" size="18px"/>;
+            return <CircleAlertIcon color="var(--status-danger)" size="18px" />;
         case "info":
-            return <InfoIcon color="#3B82F6" size="18px"/>;
+            return <InfoIcon color="#3B82F6" size="18px" />;
         case "success":
-            return <CircleCheckIcon color="var(--status-positive)" size="18px"/>;
+            return <CircleCheckIcon color="var(--status-positive)" size="18px" />;
         default:
             return null;
     }
@@ -75,7 +66,7 @@ class NotificationUI {
         }
         NotificationUI.root = root;
 
-        ReactDOM.createRoot(root).render(<PersistentNotificationContainer/>);
+        ReactDOM.createRoot(root).render(<PersistentNotificationContainer />);
     }
 
     show(notif: Notification) {
@@ -135,13 +126,7 @@ const PersistentNotificationContainer = () => {
     return (
         <div
             id="bd-notifications-root"
-            style={{
-                display: "flex",
-                gap: "8px",
-                padding: "16px",
-                pointerEvents: "none",
-                ...positions[position]
-            }}
+            className={`bd-notification-${position}`}
         >
             {notifications.map((notification) => (
                 <NotificationItem
@@ -155,7 +140,7 @@ const PersistentNotificationContainer = () => {
 
 const NotificationUIInstance = new NotificationUI();
 
-const NotificationItem = ({notification}: { notification: Notification }) => {
+const NotificationItem = ({notification}: {notification: Notification;}) => {
     const {
         id,
         title = "",
@@ -172,7 +157,7 @@ const NotificationItem = ({notification}: { notification: Notification }) => {
         from: {width: "100%"},
         config: {duration},
         pause: isPaused,
-        onChange: ({width}: { width: string; }) => {
+        onChange: ({width}: {width: string;}) => {
             if (width === "0%") {
                 handleClose();
             }
@@ -192,14 +177,14 @@ const NotificationItem = ({notification}: { notification: Notification }) => {
         >
             <div className={"bd-notification-content"}>
                 <div className="bd-notification-icon">
-                    {notification.icon ? <notification.icon/> : <Icon type={type}/>}
+                    {notification.icon ? <notification.icon /> : <Icon type={type} />}
                 </div>
                 <div>
                     <div className="bd-notification-title">
                         {title}
                         <span
                             className={"bd-notification-content-text"}>{React.Children.map(content, m => typeof m === "string"
-                            ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}</span>
+                                ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}</span>
                     </div>
                 </div>
             </div>

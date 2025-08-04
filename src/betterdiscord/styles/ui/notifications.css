@@ -1,20 +1,23 @@
 #bd-notifications-root {
-    position: fixed !important;
-    z-index: 9999 !important;
-    pointer-events: none !important;
-    display: flex !important;
+    position: fixed;
+    display: flex;
+    padding: 16px;
+    z-index: 9999;
+    pointer-events: none;
+    display: flex;
 }
 
-#bd-notifications-root > * {
-    pointer-events: auto !important;
+#bd-notifications-root>* {
+    pointer-events: auto;
 }
 
 .bd-notification-container {
-    position: fixed !important;
-    display: flex !important;
+    position: fixed;
+    display: flex;
     flex-direction: column;
     gap: 8px;
-    z-index: 3002 !important; /* right above titleBar */
+    z-index: 3002;
+    /* right above titleBar */
 }
 
 .bd-notification {
@@ -27,6 +30,30 @@
     margin-bottom: 20px;
     position: relative;
     width: 450px;
+}
+
+.bd-notification-top-left {
+    top: 16;
+    left: 16;
+    flex-direction: column;
+}
+
+.bd-notification-top-right {
+    top: 16;
+    right: 16;
+    flex-direction: column;
+}
+
+.bd-notification-bottom-right {
+    bottom: 16;
+    right: 16;
+    flex-direction: column-reverse;
+}
+
+.bd-notification-bottom-left {
+    bottom: 16;
+    left: 16;
+    flex-direction: column-reverse;
 }
 
 .bd-notification-content {
