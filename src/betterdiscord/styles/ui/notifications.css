@@ -33,26 +33,26 @@
 }
 
 .bd-notification-top-left {
-    top: 16;
-    left: 16;
+    top: 16px;
+    left: 16px;
     flex-direction: column;
 }
 
 .bd-notification-top-right {
-    top: 16;
-    right: 16;
+    top: 16px;
+    right: 16px;
     flex-direction: column;
 }
 
 .bd-notification-bottom-right {
-    bottom: 16;
-    right: 16;
+    bottom: 16px;
+    right: 16px;
     flex-direction: column-reverse;
 }
 
 .bd-notification-bottom-left {
-    bottom: 16;
-    left: 16;
+    bottom: 16px;
+    left: 16px;
     flex-direction: column-reverse;
 }
 
