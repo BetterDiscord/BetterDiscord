@@ -50,14 +50,6 @@ export default new class KeybindsManager {
      * @param {string} pluginName Name of the plugin to initialize the KeybindsManager for
      */
     initializePlugin(pluginName: string) {
-        this.initializeGlobalAccelerators(pluginName);
-    }
-
-    /**
-     * Initializes the Global Accelerators for the plugin.
-     * @param {string} pluginName Name of the plugin to initialize the Global Accelerators for
-     */
-    initializeGlobalAccelerators(pluginName: string) {
         if (this.globalAccelerators.has(pluginName)) {
             this.unregisterAllGlobalAccelerators(pluginName);
         }
@@ -79,24 +71,15 @@ export default new class KeybindsManager {
     }
 
     /**
-     * Unregisters all Global Accelerators for the plugin.
+     * Unregisters all Accelerators for the plugin.
      * @param {string} pluginName Name of the plugin to unregister the Accelerators for
      */
-    unregisterAllPluginGlobalAccelerators(pluginName: string) {
+    unregisterAllGlobalAccelerators(pluginName: string) {
         const accelerators = this.globalAccelerators.get(pluginName);
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the plugin " + pluginName);
 
         ipc.unregisterAllGlobalShortcuts();
         accelerators.clear();
-    }
-
-    /**
-     * Unregisters all Accelerators for the plugin.
-     * @param {string} pluginName Name of the plugin to unregister the Accelerators for
-     * @returns {boolean} Whether the Accelerators were unregistered
-     */
-    unregisterAllGlobalAccelerators(pluginName: string) {
-        this.unregisterAllPluginGlobalAccelerators(pluginName);
     }
 
     /**
