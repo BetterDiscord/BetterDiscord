@@ -40,7 +40,7 @@
 
 #app-mount :where(.bd-paginator-back, .bd-paginator-next):hover {
     color: var(--interactive-hover);
-    background-color: var(--background-secondary-alt);
+    background-color: var(--background-base-lower);
 }
 
 .bd-paginator-back {

@@ -11,7 +11,7 @@ export default abstract class Store {
         Store.stores.add(this);
     }
     
-    initialize(): void {};
+    initialize(): void {}
 
     displayName?: string;
     getName() {
