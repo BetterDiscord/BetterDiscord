@@ -46,6 +46,7 @@ export default class BetterDiscord {
         if (!fs.existsSync(path.join(dataFolder, "canary"))) fs.mkdirSync(path.join(dataFolder, "canary"));
         if (!fs.existsSync(path.join(dataFolder, "ptb"))) fs.mkdirSync(path.join(dataFolder, "ptb"));
         if (!fs.existsSync(path.join(dataFolder, "development"))) fs.mkdirSync(path.join(dataFolder, "development"));
+        if (!fs.existsSync(path.join(dataFolder, "plugins"))) fs.mkdirSync(path.join(dataFolder, "plugins"));
         if (!fs.existsSync(path.join(bdFolder, "plugins"))) fs.mkdirSync(path.join(bdFolder, "plugins"));
         if (!fs.existsSync(path.join(bdFolder, "themes"))) fs.mkdirSync(path.join(bdFolder, "themes"));
     }
