@@ -3,7 +3,7 @@ import {ipcRenderer as ipc} from "electron";
 import * as IPCEvents from "@common/constants/ipcevents";
 
 import Events from "./emitter";
-import {KeybindsManager} from "./keybindsmanager";
+import {callCallback} from "./keybindsmanager";
 
 
 export default new class IPCRenderer {
@@ -12,7 +12,7 @@ export default new class IPCRenderer {
         ipc.on(IPCEvents.NAVIGATE, () => Events.dispatch("navigate"));
         ipc.on(IPCEvents.MAXIMIZE, () => Events.dispatch("maximize"));
         ipc.on(IPCEvents.MINIMIZE, () => Events.dispatch("minimize"));
-        ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, KeybindsManager.callCallback);
+        ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, callCallback);
     }
 
     openDevTools() {

@@ -30,6 +30,13 @@ export function mapKeysToAccelerator(keys: Keys): Electron.Accelerator | "" {
     return keys.join("+");
 }
 
+const shortcutMap: Map<string, () => void> = new Map();
+export function callCallback(_event: Electron.IpcRendererEvent, accelerator: string) {
+    const callback = shortcutMap.get(accelerator);
+    if (callback) {
+        callback();
+    }
+}
 
 /**
  * `KeybindsManager` is a class that manages the registration and unregistration of Keybinds.
@@ -41,57 +48,40 @@ export function mapKeysToAccelerator(keys: Keys): Electron.Accelerator | "" {
 export class KeybindsManager {
     globalAccelerators: Map<string, Set<Electron.Accelerator>>;
 
-    static shortcutMap: Map<string, () => void> = new Map();
-    static callCallback(_event: Electron.IpcRendererEvent, accelerator: string) {
-        const cb = this.shortcutMap.get(accelerator);
-        if (cb) {
-            cb();
-        }
-    }
-
     constructor() {
         this.globalAccelerators = new Map();
     }
 
     /**
-     * Initializes the KeybindsManager for the plugin.
-     * @param {string} pluginName Name of the plugin to initialize the KeybindsManager for
+     * Initializes the KeybindsManager for the keybindId.
+     * @param {string} keybindId Name of the keybind to initialize the KeybindsManager for
      */
-    initializePlugin(pluginName: string) {
-        if (this.globalAccelerators.has(pluginName)) {
-            this.unregisterAllGlobalAccelerators(pluginName);
+    initialize(keybindId: string) {
+        if (this.globalAccelerators.has(keybindId)) {
+            this.unregisterAllGlobalAccelerators(keybindId);
         }
         else {
-            this.globalAccelerators.set(pluginName, new Set());
-        }
-    }
-
-    /**
-     * Unregisters all Global Accelerators for all plugins.
-     */
-    unregisterAllPluginsGlobalAccelerators() {
-        for (const [, accelerators] of this.globalAccelerators) {
-            for (const accelerator of accelerators) {
-                ipc.unregisterGlobalShortcut(accelerator);
-            }
-            accelerators.clear();
+            this.globalAccelerators.set(keybindId, new Set());
         }
     }
 
     /**
      * Registers a global Accelerator.
-     * @param {string} pluginName Name of the plugin to register the Accelerator for
+     * @param {string} keybindId Name of the keybind to register the Accelerator for
      * @param {string} accelerator The accelerator to register
      * @param {Function} callback The callback to call when the accelerator is triggered
      * @returns {boolean} Whether the Accelerator was registered
      */
-    async registerGlobalAccelerator(pluginName: string, accelerator: Electron.Accelerator, callback: () => void) {
-        const accelerators = this.globalAccelerators.get(pluginName);
-        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the plugin " + pluginName);
+    async registerGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator, callback: () => void) {
+        if (!this.globalAccelerators.has(keybindId)) {
+            this.initialize(keybindId);
+        }
+        const accelerators = this.globalAccelerators.get(keybindId);
+        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
         if (await ipc.registerGlobalShortcut(accelerator)) {
             accelerators.add(accelerator);
-            KeybindsManager.shortcutMap.set(accelerator, callback);
+            shortcutMap.set(accelerator, callback);
             return true;
         }
         return false;
@@ -99,32 +89,32 @@ export class KeybindsManager {
 
     /**
      * Unregisters a global Accelerator.
-     * @param {string} pluginName Name of the plugin to unregister the Accelerator for
+     * @param {string} keybindId Name of the keybind to unregister the Accelerator for
      * @param {string[]} accelerator The Accelerator to unregister
      * @returns {boolean} Whether the Accelerator was unregistered
      */
-    unregisterGlobalAccelerator(pluginName: string, accelerator: Electron.Accelerator) {
-        const accelerators = this.globalAccelerators.get(pluginName);
-        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the plugin " + pluginName);
+    unregisterGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator) {
+        const accelerators = this.globalAccelerators.get(keybindId);
+        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
         ipc.unregisterGlobalShortcut(accelerator);
         accelerators.delete(accelerator);
-        KeybindsManager.shortcutMap.delete(accelerator);
+        shortcutMap.delete(accelerator);
     }
 
     /**
-     * Unregisters all Accelerators for the plugin.
-     * @param {string} pluginName Name of the plugin to unregister the Accelerators for
+     * Unregisters all Accelerators for the keybind.
+     * @param {string} keybindId Name of the keybind to unregister the Accelerators for
      */
-    unregisterAllGlobalAccelerators(pluginName: string) {
-        const accelerators = this.globalAccelerators.get(pluginName);
-        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the plugin " + pluginName);
+    unregisterAllGlobalAccelerators(keybindId: string) {
+        const accelerators = this.globalAccelerators.get(keybindId);
+        if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
         const acceleratorsArray: string[] = Array.from(accelerators);
         ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
         accelerators.clear();
         for (const accelerator of acceleratorsArray) {
-            KeybindsManager.shortcutMap.delete(accelerator);
+            shortcutMap.delete(accelerator);
         }
     }
 };
