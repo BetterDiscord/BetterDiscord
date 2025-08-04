@@ -8,7 +8,7 @@ import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
-import NotificationUI from "@ui/notifications";
+import NotificationUI, {type Notification} from "@ui/notifications";
 import type {ReactElement} from "react";
 import type {ChangelogProps} from "@ui/modals/changelog";
 
@@ -32,14 +32,7 @@ const UI = {
         Modals.alert(title, content);
     },
 
-    showNotification(notificationObj: {
-        id: string;
-        title: string;
-        content: string;
-        type?: "info" | "success" | "error" | "warning";
-        duration?: number;
-        icon?: string;
-    }) {
+    showNotification(notificationObj: Notification) {
         if (!Settings.get("settings", "general", "notificationEnabled")) return;
 
         const defaultObj = {
