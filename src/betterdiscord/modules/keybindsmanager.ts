@@ -121,10 +121,6 @@ export class KeybindsManager {
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the plugin " + pluginName);
 
         const acceleratorsArray: string[] = Array.from(accelerators);
-        for (const accelerator of acceleratorsArray) {
-            ipc.unregisterGlobalShortcut(accelerator);
-            KeybindsManager.shortcutMap.delete(accelerator);
-        }
         ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
         accelerators.clear();
         KeybindsManager.shortcutMap.clear();
