@@ -4,11 +4,11 @@ import KeybindsManager, {mapKeysToAccelerator} from "@modules/keybindsmanager";
 type Keys = string[];
 type Shortcut = Electron.Accelerator | Keys;
 
-type RegisterGlobalArgs = [keys: Keys, callback: () => void];
+type RegisterGlobalArgs = [keys: Shortcut, callback: () => void];
 type RegisterGlobalArgsBounded = [keybindId: string, ...RegisterGlobalArgs];
 type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? RegisterGlobalArgs | RegisterGlobalArgsBounded : RegisterGlobalArgsBounded;
 
-type UnregisterArgs = [keys: Keys];
+type UnregisterArgs = [keys: Shortcut];
 type UnregisterArgsBounded = [keybindId: string, ...UnregisterArgs];
 type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? UnregisterArgs | UnregisterArgsBounded : UnregisterArgsBounded;
 
@@ -16,20 +16,14 @@ type UnregisterAllArgs = [];
 type UnregisterAllArgsBounded = [keybindId: string];
 type UnregisterAllKeybinds<Bounded extends boolean> = Bounded extends true ? UnregisterAllArgs | UnregisterAllArgsBounded : UnregisterAllArgsBounded;
 
-function shortcutToAccelerator(keys: unknown): Electron.Accelerator | undefined {
-    let accelerator: Electron.Accelerator | undefined;
+function shortcutToAccelerator(keys: Shortcut): Electron.Accelerator | "" {
     if (typeof keys === "string") {
-        if (!keys) {
-            return accelerator;
-        }
         return keys as Electron.Accelerator;
     }
     else if (Array.isArray(keys) && keys.length > 0) {
-        if (keys.some(key => typeof key !== "string")) {
-            return accelerator;
-        }
         return mapKeysToAccelerator(keys as Keys);
     }
+    return "";
 }
 
 /**
@@ -50,7 +44,7 @@ export class Keybinds<Bounded extends boolean> {
     /**
      * Registers a Global Keybind.
      * @param {string} keybindId Name of the Keybind to register
-     * @param {Electron.Accelerator | Keys} keys The keys to register
+     * @param {Shortcut} keys The keys to register
      * @param {Function} callback The callback to call when the keybind is pressed
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
@@ -62,10 +56,10 @@ export class Keybinds<Bounded extends boolean> {
 
         if (this.#callerName && args.length === 2) {
             keybindId = this.#callerName;
-            [keys, callback] = args as unknown as [Keys, () => void];
+            [keys, callback] = args;
         }
         else if (args.length === 3) {
-            [keybindId, keys, callback] = args as unknown as [string, Shortcut, () => void];
+            [keybindId, keys, callback] = args;
         }
         else {
             throw new Error(`Invalid arguments for registering Global Keybind. Expected [${this.#callerName ? "keybindId, " : ""}keys, callback].`);
@@ -86,14 +80,14 @@ export class Keybinds<Bounded extends boolean> {
     /**
      * Unregisters a Global Keybind.
      * @param {string} keybindId Name of the Keybind to unregister
-     * @param {Keys} keys The keys to unregister
+     * @param {Shortcut} keys The keys to unregister
      */
     unregister(...args: UnregisterKeybind<Bounded>) {
         let keybindId: string;
         let keys: Shortcut;
         if (this.#callerName && args.length === 1) {
             keybindId = this.#callerName;
-            keys = args[0] as Keys;
+            [keys] = args;
         }
         else if (args.length === 2) {
             [keybindId, keys] = args;
