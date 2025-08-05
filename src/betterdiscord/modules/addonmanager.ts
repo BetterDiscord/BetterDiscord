@@ -440,82 +440,72 @@ export default abstract class AddonManager extends Store {
     }
 
     openDetached(addon: Addon) {
-        const fullPath = path.resolve(this.addonFolder, addon.filename);
-        const content = fs.readFileSync(fullPath).toString();
+    const fullPath = path.resolve(this.addonFolder, addon.filename);
+    const content = fs.readFileSync(fullPath).toString();
 
-        if (this.windows.has(fullPath)) return;
-        this.windows.add(fullPath);
+    if (this.windows.has(fullPath)) return;
+    this.windows.add(fullPath);
 
-        const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
-        const editor = React.createElement(AddonEditor, {
-            id: "bd-floating-editor-" + addon.id,
-            ref: editorRef,
-            content: content,
-            save: this.saveAddon.bind(this, addon),
-            openNative: this.editAddon.bind(this, addon, true),
-            language: this.language
-        });
+    const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
+    const editor = React.createElement(AddonEditor, {
+        id: "bd-floating-editor-" + addon.id,
+        ref: editorRef,
+        content: content,
+        save: this.saveAddon.bind(this, addon),
+        openNative: this.editAddon.bind(this, addon, true),
+        language: this.language
+    });
 
-        // Prevent Discord from stealing focus
-        const originalFocus = HTMLElement.prototype.focus;
+    // Prevent Discord from stealing focus (with reference counting for multiple windows)
+    if (AddonManager.focusOverrideCount === 0) {
+        AddonManager.originalFocus = HTMLElement.prototype.focus;
         const focusOverride = function(this: HTMLElement) {
             if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
-                return originalFocus.call(this);
+                return AddonManager.originalFocus!.call(this);
             }
             return;
         };
+        HTMLElement.prototype.focus = focusOverride;
+    }
+    AddonManager.focusOverrideCount++;
 
-        // Prevent Discord from stealing focus (with reference counting for multiple windows)
-        if (AddonManager.focusOverrideCount === 0) {
-            AddonManager.originalFocus = HTMLElement.prototype.focus;
-            const focusOverride = function(this: HTMLElement) {
-                if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
-                    return AddonManager.originalFocus!.call(this);
-                }
-                return;
-            };
-            HTMLElement.prototype.focus = focusOverride;
-        }
-        AddonManager.focusOverrideCount++;
-
-        let windowOpened = false;
-        try {
-            FloatingWindows.open({
-                onClose: () => {
-                    this.windows.delete(fullPath);
-                    AddonManager.focusOverrideCount--;
-                    if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
-                        HTMLElement.prototype.focus = AddonManager.originalFocus;
-                        AddonManager.originalFocus = null;
-                    }
-                },
-                onResize: () => {
-                    if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
-                    editorRef.current.resize();
-                },
-                title: addon.name,
-                id: "bd-floating-window-" + addon.id,
-                className: "floating-addon-window",
-                height: 470,
-                width: 410,
-                center: true,
-                resizable: true,
-                children: editor,
-                confirmClose: () => {
-                    if (!editorRef || !editorRef.current) return false;
-                    return editorRef.current.hasUnsavedChanges;
-                },
-                confirmationText: t("Addons.confirmationText", {name: addon.name})
-            });
-            windowOpened = true;
-        } finally {
-            // Only restore if window failed to open
-            if (!windowOpened) {
+    let windowOpened = false;
+    try {
+        FloatingWindows.open({
+            onClose: () => {
+                this.windows.delete(fullPath);
                 AddonManager.focusOverrideCount--;
                 if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
                     HTMLElement.prototype.focus = AddonManager.originalFocus;
                     AddonManager.originalFocus = null;
                 }
+            },
+            onResize: () => {
+                if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
+                editorRef.current.resize();
+            },
+            title: addon.name,
+            id: "bd-floating-window-" + addon.id,
+            className: "floating-addon-window",
+            height: 470,
+            width: 410,
+            center: true,
+            resizable: true,
+            children: editor,
+            confirmClose: () => {
+                if (!editorRef || !editorRef.current) return false;
+                return editorRef.current.hasUnsavedChanges;
+            },
+            confirmationText: t("Addons.confirmationText", {name: addon.name})
+        });
+        windowOpened = true;
+    } finally {
+        // Only restore if window failed to open
+        if (!windowOpened) {
+            AddonManager.focusOverrideCount--;
+            if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
+                HTMLElement.prototype.focus = AddonManager.originalFocus;
+                AddonManager.originalFocus = null;
             }
         }
     }
