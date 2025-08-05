@@ -33,7 +33,7 @@ export default class FloatingWindows {
         if (activeWindows === 0 && !originalFocus) {
             originalFocus = HTMLElement.prototype.focus;
             HTMLElement.prototype.focus = function() {
-                if (this.closest?.('#floating-windows-layer')) {
+                if (this.closest?.("#floating-windows-layer")) {
                     return originalFocus.call(this);
                 }
                 return;
