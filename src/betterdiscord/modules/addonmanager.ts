@@ -60,6 +60,8 @@ export interface Addon {
 
 
 export default abstract class AddonManager extends Store {
+    private static focusOverrideCount = 0;
+    private static originalFocus: typeof HTMLElement.prototype.focus | null = null;
 
     get name() {return "";}
     get extension() {return "";}
@@ -463,22 +465,28 @@ export default abstract class AddonManager extends Store {
             return;
         };
 
-        // Prevent Discord from stealing focus
-        const originalFocus = HTMLElement.prototype.focus;
-        const focusOverride = function(this: HTMLElement) {
-            if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
-                return originalFocus.call(this);
-            }
-            return;
-        };
-
-        HTMLElement.prototype.focus = focusOverride;
+        // Prevent Discord from stealing focus (with reference counting for multiple windows)
+        if (AddonManager.focusOverrideCount === 0) {
+            AddonManager.originalFocus = HTMLElement.prototype.focus;
+            const focusOverride = function(this: HTMLElement) {
+                if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
+                    return AddonManager.originalFocus!.call(this);
+                }
+                return;
+            };
+            HTMLElement.prototype.focus = focusOverride;
+        }
+        AddonManager.focusOverrideCount++;
 
         try {
             FloatingWindows.open({
                 onClose: () => {
                     this.windows.delete(fullPath);
-                    HTMLElement.prototype.focus = originalFocus; // Restore normal focus
+                    AddonManager.focusOverrideCount--;
+                    if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
+                        HTMLElement.prototype.focus = AddonManager.originalFocus;
+                        AddonManager.originalFocus = null;
+                    }
                 },
                 onResize: () => {
                     if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
@@ -499,9 +507,13 @@ export default abstract class AddonManager extends Store {
                 confirmationText: t("Addons.confirmationText", {name: addon.name})
             });
         } finally {
-            // Ensure focus is restored if opening fails
-            if (HTMLElement.prototype.focus === focusOverride) {
-                HTMLElement.prototype.focus = originalFocus;
+            // If FloatingWindows.open throws, ensure we clean up
+            if (AddonManager.originalFocus && AddonManager.focusOverrideCount > 0) {
+                AddonManager.focusOverrideCount--;
+                if (AddonManager.focusOverrideCount === 0) {
+                    HTMLElement.prototype.focus = AddonManager.originalFocus;
+                    AddonManager.originalFocus = null;
+                }
             }
         }
     }
