@@ -93,11 +93,11 @@ export class KeybindsManager {
      * @param {string[]} accelerator The Accelerator to unregister
      * @returns {boolean} Whether the Accelerator was unregistered
      */
-    unregisterGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator) {
+    async unregisterGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator) {
         const accelerators = this.globalAccelerators.get(keybindId);
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
-        ipc.unregisterGlobalShortcut(accelerator);
+        await ipc.unregisterGlobalShortcut(accelerator);
         accelerators.delete(accelerator);
         shortcutMap.delete(accelerator);
     }
@@ -106,12 +106,12 @@ export class KeybindsManager {
      * Unregisters all Accelerators for the keybind.
      * @param {string} keybindId Name of the keybind to unregister the Accelerators for
      */
-    unregisterAllGlobalAccelerators(keybindId: string) {
+    async unregisterAllGlobalAccelerators(keybindId: string) {
         const accelerators = this.globalAccelerators.get(keybindId);
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
         const acceleratorsArray: string[] = Array.from(accelerators);
-        ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
+        await ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
         accelerators.clear();
         for (const accelerator of acceleratorsArray) {
             shortcutMap.delete(accelerator);
