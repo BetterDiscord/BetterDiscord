@@ -7,16 +7,16 @@ import AddonError from "@structs/addonerror";
 
 import Settings from "@stores/settings";
 import Events from "./emitter";
-import JsonStore, {type Files} from "@stores/json";
+import JsonStore, { type Files } from "@stores/json";
 import React from "./react";
-import {t} from "@common/i18n";
+import { t } from "@common/i18n";
 import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import Store from "@stores/base";
-import type {SystemError} from "bun";
+import type { SystemError } from "bun";
 import RemoteAPI from "@polyfill/remote";
 
 
@@ -63,13 +63,13 @@ export default abstract class AddonManager extends Store {
     private static focusOverrideCount = 0;
     private static originalFocus: typeof HTMLElement.prototype.focus | null = null;
 
-    get name() {return "";}
-    get extension() {return "";}
-    get duplicatePattern() {return /./;}
-    get addonFolder() {return "";}
-    get language() {return "";}
-    get prefix() {return "";}
-    get order() {return 2;}
+    get name() { return ""; }
+    get extension() { return ""; }
+    get duplicatePattern() { return /./; }
+    get addonFolder() { return ""; }
+    get language() { return ""; }
+    get prefix() { return ""; }
+    get order() { return 2; }
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
@@ -110,7 +110,7 @@ export default abstract class AddonManager extends Store {
     watchAddons() {
         if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
-        this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
+        this.watcher = fs.watch(this.addonFolder, { persistent: false }, async (eventType, filename) => {
             // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
             if (!eventType || !filename) return;
             // console.log(eventType, filename)
@@ -173,7 +173,7 @@ export default abstract class AddonManager extends Store {
         const firstLine = fileContent.split("\n")[0];
 
         const hasMetaComment = firstLine.includes("/**");
-        if (!hasMetaComment) throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
+        if (!hasMetaComment) throw new AddonError(filename, filename, t("Addons.metaNotFound"), { message: "", stack: fileContent }, this.prefix);
         const metaInfo = this.parseJSDoc(fileContent);
 
         /**
@@ -240,7 +240,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", { type: this.prefix, name: addon.name }), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }
@@ -271,7 +271,7 @@ export default abstract class AddonManager extends Store {
             return error;
         }
 
-        if (shouldToast) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.success(t("Addons.wasLoaded", { name: addon.name, version: addon.version }));
         this.trigger("loaded", addon);
 
         if (!this.state[addon.id]) return this.state[addon.id] = false;
@@ -289,7 +289,7 @@ export default abstract class AddonManager extends Store {
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
         this.trigger("unloaded", addon);
-        if (shouldToast) Toasts.success(t("Addons.wasUnloaded", {name: addon.name}));
+        if (shouldToast) Toasts.success(t("Addons.wasUnloaded", { name: addon.name }));
         return true;
     }
 
@@ -370,7 +370,7 @@ export default abstract class AddonManager extends Store {
         const files = fs.readdirSync(this.addonFolder);
         const removed = this.addonList.filter(a => !files.includes(a.filename)).map(c => c.id);
         const added = files.filter(f => !this.addonList.find(a => a.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
-        return {added, removed};
+        return { added, removed };
     }
 
     updateList() {
@@ -440,69 +440,69 @@ export default abstract class AddonManager extends Store {
     }
 
     openDetached(addon: Addon) {
-    const fullPath = path.resolve(this.addonFolder, addon.filename);
-    const content = fs.readFileSync(fullPath).toString();
+        const fullPath = path.resolve(this.addonFolder, addon.filename);
+        const content = fs.readFileSync(fullPath).toString();
 
-    if (this.windows.has(fullPath)) return;
-    this.windows.add(fullPath);
+        if (this.windows.has(fullPath)) return;
+        this.windows.add(fullPath);
 
-    const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
-    const editor = React.createElement(AddonEditor, {
-        id: "bd-floating-editor-" + addon.id,
-        ref: editorRef,
-        content: content,
-        save: this.saveAddon.bind(this, addon),
-        openNative: this.editAddon.bind(this, addon, true),
-        language: this.language
-    });
-
-    // Prevent Discord from stealing focus (with reference counting for multiple windows)
-    if (AddonManager.focusOverrideCount === 0) {
-        AddonManager.originalFocus = HTMLElement.prototype.focus;
-        const focusOverride = function(this: HTMLElement) {
-            if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
-                return AddonManager.originalFocus!.call(this);
-            }
-            return;
-        };
-        HTMLElement.prototype.focus = focusOverride;
-    }
-    AddonManager.focusOverrideCount++;
-
-    let windowOpened = false;
-    try {
-        FloatingWindows.open({
-            onClose: () => {
-                this.windows.delete(fullPath);
-                AddonManager.focusOverrideCount--;
-                if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
-                    HTMLElement.prototype.focus = AddonManager.originalFocus;
-                    AddonManager.originalFocus = null;
-                }
-            },
-            onResize: () => {
-                if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
-                editorRef.current.resize();
-            },
-            title: addon.name,
-            id: "bd-floating-window-" + addon.id,
-            className: "floating-addon-window",
-            height: 470,
-            width: 410,
-            center: true,
-            resizable: true,
-            children: editor,
-            confirmClose: () => {
-                if (!editorRef || !editorRef.current) return false;
-                return editorRef.current.hasUnsavedChanges;
-            },
-            confirmationText: t("Addons.confirmationText", {name: addon.name})
+        const editorRef = React.createRef<{ resize(): void; hasUnsavedChanges: boolean; }>();
+        const editor = React.createElement(AddonEditor, {
+            id: "bd-floating-editor-" + addon.id,
+            ref: editorRef,
+            content: content,
+            save: this.saveAddon.bind(this, addon),
+            openNative: this.editAddon.bind(this, addon, true),
+            language: this.language
         });
-        windowOpened = true;
-    } finally {
+
+        // Prevent Discord from stealing focus (with reference counting for multiple windows)
+        if (AddonManager.focusOverrideCount === 0) {
+            AddonManager.originalFocus = HTMLElement.prototype.focus;
+            const focusOverride = function (this: HTMLElement) {
+                if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
+                    return AddonManager.originalFocus!.call(this);
+                }
+                return;
+            };
+            HTMLElement.prototype.focus = focusOverride;
+        }
+        AddonManager.focusOverrideCount++;
+
+        let windowOpened = false;
+        try {
+            FloatingWindows.open({
+                onClose: () => {
+                    this.windows.delete(fullPath);
+                    AddonManager.focusOverrideCount--;
+                    if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
+                        HTMLElement.prototype.focus = AddonManager.originalFocus;
+                        AddonManager.originalFocus = null;
+                    }
+                },
+                onResize: () => {
+                    if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
+                    editorRef.current.resize();
+                },
+                title: addon.name,
+                id: "bd-floating-window-" + addon.id,
+                className: "floating-addon-window",
+                height: 470,
+                width: 410,
+                center: true,
+                resizable: true,
+                children: editor,
+                confirmClose: () => {
+                    if (!editorRef || !editorRef.current) return false;
+                    return editorRef.current.hasUnsavedChanges;
+                },
+                confirmationText: t("Addons.confirmationText", { name: addon.name })
+            });
+            windowOpened = true;
+        } finally {
             // Only restore if window failed to open
             if (!windowOpened) {
-            AddonManager.focusOverrideCount--;
+                AddonManager.focusOverrideCount--;
                 if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
                     HTMLElement.prototype.focus = AddonManager.originalFocus;
                     AddonManager.originalFocus = null;
