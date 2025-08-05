@@ -5,13 +5,16 @@ type Keys = string[];
 type Shortcut = Electron.Accelerator | Keys;
 
 type RegisterGlobalArgs = [keys: Keys, callback: () => void];
-type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? RegisterGlobalArgs : [keybindId: string, ...RegisterGlobalArgs];
+type RegisterGlobalArgsBounded = [keybindId: string, ...RegisterGlobalArgs];
+type RegisterGlobalKeybind<Bounded extends boolean> = Bounded extends true ? RegisterGlobalArgs | RegisterGlobalArgsBounded : RegisterGlobalArgsBounded;
 
 type UnregisterArgs = [keys: Keys];
-type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? UnregisterArgs : [keybindId: string, ...UnregisterArgs];
+type UnregisterArgsBounded = [keybindId: string, ...UnregisterArgs];
+type UnregisterKeybind<Bounded extends boolean> = Bounded extends true ? UnregisterArgs | UnregisterArgsBounded : UnregisterArgsBounded;
 
 type UnregisterAllArgs = [];
-type UnregisterAllKeybinds<Bounded extends boolean> = Bounded extends true ? UnregisterAllArgs : [keybindId: string];
+type UnregisterAllArgsBounded = [keybindId: string];
+type UnregisterAllKeybinds<Bounded extends boolean> = Bounded extends true ? UnregisterAllArgs | UnregisterAllArgsBounded : UnregisterAllArgsBounded;
 
 function shortcutToAccelerator(keys: unknown): Electron.Accelerator | undefined {
     let accelerator: Electron.Accelerator | undefined;
