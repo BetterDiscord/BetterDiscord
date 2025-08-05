@@ -192,7 +192,7 @@
     padding: 4px 6px;
 }
 
-.bd-links .bd-addon-button + .bd-addon-button {
+.bd-links .bd-addon-button:not(:first-child) {
     margin-left: 10px;
 }
 
