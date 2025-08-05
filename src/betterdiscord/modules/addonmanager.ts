@@ -478,6 +478,7 @@ export default abstract class AddonManager extends Store {
         }
         AddonManager.focusOverrideCount++;
 
+        let windowOpened = false;
         try {
             FloatingWindows.open({
                 onClose: () => {
@@ -506,11 +507,12 @@ export default abstract class AddonManager extends Store {
                 },
                 confirmationText: t("Addons.confirmationText", {name: addon.name})
             });
+            windowOpened = true;
         } finally {
-            // If FloatingWindows.open throws, ensure we clean up
-            if (AddonManager.originalFocus && AddonManager.focusOverrideCount > 0) {
+            // Only restore if window failed to open
+            if (!windowOpened) {
                 AddonManager.focusOverrideCount--;
-                if (AddonManager.focusOverrideCount === 0) {
+                if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
                     HTMLElement.prototype.focus = AddonManager.originalFocus;
                     AddonManager.originalFocus = null;
                 }
