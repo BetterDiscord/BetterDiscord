@@ -454,27 +454,45 @@ export default abstract class AddonManager extends Store {
             language: this.language
         });
 
-        FloatingWindows.open({
-            onClose: () => {
-                this.windows.delete(fullPath);
-            },
-            onResize: () => {
-                if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
-                editorRef.current.resize();
-            },
-            title: addon.name,
-            id: "bd-floating-window-" + addon.id,
-            className: "floating-addon-window",
-            height: 470,
-            width: 410,
-            center: true,
-            resizable: true,
-            children: editor,
-            confirmClose: () => {
-                if (!editorRef || !editorRef.current) return false;
-                return editorRef.current.hasUnsavedChanges;
-            },
-            confirmationText: t("Addons.confirmationText", {name: addon.name})
-        });
+        // Prevent Discord from stealing focus
+        const originalFocus = HTMLElement.prototype.focus;
+        const focusOverride = function(this: HTMLElement) {
+            if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
+                return originalFocus.call(this);
+            }
+            return;
+        };
+
+        HTMLElement.prototype.focus = focusOverride;
+
+        try {
+            FloatingWindows.open({
+                onClose: () => {
+                    this.windows.delete(fullPath);
+                    HTMLElement.prototype.focus = originalFocus; // Restore normal focus
+                },
+                onResize: () => {
+                    if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
+                    editorRef.current.resize();
+                },
+                title: addon.name,
+                id: "bd-floating-window-" + addon.id,
+                className: "floating-addon-window",
+                height: 470,
+                width: 410,
+                center: true,
+                resizable: true,
+                children: editor,
+                confirmClose: () => {
+                    if (!editorRef || !editorRef.current) return false;
+                    return editorRef.current.hasUnsavedChanges;
+                },
+                confirmationText: t("Addons.confirmationText", {name: addon.name})
+            });
+        } catch (error) {
+            // Ensure focus is restored even if opening fails
+            HTMLElement.prototype.focus = originalFocus;
+            throw error;
+        }
     }
 }

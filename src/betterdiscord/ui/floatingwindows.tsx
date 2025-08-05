@@ -10,6 +10,9 @@ import {getByDisplayName} from "@webpack";
 const AppLayerProvider = getByDisplayName("AppLayerProvider");
 
 let hasInitialized = false;
+let originalFocus = null;
+let activeWindows = 0;
+
 export default class FloatingWindows {
     static initialize() {
         const container = <FloatingWindowContainer />;
@@ -25,6 +28,32 @@ export default class FloatingWindows {
 
     static open(window) {
         if (!hasInitialized) this.initialize();
+        
+        // Override focus to prevent Discord from stealing it from floating windows
+        if (activeWindows === 0 && !originalFocus) {
+            originalFocus = HTMLElement.prototype.focus;
+            HTMLElement.prototype.focus = function() {
+                if (this.closest?.("#floating-windows-layer")) {
+                    return originalFocus.call(this);
+                }
+                return;
+            };
+        }
+        
+        activeWindows++;
+        
+        const originalOnClose = window.onClose;
+        window.onClose = () => {
+            activeWindows--;
+            
+            if (activeWindows === 0 && originalFocus) {
+                HTMLElement.prototype.focus = originalFocus;
+                originalFocus = null;
+            }
+            
+            originalOnClose?.();
+        };
+        
         return Events.emit("open-window", window);
     }
 }
