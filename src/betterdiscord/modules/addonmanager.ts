@@ -500,12 +500,13 @@ export default abstract class AddonManager extends Store {
         });
         windowOpened = true;
     } finally {
-        // Only restore if window failed to open
-        if (!windowOpened) {
+            // Only restore if window failed to open
+            if (!windowOpened) {
             AddonManager.focusOverrideCount--;
-            if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
-                HTMLElement.prototype.focus = AddonManager.originalFocus;
-                AddonManager.originalFocus = null;
+                if (AddonManager.focusOverrideCount === 0 && AddonManager.originalFocus) {
+                    HTMLElement.prototype.focus = AddonManager.originalFocus;
+                    AddonManager.originalFocus = null;
+                }
             }
         }
     }
