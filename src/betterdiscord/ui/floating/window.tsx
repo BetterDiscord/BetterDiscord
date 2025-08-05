@@ -43,12 +43,12 @@ export interface FloatingWindowProps {
     maxX?: number,
     maxY?: number,
     onResize?(): void;
-    close?(): void,
+    onClose?(): void,
     confirmClose?: (() => boolean | Promise<boolean>) | boolean;
     confirmationText?: string;
 }
 
-export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 410, height: initialHeight = 470, minX = 0, minY = 0, maxX = -1, maxY = -1, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
+export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 410, height: initialHeight = 470, minX = 0, minY = 0, maxX = -1, maxY = -1, onResize, onClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
     const [modalOpen, setOpen] = useState(false);
 
     const max = useRef({x: maxX, y: maxY});
@@ -189,8 +189,8 @@ export default function FloatingWindow({id, title, resizable, children, classNam
             shouldClose = await confirmClose(confirmationText!) as boolean;
             setOpen(false);
         }
-        if (doClose && shouldClose) doClose();
-    }, [confirmationText, doClose, doConfirmClose]);
+        if (onClose && shouldClose) onClose();
+    }, [confirmationText, onClose, doConfirmClose]);
 
     const finalClassname = `floating-window${className ? ` ${className}` : ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
 
