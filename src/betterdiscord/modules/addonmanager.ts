@@ -463,6 +463,15 @@ export default abstract class AddonManager extends Store {
             return;
         };
 
+        // Prevent Discord from stealing focus
+        const originalFocus = HTMLElement.prototype.focus;
+        const focusOverride = function(this: HTMLElement) {
+            if (this.closest('.floating-addon-window') || this.closest('#bd-editor')) {
+                return originalFocus.call(this);
+            }
+            return;
+        };
+
         HTMLElement.prototype.focus = focusOverride;
 
         try {
@@ -489,10 +498,11 @@ export default abstract class AddonManager extends Store {
                 },
                 confirmationText: t("Addons.confirmationText", {name: addon.name})
             });
-        } catch (error) {
-            // Ensure focus is restored even if opening fails
-            HTMLElement.prototype.focus = originalFocus;
-            throw error;
+        } finally {
+            // Ensure focus is restored if opening fails
+            if (HTMLElement.prototype.focus === focusOverride) {
+                HTMLElement.prototype.focus = originalFocus;
+            }
         }
     }
 }
