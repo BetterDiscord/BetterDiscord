@@ -337,7 +337,7 @@ export class AddonUpdater {
 
         Notifications.show({
             id: `addon-updates-${this.type}`,
-            title: t("Updater.addonUpdatesAvailable.title"),
+            title: t("Updater.addonUpdaterNotificationTitle"),
             content: [
                 t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
                React.createElement("ul", {className: "bd-notification-updates-list"},
