@@ -3,9 +3,9 @@
     font-size: 16px;
     box-sizing: border-box;
     border-radius: 3px;
-    color: var(--text-normal);
+    color: var(--text-default);
     background-color: var(--input-background);
-    border: none;
+    border: 1px solid var(--input-border);
     padding: 10px;
     height: 40px;
 }

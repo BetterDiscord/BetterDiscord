@@ -7,7 +7,7 @@ import AddonError from "@structs/addonerror";
 
 import Settings from "@stores/settings";
 import Events from "./emitter";
-import JsonStore from "@stores/json";
+import JsonStore, {type Files} from "@stores/json";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
@@ -17,6 +17,7 @@ import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import Store from "@stores/base";
 import type {SystemError} from "bun";
+import RemoteAPI from "@polyfill/remote";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -65,7 +66,7 @@ export default abstract class AddonManager extends Store {
     get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
     get language() {return "";}
-    get prefix() {return "addon";}
+    get prefix() {return "";}
     get order() {return 2;}
 
     trigger(event: string, ...args: any[]) {
@@ -94,13 +95,13 @@ export default abstract class AddonManager extends Store {
     abstract stopAddon(idOrAddon: string | Addon): AddonError | undefined | void;
 
     loadState() {
-        const saved = JsonStore.get(`${this.prefix}s`);
+        const saved = JsonStore.get(`${this.prefix}s` as Files);
         if (!saved) return;
         Object.assign(this.state, saved);
     }
 
     saveState() {
-        JsonStore.set(`${this.prefix}s`, this.state);
+        JsonStore.set(`${this.prefix}s` as Files, this.state);
     }
 
     watcher?: fs.FSWatcher;
@@ -141,10 +142,10 @@ export default abstract class AddonManager extends Store {
                 const stats = fs.statSync(absolutePath);
                 // console.log("watcher", stats);
                 if (!stats.isFile()) return;
-                if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-                if (typeof (stats.mtime.getTime()) !== "number") return;
-                if (this.timeCache[filename] == stats.mtime.getTime()) return;
-                this.timeCache[filename] = stats.mtime.getTime();
+                if (!stats || !stats.mtimeMs) return;
+                if (typeof (stats.mtimeMs) !== "number") return;
+                if (this.timeCache[filename] == stats.mtimeMs) return;
+                this.timeCache[filename] = stats.mtimeMs;
                 if (eventType == "rename") this.loadAddon(filename, true);
                 if (eventType == "change") this.reloadAddon(filename, true);
             }
@@ -237,7 +238,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }
@@ -385,7 +386,7 @@ export default abstract class AddonManager extends Store {
             const absolutePath = path.resolve(this.addonFolder, filename);
             const stats = fs.statSync(absolutePath);
             if (!stats || !stats.isFile()) continue;
-            this.timeCache[filename] = stats.mtime.getTime();
+            this.timeCache[filename] = stats.mtimeMs;
 
             if (!filename.endsWith(this.extension)) {
                 // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
@@ -426,12 +427,13 @@ export default abstract class AddonManager extends Store {
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | boolean) {
+    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | "external" | boolean) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
-        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction") === "system";
-        if (system) return openItem(`${fullPath}`);
+        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction");
+        if (system === "system") return openItem(`${fullPath}`);
+        else if (system === "external") return RemoteAPI.editor.open(this.prefix as "theme", addon.filename);
         return this.openDetached(addon);
     }
 

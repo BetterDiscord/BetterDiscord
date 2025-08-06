@@ -17,13 +17,12 @@ interface Props {
 }
 
 export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}: Props, ref) {
-    const editorRef = useRef<{resize(): void; showSettings(): void; getValue(): string; setValue(s: string): void;}>();
+    const editorRef = useRef<{resize(): void; getValue(): string; setValue(s: string): void;}>(null);
     const [hasUnsavedChanges, setUnsaved] = useState(false);
 
     useImperativeHandle(ref, () => {
         return {
             resize() {editorRef.current?.resize();},
-            showSettings() {editorRef.current?.showSettings();},
             get value(): string | undefined {return editorRef.current?.getValue();},
             set value(newValue: string) {editorRef.current?.setValue(newValue);},
             get hasUnsavedChanges() {return hasUnsavedChanges;}

@@ -36,17 +36,21 @@ import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 
 import type ReactType from "react";
-import type ReactDOMType from "react-dom";
+import type ReactDOMBaseType from "react-dom";
+import type ReactDOMClientType from "react-dom/client";
+
+type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
+
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
-const PatcherAPI = new Patcher();
-const DataAPI = new Data();
-const DOMAPI = new DOM();
+const PatcherAPI = new Patcher<false>();
+const DataAPI = new Data<false>();
+const DOMAPI = new DOM<false>();
 const ContextMenuAPI = new ContextMenu();
-const CommandsAPI = new CommandAPI();
-const DefaultLogger = new Logger();
+const CommandsAPI = new CommandAPI<false>();
+const DefaultLogger = new Logger<false>();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
@@ -85,7 +89,7 @@ const React: typeof ReactType = DiscordModules.React;
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM: typeof ReactDOMType = DiscordModules.ReactDOM;
+const ReactDOM: ReactDOMType = DiscordModules.ReactDOM;
 
 /**
  * A reference string for BD's version.
@@ -99,20 +103,20 @@ const version: string = Config.get("version");
  * @name BdApi
  */
 export default class BdApi {
-    Patcher: Patcher = PatcherAPI;
-    Data: Data = DataAPI;
-    DOM: DOM = DOMAPI; 
-    Logger: Logger = DefaultLogger;
-    Commands: CommandAPI = CommandsAPI;
+    Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
+    Data: Data<true> = DataAPI as Data<true>;
+    DOM: DOM<true> = DOMAPI as DOM<true>;
+    Logger: Logger<true> = DefaultLogger as Logger<true>;
+    Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
 
-    static Patcher: Patcher;
-    static Data: Data;
-    static DOM: DOM;
-    static Logger: Logger;
-    static Commands: CommandAPI;
+    static Patcher: Patcher<false>;
+    static Data: Data<false>;
+    static DOM: DOM<false>;
+    static Logger: Logger<false>;
+    static Commands: CommandAPI<false>;
     static React = React;
     static ReactDOM = ReactDOM;
     static version = version;
@@ -125,7 +129,7 @@ export default class BdApi {
     static Utils: typeof Utils;
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
-    static Net: { fetch: typeof fetch };
+    static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -154,7 +158,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    Net = {fetch}; 
+    Net = {fetch};
 }
 
 /**
@@ -185,7 +189,7 @@ BdApi.Webpack = Webpack;
  * An instance of {@link Data} to manage data.
  * @type Data
  */
- BdApi.Data = DataAPI;
+BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.

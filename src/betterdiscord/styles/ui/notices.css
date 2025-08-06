@@ -25,6 +25,10 @@
     }
 }
 
+#bd-notices {
+    grid-area: notice;
+}
+
 .bd-notice {
     animation: bd-open-notice 400ms ease;
     overflow: hidden;
@@ -85,7 +89,7 @@
 }
 
 .bd-notice-button:hover {
-    color: var(--color, var(--background-mobile-primary));
+    color: var(--color, var(--background-mobile-secondary));
     background: #FFFFFF;
 }
 

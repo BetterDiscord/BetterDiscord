@@ -5,9 +5,9 @@
     position: relative;
     min-width: 250px;
     box-sizing: border-box;
-    border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     padding: 0 4px;
     height: 40px;
     cursor: pointer;
@@ -27,7 +27,7 @@
     outline: none;
     border: none;
     pointer-events: none;
-    color: var(--text-normal);
+    color: var(--text-default);
     background: none;
     font-size: 16px;
     text-transform: uppercase;
@@ -54,6 +54,10 @@
     padding: 3px 8px;
 }
 
+.bd-keybind-wrap .bd-keybind-record.bd-button-color-red svg {
+    color: var(--interactive-active);
+}
+
 .bd-keybind-clear {
     margin-left: 5px;
     /* background: none!important; */
@@ -70,3 +74,4 @@
     width: 18px !important;
     height: 18px !important;
 }
+

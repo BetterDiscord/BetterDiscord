@@ -1,7 +1,6 @@
 import Bun, {$} from "bun";
 import path from "node:path";
 import pkg from "../package.json";
-
 import styleLoader from "bun-style-loader";
 import * as esbuild from "esbuild";
 
@@ -20,9 +19,12 @@ interface EntryPoint {
 }
 
 const moduleConfigs: Record<string, EntryPoint> = {
-    betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
-    main: {"in": "src/electron/main/index.js", "out": "main"},
-    preload: {"in": "src/electron/preload/index.js", "out": "preload"},
+    betterdiscord: {"in": "src/betterdiscord/index.ts", "out": "betterdiscord"},
+    main: {"in": "src/electron/main/index.ts", "out": "main"},
+    preload: {"in": "src/electron/preload/index.ts", "out": "preload"},
+    editorPreload: {"in": "src/editor/preload.ts", "out": "editor/preload"},
+    editor: {"in": "src/editor/script.ts", "out": "editor/script"},
+    editorHtml: {"in": "src/editor/index.html", "out": "editor/index"}
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -30,14 +32,8 @@ if (!modulesRequested.length) modulesRequested = Object.keys(moduleConfigs);
 
 const entryPoints = modulesRequested.map(m => moduleConfigs[m]);
 
-async function runBuild() {
-    const before = performance.now();
-    const names = modulesRequested.join(", ");
-
-    console.log("");
-    console.log(`Building ${names}...`);
-
-    const ctx = await esbuild.context({
+function buildOptions() {
+    return {
         entryPoints: entryPoints,
         bundle: true,
         outdir: path.join(rootDir, "dist"),
@@ -46,11 +42,12 @@ async function runBuild() {
         alias: {
             react: "@modules/react",
         },
-        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os"],
+        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os", "url"],
         target: ["chrome128", "node20"],
         loader: {
             ".js": "jsx",
-            ".css": "css"
+            ".css": "css",
+            ".html": "copy"
         },
         plugins: [styleLoader() as unknown as esbuild.Plugin],
         logLevel: "info",
@@ -60,19 +57,27 @@ async function runBuild() {
         legalComments: "none",
         define: {
             "process.env.__VERSION__": JSON.stringify(pkg.version),
+            "process.env.__MONACO_VERSION__": JSON.stringify(pkg.dependencies["monaco-editor"]),
             "process.env.__BRANCH__": JSON.stringify(BRANCH_NAME),
             "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH),
             "process.env.__BUILD__": JSON.stringify(DEVELOPMENT)
         }
-    });
+    } satisfies esbuild.BuildOptions;
+}
 
+async function runBuild() {
+    const before = performance.now();
+    const names = modulesRequested.join(", ");
+
+    console.log("");
+    console.log(`Building ${names}...`);
 
     if (process.argv.includes("--watch")) {
+        const ctx = await esbuild.context(buildOptions());
         await ctx.watch();
     }
     else {
-        await ctx.rebuild();
-        await ctx.dispose();
+        await esbuild.build(buildOptions());
     }
 
     const after = performance.now();

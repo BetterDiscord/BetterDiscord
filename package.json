@@ -21,13 +21,16 @@
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
+        "@react-spring/web": "^10.0.1",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",
-        "@types/react": "^18.3.1",
-        "@types/react-dom": "^18.3.5",
+        "@types/react": "^19.1.2",
+        "@types/react-dom": "^19.1.2",
+        "@types/react-reconciler": "^0.32.0",
         "bun-style-loader": "^0.4.0",
         "dotenv": "^16.4.5",
         "dpdm": "^3.14.0",
+        "electron": "^36.2.1",
         "esbuild": "^0.24.2",
         "eslint": "^9.19.0",
         "eslint-plugin-react": "^7.37.4",
@@ -41,7 +44,8 @@
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
         "fast-equals": "^5.2.2",
-        "lucide-react": "^0.474.0"
+        "lucide-react": "^0.474.0",
+        "monaco-editor": "0.52.2"
     },
     "engines": {
         "bun": ">=1.2"

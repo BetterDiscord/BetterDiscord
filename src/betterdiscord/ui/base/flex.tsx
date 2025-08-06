@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import type {CSSProperties, PropsWithChildren} from "react";
+import type {CSSProperties, MouseEventHandler, PropsWithChildren} from "react";
 
 
 export const Direction = Object.freeze({
@@ -32,7 +32,7 @@ export const Wrap = Object.freeze({
 });
 
 
-export function Child(props: {className?: string;}) {
+export function Child(props: {className?: string;[x: string]: any;}) {
     if (!props.className) props.className = "";
     props.className = clsx(props.className, "bd-flex-child");
     return <Flex {...props} />;
@@ -49,6 +49,7 @@ type FlexProps = PropsWithChildren<{
     direction?: typeof Direction[keyof typeof Direction];
     align?: typeof Align[keyof typeof Align];
     wrap?: typeof Wrap[keyof typeof Wrap];
+    onClick?: MouseEventHandler<HTMLDivElement>;
 }>;
 
 export default function Flex({
