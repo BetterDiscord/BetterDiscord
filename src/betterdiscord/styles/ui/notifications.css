@@ -30,6 +30,8 @@
     margin-bottom: 20px;
     position: relative;
     width: 450px;
+    max-height: 500px;
+    overflow: hidden;
 }
 
 .bd-notification-top-left {
@@ -59,7 +61,8 @@
 .bd-notification-content {
     border-radius: 8px 8px 0 0;
     display: flex;
-    padding: 16px 40px 16px 16px;
+    padding: 16px 40px 0px 16px;
+    padding-right: 5px;
 }
 
 .bd-notification-icon {
@@ -91,7 +94,30 @@
     font-family: var(--font-display);
     font-size: 14px;
     font-weight: 400;
-    line-height: 1.2857142857142858;
+    line-height: 1.29;
+    max-height: 380px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-width: 100%;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 5px;
+    overflow-wrap: break-word;
+}
+
+.bd-notification-content-text::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+.bd-notification-content-text::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thin-thumb, #202225);
+    border-radius: 8px;
+}
+
+.bd-notification-content-text::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .bd-notification-close {
