@@ -15,21 +15,8 @@ export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, 
     yield target && Object.keys(target).find(k => filter(target[k]));
 }
 
-export function getMangled<T extends object>(
-    filter: Webpack.Filter | string | RegExp,
-    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
-    options: Webpack.Options = {}
-): T {
-    const {raw = false, ...rest} = options;
+function mapObject<T extends object>(module: any, mappers: Record<keyof T, Webpack.ExportedOnlyFilter>): T {
     const mapped = {} as Partial<T>;
-
-    if (typeof filter === "string" || filter instanceof RegExp) {
-        filter = bySource(filter);
-    }
-
-    let module = getModule<any>(filter, {raw, ...rest});
-    if (!module) return mapped as T;
-    if (raw) module = module.exports;
 
     const moduleKeys = Object.keys(module);
     const mapperKeys = Object.keys(mappers) as Array<keyof T>;
@@ -77,6 +64,24 @@ export function getMangled<T extends object>(
     return mapped as T;
 }
 
+export function getMangled<T extends object>(
+    filter: Webpack.Filter | string | RegExp,
+    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
+    options: Webpack.Options = {}
+): T {
+    const {raw = false, ...rest} = options;
+
+    if (typeof filter === "string" || filter instanceof RegExp) {
+        filter = bySource(filter);
+    }
+
+    let module = getModule<any>(filter, {raw, ...rest});
+    if (!module) return {} as T;
+    if (raw) module = module.exports;
+
+    return mapObject(module, mappers);
+}
+
 export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const returnedModules = Array(queries.length) as T;
 
@@ -93,20 +98,23 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (shouldSkipModule(module.exports)) continue;
 
         queries: for (let index = 0; index < queries.length; index++) {
-            const {filter, all = false, defaultExport = true, searchExports = false, searchDefault = true, raw = false} = queries[index];
+            const {filter, all = false, defaultExport = true, searchExports = false, searchDefault = true, raw = false, map} = queries[index];
 
             if (!all && index in returnedModules) {
                 continue;
             }
 
             if (filter(module.exports, module, module.id)) {
+                const item = raw ? module : module.exports;
+                const trueItem = map ? mapObject(item, map) : item;
+
                 if (!all) {
-                    returnedModules[index] = raw ? module : module.exports;
+                    returnedModules[index] = trueItem;
                     continue;
                 }
 
                 returnedModules[index] ??= [];
-                returnedModules[index].push(raw ? module : module.exports);
+                returnedModules[index].push(trueItem);
             }
 
             let defaultKey: string | undefined;
@@ -120,10 +128,15 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
                 if (shouldSkipModule(exported)) continue;
 
                 if (filter(exported, module, module.id)) {
-                    let value = raw ? module : exported;
+                    let value: any;
 
                     if (!defaultExport && defaultKey === key) {
-                        value = raw ? module : module.exports;
+                        const item = raw ? module : module.exports;
+                        value = map ? mapObject(item, map) : item;
+                    }
+                    else {
+                        const item = raw ? module : exported;
+                        value = map ? mapObject(item, map) : item;
                     }
 
                     if (!all) {
