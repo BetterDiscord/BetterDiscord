@@ -55,9 +55,11 @@ class Data<Bounded extends boolean> {
      */
     load<T>(...args: LoadArgs<Bounded>): T {
         if (this.#callerName) {
+            // @ts-expect-error
             return JsonStore.getData(this.#callerName, args[0], args[1]);
         }
 
+        // @ts-expect-error
         return JsonStore.getData(args[0], args[1], args[2]);
     }
 
