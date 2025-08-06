@@ -37,7 +37,6 @@
     position: relative;
     cursor: pointer;
     color: var(--interactive-normal);
-    /* font-size: 14px; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -90,7 +89,6 @@
     overflow-y: auto;
     box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px 0;
     border: 1px solid var(--input-border);
-    border-top: 0;
     margin-top: 8px;
     margin-left: -12px;
     z-index: 2;
@@ -100,12 +98,6 @@
 .bd-select-transparent .bd-select-options {
     margin-left: -6px;
 }
-
-/* .bd-select-transparent .bd-select-options {
-    border: 1px solid var(--input-border);
-    margin-top: 3px;
-    border-radius: 3px;
-} */
 
 .bd-select .bd-select-option {
     padding: 8px 12px;
