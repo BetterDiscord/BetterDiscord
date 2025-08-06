@@ -5,6 +5,10 @@ type BaseArgs<Bounded extends boolean> = [
     key: string
 ];
 
+type LoadArgs<Bounded extends boolean> =
+    | BaseArgs<Bounded>
+    | [...BaseArgs<Bounded>, recache: boolean];
+
 
 type SaveArgs<Bounded extends boolean, T> = [
     ...BaseArgs<Bounded>,
@@ -49,7 +53,7 @@ class Data<Bounded extends boolean> {
      * @param {boolean} recache forces reload of data from disk if true
      * @returns {any} The stored data
      */
-    load<T>(...args: BaseArgs<Bounded>): T {
+    load<T>(...args: LoadArgs<Bounded>): T {
         if (this.#callerName) {
             return JsonStore.getData(this.#callerName, args[0], args[1]);
         }
