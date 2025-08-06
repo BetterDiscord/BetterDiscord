@@ -107,6 +107,11 @@
     color: var(--interactive-hover);
 }
 
+.bd-notification-updates-list {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
 .bd-notification-footer {
     background-color: var(--card-primary-bg);
     border-radius: 0 0 8px 8px;
