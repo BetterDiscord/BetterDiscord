@@ -33,8 +33,6 @@ const UI = {
     },
 
     showNotification(notificationObj: Notification) {
-        if (!Settings.get("settings", "general", "notificationEnabled")) return;
-
         const defaultObj = {
             title: "",
             content: "",
