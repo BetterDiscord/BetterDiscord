@@ -8,7 +8,7 @@ import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
-import NotificationUI from "@ui/notifications";
+import NotificationUI, {type Notification} from "@ui/notifications";
 import type {ReactElement} from "react";
 import type {ChangelogProps} from "@ui/modals/changelog";
 
@@ -19,7 +19,6 @@ import type {ChangelogProps} from "@ui/modals/changelog";
  * @summary {@link UI} is a utility class for creating user interfaces.
  * @name UI
  */
-let cntr = 0;
 
 // TODO: merge types after converting ui folder
 const UI = {
@@ -33,24 +32,21 @@ const UI = {
         Modals.alert(title, content);
     },
 
-    showNotification(notificationObj: {id: string; title: string; content: string; type?: "info" | "success" | "error" | "warning"; duration?: number; icon?: string;}) {
+    showNotification(notificationObj: Notification) {
         if (!Settings.get("settings", "general", "notificationEnabled")) return;
-        cntr++;
-        const id = notificationObj.id || `notification-${cntr}`;
 
         const defaultObj = {
-            id,
             title: "",
             content: "",
-            type: "info",
+            type: "info" as const,
             duration: 5000,
-            icon: null
+            icon: null,
+            actions: []
         };
 
-        const finalNotification = {...defaultObj, ...notificationObj, id};
+        const finalNotification = {...defaultObj, ...notificationObj};
 
-        NotificationUI.show(finalNotification);
-        return () => NotificationUI.hide(id);
+        return NotificationUI.show(finalNotification);
     },
 
     /**
@@ -83,7 +79,13 @@ const UI = {
      * @param {callable} [options.onClose=NOOP] Callback to occur when exiting the modal
      * @returns {string} The key used for this modal.
      */
-    showConfirmationModal(title: string, content: string | ReactElement | Array<string | ReactElement>, options: {confirmText?: string; cancelText?: string; onConfirm?: () => void; onCancel?: () => void; onClose?: () => void;} = {}) {
+    showConfirmationModal(title: string, content: string | ReactElement | Array<string | ReactElement>, options: {
+        confirmText?: string;
+        cancelText?: string;
+        onConfirm?: () => void;
+        onCancel?: () => void;
+        onClose?: () => void;
+    } = {}) {
         return Modals.showConfirmationModal(title, content, options);
     },
 
@@ -226,7 +228,10 @@ const UI = {
     buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}: any) {
         if (!settings?.length) throw new Error("No settings provided!");
 
-        return React.createElement(ErrorBoundary, {id: "buildSettingsPanel", name: "BdApi.UI"}, settings.map((setting: any) => {
+        return React.createElement(ErrorBoundary, {
+            id: "buildSettingsPanel",
+            name: "BdApi.UI"
+        }, settings.map((setting: any) => {
             if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
 
             if (setting.type === "category") {

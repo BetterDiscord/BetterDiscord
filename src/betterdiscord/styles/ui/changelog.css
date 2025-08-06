@@ -164,7 +164,7 @@
 }
 
 .bd-changelog-added {
-    color: var(--text-positive);
+    color: var(--text-feedback-positive);
 }
 
 .bd-changelog-added::after {
@@ -180,7 +180,7 @@
 }
 
 .bd-changelog-progress {
-    color: var(--text-warning);
+    color: var(--text-feedback-warning);
 }
 
 .bd-changelog-progress::after {
@@ -236,6 +236,6 @@
     opacity: 1;
 }
 
-.bd-social + .bd-social {
+.bd-changelog-modal .bd-social:not(:first-child) {
     margin-left: 10px;
 }

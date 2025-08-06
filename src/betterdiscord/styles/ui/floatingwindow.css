@@ -117,7 +117,7 @@
 .floating-window #bd-editor-controls {
     z-index: 10;
     height: auto;
-    background: var(--background-secondary-alt);
+    background: var(--background-base-lower);
     border: none;
     box-shadow: var(--elevation-low);
 }
