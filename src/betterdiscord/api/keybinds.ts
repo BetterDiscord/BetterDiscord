@@ -1,5 +1,6 @@
 import Logger from "@common/logger";
 import KeybindsManager, {mapKeysToAccelerator} from "@modules/keybindsmanager";
+import {isDesktopApp} from "@common/utils/isDesktopApp";
 
 type Keys = string[];
 type Shortcut = Electron.Accelerator | Keys;
@@ -50,6 +51,9 @@ export class Keybinds<Bounded extends boolean> {
      * @returns {boolean} Whether the Keybind was registered
      */
     async register(...args: RegisterGlobalKeybind<Bounded>) {
+        if (!isDesktopApp()) {
+            throw new Error("Keybinds: register() can only be used in a desktop app environment.");
+        }
         let keybindId: string;
         let keys: Shortcut;
         let callback: () => void;
@@ -83,6 +87,9 @@ export class Keybinds<Bounded extends boolean> {
      * @param {Shortcut} keys The keys to unregister
      */
     unregister(...args: UnregisterKeybind<Bounded>) {
+        if (!isDesktopApp()) {
+            throw new Error("Keybinds: unregister() can only be used in a desktop app environment.");
+        }
         let keybindId: string;
         let keys: Shortcut;
         if (this.#callerName && args.length === 1) {
@@ -112,6 +119,9 @@ export class Keybinds<Bounded extends boolean> {
      * @param {string} keybindId Name of the Keybind to unregister
      */
     unregisterAll(...args: UnregisterAllKeybinds<Bounded>) {
+        if (!isDesktopApp()) {
+            throw new Error("Keybinds: unregisterAll() can only be used in a desktop app environment.");
+        }
         let keybindId: string;
         if (this.#callerName) {
             keybindId = this.#callerName;
