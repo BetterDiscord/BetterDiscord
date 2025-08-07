@@ -11,11 +11,11 @@
     margin: -0.2em 0;
     border-radius: 4px;
     font-size: 85%;
-    border: 1px solid var(--background-tertiary);
+    border: 1px solid var(--background-base-lowest);
     line-height: 1.125rem;
     white-space: pre-wrap;
-    background: var(--background-secondary);
-    border: 1px solid var(--background-tertiary);
+    background: var(--background-base-lower);
+    border: 1px solid var(--background-base-lowest);
 }
 
 .bd-changelog-modal .bd-modal-content {
@@ -164,7 +164,7 @@
 }
 
 .bd-changelog-added {
-    color: var(--text-positive);
+    color: var(--text-feedback-positive);
 }
 
 .bd-changelog-added::after {
@@ -180,7 +180,7 @@
 }
 
 .bd-changelog-progress {
-    color: var(--text-warning);
+    color: var(--text-feedback-warning);
 }
 
 .bd-changelog-progress::after {
@@ -236,6 +236,6 @@
     opacity: 1;
 }
 
-.bd-social + .bd-social {
+.bd-changelog-modal .bd-social:not(:first-child) {
     margin-left: 10px;
 }

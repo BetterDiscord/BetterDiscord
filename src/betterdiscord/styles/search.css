@@ -3,8 +3,8 @@
     border-radius: 3px;
     outline: none;
     border: 0;
-    background-color: var(--background-tertiary);
-    color: var(--text-muted);
+    background-color: var(--background-base-lowest);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
 }
@@ -13,12 +13,12 @@
     padding: 2px 3px;
     background: none;
     border: 0;
-    color: var(--text-normal);
+    color: var(--text-default);
     flex: 1;
 }
 
 .bd-search::-webkit-input-placeholder {
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .bd-search-wrapper > svg {
