@@ -90,7 +90,6 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         filter: wrapFilter(query.filter)
     }));
 
-
     const webpackModules = Object.values(webpackRequire.c);
     for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
@@ -105,8 +104,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
             }
 
             if (filter(module.exports, module, module.id)) {
-                const item = raw ? module : module.exports;
-                const trueItem = map ? mapObject(item, map) : item;
+                const trueItem = map ? mapObject(module.exports, map) : raw ? module : module.exports;
 
                 if (!all) {
                     returnedModules[index] = trueItem;
@@ -131,12 +129,10 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
                     let value: any;
 
                     if (!defaultExport && defaultKey === key) {
-                        const item = raw ? module : module.exports;
-                        value = map ? mapObject(item, map) : item;
+                        value = map ? mapObject(module.exports, map) : raw ? module : module.exports;
                     }
                     else {
-                        const item = raw ? module : exported;
-                        value = map ? mapObject(item, map) : item;
+                        value = map ? mapObject(raw ? module.exports : exported, map) : raw ? module : exported;
                     }
 
                     if (!all) {
