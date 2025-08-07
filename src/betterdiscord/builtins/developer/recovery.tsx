@@ -10,6 +10,7 @@ import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import keybindsmanager from "@modules/keybindsmanager";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
@@ -214,6 +215,10 @@ export default new class Recovery extends Builtin {
                 pluginInfo = this.getPluginInfo(pluginName);
                 pluginmanager.disableAddon(foundIssue[2]);
                 Toasts.show(`Plugin ${pluginName} has been disabled to prevent crashes. Please report this issue to the developer.`);
+            }
+            else {
+                keybindsmanager.unregisterAll();
+                Toasts.show("All keybinds have been unregistered to prevent conflicts on reload.");
             }
 
             buttons.children.push(
