@@ -50,7 +50,7 @@ export class Keybinds<Bounded extends boolean> {
      * @param {GlobalKeybindOptions} options Options for the Keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    async register(...args: RegisterGlobalKeybind<Bounded>) {
+    async register(...args: RegisterGlobalKeybind<Bounded>): Promise<boolean> {
         if (!isDesktopApp()) {
             throw new Error("Keybinds: register() can only be used in a desktop app environment.");
         }
@@ -86,7 +86,7 @@ export class Keybinds<Bounded extends boolean> {
      * @param {string} keybindId Name of the Keybind to unregister
      * @param {Shortcut} keys The keys to unregister
      */
-    unregister(...args: UnregisterKeybind<Bounded>) {
+    async unregister(...args: UnregisterKeybind<Bounded>): Promise<void> {
         if (!isDesktopApp()) {
             throw new Error("Keybinds: unregister() can only be used in a desktop app environment.");
         }
@@ -107,7 +107,7 @@ export class Keybinds<Bounded extends boolean> {
             if (!accelerator) {
                 throw new Error("Keybinds: Invalid keys provided for unregistering Global Keybind");
             }
-            KeybindsManager.unregisterGlobalAccelerator(keybindId, accelerator);
+            await KeybindsManager.unregisterGlobalAccelerator(keybindId, accelerator);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${keybindId}] Error while unregistering Global Keybind`, e as Error);
@@ -118,7 +118,7 @@ export class Keybinds<Bounded extends boolean> {
      * Unregisters all Keybinds for the keybindId.
      * @param {string} keybindId Name of the Keybind to unregister
      */
-    unregisterAll(...args: UnregisterAllKeybinds<Bounded>) {
+    async unregisterAll(...args: UnregisterAllKeybinds<Bounded>): Promise<void> {
         if (!isDesktopApp()) {
             throw new Error("Keybinds: unregisterAll() can only be used in a desktop app environment.");
         }
@@ -133,7 +133,7 @@ export class Keybinds<Bounded extends boolean> {
             throw new Error(`Invalid arguments for unregisterAllKeybinds. Expected [${this.#callerName ? "keybindId" : ""}].`);
         }
         try {
-            KeybindsManager.unregisterAllGlobalAccelerators(keybindId);
+            await KeybindsManager.unregisterAllGlobalAccelerators(keybindId);
         }
         catch (e) {
             Logger.stacktrace(this.#callerName, `[${keybindId}] Error while unregistering all Keybinds`, e as Error);

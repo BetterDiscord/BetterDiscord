@@ -182,6 +182,9 @@ const registerGlobalShortcut = (event: IpcMainInvokeEvent, accelerator: string) 
 const unregisterGlobalShortcut = (_: IpcMainInvokeEvent, accelerator: string) => {
     globalShortcut.unregister(accelerator);
 };
+const unregisterAllGlobalShortcuts = (_: IpcMainInvokeEvent) => {
+    globalShortcut.unregisterAll();
+};
 
 
 export default class IPCMain {
@@ -209,6 +212,7 @@ export default class IPCMain {
             ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
             ipc.handle(IPCEvents.REGISTER_GLOBAL_SHORTCUT, registerGlobalShortcut);
             ipc.handle(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, unregisterGlobalShortcut);
+            ipc.handle(IPCEvents.UNREGISTER_ALL_GLOBAL_SHORTCUTS, unregisterAllGlobalShortcuts);
         }
         catch (err) {
             // eslint-disable-next-line no-console

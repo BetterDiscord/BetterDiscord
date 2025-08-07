@@ -13,6 +13,7 @@ export default new class IPCRenderer {
         ipc.on(IPCEvents.MAXIMIZE, () => Events.dispatch("maximize"));
         ipc.on(IPCEvents.MINIMIZE, () => Events.dispatch("minimize"));
         ipc.on(IPCEvents.EXEC_GLOBAL_SHORTCUT, callCallback);
+        ipc.on(IPCEvents.UNREGISTER_ALL_GLOBAL_SHORTCUTS, this.unregisterAllGlobalShortcuts);
     }
 
     openDevTools() {
@@ -74,9 +75,7 @@ export default new class IPCRenderer {
     async unregisterGlobalShortcut(accelerator: string) {
         await ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
     }
-    async unregisterAllGlobalShortcuts(accelerators: string[]) {
-        for (const accelerator of accelerators) {
-            await ipc.invoke(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, accelerator);
-        }
+    async unregisterAllGlobalShortcuts() {
+        await ipc.invoke(IPCEvents.UNREGISTER_ALL_GLOBAL_SHORTCUTS);
     }
 };

@@ -1,4 +1,4 @@
- 
+
 
 
 export const MINIMIZE = "bd-window-minimize";
@@ -27,3 +27,4 @@ export const EDITOR_SETTINGS_UPDATE = "bd-editor-settings-update";
 export const EXEC_GLOBAL_SHORTCUT = "bd-exec-global-shortcut";
 export const REGISTER_GLOBAL_SHORTCUT = "bd-register-global-shortcut";
 export const UNREGISTER_GLOBAL_SHORTCUT = "bd-unregister-global-shortcut";
+export const UNREGISTER_ALL_GLOBAL_SHORTCUTS = "bd-unregister-all-global-shortcuts";

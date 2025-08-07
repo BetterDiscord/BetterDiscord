@@ -72,7 +72,7 @@ export class KeybindsManager {
      * @param {Function} callback The callback to call when the accelerator is triggered
      * @returns {boolean} Whether the Accelerator was registered
      */
-    async registerGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator, callback: () => void) {
+    async registerGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator, callback: () => void): Promise<boolean> {
         if (!this.globalAccelerators.has(keybindId)) {
             this.initialize(keybindId);
         }
@@ -93,7 +93,7 @@ export class KeybindsManager {
      * @param {string[]} accelerator The Accelerator to unregister
      * @returns {boolean} Whether the Accelerator was unregistered
      */
-    async unregisterGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator) {
+    async unregisterGlobalAccelerator(keybindId: string, accelerator: Electron.Accelerator): Promise<void> {
         const accelerators = this.globalAccelerators.get(keybindId);
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
@@ -106,27 +106,25 @@ export class KeybindsManager {
      * Unregisters all Accelerators for the keybind.
      * @param {string} keybindId Name of the keybind to unregister the Accelerators for
      */
-    async unregisterAllGlobalAccelerators(keybindId: string) {
+    async unregisterAllGlobalAccelerators(keybindId: string): Promise<void> {
         const accelerators = this.globalAccelerators.get(keybindId);
         if (!accelerators) throw new Error("KeybindsManager: No accelerators Map found for the keybind " + keybindId);
 
-        const acceleratorsArray: string[] = Array.from(accelerators);
-        await ipc.unregisterAllGlobalShortcuts(acceleratorsArray);
-        accelerators.clear();
-        for (const accelerator of acceleratorsArray) {
+        for (const accelerator of accelerators) {
+            await ipc.unregisterGlobalShortcut(accelerator);
             shortcutMap.delete(accelerator);
         }
+        accelerators.clear();
     }
 
     /**
      * Unregisters all registered Global Keybinds.
      * @returns {Promise<void>}
      */
-    async unregisterAll() {
-        for (const keybindId of this.globalAccelerators.keys()) {
-            await this.unregisterAllGlobalAccelerators(keybindId);
-            const accelerators = this.globalAccelerators.get(keybindId);
-            accelerators?.clear();
+    async unregisterAll(): Promise<void> {
+        await ipc.unregisterAllGlobalShortcuts();
+        for (const accelerators of this.globalAccelerators.values()) {
+            accelerators.clear();
         }
         shortcutMap.clear();
     }
