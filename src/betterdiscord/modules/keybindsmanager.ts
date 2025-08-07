@@ -117,6 +117,19 @@ export class KeybindsManager {
             shortcutMap.delete(accelerator);
         }
     }
+
+    /**
+     * Unregisters all registered Global Keybinds.
+     * @returns {Promise<void>}
+     */
+    async unregisterAll() {
+        for (const keybindId of this.globalAccelerators.keys()) {
+            await this.unregisterAllGlobalAccelerators(keybindId);
+            const accelerators = this.globalAccelerators.get(keybindId);
+            accelerators?.clear();
+        }
+        shortcutMap.clear();
+    }
 };
 
 export default new KeybindsManager();
