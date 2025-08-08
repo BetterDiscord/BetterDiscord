@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import electron, {BrowserWindow} from "electron";
+import electron, {BrowserWindow, globalShortcut} from "electron";
 import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
@@ -118,6 +118,7 @@ export default class BetterDiscord {
         });
 
         browserWindow.webContents.on("render-process-gone", () => {
+            globalShortcut.unregisterAll();
             hasCrashed = true;
         });
 
