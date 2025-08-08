@@ -1,4 +1,5 @@
 import ipc from "@modules/ipc";
+import Events from "./emitter";
 
 type Keys = string[];
 
@@ -30,14 +31,6 @@ export function mapKeysToAccelerator(keys: Keys): Electron.Accelerator | "" {
     return keys.join("+");
 }
 
-const shortcutMap: Map<string, () => void> = new Map();
-export function callCallback(_event: Electron.IpcRendererEvent, accelerator: string) {
-    const callback = shortcutMap.get(accelerator);
-    if (callback) {
-        callback();
-    }
-}
-
 /**
  * `KeybindsManager` is a class that manages the registration and unregistration of Keybinds.
  * It handles global Keybinds.
@@ -47,9 +40,18 @@ export function callCallback(_event: Electron.IpcRendererEvent, accelerator: str
  */
 export class KeybindsManager {
     globalAccelerators: Map<string, Set<Electron.Accelerator>>;
+    shortcutMap: Map<string, () => void> = new Map();
 
     constructor() {
         this.globalAccelerators = new Map();
+        Events.on("globalShortcut", (accelerator) => this.callCallback(accelerator));
+    }
+
+    callCallback(accelerator: string) {
+        const callback = this.shortcutMap.get(accelerator);
+        if (callback) {
+            callback();
+        }
     }
 
     /**
@@ -81,7 +83,7 @@ export class KeybindsManager {
 
         if (await ipc.registerGlobalShortcut(accelerator)) {
             accelerators.add(accelerator);
-            shortcutMap.set(accelerator, callback);
+            this.shortcutMap.set(accelerator, callback);
             return true;
         }
         return false;
@@ -99,7 +101,7 @@ export class KeybindsManager {
 
         await ipc.unregisterGlobalShortcut(accelerator);
         accelerators.delete(accelerator);
-        shortcutMap.delete(accelerator);
+        this.shortcutMap.delete(accelerator);
     }
 
     /**
@@ -112,7 +114,7 @@ export class KeybindsManager {
 
         for (const accelerator of accelerators) {
             await ipc.unregisterGlobalShortcut(accelerator);
-            shortcutMap.delete(accelerator);
+            this.shortcutMap.delete(accelerator);
         }
         accelerators.clear();
     }
@@ -126,7 +128,7 @@ export class KeybindsManager {
         for (const accelerators of this.globalAccelerators.values()) {
             accelerators.clear();
         }
-        shortcutMap.clear();
+        this.shortcutMap.clear();
     }
 };
 
