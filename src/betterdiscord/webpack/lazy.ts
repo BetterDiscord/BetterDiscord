@@ -61,8 +61,7 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
 }
 
 export async function forceLoad(id: string | number): Promise<any> {
-    const n = webpackRequire;
-    const text = String(n.m[id]);
+    const text = String(webpackRequire.m[id]);
     const loadedModules = [];
 
     let match;
@@ -80,8 +79,8 @@ export async function forceLoad(id: string | number): Promise<any> {
         }
 
         const finalId = parseInt(bindId, 10);
-        await Promise.all(chunkIds.map((cid) => n.e(cid)));
-        const loadedModule = n(finalId);
+        await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
+        const loadedModule = webpackRequire(finalId);
         loadedModules.push(loadedModule);
     }
 
@@ -100,6 +99,6 @@ export async function forceLoad(id: string | number): Promise<any> {
     if (!bindMatch) return;
 
     const finalId = parseInt(bindMatch[1], 10);
-    await Promise.all(chunkIds.map((cid) => n.e(cid)));
-    return n(finalId);
+    await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
+    return webpackRequire(finalId);
 }
