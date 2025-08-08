@@ -1,7 +1,11 @@
 import type {Webpack} from "discord";
 import {getModule} from "./searching";
-import {lazyListeners} from "./require";
+import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapFilter} from "./shared";
+
+const ChunkIdRegex = /n\.e\("(\d+)"\)/g;
+const FinalModuleIdRegex = /n\.bind\(n,\s*(\d+)\s*\)/;
+const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(n\.bind\(n,\s*(\d+)\)\)/g;
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
     const cached = getModule<T>(filter, options);
@@ -54,4 +58,48 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
             resolve(undefined);
         });
     });
+}
+
+export async function forceLoad(id: string | number): Promise<any> {
+    const n = webpackRequire;
+    const text = String(n.m[id]);
+    const loadedModules = [];
+
+    let match;
+    let hasCreatePromise = false;
+
+    while ((match = CreatePromiseId.exec(text)) !== null) {
+        hasCreatePromise = true;
+        const promiseBody = match[1];
+        const bindId = match[2];
+
+        const chunkIds = [];
+        const chunkMatches = promiseBody.matchAll(ChunkIdRegex);
+        for (const chunkMatch of chunkMatches) {
+            chunkIds.push(chunkMatch[1]);
+        }
+
+        const finalId = parseInt(bindId, 10);
+        await Promise.all(chunkIds.map((cid) => n.e(cid)));
+        const loadedModule = n(finalId);
+        loadedModules.push(loadedModule);
+    }
+
+    if (hasCreatePromise) {
+        return loadedModules.length === 1 ? loadedModules[0] : loadedModules;
+    }
+
+    const chunkIds = [];
+    let chunkMatch;
+
+    while ((chunkMatch = ChunkIdRegex.exec(text)) !== null) {
+        chunkIds.push(chunkMatch[1]);
+    }
+
+    const bindMatch = text.match(FinalModuleIdRegex);
+    if (!bindMatch) return;
+
+    const finalId = parseInt(bindMatch[1], 10);
+    await Promise.all(chunkIds.map((cid) => n.e(cid)));
+    return n(finalId);
 }
