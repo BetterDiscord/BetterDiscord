@@ -80,7 +80,7 @@
     box-sizing: border-box;
     background: none;
     border: none;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 500;
     line-height: 16px;
