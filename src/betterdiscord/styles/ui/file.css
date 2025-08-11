@@ -9,9 +9,9 @@
     position: relative;
     min-width: 250px;
     box-sizing: border-box;
-    border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     padding: 0 4px;
     height: 40px;
 }
