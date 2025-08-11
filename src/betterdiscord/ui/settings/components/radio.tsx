@@ -1,7 +1,6 @@
 import React from "@modules/react";
 import {none, SettingsContext} from "@ui/contexts";
 
-import {CircleCheckIcon, CircleIcon} from "lucide-react";
 import type {ChangeEvent} from "react";
 
 const {useState, useCallback, useContext} = React;
@@ -24,6 +23,27 @@ export interface RadioProps {
     disabled?: boolean;
 }
 
+function RadioIndicator({checked} : {checked: boolean}) {
+    return <svg className="bd-radio-indicator" width="24" height="24" viewBox="0 0 24 24">
+        <circle
+            cx="12"
+            cy="12"
+            r="12"
+            strokeWidth="2"
+            fill="none"
+            className="bd-radio-icon"
+        />
+        {checked && (
+            <circle
+                cx="12"
+                cy="12"
+                r="5"
+                fill="#fff"
+            />
+        )}
+    </svg>;
+}
+
 export default function Radio({name, value: initialValue, options, onChange, disabled}: RadioProps) {
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
     const value = contextValue !== none ? contextValue : initialValue;
@@ -42,7 +62,7 @@ export default function Radio({name, value: initialValue, options, onChange, dis
         const isSelected = index === i;
         return <label className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
             <input onChange={change} type="radio" name={name} checked={isSelected} value={i} disabled={isDisabled} />
-            {isSelected ? <CircleCheckIcon className="bd-radio-icon" size="24" /> : <CircleIcon className="bd-radio-icon" size="24" />}
+            <RadioIndicator checked={isSelected} />
             <div className="bd-radio-label-wrap">
                 <div className="bd-radio-label">{opt.name}</div>
                 <div className="bd-radio-description">{opt.desc || opt.description}</div>
