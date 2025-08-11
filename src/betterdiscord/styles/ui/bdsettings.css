@@ -11,7 +11,7 @@
 }
 
 .bd-social-link:hover .bd-social-logo path:first-of-type {
-    fill: #3E82E5;
+    fill: var(--bd-brand);
 }
 
 .bd-button-title {
