@@ -3,7 +3,7 @@
 }
 
 .bd-text-muted {
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 .bd-text-error {

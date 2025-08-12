@@ -10,7 +10,7 @@
 .bd-number-input,
 .bd-button.bd-number-input-increment,
 .bd-button.bd-number-input-decrement {
-    border: 1px solid var(--input-border)
+    border: 1px solid var(--input-border);
 }
 
 .bd-number-input {
