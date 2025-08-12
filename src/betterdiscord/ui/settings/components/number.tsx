@@ -31,7 +31,7 @@ export default function Number({value: initialValue, min, max, step = 1, onChang
     const increment = useCallback(() => {
         const currentValue = parseFloat(String(value));
         const incrementedValue = currentValue + step;
-        if (max && incrementedValue > max) return;
+        if (max !== undefined && incrementedValue > max) return;
         onChange?.(incrementedValue);
         setValue(incrementedValue);
     }, [onChange, value, max, step]);
@@ -39,7 +39,7 @@ export default function Number({value: initialValue, min, max, step = 1, onChang
     const decrement = useCallback(() => {
         const currentValue = parseFloat(String(value));
         const decrementedValue = currentValue - step;
-        if (min && decrementedValue < min) return;
+        if (min !== undefined && decrementedValue < min) return;
         onChange?.(decrementedValue);
         setValue(decrementedValue);
     }, [onChange, value, min, step]);
