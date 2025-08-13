@@ -11,7 +11,6 @@ import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
 import NotificationUIInstance from "@ui/notifications";
-import settings from "@stores/settings";
 import config from "@stores/config";
 import {Logo} from "@ui/logo";
 
@@ -219,7 +218,7 @@ export default new class Recovery extends Builtin {
                 pluginInfo = this.getPluginInfo(pluginName);
                 pluginmanager.disableAddon(foundIssue[2]);
                 NotificationUIInstance.show({
-                    id: 'plugin-crash',
+                    id: "plugin-crash",
                     title: `${pluginName} Stopped`,
                     content: `This plugin has been disabled to prevent crashes. Please report this issue to the developer.`,
                     duration: Infinity,
@@ -227,7 +226,7 @@ export default new class Recovery extends Builtin {
                     icon: () => <Logo width={16} height={16} />,
                     actions: [
                         ...(config.isCanary ? [{
-                            label: 'Re-enable',
+                            label: "Re-enable",
                             onClick: () => pluginmanager.enableAddon(foundIssue[2]),
                             dontClose: true,
                         }] : [])
