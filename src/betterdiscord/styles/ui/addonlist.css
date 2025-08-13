@@ -255,7 +255,7 @@
 }
 
 .bd-addon-modal-footer .bd-button {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-modal-footer .bd-button:hover {
@@ -293,7 +293,7 @@
 }
 
 .bd-addon-controls .bd-button.selected {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-controls .bd-button + .bd-button {
@@ -305,7 +305,7 @@
 }
 
 .bd-controls-basic .bd-button:active {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-list .bd-footer .bd-links,

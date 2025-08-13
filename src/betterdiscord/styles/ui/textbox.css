@@ -10,6 +10,10 @@
     height: 40px;
 }
 
+.bd-text-input:focus-within {
+    border-color: var(--bd-brand);
+}
+
 .bd-text-input:disabled {
     cursor: not-allowed;
     opacity: 0.5;

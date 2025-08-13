@@ -230,7 +230,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                         success: "var(--status-positive)",
                         error: "var(--status-danger)",
                         warning: "var(--status-warning)",
-                        info: "#3E82E5"
+                        info: "var(--bd-brand)"
                     }[type]
                 }}
             />
