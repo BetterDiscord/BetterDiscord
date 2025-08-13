@@ -224,7 +224,7 @@ export default new class Recovery extends Builtin {
                     content: `This plugin has been disabled to prevent crashes. Please report this issue to the developer.`,
                     duration: Infinity,
                     type: "info",
-                    icon: () => <Logo width="16px" />,
+                    icon: () => <Logo width="16px" height="16px" />,
                     actions: [
                         ...(config.isCanary ? [{
                             label: 'Re-enable',

@@ -186,7 +186,7 @@ export class CoreUpdater {
             id: "BD-core-update",
             title: t("Updater.updateAvailable", {version: this.remoteVersion}),
             type: "warning",
-            icon: () => React.createElement(Logo, {width: "16px"}),
+            icon: () => React.createElement(Logo, {width: "16px", height: "16px"}),
             duration: Infinity,
             actions: [
                 {
@@ -346,7 +346,7 @@ export class AddonUpdater {
                 )
             ],
             type: "info",
-            icon: () => React.createElement(Logo, {width: "16px"}),
+            icon: () => React.createElement(Logo, {width: "16px", height: "16px"}),
             duration: Infinity,
             actions: [
                 {
