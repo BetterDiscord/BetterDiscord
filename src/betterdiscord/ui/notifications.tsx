@@ -35,7 +35,7 @@ export interface Notification {
 
     onClick?(): void;
 
-    icon?: React.FC | ReactNode;
+    icon?: React.ComponentType<any>;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -178,9 +178,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             <div className={"bd-notification-content"}>
                 <div className="bd-notification-icon">
                     {notification.icon ? (
-                        typeof notification.icon === 'function' ?
-                            <notification.icon /> :
-                            notification.icon
+                        <notification.icon />
                     ) : (
                         <Icon type={type} />
                     )}
