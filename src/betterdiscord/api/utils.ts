@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
+import {isDesktopApp} from "@common/utils/isDesktopApp";
 
 
 /**
@@ -87,6 +88,13 @@ const Utils = {
      * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
     semverCompare: comparator,
+
+    /**
+     * Checks if the current environment is an Electron desktop application.
+     *
+     * @returns {boolean} True if the environment is Electron desktop app, false otherwise
+     **/
+    isDesktopApp: isDesktopApp,
 } as const;
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959

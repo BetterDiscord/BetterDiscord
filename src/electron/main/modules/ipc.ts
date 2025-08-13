@@ -1,5 +1,5 @@
 import {spawn} from "child_process";
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
+import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, globalShortcut, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
@@ -172,7 +172,24 @@ const getSettings = (event: IpcMainEvent) => {
     event.returnValue = Editor.getSettings();
 };
 
+const registerGlobalShortcut = (event: IpcMainInvokeEvent, accelerator: string) => {
+    return globalShortcut.register(accelerator, () => {
+        const windowInstance = BrowserWindow.fromWebContents(event.sender);
+        if (!windowInstance) return;
+        windowInstance.webContents.send(IPCEvents.EXEC_GLOBAL_SHORTCUT, accelerator);
+    });
+};
+const unregisterGlobalShortcut = (_: IpcMainInvokeEvent, accelerator: string) => {
+    globalShortcut.unregister(accelerator);
+};
+const unregisterAllGlobalShortcuts = (_: IpcMainInvokeEvent) => {
+    globalShortcut.unregisterAll();
+};
+
+
 export default class IPCMain {
+
+
     static registerEvents() {
         try {
             ipc.on(IPCEvents.GET_PATH, getPath);
@@ -193,6 +210,9 @@ export default class IPCMain {
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
             ipc.handle(IPCEvents.EDITOR_OPEN, openEditor);
             ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
+            ipc.handle(IPCEvents.REGISTER_GLOBAL_SHORTCUT, registerGlobalShortcut);
+            ipc.handle(IPCEvents.UNREGISTER_GLOBAL_SHORTCUT, unregisterGlobalShortcut);
+            ipc.handle(IPCEvents.UNREGISTER_ALL_GLOBAL_SHORTCUTS, unregisterAllGlobalShortcuts);
         }
         catch (err) {
             // eslint-disable-next-line no-console
