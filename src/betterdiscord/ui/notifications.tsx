@@ -20,7 +20,7 @@ export type NotificationType = "warning" | "error" | "info" | "success";
 interface ButtonActions extends ButtonProps {
     label: string;
     dontClose?: boolean;
-    dontCloseOnActionIfHoldingShiftKey: boolean;
+    dontCloseOnActionIfHoldingShiftKey?: boolean;
 }
 
 export interface Notification {
@@ -29,13 +29,13 @@ export interface Notification {
     content?: string | ReactNode;
     type?: NotificationType;
     duration?: number;
-    actions: ButtonActions[];
+    actions?: ButtonActions[];
 
     onClose?(): void;
 
     onClick?(): void;
 
-    icon?: React.FC;
+    icon?: React.FC | ReactNode;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -177,7 +177,13 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
         >
             <div className={"bd-notification-content"}>
                 <div className="bd-notification-icon">
-                    {notification.icon ? <notification.icon /> : <Icon type={type} />}
+                    {notification.icon ? (
+                        typeof notification.icon === 'function' ?
+                            <notification.icon /> :
+                            notification.icon
+                    ) : (
+                        <Icon type={type} />
+                    )}
                 </div>
                 <div>
                     <div className="bd-notification-title">
