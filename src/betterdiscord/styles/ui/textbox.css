@@ -2,7 +2,7 @@
     min-width: 250px;
     font-size: 16px;
     box-sizing: border-box;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     color: var(--text-default);
     background-color: var(--input-background);
     border: 1px solid var(--input-border);

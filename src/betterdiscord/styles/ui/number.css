@@ -7,16 +7,11 @@
     display: none;
 }
 
-.bd-number-input,
-.bd-button.bd-number-input-increment,
-.bd-button.bd-number-input-decrement {
-    border: 1px solid var(--input-border);
-}
-
 .bd-number-input {
-    width: 80px;
+    width: 35px;
     padding: 8px 12px;
     background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     color: var(--text-default);
     text-align: center;
     font-size: 16px;
