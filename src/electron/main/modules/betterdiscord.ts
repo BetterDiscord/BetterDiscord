@@ -10,11 +10,20 @@ import * as IPCEvents from "@common/constants/ipcevents";
 const appPath = electron.app.getAppPath();
 const buildInfoFile = path.resolve(appPath, "..", "build_info.json");
 
-// Locate data path to find transparency settings
-let bdFolder = "";
-if (process.platform === "win32" || process.platform === "darwin") bdFolder = path.join(electron.app.getPath("userData"), "..");
-else bdFolder = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"); // This will help with snap packages eventually
-bdFolder = path.join(bdFolder, "BetterDiscord") + "/";
+// Windows and macOS both use the fixed global BetterDiscord folder but
+// Electron gives the postfixed version of userData, so go up a directory
+let userConfig = path.join(electron.app.getPath("userData"), "..");
+
+// If we're on Linux there are a couple cases to deal with
+if (process.platform !== "win32" && process.platform !== "darwin") {
+    // Use || instead of ?? because a falsey value of "" is invalid per XDG spec
+    userConfig = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME!, ".config");
+
+    // HOST_XDG_CONFIG_HOME is set by flatpak, so use without validation if set
+    if (process.env.HOST_XDG_CONFIG_HOME) userConfig = process.env.HOST_XDG_CONFIG_HOME;
+}
+
+const bdFolder = path.join(userConfig, "BetterDiscord") + "/";
 
 let hasCrashed = false;
 export default class BetterDiscord {
