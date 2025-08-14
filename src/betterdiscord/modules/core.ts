@@ -99,6 +99,7 @@ export default new class Core {
         if (Config.get("version") !== previousVersion) {
             Modals.showChangelogModal(Changelog);
             JsonStore.set("misc", "version", Config.get("version"));
+            JsonStore.transferPluginConfigs();
         }
     }
 

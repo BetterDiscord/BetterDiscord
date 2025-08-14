@@ -2,6 +2,7 @@ import fs from "@polyfill/fs";
 import path from "path";
 import Store from "./base";
 import Config from "./config";
+import Logger from "@common/logger";
 
 
 export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
@@ -68,7 +69,7 @@ export default new class JsonStore extends Store {
 
     // Plugin data
     #getPluginFile(pluginName: string) {
-        return path.resolve(Config.get("pluginsPath"), pluginName + ".config.json");
+        return path.resolve(Config.get("pluginDataPath"), pluginName + ".config.json");
     }
 
     #ensurePluginData(pluginName: string) {
@@ -109,5 +110,27 @@ export default new class JsonStore extends Store {
         this.#ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         delete this.pluginCache[pluginName][key];
         this.#savePluginData(pluginName);
+    }
+
+    transferPluginConfigs() {
+        try {
+            const files = fs.readdirSync(path.resolve(Config.get("pluginsPath")))
+                .filter(file => file.endsWith(".config.json"));
+            if (files.length) {
+                files.forEach(file => {
+                    const oldPath = path.join(Config.get("pluginsPath"), file);
+                    const newPath = path.join(Config.get("pluginDataPath"), file);
+                    try {
+                        fs.renameSync(oldPath, newPath);
+                    }
+                    catch (error) {
+                        Logger.stacktrace("JsonStore", `Failed to transfer ${file}`, error);
+                    }
+                });
+            }
+        }
+        catch (error) {
+            Logger.stacktrace("JsonStore", "Failed to transfer config files", error);
+        }
     }
 };
