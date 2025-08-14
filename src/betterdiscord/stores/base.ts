@@ -5,21 +5,21 @@ export default abstract class Store {
           if (Store.prototype.getName.call(store) === name) return store as T;
         }
     }
-    
-    
+
+
     constructor() {
         Store.stores.add(this);
     }
-    
-    initialize(): void {}
+
+    initialize(): void {};
 
     displayName?: string;
     getName() {
         if (this.displayName) return this.displayName;
         return this.constructor.name;
     }
-    
-      
+
+
     #listeners = new Set<() => void>();
     addChangeListener(callback: () => void) {
         this.#listeners.add(callback);
@@ -29,7 +29,7 @@ export default abstract class Store {
     removeChangeListener(callback: () => void) {
         this.#listeners.delete(callback);
     }
-    
+
     emit() {
         for (const listener of this.#listeners) {
             listener();
