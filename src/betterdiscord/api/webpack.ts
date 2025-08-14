@@ -4,7 +4,7 @@ import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStor
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
-const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [ T[], B ] => {
+const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [T[], B] => {
     if (args.length > 1
         && typeof (args[args.length - 1]) === "object"
         && !Array.isArray(args[args.length - 1])
@@ -12,11 +12,11 @@ const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOption
         Object.assign(defaultOptions, args.pop());
     }
 
-    return [ args as T[], defaultOptions ];
+    return [args as T[], defaultOptions];
 };
 
 interface WebpackOptions extends Options {
-    first?: boolean
+    first?: boolean;
 }
 
 /**
