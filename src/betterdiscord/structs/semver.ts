@@ -70,9 +70,9 @@ export function comparator(currentVersion: string, remoteVersion: string) {
     // This compares only the major, minor, and patch levels
     const versionCompare = compare(remote[1], current[1]) || compare(remote[2], current[2]) || compare(remote[3], current[3]);
 
-    // Also need to check prerelease and build info
+    // Also need to check prerelease info
+    // Build metadata MUST NOT be considered when determining version precedence
     const prereleaseCompare = preCompare(remote[4] ?? "", current[4] ?? "");
-    const buildCompare = compareTokens(remote[5] ?? "", current[5] ?? "");
 
-    return versionCompare || prereleaseCompare || buildCompare;
+    return versionCompare || prereleaseCompare;
 }
