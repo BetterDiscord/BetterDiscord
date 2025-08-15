@@ -14,10 +14,6 @@
                     "name": "Voice Disconnect",
                     "note": "Disconnect from voice server when closing Discord"
                 },
-                "notifyAddonUpdate": {
-                    "name": "Addon Update Notifications",
-                    "note": "Toggles addon updater notifications"
-                },
                 "showToasts": {
                     "name": "Show Toasts",
                     "note": "Shows a small notification for important information"
@@ -41,6 +37,10 @@
                 "notificationEnabled": {
                     "name": "Show Notifications",
                     "note": "Prevents or allows notifications to be shown on screen."
+                },
+                "notifyAddonUpdate": {
+                    "name": "Addon Update Notifications",
+                    "note": "Toggles addon updater notifications"
                 }
             },
             "store": {

@@ -8,13 +8,13 @@ export default [
         collapsible: true,
         settings: [
             {type: "switch", id: "voiceDisconnect", value: false},
-            {type: "switch", id: "notifyAddonUpdate", value: true},
             {type: "switch", id: "showToasts", value: true},
             {type: "switch", id: "mediaKeys", value: false},
             {type: "switch", id: "bdContextMenu", value: true},
             {type: "switch", id: "themeAttributes", value: true},
             {type: "position", id: "notificationPosition", value: "top-right", inline: false, enableWith: "notificationEnabled"},
             {type: "switch", id: "notificationEnabled", value: true},
+            {type: "switch", id: "notifyAddonUpdate", value: true},
         ]
     },
     {
