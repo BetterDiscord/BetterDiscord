@@ -1,6 +1,11 @@
 import React from "@modules/react";
 
-export function Logo(props: any) {
+interface LogoProps extends React.SVGProps<SVGSVGElement> {
+    color?: string;
+    secondaryColor?: string;
+}
+
+export function Logo(props: LogoProps) {
     return (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" enableBackground="new 0 0 2000 2000" xmlSpace="preserve">
             <g>
