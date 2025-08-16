@@ -87,9 +87,6 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         cacheId: query.cacheId || getIdFromStack(i)
     }));
 
-
-    const webpackModules = Object.values(webpackRequire.c);
-
     // First check if we already have it cached
     let allFound = true;
     for (let i = 0; i < queries.length; i++) {
@@ -112,6 +109,8 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
     // If everything has already been found return early
     if (allFound) return returnedModules;
+
+    const webpackModules = Object.values(webpackRequire.c);
 
     for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
