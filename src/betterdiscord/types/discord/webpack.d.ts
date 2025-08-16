@@ -30,7 +30,8 @@
     }
     export type BulkQueries = Options & {
         filter: Filter,
-        all?: boolean
+        all?: boolean,
+        cacheId?: string
     };
     export type WithKeyOptions = SingleOptions & {
         target?: any

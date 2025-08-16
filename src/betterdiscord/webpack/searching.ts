@@ -6,7 +6,7 @@ import {webpackRequire} from "./require";
 // eslint-disable-next-line no-useless-escape
 const stackPluginRegex = /\/([^\/]+)\.plugin\.js:(\d+):(\d+)/g;
 
-function getIdFromStack() {
+export function getIdFromStack(suffix?: any) {
     const stack = new Error().stack!;
 
     const matches = stack.matchAll(stackPluginRegex);
@@ -27,10 +27,10 @@ function getIdFromStack() {
     }
 
     if (!plugin) return;
-    return `${plugin}:${discriminator >>> 0}`;
+    return `${plugin}:${discriminator >>> 0}${suffix !== undefined ? `:${suffix}` : ""}`;
 }
 
-function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, options: Webpack.SingleOptions): T | undefined {
+export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, options: Webpack.SingleOptions): T | undefined {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
 
     if (shouldSkipModule(module.exports)) return;
