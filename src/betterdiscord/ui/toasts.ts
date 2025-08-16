@@ -55,7 +55,8 @@ class Toasts {
                 icon,
                 timeout,
             });
-        } catch (err) {
+        }
+        catch (err) {
             Logger.stacktrace("Toasts", "Unable to show toast", err as Error);
         }
     }

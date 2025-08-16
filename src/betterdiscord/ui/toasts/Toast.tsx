@@ -12,7 +12,7 @@ interface ToastProps {
     content: string;
     type: ToastType;
     icon: boolean;
-    style?: any;
+    style?: React.CSSProperties;
 }
 
 export default function Toast({content, type, icon, style}: ToastProps) {

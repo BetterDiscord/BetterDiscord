@@ -1,7 +1,7 @@
 import React, {Fragment} from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import ToastStore from "@stores/toasts";
-import {useInternalStore} from "@ui/hooks.ts";
+import {useInternalStore} from "@ui/hooks";
 
 import Toast, {type ToastType} from "@ui/toasts/Toast";
 
