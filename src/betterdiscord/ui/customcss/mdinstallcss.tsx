@@ -4,11 +4,11 @@ import React from "@modules/react";
 import Settings from "@stores/settings";
 import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
-import {getModule} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
 import Toasts from "@ui/toasts.js";
 import Modals from "@ui/modals.js";
+import DiscordModules from "@modules/discordmodules";
 import {findInTree} from "@common/utils";
 import type {Rule, SimpleMarkdown} from "discord/modules";
 
@@ -17,7 +17,7 @@ class InstallCSS {
     static activeNotifications = new Map();
 
     static initialize() {
-        const patch = (getModule(m => m.defaultRules && m.parse) as SimpleMarkdown).defaultRules.codeBlock as Required<Rule>;
+        const patch = (DiscordModules.SimpleMarkdownWrapper as SimpleMarkdown).defaultRules.codeBlock as Required<Rule>;
         if (!patch.react || typeof patch.react !== "function") return;
 
         Patcher.after("InstallCSS", patch, "react", (_, [args]: [{content?: string; lang?: string;}, any, any], child) => {

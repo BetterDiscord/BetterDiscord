@@ -25,15 +25,19 @@
         raw?: boolean
     };
 
+    export type SingleOptions = Options & {
+        cacheId?: string;
+    }
     export type BulkQueries = Options & {
         filter: Filter,
-        all?: boolean
+        all?: boolean,
+        cacheId?: string
     };
-    export type WithKeyOptions = Options & {
+    export type WithKeyOptions = SingleOptions & {
         target?: any
     };
 
-    export type LazyOptions = Options & { signal?: AbortSignal };
+    export type LazyOptions = SingleOptions & { signal?: AbortSignal };
 
     export type ModuleWithEffect = [
         any[],
