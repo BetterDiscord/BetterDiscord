@@ -35,10 +35,6 @@
     padding: 10px;
 }
 
-.bd-toast:not(:has(svg)) {
-    border-left-width: 4px;
-}
-
 .bd-toast svg {
     background-color: var(--toast-primary);
     stroke: var(--toast-stroke);
