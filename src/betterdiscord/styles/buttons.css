@@ -2,7 +2,7 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
     color: #FFFFFF;
     border-radius: 3px;
     padding: 4px 8px;
@@ -10,11 +10,11 @@
 }
 
 .bd-button:hover {
-    background-color: #3875CE;
+    background-color: var(--bd-brand-hover);
 }
 
 .bd-button:active {
-    background-color: #3268B7;
+    background-color: var(--bd-brand-active);
 }
 
 .bd-button.bd-button-success {
@@ -80,7 +80,7 @@
     box-sizing: border-box;
     background: none;
     border: none;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 500;
     line-height: 16px;
@@ -198,19 +198,19 @@
 /* Color BD Brand */
 .bd-button-filled.bd-button-color-brand {
     color: var(--white-500);
-    background-color: #3E82E5; /* BD Blue */
+    background-color: var(--bd-brand); /* BD Blue */
 }
 
 .bd-button-filled.bd-button-color-brand:hover {
-    background-color: #3875CE;
+    background-color: var(--bd-brand-hover);
 }
 
 .bd-button-filled.bd-button-color-brand:active {
-    background-color: #3268B7;
+    background-color: var(--bd-brand-active);
 }
 
 .bd-button-filled.bd-button-color-brand:disabled {
-    background-color: #3E82E5; /* BD Blue */
+    background-color: var(--bd-brand); /* BD Blue */
     opacity: 0.4;
 }
 
@@ -232,11 +232,11 @@
 }
 
 .bd-button-link.bd-button-color-brand {
-    color: #3E82E5; /* BD Blue */
+    color: var(--bd-brand); /* BD Blue */
 }
 
 .bd-button-link.bd-button-color-brand:hover .bd-button-content {
-    --button--underline-color: #3E82E5; /* BD Blue */
+    --button--underline-color: var(--bd-brand); /* BD Blue */
 }
 
 
