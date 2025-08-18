@@ -4,8 +4,7 @@ import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
 import ReactDOM from "@modules/reactdom";
 import ToastStore from "@stores/toasts";
-import ToastContainer from "@ui/toasts/ToastContainer";
-import type {ToastType} from "@ui/toasts/Toast";
+import ToastContainer, {type ToastType} from "@ui/toasts/ToastContainer";
 
 import type {Root} from "react-dom/client";
 
