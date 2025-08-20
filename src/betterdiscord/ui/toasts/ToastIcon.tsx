@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import type {ToastType} from "@ui/toasts/ToastContainer";
+import type {ToastType} from "@ui/toasts";
 
 import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 

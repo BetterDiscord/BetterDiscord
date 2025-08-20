@@ -1,7 +1,7 @@
 import ipc from "@modules/ipc";
 
 import Modals from "@ui/modals";
-import Toasts, {type ToastOptions} from "@ui/toasts";
+import Toasts, {type ToastOptions} from "@stores/toasts";
 import Notices, {type NoticeOptions} from "@ui/notices";
 import Tooltip, {type TooltipOptions} from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
