@@ -50,14 +50,14 @@ export default new class Core {
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
-        Logger.log("Startup", "Initializing Settings");
-        Settings.initialize();
-
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
+
+        Logger.log("Startup", "Initializing Settings");
+        Settings.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
@@ -89,7 +89,7 @@ export default new class Core {
 
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
-        Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
+        Modals.showAddonErrors({ plugins: pluginErrors, themes: themeErrors });
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version !== previousVersion) {
