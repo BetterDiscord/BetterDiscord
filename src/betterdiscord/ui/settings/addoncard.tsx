@@ -1,16 +1,16 @@
 import Logger from "@common/logger";
 
+import Toasts from "@stores/toasts";
+
 import SimpleMarkdown from "@structs/markdown";
 
 import React from "@modules/react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
-
 import Switch from "./components/switch";
 
 import Modals from "@ui/modals";
-import Toasts from "@ui/toasts";
 
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 import {getByKeys} from "@webpack";

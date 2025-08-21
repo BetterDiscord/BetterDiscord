@@ -4,6 +4,7 @@ import vm from "vm";
 import Logger from "@common/logger";
 
 import Config from "@stores/config";
+import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
@@ -11,7 +12,6 @@ import AddonManager, {type Addon} from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 
 
