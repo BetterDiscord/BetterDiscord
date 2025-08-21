@@ -44,12 +44,11 @@ export default new class Core {
         Logger.log("Startup", "Initializing AddonStore");
         AddonStore.initialize();
 
+        Logger.log("Startup", "Initializing Data Settings");
+        Settings.initialize();
+
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
-
-        Logger.log("Startup", "Initializing Settings");
-        Settings.initialize();
-        SettingsRenderer.initialize();
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
@@ -65,6 +64,9 @@ export default new class Core {
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
+
+        Logger.log("Startup", "Initializing Section Settings");
+        SettingsRenderer.initialize();
 
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
