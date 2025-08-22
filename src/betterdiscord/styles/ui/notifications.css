@@ -112,7 +112,7 @@
     font-weight: 400;
     line-height: 1.2857142857142858;
     word-wrap: break-word;
-    word-break: break-all;
+    word-break: break-word;
     overflow-wrap: break-word;
 }
 
