@@ -156,7 +156,7 @@
     transition: background-color 0.2s ease-in-out;
     flex: 1;
     min-width: 0;
-    min-width: calc(33.333% - 5.333px);
+    min-width: calc(100% / 3 - 8px);
 }
 
 .bd-notification-action:hover {
