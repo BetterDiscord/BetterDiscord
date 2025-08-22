@@ -54,19 +54,19 @@ const Icon = ({type}: {type: NotificationType;}) => {
 };
 
 class NotificationUI {
-    static root: HTMLDivElement | null = null;
+    static container: HTMLDivElement | null = null;
 
     constructor() {
-        const rootId = "bd-notifications-root";
-        let root = document.getElementById(rootId) as HTMLDivElement;
-        if (!root) {
-            root = document.createElement("div");
-            root.id = rootId;
-            DOMManager.bdBody.appendChild(root);
+        const containerId = "bd-notifications-container";
+        let container = document.getElementById(containerId) as HTMLDivElement;
+        if (!container) {
+            container = document.createElement("div");
+            container.id = containerId;
+            DOMManager.bdBody.appendChild(container);
         }
-        NotificationUI.root = root;
+        NotificationUI.container = container;
 
-        ReactDOM.createRoot(root).render(<PersistentNotificationContainer />);
+        ReactDOM.createRoot(container).render(<PersistentNotificationContainer />);
     }
 
     show(notif: Notification) {
@@ -83,13 +83,13 @@ class NotificationUI {
                 [kSelf]: true
             };
 
-            this.upsertNotification(notificationData);
+            this.upsertNotification(notificationData!);
         }
 
-        const kSelf = Reflect.ownKeys(notificationData).at(-1);
+        const kSelf = Reflect.ownKeys(notificationData!).at(-1);
 
         return {
-            id: notificationData.id,
+            id: notificationData!.id,
             isVisible: () => {
                 const currentNotifications = Notifications.notifications;
                 return currentNotifications.findIndex(notification => notification[kSelf]) !== -1;
@@ -99,7 +99,7 @@ class NotificationUI {
                 const notificationIndex = currentNotifications.findIndex(notification => notification[kSelf]);
 
                 if (notificationIndex !== -1) {
-                    this.hide(notificationData.id);
+                    this.hide(notificationData!.id);
                 }
             }
         };
