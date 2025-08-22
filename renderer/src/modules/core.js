@@ -24,6 +24,7 @@ import AddonStore from "./addonstore";
 import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
+import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 
 export default new class Core {
@@ -50,6 +51,9 @@ export default new class Core {
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
+        Logger.log("Startup", "Initializing Settings");
+        Settings.initialize();
+
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
@@ -59,8 +63,8 @@ export default new class Core {
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
 
-        Logger.log("Startup", "Initializing Settings");
-        Settings.initialize();
+        Logger.log("Startup", "Initializing SettingsRenderer");
+        SettingsRenderer.initialize();
 
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();

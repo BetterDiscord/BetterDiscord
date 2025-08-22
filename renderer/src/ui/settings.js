@@ -41,7 +41,7 @@ function makeResetButton(collectionId, refresh) {
 
 /**
  * @param {function} action
- * @returns 
+ * @returns
  */
 function confirmReset(action) {
     return () => {
@@ -65,7 +65,7 @@ function getDebugInfo(discordInfo, pluginsEnabled, themesEnabled) {
 }
 
 /**
- * 
+ *
  * @param {string} type plugin or theme
  * @returns {{total: number, enabled: number}}
  */
@@ -77,7 +77,7 @@ function getAddonCount(type) {
 
 export default new class SettingsRenderer {
 
-    constructor() {
+    initialize() {
         this.patchSections();
         this.patchVersionInformation();
         Events.on("strings-updated", this.forceUpdate);
@@ -149,7 +149,7 @@ export default new class SettingsRenderer {
 
     async patchSections() {
         const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeKeys(["getPredicateSections"]));
-        
+
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
             if (location < 0) return;
@@ -179,7 +179,7 @@ export default new class SettingsRenderer {
 
     async patchVersionInformation() {
         const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
-        if (!versionDisplayModule?.Z) return; 
+        if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", (_, __, reactTree) => {
             const currentCopy = reactTree?.props?.copyValue;
