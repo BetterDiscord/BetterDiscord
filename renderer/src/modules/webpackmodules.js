@@ -569,6 +569,7 @@ export default class WebpackModules {
                 __internal_require__ => {
                     if ("b" in __internal_require__) {
                         __discord_webpack_require__ = __internal_require__;
+                        listenToModules(__discord_webpack_require__.m);
                     }
                 }
             ]);
@@ -630,35 +631,43 @@ export default class WebpackModules {
     static handlePush(chunk) {
         const [, modules] = chunk;
 
-        for (const moduleId in modules) {
-            const originalModule = modules[moduleId];
-
-            modules[moduleId] = (module, exports, require) => {
-                try {
-                    Reflect.apply(originalModule, null, [module, exports, require]);
-
-                    const listeners = [...this.listeners];
-                    for (let i = 0; i < listeners.length; i++) {
-                        try {listeners[i](exports, module, module.id);}
-                        catch (error) {
-                            Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
-                        }
-                    }
-                }
-                catch (error) {
-                    Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
-                }
-                finally {
-                    require.m[moduleId] = originalModule;
-                }
-            };
-
-            Object.assign(modules[moduleId], originalModule, {
-                toString: () => originalModule.toString()
-            });
-        }
+        listenToModules(modules);
 
         return Reflect.apply(this.__ORIGINAL_PUSH__, window[this.chunkName], [chunk]);
+    }
+}
+
+function listenToModules(modules) {
+    for (const moduleId in modules) {
+        const originalModule = modules[moduleId];
+
+        modules[moduleId] = (module, exports, require) => {
+            try {
+                Reflect.apply(originalModule, null, [module, exports, require]);
+
+                const listeners = [...WebpackModules.listeners];
+                for (let i = 0; i < listeners.length; i++) {
+                    if (moduleId == 503089 || moduleId == "503089") {
+                            console.log("Firing lazy listener for module", moduleId, "with exports", exports);
+                            console.log("Listener:", listeners[i]);
+                        }
+                    try {listeners[i](exports, module, module.id);}
+                    catch (error) {
+                        Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
+                    }
+                }
+            }
+            catch (error) {
+                Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
+            }
+            finally {
+                require.m[moduleId] = originalModule;
+            }
+        };
+
+        Object.assign(modules[moduleId], originalModule, {
+            toString: () => originalModule.toString()
+        });
     }
 }
 

@@ -77,7 +77,7 @@ function getAddonCount(type) {
 
 export default new class SettingsRenderer {
 
-    initialize() {
+    constructor() {
         this.patchSections();
         this.patchVersionInformation();
         Events.on("strings-updated", this.forceUpdate);
