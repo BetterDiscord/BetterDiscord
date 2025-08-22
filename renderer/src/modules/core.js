@@ -50,9 +50,6 @@ export default new class Core {
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
-        Logger.log("Startup", "Initializing Settings");
-        Settings.initialize();
-
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
@@ -61,6 +58,9 @@ export default new class Core {
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
+
+        Logger.log("Startup", "Initializing Settings");
+        Settings.initialize();
 
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
