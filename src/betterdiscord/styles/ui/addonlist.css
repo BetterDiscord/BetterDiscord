@@ -39,7 +39,7 @@
     margin-bottom: 20px;
     border-radius: 5px;
     overflow: hidden;
-    background: var(--background-base-lower);
+    background: var(--bg-surface-raised);
 }
 
 .bd-addon-list.bd-grid-view .bd-addon-card {
@@ -48,7 +48,7 @@
 
 .bd-addon-list .bd-addon-header {
     color: var(--header-primary);
-    background: var(--background-base-lowest);
+    background: var(--background-mod-subtle);
     padding: 16px;
     font-size: 14px;
     line-height: 20px;
@@ -342,10 +342,13 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: var(--background-base-lower);
+    background-color: var(--background-mod-subtle);
     border-radius: var(--radius-sm);
     cursor: pointer;
     margin: 10px 0;
+}
+.bd-store-card:hover {
+    background-color: var(--background-modifier-active)
 }
 .bd-store-card-icon {
     border-radius: 50%;
@@ -355,7 +358,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: var(--background-base-lowest);
+    background: var(--background-base-low);
     color: var(--interactive-normal);
     padding: 8px;
 }
