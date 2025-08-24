@@ -58,9 +58,12 @@ export default new class PluginManager extends AddonManager {
     }
 
     initialize() {
-        const errors = super.initialize();
+        const init = super.initialize();
+        if (init.loaded > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: init.loaded, type: "plugin"}));
+        }
         this.setupFunctions();
-        return errors;
+        return init;
     }
 
     /* Aliases */
@@ -74,8 +77,8 @@ export default new class PluginManager extends AddonManager {
     unloadPlugin(idOrFileOrAddon: string | Plugin) {return this.unloadAddon(idOrFileOrAddon);}
     loadPlugin(filename: string) {return this.loadAddon(filename);}
 
-    loadAddon(filename: string, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
+    loadAddon(filename: string, shouldCTE = true, startup = false) {
+        const error = super.loadAddon(filename, shouldCTE, startup);
         if (error && shouldCTE) Modals.showAddonErrors({plugins: [error]});
         return error;
     }
@@ -138,11 +141,11 @@ export default new class PluginManager extends AddonManager {
         }
     }
 
-    startAddon(idOrAddon: string | Plugin) {return this.startPlugin(idOrAddon);}
+    startAddon(idOrAddon: string | Plugin, shouldToast = true) {return this.startPlugin(idOrAddon, shouldToast);}
     stopAddon(idOrAddon: string | Plugin) {return this.stopPlugin(idOrAddon);}
     getAddon(id: string) {return this.getPlugin(id);}
 
-    startPlugin(idOrAddon: string | Plugin) {
+    startPlugin(idOrAddon: string | Plugin, shouldToast = true) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         const plugin = addon.instance;
@@ -157,7 +160,7 @@ export default new class PluginManager extends AddonManager {
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
     }
 
     stopPlugin(idOrAddon: string | Plugin) {

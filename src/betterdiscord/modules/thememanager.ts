@@ -43,6 +43,14 @@ export default new class ThemeManager extends AddonManager {
 
     addonList: Theme[] = [];
 
+    initialize() {
+        const init = super.initialize();
+        if (init.loaded > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: init.loaded, type: "theme"}));
+        }
+        return init;
+    }
+
     /* Aliases */
     updateThemeList() {return this.updateList();}
     loadAllThemes() {return this.loadAllAddons();}
@@ -55,8 +63,8 @@ export default new class ThemeManager extends AddonManager {
     loadTheme(filename: string) {return this.loadAddon(filename);}
     reloadTheme(idOrFileOrAddon: string | Theme) {return this.reloadAddon(idOrFileOrAddon);}
 
-    loadAddon(filename: string, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
+    loadAddon(filename: string, shouldCTE = true, startup = false) {
+        const error = super.loadAddon(filename, shouldCTE, startup);
         if (error && shouldCTE) Modals.showAddonErrors({themes: [error]});
         return error;
     }
@@ -75,14 +83,14 @@ export default new class ThemeManager extends AddonManager {
         return addon;
     }
 
-    startAddon(idOrAddon: string | Theme) {return this.addTheme(idOrAddon);}
+    startAddon(idOrAddon: string | Theme, shouldToast = true) {return this.addTheme(idOrAddon, shouldToast);}
     stopAddon(idOrAddon: string | Theme) {return this.removeTheme(idOrAddon);}
 
-    addTheme(idOrAddon: string | Theme) {
+    addTheme(idOrAddon: string | Theme, shouldToast = true) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
     }
 
     removeTheme(idOrAddon: string | Theme) {

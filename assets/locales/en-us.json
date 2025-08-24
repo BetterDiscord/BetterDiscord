@@ -294,7 +294,11 @@
         },
         "tags": "Tags",
         "preview": "Preview",
-        "official": "Official"
+        "official": "Official",
+        "manyEnabled": {
+            "one": "{{count}} {{type}} has been enabled.",
+            "other": "{{count}} {{type}}s have been enabled."
+        }
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
