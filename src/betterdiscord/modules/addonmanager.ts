@@ -91,7 +91,7 @@ export default abstract class AddonManager extends Store {
     // Subclasses should overload this and modify the addon object as needed to fully load it
     abstract initializeAddon(addon: Addon): AddonError | undefined | void;
 
-    abstract startAddon(idOrAddon: string | Addon): AddonError | undefined | void;
+    abstract startAddon(idOrAddon: string | Addon, shouldToast?: boolean): AddonError | undefined | void;
     abstract stopAddon(idOrAddon: string | Addon): AddonError | undefined | void;
 
     loadState() {
@@ -244,7 +244,7 @@ export default abstract class AddonManager extends Store {
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
-    loadAddon(filename: string, shouldToast = false): AddonError | false | undefined | void {
+    loadAddon(filename: string, shouldToast = false, startup = false): AddonError | false | undefined | void {
         if (typeof (filename) === "undefined") return;
         let addon;
         try {
@@ -273,7 +273,7 @@ export default abstract class AddonManager extends Store {
         this.trigger("loaded", addon);
 
         if (!this.state[addon.id]) return this.state[addon.id] = false;
-        return this.startAddon(addon);
+        return this.startAddon(addon, !startup);
     }
 
     unloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true, isReload = false) {
@@ -381,6 +381,7 @@ export default abstract class AddonManager extends Store {
         this.loadState();
         const errors = [];
         const files = fs.readdirSync(this.addonFolder);
+        let loaded = 0;
 
         for (const filename of files) {
             const absolutePath = path.resolve(this.addonFolder, filename);
@@ -405,13 +406,14 @@ export default abstract class AddonManager extends Store {
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }
-            const addon = this.loadAddon(filename, false);
+            const addon = this.loadAddon(filename, false, true);
             if (addon instanceof AddonError) errors.push(addon);
+            else if (addon !== false) loaded++;
         }
 
         this.saveState();
         this.watchAddons();
-        return errors;
+        return {errors, loaded};
     }
 
     deleteAddon(idOrFileOrAddon: string | Addon) {

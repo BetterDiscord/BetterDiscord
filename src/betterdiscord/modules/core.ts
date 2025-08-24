@@ -79,11 +79,11 @@ export default new class Core {
 
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
-        const pluginErrors = PluginManager.initialize();
+        const pluginInit = PluginManager.initialize();
 
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
-        const themeErrors = ThemeManager.initialize();
+        const themeInit = ThemeManager.initialize();
 
         Logger.log("Startup", "Initializing Updater");
         Updater.initialize();
@@ -93,7 +93,7 @@ export default new class Core {
 
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
-        Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
+        Modals.showAddonErrors({plugins: pluginInit.errors, themes: themeInit.errors});
 
         const previousVersion = JsonStore.get("misc", "version");
         if (Config.get("version") !== previousVersion) {
