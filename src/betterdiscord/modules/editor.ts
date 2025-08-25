@@ -71,6 +71,7 @@ export default new class Editor {
     }
 
     async loadMonaco(): Promise<void> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (res, rej) => {
             Logger.log("Editor", "Loading Monaco Editor");
             const baseUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${process.env.__MONACO_VERSION__}/min`;
