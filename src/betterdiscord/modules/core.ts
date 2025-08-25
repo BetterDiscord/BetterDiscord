@@ -16,7 +16,6 @@ import JsonStore from "@stores/json";
 import DiscordModules from "./discordmodules";
 
 import IPC from "./ipc";
-import Editor from "./editor";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
@@ -65,9 +64,6 @@ export default new class Core {
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
-
-        Logger.log("Startup", "Initializing Editor");
-        await Editor.initialize();
 
         Logger.log("Startup", "Initializing FloatingWindows");
         FloatingWindows.initialize();
