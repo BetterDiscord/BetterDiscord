@@ -159,7 +159,7 @@ export default new class PluginManager extends AddonManager {
         }
         this.trigger("started", addon.id);
 
-        if(this.hasInitialized) {
+        if (this.hasInitialized) {
             Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
         }
     }
