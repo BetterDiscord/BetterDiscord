@@ -211,7 +211,10 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             createMonaco();
         }
         else {
-            Editor.initialize().then(createMonaco, createFallback);
+            Editor.initialize().then(() => {
+                if (window.monaco?.editor) createMonaco();
+                else createFallback();
+            });
         }
 
         return () => {
