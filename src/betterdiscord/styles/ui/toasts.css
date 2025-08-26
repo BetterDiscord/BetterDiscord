@@ -12,7 +12,7 @@
 }
 
 .bd-toast {
-    --toast-bg: #21252C;
+    --toast-bg: hsl(218, calc(var(--saturation-factor, 1)* 14%), 15%);
     --toast-fg: var(--text-default);
 
     display: flex;
@@ -43,21 +43,21 @@
 }
 
 .bd-toast.toast-info {
-    --toast-bg: #181F2C;
-    --toast-fg: var(--bd-brand);
+    --toast-bg: hsl(219, calc(var(--saturation-factor, 1)* 29%), 13%);
+    --toast-fg: hsl(216, calc(var(--saturation-factor, 1)* 76%), 57%);
 }
 
 .bd-toast.toast-success {
-    --toast-bg: #182724;
-    --toast-fg: #3AC172;
+    --toast-bg: hsl(168, calc(var(--saturation-factor, 1)* 24%), 12%);
+    --toast-fg: hsl(145, calc(var(--saturation-factor, 1)* 54%), 49%);
 }
 
 .bd-toast.toast-warning {
-    --toast-bg: #2C261C;
-    --toast-fg: #FBBF24;
+    --toast-bg: hsl(37, calc(var(--saturation-factor, 1)* 22%), 14%);
+    --toast-fg: hsl(43, calc(var(--saturation-factor, 1)* 96%), 56%);
 }
 
 .bd-toast.toast-error {
-    --toast-bg: #26191E;
-    --toast-fg: #D06262;
+    --toast-bg: hsl(337, calc(var(--saturation-factor, 1)* 21%), 12%);
+    --toast-fg: hsl(0, calc(var(--saturation-factor, 1)* 54%), 60%);
 }
