@@ -68,6 +68,7 @@ export default abstract class AddonManager extends Store {
     get language() {return "";}
     get prefix() {return "";}
     get order() {return 2;}
+    get addonName() {return "";}
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
@@ -82,10 +83,18 @@ export default abstract class AddonManager extends Store {
     abstract addonList: Addon[];
     state: Record<string, boolean> = {};
     windows = new Set<string>();
+    hasInitialized = false;
 
     initialize() {
         Settings.registerAddonPanel(this);
-        return this.loadAllAddons();
+
+        const loadRes = this.loadAllAddons();
+        if (loadRes.loaded > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: loadRes.loaded, type: this.addonName}));
+        }
+
+        this.hasInitialized = true;
+        return loadRes.errors;
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
@@ -381,6 +390,7 @@ export default abstract class AddonManager extends Store {
         this.loadState();
         const errors = [];
         const files = fs.readdirSync(this.addonFolder);
+        let loaded = 0;
 
         for (const filename of files) {
             const absolutePath = path.resolve(this.addonFolder, filename);
@@ -407,11 +417,12 @@ export default abstract class AddonManager extends Store {
             }
             const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
+            else if (addon !== false) loaded++;
         }
 
         this.saveState();
         this.watchAddons();
-        return errors;
+        return {errors, loaded};
     }
 
     deleteAddon(idOrFileOrAddon: string | Addon) {

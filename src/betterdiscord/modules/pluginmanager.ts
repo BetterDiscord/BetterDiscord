@@ -43,6 +43,7 @@ export default new class PluginManager extends AddonManager {
     get prefix() {return "plugin" as const;}
     get language() {return "javascript";}
     get order() {return 3;}
+    get addonName() {return "plugin";}
 
     addonList: Plugin[] = [];
     observer: MutationObserver;
@@ -157,7 +158,10 @@ export default new class PluginManager extends AddonManager {
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+
+        if(this.hasInitialized) {
+            Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        }
     }
 
     stopPlugin(idOrAddon: string | Plugin) {
