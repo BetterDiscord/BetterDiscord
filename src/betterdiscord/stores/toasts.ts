@@ -1,7 +1,7 @@
 import Store from "@stores/base";
 import Settings from "@stores/settings";
 import Logger from "@common/logger";
-import ToastUI, {type ToastProps, type ToastType} from "@ui/toasts";
+import type {ToastProps, ToastType} from "@ui/toasts";
 
 export interface ToastOptions {
     type?: ToastType;
@@ -49,8 +49,6 @@ export default new class Toasts extends Store {
     show(content: string, options: ToastOptions = {}) {
         try {
             const {type = "default", icon = true, timeout = 3000, forceShow = false} = options;
-
-            if (!ToastUI.root) ToastUI.initialize();
 
             if (!this.shouldShowToasts && !forceShow) return;
 
