@@ -193,23 +193,19 @@ export default new class PluginManager extends AddonManager {
 
     onSwitch() {
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof (plugin?.onSwitch) === "function") {
-                try {plugin.onSwitch();}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
-            }
+            const plugin = this.addonList[i].instance;
+            try {plugin?.onSwitch?.();}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
 
     onMutation(mutation: MutationRecord) {
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof plugin?.observer === "function") {
-                try {plugin.observer(mutation);}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
-            }
+            const plugin = this.addonList[i].instance;
+            try {plugin?.observer?.(mutation);}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
 };
