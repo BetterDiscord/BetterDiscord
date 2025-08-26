@@ -96,7 +96,7 @@ const UI = {
      * ```ts
      * interface Changes {
      *     title: string;
-     *     type: "fixed" | "added" | "progress" | "changed";
+     *     type: "fixed" | "added" | "progress" | "improved";
      *     items: Array<string>;
      *     blurb?: string;
      * }
