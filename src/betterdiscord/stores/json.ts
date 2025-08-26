@@ -2,7 +2,7 @@ import fs from "@polyfill/fs";
 import path from "path";
 import Store from "./base";
 import Config from "./config";
-import Logger from "@common/logger.ts";
+import Logger from "@common/logger";
 
 
 export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
