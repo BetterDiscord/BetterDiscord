@@ -1,6 +1,7 @@
 import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Common, Components} from "@modules/common";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
@@ -34,6 +35,9 @@ const Webpack = {
 
     Stores: Stores,
 
+    Common: Common,
+
+    Components: Components,
     /**
      * Series of {@link Filters} to be used for finding webpack modules.
      * @type Filters
