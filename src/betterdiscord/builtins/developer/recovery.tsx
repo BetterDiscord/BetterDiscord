@@ -219,8 +219,8 @@ export default new class Recovery extends Builtin {
                 pluginmanager.disableAddon(foundIssue[2]);
                 NotificationUIInstance.show({
                     id: "plugin-crash",
-                    title: `${pluginName} Stopped`,
-                    content: `This plugin has been disabled to prevent crashes. Please report this issue to the developer.`,
+                    title: t("Addons.disabled", {name: pluginName}),
+                    content: t("Modals.addonCrashed"),
                     duration: Infinity,
                     type: "info",
                     icon: () => <Logo width={16} height={16} />,
