@@ -8,7 +8,7 @@
 }
 
 .bd-number-input {
-    width: 35px;
+    box-sizing: border-box;
     padding: 8px 12px;
     background-color: var(--input-background);
     border: 1px solid var(--input-border);
@@ -19,6 +19,10 @@
 
 .bd-number-input:focus-within {
     border-color: var(--bd-brand);
+}
+
+.bd-number-input:not([min][max]) {
+    width: 65px;
 }
 
 .bd-button.bd-number-input-decrement {

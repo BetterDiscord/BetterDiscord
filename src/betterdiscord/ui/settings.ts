@@ -1,7 +1,7 @@
 import React from "@modules/react";
 import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy} from "@webpack";
+import {getByKeys, getLazyByPrototypes, getLazyByStrings} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -74,7 +74,7 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await getLazy<{prototype: {getPredicateSections(): Section[];};}>(Filters.byPrototypeKeys(["getPredicateSections"]));
+        const UserSettings = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
         if (!UserSettings) return;
 
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
@@ -110,7 +110,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazy<{Z(): void;}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
+        const versionDisplayModule = await getLazyByStrings<{Z(): void;}>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
