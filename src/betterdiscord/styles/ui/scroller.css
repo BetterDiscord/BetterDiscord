@@ -5,9 +5,11 @@
     flex: 1 1 auto;
 }
 
-.bd-scroller-thin {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thin-thumb) var(--scrollbar-thin-track);
+@supports not selector(::-webkit-scrollbar) {
+    .bd-scroller-thin {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thin-thumb) var(--scrollbar-thin-track);
+    }
 }
 
 .bd-scroller-thin::-webkit-scrollbar-track {
