@@ -93,13 +93,13 @@ export default new class JsonStore extends Store {
             this.pluginCache[pluginName] = JSON.parse(fs.readFileSync(this.#getPluginFile(pluginName)).toString());
             this.emit();
             return true;
-        } 
+        }
         catch (err) {
             Logger.err("JsonStore", "recache: ", err);
             return false;
         }
     }
-    
+
     #savePluginData(pluginName: string) {
         fs.writeFileSync(this.#getPluginFile(pluginName), JSON.stringify(this.pluginCache[pluginName], null, 4));
         this.emit();
