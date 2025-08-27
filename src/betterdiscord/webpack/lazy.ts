@@ -85,7 +85,7 @@ export async function forceLoad(id: string | number): Promise<any> {
     }
 
     if (hasCreatePromise) {
-        return loadedModules.length === 1 ? loadedModules[0] : loadedModules;
+        return loadedModules;
     }
 
     const chunkIds = [];
