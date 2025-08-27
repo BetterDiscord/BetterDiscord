@@ -1,6 +1,6 @@
 import * as Webpack from "@webpack";
 
-const [FluxDispatch, Parse, TextInput, Popout, MessageActions, Clickable, Slider, Modal, CloudUpload, useStateFromStores, moment, hljs, Snowflake, Tooltip, lodash, cssVars] = Webpack.getBulk(
+const [FluxDispatch, Parse, TextInput, Popout, MessageActions, Clickable, Slider, Modal, CloudUpload, useStateFromStores, moment, hljs, Snowflake, Tooltip, lodash, cssVars, fetchUser] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux
     {filter: x => x.parseTopic}, // parser
     {filter: Webpack.Filters.byStrings('bmQU//', '+DFxLS'), searchExports: true}, // textnput
@@ -8,7 +8,7 @@ const [FluxDispatch, Parse, TextInput, Popout, MessageActions, Clickable, Slider
     {filter: Webpack.Filters.byKeys(["sendMessage", "editMessage"])}, // actions
     {filter: Webpack.Filters.byStrings('renderNonInteractive()'), searchExports: true}, // clickable
     {filter: Webpack.Filters.byStrings("markerPositions"), searchExports: true}, // slider
-    {filter: x => x?.Modal}, // modal
+    {filter: Webpack.Filters.byStrings('["size","title"')}, // modal
     {filter: Webpack.Filters.byStrings("uploadFileToCloud"), searchExports: true}, // cloud uploader
     {filter: Webpack.Filters.byStrings('useStateFromStores'), searchExports: true}, // states
     {filter: x => x?.parseTwoDigitYear}, // moment
@@ -22,7 +22,8 @@ const [FluxDispatch, Parse, TextInput, Popout, MessageActions, Clickable, Slider
     {
         filter: (x) => x?.forEachRight, searchExports: false // lodash
     },
-    {filter: x => x?.BACKGROUND_PRIMARY, searchExports: false} // css vars var(--interactive-normal)
+    {filter: x => x?.BACKGROUND_PRIMARY, searchExports: false}, // css vars var(--interactive-normal)
+    {filter: Webpack.Filters.byStrings('.USER(')}
 );
 
 // this should already exist.
