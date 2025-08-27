@@ -61,6 +61,9 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
 }
 
 export async function forceLoad(id: string | number): Promise<any> {
+    if (typeof webpackRequire.m[id] === "undefined") {
+        return;
+    }
     const text = String(webpackRequire.m[id]);
     const loadedModules = [];
 
