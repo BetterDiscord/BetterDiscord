@@ -318,6 +318,7 @@
     "Modals": {
         "confirmAction": "Are You Sure?",
         "installCss": "Are you sure you want to add this CSS to your Custom CSS?",
+        "addonCrashed": "This plugin has been disabled to prevent crashes. Please report this issue to the developer.",
         "okay": "Okay",
         "done": "Done",
         "cancel": "Cancel",
