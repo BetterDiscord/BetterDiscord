@@ -4,6 +4,7 @@ import vm from "vm";
 import Logger from "@common/logger";
 
 import Config from "@stores/config";
+import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
@@ -11,7 +12,6 @@ import AddonManager, {type Addon} from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 
 
@@ -157,7 +157,10 @@ export default new class PluginManager extends AddonManager {
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+
+        if (this.hasInitialized) {
+            Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        }
     }
 
     stopPlugin(idOrAddon: string | Plugin) {

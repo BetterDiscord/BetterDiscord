@@ -20,7 +20,7 @@ export type NotificationType = "warning" | "error" | "info" | "success";
 interface ButtonActions extends ButtonProps {
     label: string;
     dontClose?: boolean;
-    dontCloseOnActionIfHoldingShiftKey: boolean;
+    dontCloseOnActionIfHoldingShiftKey?: boolean;
 }
 
 export interface Notification {
@@ -29,13 +29,13 @@ export interface Notification {
     content?: string | ReactNode;
     type?: NotificationType;
     duration?: number;
-    actions: ButtonActions[];
+    actions?: ButtonActions[];
 
     onClose?(): void;
 
     onClick?(): void;
 
-    icon?: React.FC;
+    icon?: React.ComponentType<any>;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -176,9 +176,19 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             className={`bd-notification bd-notification-${type}`}
         >
             <div className={"bd-notification-content"}>
-                <div className="bd-notification-header">
-                    <div className="bd-notification-icon">
-                        {notification.icon ? <ErrorBoundary><notification.icon /></ErrorBoundary> : <Icon type={type} />}
+                <div className="bd-notification-icon">
+                    {notification.icon ? (
+                        <notification.icon />
+                    ) : (
+                        <Icon type={type} />
+                    )}
+                </div>
+                <div>
+                    <div className="bd-notification-title">
+                        {title}
+                        <span
+                            className={"bd-notification-content-text"}>{React.Children.map(content, m => typeof m === "string"
+                                ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}</span>
                     </div>
                     {title && <div className="bd-notification-title">{title}</div>}
                 </div>
