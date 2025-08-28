@@ -40,7 +40,6 @@ export default new class ThemeManager extends AddonManager {
     get prefix() {return "theme" as const;}
     get language() {return "css";}
     get order() {return 4;}
-    get addonName() {return "theme";}
 
     addonList: Theme[] = [];
 

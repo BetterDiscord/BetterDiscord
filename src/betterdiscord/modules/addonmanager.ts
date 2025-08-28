@@ -68,7 +68,6 @@ export default abstract class AddonManager extends Store {
     get language() {return "";}
     get prefix() {return "";}
     get order() {return 2;}
-    get addonName() {return "";}
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
@@ -91,7 +90,7 @@ export default abstract class AddonManager extends Store {
         const errors = this.loadAllAddons();
         const numEnabled = Object.values(this.state).filter(b => b).length;
         if (numEnabled > 0) {
-            Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.addonName}));
+            Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
         }
 
         this.hasInitialized = true;

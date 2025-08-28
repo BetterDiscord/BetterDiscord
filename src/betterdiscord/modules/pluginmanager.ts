@@ -43,7 +43,6 @@ export default new class PluginManager extends AddonManager {
     get prefix() {return "plugin" as const;}
     get language() {return "javascript";}
     get order() {return 3;}
-    get addonName() {return "plugin";}
 
     addonList: Plugin[] = [];
     observer: MutationObserver;
