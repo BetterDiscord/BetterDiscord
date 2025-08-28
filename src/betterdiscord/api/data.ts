@@ -74,11 +74,9 @@ class Data<Bounded extends boolean> {
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
      */
-    recache(pluginName: string) {
-        if (this.#callerName) {
-            pluginName = this.#callerName;
-        }
-        return JsonStore.recache(pluginName);
+    async recache(...args: Bounded extends true ? [] : [callerName: string]) {
+        const callerName = this.#callerName || args[0];
+        return JsonStore.recache(callerName!);
     }
 
 
