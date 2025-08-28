@@ -4,7 +4,7 @@ import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapFilter} from "./shared";
 
 const ChunkIdRegex = /n\.e\("(\d+)"\)/g;
-const FinalModuleIdRegex = /n\.bind\(n,\s*(\d+)\s*\)/;
+const FinalModuleIdRegex = /n\.bind\(n,\s*(\d+)\s*\)/g;
 const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(n\.bind\(n,\s*(\d+)\)\)/g;
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
@@ -60,48 +60,40 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
     });
 }
 
-export async function forceLoad(id: string | number): Promise<any> {
+export async function forceLoad(id: string | number): Promise<any[]> {
     if (typeof webpackRequire.m[id] === "undefined") {
-        return;
+        return [];
     }
     const text = String(webpackRequire.m[id]);
     const loadedModules = [];
-
     let match;
-    let hasCreatePromise = false;
 
     while ((match = CreatePromiseId.exec(text)) !== null) {
-        hasCreatePromise = true;
         const promiseBody = match[1];
         const bindId = match[2];
-
         const chunkIds = [];
         const chunkMatches = promiseBody.matchAll(ChunkIdRegex);
         for (const chunkMatch of chunkMatches) {
             chunkIds.push(chunkMatch[1]);
         }
-
         const finalId = parseInt(bindId, 10);
         await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
         const loadedModule = webpackRequire(finalId);
         loadedModules.push(loadedModule);
     }
 
-    if (hasCreatePromise) {
-        return loadedModules;
-    }
-
     const chunkIds = [];
     let chunkMatch;
-
     while ((chunkMatch = ChunkIdRegex.exec(text)) !== null) {
         chunkIds.push(chunkMatch[1]);
     }
 
-    const bindMatch = text.match(FinalModuleIdRegex);
-    if (!bindMatch) return;
+    const bindMatches = text.matchAll(FinalModuleIdRegex);
+    for (const bindMatch of bindMatches) {
+        await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
+        const loadedModule = webpackRequire(bindMatch[1]);
+        loadedModules.push(loadedModule);
+    }
 
-    const finalId = parseInt(bindMatch[1], 10);
-    await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
-    return webpackRequire(finalId);
+    return loadedModules;
 }
