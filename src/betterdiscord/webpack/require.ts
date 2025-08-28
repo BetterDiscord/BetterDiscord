@@ -1,5 +1,6 @@
 import type {Webpack} from "discord";
 import Logger from "@common/logger";
+import type {RawModule} from "../types/discord/webpack";
 
 export let webpackRequire: Webpack.Require;
 
@@ -21,9 +22,7 @@ Object.defineProperty(window.webpackChunkdiscord_app, "push", {
     }
 });
 
-function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect) {
-    const [, modules] = chunk;
-
+function listenToModules(modules: Record<PropertyKey, RawModule>) {
     for (const moduleId in modules) {
         const originalModule = modules[moduleId];
 
@@ -35,12 +34,12 @@ function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffec
                 for (let i = 0; i < listeners.length; i++) {
                     try {listeners[i](exports, module, module.id);}
                     catch (error) {
-                        Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
+                        Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error as Error);
                     }
                 }
             }
             catch (error) {
-                Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
+                Logger.stacktrace("WebpackModules", "Could not patch pushed module", error as Error);
             }
             finally {
                 require.m[moduleId] = originalModule;
@@ -51,7 +50,11 @@ function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffec
             toString: () => originalModule.toString()
         });
     }
+}
 
+function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect) {
+    const [, modules] = chunk;
+    listenToModules(modules);
     return Reflect.apply(__ORIGINAL_PUSH__, window.webpackChunkdiscord_app, [chunk]);
 }
 
@@ -61,6 +64,7 @@ window.webpackChunkdiscord_app.push([
     (__webpack_require__: any) => {
         if ("b" in __webpack_require__) {
             webpackRequire = __webpack_require__;
+            listenToModules(__webpack_require__.m);
         }
     }
 ]);

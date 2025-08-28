@@ -12,7 +12,7 @@ export default function FloatingWindowContainer() {
     }, []);
     const close = useCallback((id: string) => {
         setWindows(windows.filter(w => {
-            // if (w.id === id && w.onClose) w.onClose();
+            if (w.id === id && w.onClose) w.onClose();
             return w.id !== id;
         }));
     }, [windows]);
@@ -23,7 +23,7 @@ export default function FloatingWindowContainer() {
     }, [open]);
 
     return windows.map(window =>
-        <FloatingWindow {...window} close={() => close(window.id)} key={window.id}>
+        <FloatingWindow {...window} onClose={() => close(window.id)} key={window.id}>
             {window.children}
         </FloatingWindow>
     );
