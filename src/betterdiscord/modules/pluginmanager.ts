@@ -157,7 +157,10 @@ export default new class PluginManager extends AddonManager {
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+
+        if (this.hasInitialized) {
+            Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        }
     }
 
     stopPlugin(idOrAddon: string | Plugin) {
