@@ -1,4 +1,5 @@
 import Config from "@stores/config";
+import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
@@ -6,7 +7,6 @@ import AddonManager, {type Addon} from "./addonmanager";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 
 
@@ -82,7 +82,10 @@ export default new class ThemeManager extends AddonManager {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+
+        if (this.hasInitialized) {
+            Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        }
     }
 
     removeTheme(idOrAddon: string | Theme) {

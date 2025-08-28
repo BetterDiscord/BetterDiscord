@@ -5,18 +5,18 @@
     overflow: hidden;
     border-radius: 8px;
     position: relative;
-    background-color: var(--activity-card-background);
+    background: var(--bg-surface-raised);
     max-width: 320px;
     min-height: 320px;
 }
 
 .theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
+    background: var(--bg-surface-raised);
 }
 
 .theme-dark .bd-addon-store-card:hover,
 .theme-dark .bd-addon-store-card:hover .bd-addon-store-card-author-mask {
-    background-color: var(--background-base-lowest);
+    background-color: var(--bg-surface-overlay-tmp);
 }
 
 .full-motion .bd-addon-store-card {
@@ -36,11 +36,11 @@
 
 .bd-addon-store-card-author-mask {
     padding: 4px;
-    background-color: var(--activity-card-background);
+    background-color: var(--bg-surface-raised);
 }
 
 .theme-dark .bd-addon-store-card-author-mask {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--bg-surface-raised);
 }
 
 .full-motion .bd-addon-store-card-author-mask {
@@ -142,7 +142,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: var(--header-base-low);
+    color: var(--header-primary);
     font-family: var(--font-display);
     font-size: 16px;
     line-height: 1.25;
@@ -172,8 +172,8 @@
 
 .bd-addon-store-card-tag {
     color: var(--interactive-normal);
-    background: var(--background-base-lowest);
-    border: 1px solid var(--background-base-lower);
+    background: var(--background-mod-subtle);
+    border: 1px solid var(--bg-surface-raised);
     padding: 2px 5px;
     border-radius: 8px;
     transition: border-color 200ms linear, color 200ms linear;
@@ -259,11 +259,7 @@ button.bd-addon-store-card-button {
 .bd-addon-store-card-loading {
     padding: 4px;
     border-radius: 50%;
-    background-color: var(--activity-card-background);
-}
-
-.theme-dark .bd-addon-store-card {
-    background-color: var(--background-secondary-alt);
+    background-color: var(--bg-surface-raised);
 }
 
 img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="https://betterdiscord.app/resources/ui/content_thumbnail.svg"] {

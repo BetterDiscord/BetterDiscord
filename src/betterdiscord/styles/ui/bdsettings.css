@@ -11,7 +11,7 @@
 }
 
 .bd-social-link:hover .bd-social-logo path:first-of-type {
-    fill: #3E82E5;
+    fill: var(--bd-brand);
 }
 
 .bd-button-title {
@@ -19,7 +19,7 @@
 }
 
 .bd-select-wrapper {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 13px;
     display: flex;
     align-items: center;
@@ -36,16 +36,21 @@
 .bd-select {
     position: relative;
     cursor: pointer;
-    color: var(--text-normal);
-    font-size: 14px;
+    color: var(--interactive-normal);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--deprecated-text-input-bg);
-    border: 1px solid var(--deprecated-text-input-border);
-    border-radius: 3px;
-    padding: 5px 5px 5px 0;
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
     transition: 150ms ease border-color;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .bd-select.bd-select-disabled {
@@ -55,7 +60,7 @@
 
 .bd-select:hover,
 .bd-select.menu-open {
-    border-color: var(--background-base-lowest);
+    border-color: var(--input-border);
 }
 
 .bd-select.bd-select-transparent {
@@ -65,7 +70,7 @@
     padding: 0;
 }
 
-.bd-select-value {
+.bd-select-transparent .bd-select-value {
     padding-left: 8px;
 }
 
@@ -76,24 +81,22 @@
 
 .bd-select .bd-select-options {
     position: absolute;
-    background: var(--background-base-lower);
-    border-radius: 0 0 3px 3px;
+    background: var(--background-surface-higher);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
     max-height: 300px;
     min-width: calc(100% + 2px);
     overflow-y: auto;
     box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px 0;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    border-top: 0;
-    margin-top: -1px;
-    margin-left: -1px;
+    border: 1px solid var(--input-border);
+    margin-top: 8px;
+    margin-left: -12px;
     z-index: 2;
     top: 100%;
 }
 
 .bd-select-transparent .bd-select-options {
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    margin-top: 3px;
-    border-radius: 3px;
+    margin-left: -6px;
 }
 
 .bd-select .bd-select-option {
@@ -103,11 +106,13 @@
 }
 
 .bd-select .bd-select-option:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--background-modifier-hover);
+    color: var(--interactive-hover);
 }
 
 .bd-select .bd-select-option.selected {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--background-modifier-selected);
+    color: var(--interactive-active);
 }
 
 .bd-setting-item .bd-select {

@@ -2,6 +2,7 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@stores/settings";
 import EditorStore from "@stores/editor";
+import Editor from "@modules/editor";
 
 import Button from "../base/button";
 import Flex from "../base/flex";
@@ -10,11 +11,11 @@ import Text from "@ui/base/text";
 import {useInternalStore} from "@ui/hooks";
 import {useLayoutEffect, useRef} from "react";
 
-import type {editor as Editor} from "monaco-editor";
+import type {editor as MonacoEditor} from "monaco-editor";
 import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
 
-type IStandaloneCodeEditor = Editor.IStandaloneCodeEditor;
-type IStandaloneEditorConstructionOptions = Editor.IStandaloneEditorConstructionOptions;
+type IStandaloneCodeEditor = MonacoEditor.IStandaloneCodeEditor;
+type IStandaloneEditorConstructionOptions = MonacoEditor.IStandaloneEditorConstructionOptions;
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 
@@ -98,10 +99,42 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
     useLayoutEffect(() => {
         const node = ref.current || document.getElementById(id);
-
         if (!node) return;
 
-        if (window.monaco?.editor) {
+        const createFallback = () => {
+            const textarea = document.createElement("textarea");
+            textarea.className = "bd-fallback-editor";
+            textarea.value = value;
+
+            setEditor({
+                dispose: () => textarea.remove(),
+                getValue: () => textarea.value,
+                setValue: (val: string) => textarea.value = val,
+                layout: () => {},
+                onDidChangeModelContent: ((cb: (e: Event) => void) => {
+                    textarea.onchange = cb;
+                    textarea.oninput = cb;
+
+                    return {
+                        dispose() {}
+                    };
+                }) as any,
+                // @ts-expect-error For the footer
+                isFallback: true
+            });
+
+            node.appendChild(textarea);
+        };
+
+        if (Editor.failedToLoad) {
+            createFallback();
+            return;
+        }
+
+        let disposed = false;
+        let disposer: (() => void) | undefined;
+
+        const createMonaco = () => {
             const getOptions = () => ({
                 value: value,
                 language: language,
@@ -165,35 +198,29 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
             updateThemingVars();
 
-            return () => {
+            disposer = () => {
                 monacoEditor.dispose();
                 undo();
                 onDidChangeMarkers.dispose();
             };
+
+            if (disposed) disposer();
+        };
+
+        if (window.monaco?.editor) {
+            createMonaco();
+        }
+        else {
+            Editor.initialize().then(() => {
+                if (window.monaco?.editor) createMonaco();
+                else createFallback();
+            });
         }
 
-        const textarea = document.createElement("textarea");
-        textarea.className = "bd-fallback-editor";
-        textarea.value = value;
-
-        setEditor({
-            dispose: () => textarea.remove(),
-            getValue: () => textarea.value,
-            setValue: (val: string) => textarea.value = val,
-            layout: () => {},
-            onDidChangeModelContent: ((cb: (e: Event) => void) => {
-                textarea.onchange = cb;
-                textarea.oninput = cb;
-
-                return {
-                    dispose() {}
-                };
-            }) as any,
-            // @ts-expect-error For the footer
-            isFallback: true
-        });
-
-        node.appendChild(textarea);
+        return () => {
+            disposed = true;
+            disposer?.();
+        };
     }, [id, language, value]);
 
     useEffect(() => {

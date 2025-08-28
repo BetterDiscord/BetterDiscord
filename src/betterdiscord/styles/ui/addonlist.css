@@ -37,9 +37,11 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    background: var(--background-base-lower);
+    background: var(--background-mod-faint);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-low);
 }
 
 .bd-addon-list.bd-grid-view .bd-addon-card {
@@ -48,7 +50,9 @@
 
 .bd-addon-list .bd-addon-header {
     color: var(--header-primary);
-    background: var(--background-secondary-alt);
+    background: var(--background-mod-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     padding: 16px;
     font-size: 14px;
     line-height: 20px;
@@ -192,7 +196,7 @@
     padding: 4px 6px;
 }
 
-.bd-links .bd-addon-button + .bd-addon-button {
+.bd-links .bd-addon-button:not(:first-child) {
     margin-left: 10px;
 }
 
@@ -255,7 +259,7 @@
 }
 
 .bd-addon-modal-footer .bd-button {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-modal-footer .bd-button:hover {
@@ -293,7 +297,7 @@
 }
 
 .bd-addon-controls .bd-button.selected {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-controls .bd-button + .bd-button {
@@ -305,7 +309,7 @@
 }
 
 .bd-controls-basic .bd-button:active {
-    background-color: #3E82E5;
+    background-color: var(--bd-brand);
 }
 
 .bd-addon-list .bd-footer .bd-links,
@@ -337,16 +341,22 @@
 
 /* The store card */
 .bd-store-card {
-    padding: 12px;
+    padding: 16px 24px 16px 16px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: var(--background-base-lower);
+    background-color: var(--card-primary-bg);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     cursor: pointer;
     margin: 10px 0;
 }
+
+.bd-store-card:hover {
+    background-color: var(--background-modifier-hover);
+}
+
 .bd-store-card-icon {
     border-radius: 50%;
     flex-grow: 0;
@@ -355,10 +365,11 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background: var(--background-base-lowest);
+    background: var(--background-base-low);
     color: var(--interactive-normal);
     padding: 8px;
 }
+
 .bd-store-card-body {
     flex-grow: 1;
     flex-shrink: 1;
@@ -368,6 +379,7 @@
     align-items: flex-start;
     margin-left: 12px;
 }
+
 .bd-store-card-caret {
     color: var(--interactive-normal);
 }

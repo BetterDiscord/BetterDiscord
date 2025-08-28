@@ -43,8 +43,8 @@
     color: var(--interactive-active);
 }
 .bd-checkbox-input:checked + .bd-checkbox-box {
-    border-color: #3E82E5;
-    background-color: #3E82E5;
+    border-color: var(--bd-brand);
+    background-color: var(--bd-brand);
 }
 
 .bd-checkbox-input:not(:checked) + .bd-checkbox-box > svg {
