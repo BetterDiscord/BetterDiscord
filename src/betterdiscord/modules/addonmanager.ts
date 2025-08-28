@@ -82,10 +82,19 @@ export default abstract class AddonManager extends Store {
     abstract addonList: Addon[];
     state: Record<string, boolean> = {};
     windows = new Set<string>();
+    hasInitialized = false;
 
     initialize() {
         Settings.registerAddonPanel(this);
-        return this.loadAllAddons();
+
+        const errors = this.loadAllAddons();
+        const numEnabled = Object.values(this.state).filter(b => b).length;
+        if (numEnabled > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
+        }
+
+        this.hasInitialized = true;
+        return errors;
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
