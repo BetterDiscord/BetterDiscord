@@ -1,4 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
+import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import type {RefObject} from "react";
 import type {Fiber} from "react-reconciler";
@@ -105,6 +106,7 @@ interface GetOwnerInstanceOptions {
 
 interface ReactUtils {
     rootInstance: any;
+    reRender(selector: string): undefined;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
@@ -183,6 +185,18 @@ const ReactUtils: ReactUtils = {
         }
 
         return null;
+    },
+
+    /**
+     * Rerender a React component by a className or filter
+     * @param {element} string className or filter
+     */
+    reRender(selector: string) {
+        const target = document.querySelector(selector)?.parentElement;
+        if (!target) return;
+        const instance = ReactUtils.getOwnerInstance(target);
+        const unpatch = Patcher.instead("BetterDiscord-ReRender", instance, "render", () => unpatch());
+        instance.forceUpdate(() => instance.forceUpdate());
     },
 
     /**
