@@ -24,7 +24,8 @@ const [
     componentDispatch,
     formNotice,
     colorPicker,
-    imageUtils
+    imageUtils,
+    reactSpring
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
@@ -55,7 +56,8 @@ const [
     {filter: x => x._savedDispatches, searchExports: true}, // component dispatch
     {filter: Webpack.Filters.byStrings("HORIZONTAL_REVERSE", "imageData"), searchExports: true}, // form notice
     {filter: Webpack.Filters.byStrings("Qp04hI"), searchExports: true}, // color picker
-    {filter: m => m.getChannelIconURL} // image utils
+    {filter: m => m.getChannelIconURL}, // image utils
+    {filter: x => x.a && x.animated} // react spring
 );
 
 const layerManager = {
@@ -112,6 +114,7 @@ export const Discord = {
     intl: {intl: intl.intl, t: intl.t},
     useStateFromStores,
     fetchUser,
+    reactSpring
 };
 
 Object.freeze(Discord);
