@@ -2,6 +2,8 @@ import clsx from "clsx";
 import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
+import {reRender} from "@common/utils/forceUpdate";
+import {sleep} from "@common/utils/sleep";
 
 
 /**
@@ -87,6 +89,18 @@ const Utils = {
     getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
     },
+
+    /**
+     * Async sleep with millaseconds delay
+     * @param {int} delay millaseconds delay
+     */
+    sleep: sleep,
+
+    /**
+     * Rerender a React component by a className or filter
+     * @param {element} string className or filter
+     */
+    reRender: reRender,
 
     /**
      * This works on semantic versioning e.g. "1.0.0".
