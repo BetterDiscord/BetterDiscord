@@ -81,16 +81,6 @@ export const DiscordComponents = {
     ColorPicker: colorPicker
 };
 
-const Utils = {
-    moment,
-    hljs,
-    lodash,
-    cssVars,
-    intl: {intl: intl.intl, t: intl.t},
-    useStateFromStores,
-    fetchUser,
-};
-
 export const Discord = {
     fluxDispatch,
     flux,
@@ -115,7 +105,13 @@ export const Discord = {
         goForward: Webpack.Filters.byStrings(".goForward()"),
         transitionToGuild: Webpack.Filters.byStrings("\"transitionToGuild - Transitioning to \"")
     }),
-    Utils
+    moment,
+    hljs,
+    lodash,
+    cssVars,
+    intl: {intl: intl.intl, t: intl.t},
+    useStateFromStores,
+    fetchUser,
 };
 
 Object.freeze(Discord);
