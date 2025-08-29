@@ -5,6 +5,10 @@ type BaseArgs<Bounded extends boolean> = [
     key: string
 ];
 
+type LoadArgs<Bounded extends boolean> =
+    | BaseArgs<Bounded>
+    | [...BaseArgs<Bounded>, recache: boolean];
+
 
 type SaveArgs<Bounded extends boolean, T> = [
     ...BaseArgs<Bounded>,
@@ -46,15 +50,35 @@ class Data<Bounded extends boolean> {
      *
      * @param {string} pluginName Name of the plugin loading data
      * @param {string} key Which piece of data to load
+     * @param {boolean} recache forces reload of data from disk if true
      * @returns {any} The stored data
      */
-    load<T>(...args: BaseArgs<Bounded>): T {
+    load<T>(...args: LoadArgs<Bounded>): T {
         if (this.#callerName) {
-            return JsonStore.getData(this.#callerName, args[0]);
+            // @ts-expect-error Typescript wants an explaination about my bad code?
+            return JsonStore.getData(this.#callerName, args[0], args[1]);
         }
 
-        return JsonStore.getData(args[0], args[1]);
+        // @ts-expect-error Typescript wants an explaination about my bad code?
+        return JsonStore.getData(args[0], args[1], args[2]);
     }
+
+    /**
+     * Recaches JSON-serializable save file.
+     *
+     * @param {string} pluginName Name of the plugin saving data
+     * @return {boolean} success Did the data recache
+     *
+     * @warning ⚠️ **Use of the recaching is discouraged!**
+     *
+     * Recache loads can block the filesystem and significantly degrade performance.
+     * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
+     */
+    async recache(...args: Bounded extends true ? [] : [callerName: string]) {
+        const callerName = this.#callerName || args[0];
+        return JsonStore.recache(callerName!);
+    }
+
 
     /**
      * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
