@@ -118,5 +118,7 @@ export const Discord = {
     Utils
 };
 
+Object.freeze(Discord);
+Object.freeze(DiscordComponents);
 export const Common = Discord;
 export const Components = DiscordComponents;
