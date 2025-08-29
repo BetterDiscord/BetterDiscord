@@ -38,7 +38,7 @@ export function Child(props: {className?: string;[x: string]: any;}) {
     return <Flex {...props} />;
 }
 
-type FlexProps = PropsWithChildren<{
+export type FlexProps = PropsWithChildren<{
     id?: string;
     className?: string;
     style?: CSSProperties;
@@ -52,6 +52,10 @@ type FlexProps = PropsWithChildren<{
     onClick?: MouseEventHandler<HTMLDivElement>;
 }>;
 
+/**
+ * Flex component for displaying a flexible container.
+ * @group React Components
+ */
 export default function Flex({
     children,
     className,

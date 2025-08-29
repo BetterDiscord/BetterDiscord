@@ -5,7 +5,12 @@ const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HE
 const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
 
-class FetchResponse extends Response {
+interface FetchResponseData extends Response {
+    readonly url: string;
+    readonly redirected: boolean;
+}
+
+class FetchResponse extends Response implements FetchResponseData {
 
     private _options: Partial<FetchData & {status?: number;}>;
 
@@ -72,54 +77,64 @@ interface FetchData extends FetchOptions {
 
 
 /**
- * @param {string} url
- * @param {FetchOptions} options
- * @returns {Promise<FetchResponse>}
+ * @hideconstructor
  */
-export default function fetch(url: string, options: Partial<FetchOptions> = {}) {
-    return new Promise((resolve, reject) => {
-        const data: Partial<FetchData> = {};
+class Net {
+    /**
+     * @param {string} url
+     * @param {FetchOptions} options
+     * @returns {Promise<FetchResponseData>}
+     */
+    fetch(url: string, options: Partial<FetchOptions> = {}): Promise<FetchResponseData> {
+        return new Promise((resolve, reject) => {
+            const data: Partial<FetchData> = {};
 
-        if (typeof options.headers === "object") {
-            data.headers = options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers;
-        }
+            if (typeof options.headers === "object") {
+                data.headers = options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers;
+            }
 
-        if (typeof options.redirect === "string" && redirects.has(options.redirect)) data.redirect = options.redirect;
-        if (typeof options.body === "string" || options.body instanceof Uint8Array) data.body = options.body;
-        if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
-        if (typeof options.maxRedirects === "number") data.maxRedirects = options.maxRedirects;
-        if (typeof options.timeout === "number") data.timeout = options.timeout;
+            if (typeof options.redirect === "string" && redirects.has(options.redirect)) data.redirect = options.redirect;
+            if (typeof options.body === "string" || options.body instanceof Uint8Array) data.body = options.body;
+            if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
+            if (typeof options.maxRedirects === "number") data.maxRedirects = options.maxRedirects;
+            if (typeof options.timeout === "number") data.timeout = options.timeout;
 
-        if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
+            if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
 
-        let ctx;
-        try {
-            ctx = Remote.nativeFetch(url, data);
-        }
-        catch (error) {
-            return reject(error);
-        }
-
-        ctx.onError(error => {
-            reject(error);
-        });
-
-        ctx.onComplete(() => {
+            let ctx;
             try {
-                const resultData = ctx.readData();
-
-                const req = new FetchResponse({
-                    method: options.method ?? "GET",
-                    status: resultData?.statusCode,
-                    ...options,
-                    ...resultData
-                });
-
-                resolve(req);
+                ctx = Remote.nativeFetch(url, data);
             }
             catch (error) {
-                reject(error);
+                return reject(error);
             }
+
+            ctx.onError(error => {
+                reject(error);
+            });
+
+            ctx.onComplete(() => {
+                try {
+                    const resultData = ctx.readData();
+
+                    const req = new FetchResponse({
+                        method: options.method ?? "GET",
+                        status: resultData?.statusCode,
+                        ...options,
+                        ...resultData
+                    });
+
+                    resolve(req);
+                }
+                catch (error) {
+                    reject(error);
+                }
+            });
         });
-    });
+    }
 }
+
+Object.freeze(Net);
+Object.freeze(Net.prototype);
+
+export default new Net();
