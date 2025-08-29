@@ -106,7 +106,7 @@ interface GetOwnerInstanceOptions {
 
 interface ReactUtils {
     rootInstance: any;
-    reRender(selector: string): undefined;
+    forceReRender(selector: string): undefined;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
@@ -191,7 +191,7 @@ const ReactUtils: ReactUtils = {
      * Rerender a React component by a className or filter
      * @param {element} string className or filter
      */
-    reRender(selector: string) {
+    forceReRender(selector: string) {
         const target = document.querySelector(selector)?.parentElement;
         if (!target) return;
         const instance = ReactUtils.getOwnerInstance(target);
