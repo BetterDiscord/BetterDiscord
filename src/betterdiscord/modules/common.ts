@@ -60,7 +60,7 @@ const [
     {filter: m => m.getChannelIconURL}, // image utils
     {filter: x => x.a && x.animated}, // react spring
     {
-        filter: Webpack.Filters.bySource('type:"USER_PROFILE_FETCH_START"'),
+        filter: Webpack.Filters.bySource("type:\"USER_PROFILE_FETCH_START\""),
         map: {
             fetchProfile: Webpack.Filters.byStrings("USER_PROFILE_FETCH_START"),
             getUser: Webpack.Filters.byStrings("USER_UPDATE", "Promise.resolve")
