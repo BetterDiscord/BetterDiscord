@@ -188,8 +188,8 @@ const ReactUtils: ReactUtils = {
     },
 
     /**
-     * Rerender a React component by a className or filter
-     * @param {element} string className or filter
+     * Rerender a React component by a CSS selector.
+     * @param {string} selector CSS selector string used to find the target element. (e.g. ".my-class" or "#my-id")
      */
     forceReRender(selector: string) {
         const target = document.querySelector(selector)?.parentElement;
