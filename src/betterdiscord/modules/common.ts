@@ -9,7 +9,7 @@ const [
     clickable,
     slider,
     modal,
-    cloudUpload,
+    CloudUpload,
     useStateFromStores,
     moment,
     hljs,
@@ -17,7 +17,6 @@ const [
     tooltip,
     lodash,
     cssVars,
-    fetchUser,
     intl,
     flux,
     permissions,
@@ -25,7 +24,10 @@ const [
     formNotice,
     colorPicker,
     imageUtils,
-    reactSpring
+    ReactSpring,
+    mappedFetchUtils,
+    modals,
+    navigation
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
@@ -49,7 +51,6 @@ const [
         filter: (x) => x?.forEachRight, searchExports: false // lodash
     },
     {filter: x => x?.BACKGROUND_PRIMARY, searchExports: false}, // css variables
-    {filter: Webpack.Filters.byStrings(".USER("), searchExports: true}, // fetch user
     {filter: (x) => x?.intl}, // internationalization
     {filter: x => x?.connectStores}, // flux
     {filter: x => x?.ADD_REACTIONS, searchExports: true}, // permissions
@@ -57,7 +58,33 @@ const [
     {filter: Webpack.Filters.byStrings("HORIZONTAL_REVERSE", "imageData"), searchExports: true}, // form notice
     {filter: Webpack.Filters.byStrings("Qp04hI"), searchExports: true}, // color picker
     {filter: m => m.getChannelIconURL}, // image utils
-    {filter: x => x.a && x.animated} // react spring
+    {filter: x => x.a && x.animated}, // react spring
+    {
+        filter: Webpack.Filters.bySource('type:"USER_PROFILE_FETCH_START"'),
+        map: {
+            fetchProfile: Webpack.Filters.byStrings("USER_PROFILE_FETCH_START"),
+            getUser: Webpack.Filters.byStrings("USER_UPDATE", "Promise.resolve")
+        }
+    },
+    {
+        filter: Webpack.Filters.bySource(".modalKey?"),
+        map: {
+            openModalLazy: Webpack.Filters.byStrings(".modalKey?"),
+            openModal: Webpack.Filters.byStrings(",instant:"),
+            closeModal: Webpack.Filters.byStrings(".onCloseCallback()"),
+            closeAllModals: Webpack.Filters.byStrings(".getState();for")
+        }
+    },
+    {
+        filter: Webpack.Filters.bySource("transitionTo - Transitioning to"),
+        map: {
+            transitionTo: Webpack.Filters.byStrings("\"transitionTo - Transitioning to \""),
+            replace: Webpack.Filters.byStrings("\"Replacing route with \""),
+            goBack: Webpack.Filters.byStrings(".goBack()"),
+            goForward: Webpack.Filters.byStrings(".goForward()"),
+            transitionToGuild: Webpack.Filters.byStrings("\"transitionToGuild - Transitioning to \"")
+        }
+    }
 );
 
 const layerManager = {
@@ -91,30 +118,20 @@ export const Discord = {
     componentDispatch,
     layerManager,
     snowflake,
+    fetchUtils: mappedFetchUtils,
     simpleMarkdownWrapper: parser,
-    cloudUpload,
+    CloudUpload,
     imageUtils,
-    modals: Webpack.getMangled(".modalKey?", {
-        openModalLazy: Webpack.Filters.byStrings(".modalKey?"),
-        openModal: Webpack.Filters.byStrings(",instant:"),
-        closeModal: Webpack.Filters.byStrings(".onCloseCallback()"),
-        closeAllModals: Webpack.Filters.byStrings(".getState();for")
-    }),
-    navigation: Webpack.getMangled("transitionTo - Transitioning to", {
-        transitionTo: Webpack.Filters.byStrings("\"transitionTo - Transitioning to \""),
-        replace: Webpack.Filters.byStrings("\"Replacing route with \""),
-        goBack: Webpack.Filters.byStrings(".goBack()"),
-        goForward: Webpack.Filters.byStrings(".goForward()"),
-        transitionToGuild: Webpack.Filters.byStrings("\"transitionToGuild - Transitioning to \"")
-    }),
+    modals: modals,
+    navigation: navigation,
     moment,
     hljs,
     lodash,
     cssVars,
     intl: {intl: intl.intl, t: intl.t},
     useStateFromStores,
-    fetchUser,
-    reactSpring
+    // fetchUser,
+    ReactSpring
 };
 
 Object.freeze(Discord);
