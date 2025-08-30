@@ -3,7 +3,6 @@ import * as Webpack from "@webpack";
 const [
     fluxDispatch,
     parser,
-    textInput,
     popout,
     messageActions,
     clickable,
@@ -42,7 +41,6 @@ const [
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
-    {filter: Webpack.Filters.byStrings("errorMessage", "setShouldValidate"), searchExports: true}, // text input
     {filter: Webpack.Filters.byStrings("Unsupported animation config: "), searchExports: true}, // popout
     {filter: Webpack.Filters.byKeys(["sendMessage", "editMessage"])}, // message actions
     {filter: Webpack.Filters.byStrings("renderNonInteractive()"), searchExports: true}, // clickable
@@ -97,22 +95,23 @@ const [
             transitionToGuild: Webpack.Filters.byStrings("\"transitionToGuild - Transitioning to \"")
         }
     },
-    {filter: Webpack.Filters.byStrings('loadingPopout'), searchExports: true}, // loading
-    {filter: Webpack.Filters.byStrings('percent', 'foregroundGradientColor'), searchExports: true}, // progress bar
-    {filter: Webpack.Filters.byStrings('XqMe3N', 'options'), searchExports: true}, // selectabe
-    {filter: Webpack.Filters.byStrings('="wanderingCubes"'), searchExports: true}, // spinner
-    {filter: Webpack.Filters.byStrings('getPaddingRight(){let'), searchExports: true}, // text
-    {filter: Webpack.Filters.byStrings('select(){var'), searchExports: true}, // copy
+    {filter: Webpack.Filters.byStrings("loadingPopout"), searchExports: true}, // loading
+    {filter: Webpack.Filters.byStrings("percent", "foregroundGradientColor"), searchExports: true}, // progress bar
+    {filter: Webpack.Filters.byStrings("XqMe3N", "options"), searchExports: true}, // selectabe
+    {filter: Webpack.Filters.byStrings("=\"wanderingCubes\""), searchExports: true}, // spinner
+    {filter: Webpack.Filters.byStrings("getPaddingRight(){let"), searchExports: true}, // text
+    {filter: Webpack.Filters.byStrings("select(){var"), searchExports: true}, // copy
     {filter: x => x.render?.toString?.().includes(",renderCustomPill:"), searchExports: true}, // searchable select
-    {filter: Webpack.Filters.byStrings('xMinYMid meet'), searchExports: true}, // switch
-    {filter: Webpack.Filters.byStrings('["children","className","element"]'), searchExports: true}, // tooltip wrapper
+    {filter: Webpack.Filters.byStrings("xMinYMid meet"), searchExports: true}, // switch
+    {filter: Webpack.Filters.byStrings("[\"children\",\"className\",\"element\"]"), searchExports: true}, // tooltip wrapper
     {
         filter: (x) => {
             const str = x?.toString();
             return str && str?.indexOf("onChange") !== -1 && str?.indexOf("disabledText") !== -1;
-        }, searchExports: true
+        },
+        searchExports: true
     }, // form switch
-    {filter: Webpack.Filters.byStrings('data-excessive-heading-level'), searchExports: true}, // text
+    {filter: Webpack.Filters.byStrings("data-excessive-heading-level"), searchExports: true}, // text
 );
 
 const layerManager = {
