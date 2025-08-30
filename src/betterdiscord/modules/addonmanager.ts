@@ -89,10 +89,7 @@ export default abstract class AddonManager extends Store {
 
         const errors = this.loadAllAddons();
         const numEnabled = Object.values(this.state).filter(b => b).length;
-        if (numEnabled > 0) {
-            Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
-        }
-
+        if (numEnabled > 0) Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
         this.hasInitialized = true;
         return errors;
     }

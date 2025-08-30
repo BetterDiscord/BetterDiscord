@@ -105,15 +105,8 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-    getData<T>(pluginName: string, key: string, recache: boolean = false): T {
+    getData<T>(pluginName: string, key: string): T {
         this.#ensurePluginData(pluginName); //       Ensure plugin data, if any, is cached
-        if (recache) {
-            const success = this.recache(pluginName);
-            if (!success) {
-                Logger.err("JsonStore", `Failed to recache data for plugin: ${pluginName}`);
-                throw new Error(`Recache operation failed for plugin: ${pluginName}`);
-            }
-        }
         return this.pluginCache[pluginName][key] as T; // Return blindly to allow falsey values
     }
 
