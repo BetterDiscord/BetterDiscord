@@ -27,11 +27,22 @@ const [
     ReactSpring,
     mappedFetchUtils,
     modals,
-    navigation
+    navigation,
+    LoadingPopout,
+    Progress,
+    Select,
+    Spinner,
+    TextArea,
+    CopyInput,
+    SearchableSelect,
+    Switch,
+    RichTooltip,
+    FormSwitch,
+    Text
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
-    {filter: Webpack.Filters.byStrings("bmQU//", "+DFxLS"), searchExports: true}, // text input
+    {filter: Webpack.Filters.byStrings("errorMessage", "setShouldValidate"), searchExports: true}, // text input
     {filter: Webpack.Filters.byStrings("Unsupported animation config: "), searchExports: true}, // popout
     {filter: Webpack.Filters.byKeys(["sendMessage", "editMessage"])}, // message actions
     {filter: Webpack.Filters.byStrings("renderNonInteractive()"), searchExports: true}, // clickable
@@ -72,7 +83,8 @@ const [
             openModalLazy: Webpack.Filters.byStrings(".modalKey?"),
             openModal: Webpack.Filters.byStrings(",instant:"),
             closeModal: Webpack.Filters.byStrings(".onCloseCallback()"),
-            closeAllModals: Webpack.Filters.byStrings(".getState();for")
+            closeAllModals: Webpack.Filters.byStrings(".getState();for"),
+            updateModal: Webpack.Filters.byStrings("arguments.length>4&&void 0")
         }
     },
     {
@@ -84,7 +96,23 @@ const [
             goForward: Webpack.Filters.byStrings(".goForward()"),
             transitionToGuild: Webpack.Filters.byStrings("\"transitionToGuild - Transitioning to \"")
         }
-    }
+    },
+    {filter: Webpack.Filters.byStrings('loadingPopout'), searchExports: true}, // loading
+    {filter: Webpack.Filters.byStrings('percent', 'foregroundGradientColor'), searchExports: true}, // progress bar
+    {filter: Webpack.Filters.byStrings('XqMe3N', 'options'), searchExports: true}, // selectabe
+    {filter: Webpack.Filters.byStrings('="wanderingCubes"'), searchExports: true}, // spinner
+    {filter: Webpack.Filters.byStrings('getPaddingRight(){let'), searchExports: true}, // text
+    {filter: Webpack.Filters.byStrings('select(){var'), searchExports: true}, // copy
+    {filter: x => x.render?.toString?.().includes(",renderCustomPill:"), searchExports: true}, // searchable select
+    {filter: Webpack.Filters.byStrings('xMinYMid meet'), searchExports: true}, // switch
+    {filter: Webpack.Filters.byStrings('["children","className","element"]'), searchExports: true}, // tooltip wrapper
+    {
+        filter: (x) => {
+            const str = x?.toString();
+            return str && str?.indexOf("onChange") !== -1 && str?.indexOf("disabledText") !== -1;
+        }, searchExports: true
+    }, // form switch
+    {filter: Webpack.Filters.byStrings('data-excessive-heading-level'), searchExports: true}, // text
 );
 
 const layerManager = {
@@ -100,14 +128,25 @@ const layerManager = {
 };
 
 export const DiscordComponents = {
-    TextInput: textInput,
+    // TextInput: textInput,
     Popout: popout,
     Clickable: clickable,
     Slider: slider,
     Modal: modal,
     Tooltip: tooltip,
     FormNotice: formNotice,
-    ColorPicker: colorPicker
+    ColorPicker: colorPicker,
+    LoadingPopout,
+    Spinner,
+    TextArea,
+    Progress,
+    Select,
+    CopyInput,
+    SearchableSelect,
+    Switch,
+    FormSwitch,
+    RichTooltip,
+    Text,
 };
 
 export const Discord = {
