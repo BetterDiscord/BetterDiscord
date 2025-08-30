@@ -106,7 +106,7 @@ interface GetOwnerInstanceOptions {
 
 interface ReactUtils {
     rootInstance: any;
-    forceReRender(selector: string): undefined;
+    forceReRender(selector: string): void;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
