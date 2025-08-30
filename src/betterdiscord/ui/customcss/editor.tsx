@@ -8,7 +8,7 @@ import Button from "../base/button";
 import Flex from "../base/flex";
 import Switch from "../settings/components/switch";
 import Text from "@ui/base/text";
-import {useInternalStore} from "@ui/hooks";
+import {useStateFromStores} from "@ui/hooks";
 import {useLayoutEffect, useRef} from "react";
 
 import type {editor as MonacoEditor} from "monaco-editor";
@@ -66,7 +66,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
     const [selection, setSelection] = useState<[line: number, col: number, selected: number]>([0, 0, 0]);
     const [markerInfo, setInfo] = useState<[errors: number, warnings: number, markers: any[]]>([0, 0, []]);
-    const {insertSpaces, tabSize} = useInternalStore(Settings, () => ({
+    const {insertSpaces, tabSize} = useStateFromStores(Settings, () => ({
         insertSpaces: Settings.get<boolean>("settings", "editor", "insertSpaces"),
         tabSize: Settings.get<number>("settings", "editor", "tabSize")
     }));

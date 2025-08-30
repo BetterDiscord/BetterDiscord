@@ -20,7 +20,7 @@ export default new class Toasts extends Store {
 
     private addToast(toast: ToastProps) {
         this._toasts = [...this._toasts, toast];
-        this.emit();
+        this.emitChange();
 
         setTimeout(() => {
             this.removeToast(toast.key);
@@ -29,7 +29,7 @@ export default new class Toasts extends Store {
 
     private removeToast(key: number) {
         this._toasts = this._toasts.filter(toast => toast.key !== key);
-        this.emit();
+        this.emitChange();
     }
 
     get toasts(): ToastProps[] {
