@@ -90,8 +90,8 @@ const Utils = {
     },
 
     /**
-     * Async sleep with millaseconds delay
-     * @param {int} delay millaseconds delay
+     * Async sleep with milliseconds delay
+     * @param {int} delay milliseconds delay
      */
     sleep: sleep,
 
