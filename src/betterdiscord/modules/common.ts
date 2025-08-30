@@ -130,11 +130,11 @@ export const Discord = {
     cssVars,
     intl: {intl: intl.intl, t: intl.t},
     useStateFromStores,
-    // fetchUser,
     ReactSpring
 };
 
 Object.freeze(Discord);
 Object.freeze(DiscordComponents);
+
 export const Common = Discord;
 export const Components = DiscordComponents;
