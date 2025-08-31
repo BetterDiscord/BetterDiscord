@@ -1,4 +1,4 @@
-import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, SingleOptions} from "discord/webpack";
+import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
