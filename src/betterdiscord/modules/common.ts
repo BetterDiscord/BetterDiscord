@@ -42,7 +42,9 @@ const [
     Scroller,
     ProgressCircle,
     LinkButton,
-    KeyCombo
+    KeyCombo,
+    Avatar,
+    Slides
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
@@ -121,7 +123,9 @@ const [
     {filter: Webpack.Filters.byStrings("scrollbarType", "scrollerRef"), searchExports: true}, // scoller
     {filter: Webpack.Filters.byStrings("circleBackgroundAlt"), searchExports: true}, // circle progress
     {filter: Webpack.Filters.byStrings("cgdAs7"), searchExports: true}, // circle progress
-    {filter: Webpack.Filters.byStrings("{let{shortcut:"), searchExports: true}, // circle progress
+    {filter: Webpack.Filters.byStrings("{let{shortcut:"), searchExports: true}, // key shortcuts
+    {filter: Webpack.Filters.byStrings("typingIndicatorRef", "statusBackdropColor"), searchExports: true}, // Avataer
+    {filter: Webpack.Filters.byStrings("contentDisplay"), searchExports: true}, // Slides
 );
 
 const layerManager = {
@@ -159,7 +163,9 @@ export const DiscordComponents = {
     Scroller,
     ProgressCircle,
     LinkButton,
-    KeyCombo
+    KeyCombo,
+    Avatar,
+    Slides,
 };
 
 export const Discord = {
