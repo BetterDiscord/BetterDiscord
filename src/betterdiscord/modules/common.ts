@@ -41,22 +41,23 @@ const [
     Flex,
     Scroller,
     ProgressCircle,
-    LinkButton,
+    //LinkButton,
     KeyCombo,
     Avatar,
-    Slides
+    Slides,
+    AnimatedAvatar
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
     {filter: Webpack.Filters.byStrings("Unsupported animation config: "), searchExports: true}, // popout
-    {filter: Webpack.Filters.byKeys(["sendMessage", "editMessage"])}, // message actions
+    {filter: x => x.editMessage}, // message actions
     {filter: Webpack.Filters.byStrings("renderNonInteractive()"), searchExports: true}, // clickable
     {filter: Webpack.Filters.byStrings("markerPositions"), searchExports: true}, // slider
     {filter: Webpack.Filters.byStrings("[\"size\",\"title\""), searchExports: true}, // modal
     {filter: Webpack.Filters.byStrings("uploadFileToCloud"), searchExports: true}, // cloud uploader
     {filter: Webpack.Filters.byStrings("useStateFromStores"), searchExports: true}, // state hook
-    {filter: x => x?.parseTwoDigitYear}, // moment
-    {filter: x => x?.registerLanguage}, // highlight.js
+    {filter: x => x.parseTwoDigitYear}, // moment
+    {filter: x => x.registerLanguage}, // highlight.js
     {filter: x => x.extractTimestamp}, // snowflake
     {
         filter: x => x.toString?.().includes("disabledText")
@@ -64,12 +65,12 @@ const [
         searchExports: true
     }, // tooltip
     {
-        filter: (x) => x?.forEachRight, searchExports: false // lodash
+        filter: (x) => x.forEachRight, searchExports: false // lodash
     },
-    {filter: x => x?.BACKGROUND_PRIMARY, searchExports: false}, // css variables
-    {filter: (x) => x?.intl}, // internationalization
-    {filter: x => x?.connectStores}, // flux
-    {filter: x => x?.ADD_REACTIONS, searchExports: true}, // permissions
+    {filter: x => x.BACKGROUND_PRIMARY, searchExports: false}, // css variables
+    {filter: (x) => x.intl}, // internationalization
+    {filter: x => x.connectStores}, // flux
+    {filter: x => x.ADD_REACTIONS, searchExports: true}, // permissions
     {filter: x => x._savedDispatches, searchExports: true}, // component dispatch
     {filter: Webpack.Filters.byStrings("HORIZONTAL_REVERSE", "imageData"), searchExports: true}, // form notice
     {filter: Webpack.Filters.byStrings("Qp04hI"), searchExports: true}, // color picker
@@ -119,13 +120,14 @@ const [
         searchExports: true
     }, // form switch
     {filter: Webpack.Filters.byStrings("data-excessive-heading-level"), searchExports: true}, // text
-    {filter: Webpack.Filters.byKeys(["Justify"]), searchExports: true}, // flex
+    {filter: x => x.Justify, searchExports: true}, // flex
     {filter: Webpack.Filters.byStrings("scrollbarType", "scrollerRef"), searchExports: true}, // scoller
     {filter: Webpack.Filters.byStrings("circleBackgroundAlt"), searchExports: true}, // circle progress
-    {filter: Webpack.Filters.byStrings("cgdAs7"), searchExports: true}, // circle progress
+    // {filter: Webpack.Filters.byStrings("soRxRU"), searchExports: true}, // link button // cgdAs7
     {filter: Webpack.Filters.byStrings("{let{shortcut:"), searchExports: true}, // key shortcuts
     {filter: Webpack.Filters.byStrings("typingIndicatorRef", "statusBackdropColor"), searchExports: true}, // Avataer
     {filter: Webpack.Filters.byStrings("contentDisplay"), searchExports: true}, // Slides
+    {filter: Webpack.Filters.byStrings("fromIsMobile:", "fromStatus:"), searchExports: true}, // AnimatedAvatar
 );
 
 const layerManager = {
@@ -162,10 +164,11 @@ export const DiscordComponents = {
     Text,
     Scroller,
     ProgressCircle,
-    LinkButton,
+    // LinkButton,
     KeyCombo,
     Avatar,
     Slides,
+    AnimatedAvatar
 };
 
 export const Discord = {
