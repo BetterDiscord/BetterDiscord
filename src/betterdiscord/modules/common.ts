@@ -41,11 +41,13 @@ const [
     Flex,
     Scroller,
     ProgressCircle,
-    //LinkButton,
+    // LinkButton,
     KeyCombo,
     Avatar,
     Slides,
-    AnimatedAvatar
+    AnimatedAvatar,
+    Button,
+    CalendarPicker
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
@@ -128,6 +130,8 @@ const [
     {filter: Webpack.Filters.byStrings("typingIndicatorRef", "statusBackdropColor"), searchExports: true}, // Avataer
     {filter: Webpack.Filters.byStrings("contentDisplay"), searchExports: true}, // Slides
     {filter: Webpack.Filters.byStrings("fromIsMobile:", "fromStatus:"), searchExports: true}, // AnimatedAvatar
+    {filter: Webpack.Filters.byStrings("pfChQk"), searchExports: true}, // button
+    {filter: Webpack.Filters.byStrings("react-datepicker__day[tabindex=\"0\"]"), searchExports: true}, // calender
 );
 
 const layerManager = {
@@ -168,7 +172,9 @@ export const DiscordComponents = {
     KeyCombo,
     Avatar,
     Slides,
-    AnimatedAvatar
+    AnimatedAvatar,
+    Button,
+    CalendarPicker
 };
 
 export const Discord = {
