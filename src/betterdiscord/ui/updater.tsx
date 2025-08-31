@@ -1,4 +1,5 @@
 import Config from "@stores/config";
+import Toasts from "@stores/toasts";
 
 import React from "@modules/react";
 import {t} from "@common/i18n";
@@ -9,7 +10,6 @@ import Button from "@ui/base/button";
 import Drawer from "@ui/settings/drawer";
 import SettingItem from "@ui/settings/components/item";
 import SettingsTitle from "@ui/settings/title";
-import Toasts from "@ui/toasts";
 
 import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 import type {CoreUpdater, ThemeUpdater, PluginUpdater, AddonUpdater} from "@modules/updater";

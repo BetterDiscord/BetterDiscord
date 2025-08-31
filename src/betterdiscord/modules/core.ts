@@ -16,13 +16,13 @@ import JsonStore from "@stores/json";
 import DiscordModules from "./discordmodules";
 
 import IPC from "./ipc";
-import Editor from "./editor";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
 import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
+import Toasts from "@ui/toasts";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
@@ -66,11 +66,11 @@ export default new class Core {
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
 
-        Logger.log("Startup", "Initializing Editor");
-        await Editor.initialize();
-
         Logger.log("Startup", "Initializing FloatingWindows");
         FloatingWindows.initialize();
+
+        Logger.log("Startup", "Initializing Toasts");
+        Toasts.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {

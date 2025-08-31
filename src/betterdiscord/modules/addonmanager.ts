@@ -8,13 +8,13 @@ import AddonError from "@structs/addonerror";
 import Settings from "@stores/settings";
 import Events from "./emitter";
 import JsonStore, {type Files} from "@stores/json";
+import Toasts from "@stores/toasts";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
-import Toasts from "@ui/toasts";
 import Store from "@stores/base";
 import type {SystemError} from "bun";
 import RemoteAPI from "@polyfill/remote";
@@ -82,10 +82,16 @@ export default abstract class AddonManager extends Store {
     abstract addonList: Addon[];
     state: Record<string, boolean> = {};
     windows = new Set<string>();
+    hasInitialized = false;
 
     initialize() {
         Settings.registerAddonPanel(this);
-        return this.loadAllAddons();
+
+        const errors = this.loadAllAddons();
+        const numEnabled = Object.values(this.state).filter(b => b).length;
+        if (numEnabled > 0) Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
+        this.hasInitialized = true;
+        return errors;
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it

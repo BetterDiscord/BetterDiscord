@@ -2,6 +2,7 @@ import fs from "@polyfill/fs";
 import path from "path";
 import Store from "./base";
 import Config from "./config";
+import Logger from "@common/logger";
 
 
 export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store" | "webpack";
@@ -66,7 +67,6 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-
     // Plugin data
     #getPluginFile(pluginName: string) {
         return path.resolve(Config.get("pluginsPath"), pluginName + ".config.json");
@@ -85,6 +85,19 @@ export default new class JsonStore extends Store {
         catch {
             // Setup blank data if parse fails
             return this.pluginCache[pluginName] = {};
+        }
+    }
+
+    recache(pluginName: string) {
+        this.#ensurePluginData(pluginName);
+        try {
+            this.pluginCache[pluginName] = JSON.parse(fs.readFileSync(this.#getPluginFile(pluginName)).toString());
+            this.emit();
+            return true;
+        }
+        catch (err) {
+            Logger.err("JsonStore", "recache: ", err);
+            return false;
         }
     }
 
