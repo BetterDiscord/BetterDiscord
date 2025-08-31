@@ -8,8 +8,8 @@ import pluginManager, {type Plugin} from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import DiscordModules from "@modules/discordmodules";
 import Modals from "@ui/modals";
-import {getByKeys} from "@webpack";
 import {findInTree} from "@common/utils";
 import {CustomCSS} from "@builtins/builtins";
 import type AddonManager from "@modules/addonmanager";
@@ -25,7 +25,6 @@ const ContextMenu = new ContextMenuPatcher() as InstanceType<typeof ContextMenuP
     Item: any;
     Menu: any;
 };
-const UserSettingsWindow = getByKeys<{open(id: string): void;}>(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -160,6 +159,6 @@ export default new class BDContextMenu extends Builtin {
 
     async openCategory(id: string) {
         ContextMenu.close();
-        UserSettingsWindow?.open?.(id);
+        DiscordModules.UserSettingsWindow?.open?.(id);
     }
 };

@@ -48,10 +48,10 @@ const LayerManager = {
     }
 };
 
-const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser"]);
-const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"]);
-const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"]);
-const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"]);
+const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser"], {cacheId: "core-addoncard-UserStore"});
+const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"], {cacheId: "core-addoncard-ChannelStore"});
+const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"], {cacheId: "core-addoncard-PrivateChannelActions"});
+const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"], {cacheId: "core-addoncard-ChannelActions"});
 const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value.toString();
 
 function makeButton(title: string, children: ReactNode, action?: () => void, {isControl = false, danger = false, disabled = false} = {}) {

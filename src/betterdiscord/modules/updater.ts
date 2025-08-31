@@ -23,14 +23,12 @@ import Notifications from "@ui/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
+import DiscordModules from "./discordmodules";
 import type AddonManager from "./addonmanager";
 import type {Release} from "github";
 import type {BdWebAddon} from "betterdiscordweb";
-import {getByKeys} from "@webpack";
 import {Logo} from "@ui/logo";
 
-
-const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -351,7 +349,7 @@ export class AddonUpdater {
             actions: [
                 {
                     label: t("Updater.viewUpdates"),
-                    onClick: () => UserSettingsWindow?.open?.("updates")
+                    onClick: () => DiscordModules.UserSettingsWindow?.open?.("updates")
                 },
                 {
                     label: t("Updater.updateAll"),

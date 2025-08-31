@@ -2,9 +2,10 @@
 /* eslint-disable no-label-var */
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
-import {getModule} from "./searching";
+import {getIdFromStack, getMatched, getModule} from "./searching";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 import {webpackRequire} from "./require";
+import WebpackStore from "@stores/webpack";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
@@ -85,19 +86,44 @@ export function getMangled<T extends object>(
 export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const returnedModules = Array(queries.length) as T;
 
-    queries = queries.map((query) => ({
+    queries = queries.map((query, i) => ({
         ...query,
-        filter: wrapFilter(query.filter)
+        filter: wrapFilter(query.filter),
+        cacheId: query.cacheId || getIdFromStack(i)
     }));
 
+    // First check if we already have it cached
+    let allFound = true;
+    for (let i = 0; i < queries.length; i++) {
+        const {all, cacheId} = queries[i];
+        if (!all && cacheId) {
+            const id = WebpackStore.data[cacheId];
+            const module = webpackRequire.c[id];
+
+            if (module) {
+                const matched = getMatched(module, queries[i].filter, queries[i]);
+                if (matched) {
+                    returnedModules[i] = matched;
+                    continue;
+                }
+            }
+        }
+
+        allFound = false;
+    }
+
+    // If everything has already been found return early
+    if (allFound) return returnedModules;
+
     const webpackModules = Object.values(webpackRequire.c);
+
     for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
 
         queries: for (let index = 0; index < queries.length; index++) {
-            const {filter, all = false, defaultExport = true, searchExports = false, searchDefault = true, raw = false, map} = queries[index];
+            const {filter, all = false, defaultExport = true, searchExports = false, searchDefault = true, raw = false, map, cacheId} = queries[index];
 
             if (!all && index in returnedModules) {
                 continue;
@@ -108,6 +134,11 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
                 if (!all) {
                     returnedModules[index] = trueItem;
+
+                    if (cacheId) {
+                        WebpackStore.data[cacheId] = module.id.toString();
+                        WebpackStore.save();
+                    }
                     continue;
                 }
 
@@ -137,6 +168,11 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
                     if (!all) {
                         returnedModules[index] = value;
+
+                        if (cacheId) {
+                            WebpackStore.data[cacheId] = module.id.toString();
+                            WebpackStore.save();
+                        }
                         continue queries;
                     }
 

@@ -23,6 +23,7 @@ export type Options = {
     defaultExport?: boolean,
     searchDefault?: boolean,
     raw?: boolean;
+    cacheId?: string;
 };
 
 export type BulkQueries = Options & {
