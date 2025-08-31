@@ -73,7 +73,14 @@ const [
     {filter: (x) => x.intl}, // internationalization
     {filter: x => x.connectStores}, // flux
     {filter: x => x.ADD_REACTIONS, searchExports: true}, // permissions
-    {filter: x => x._savedDispatches, searchExports: true}, // component dispatch
+    {
+        filter: Webpack.Filters.bySource("ComponentDispatchUtils"),
+        searchDefault: false,
+        map: {
+            ComponentDispatch: x => typeof x === "object",
+            ComponentDispatchConstructor: x => typeof x === "function"
+        }
+    }, // component dispatch
     {filter: Webpack.Filters.byStrings("HORIZONTAL_REVERSE", "imageData"), searchExports: true}, // form notice
     {filter: Webpack.Filters.byStrings("Qp04hI"), searchExports: true}, // color picker
     {filter: m => m.getChannelIconURL}, // image utils
