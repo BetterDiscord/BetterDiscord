@@ -37,7 +37,12 @@ const [
     Switch,
     RichTooltip,
     FormSwitch,
-    Text
+    Text,
+    Flex,
+    Scroller,
+    ProgressCircle,
+    LinkButton,
+    KeyCombo
 ] = Webpack.getBulk(
     {filter: x => x._dispatch}, // flux dispatch
     {filter: x => x.parseTopic}, // parser
@@ -112,6 +117,11 @@ const [
         searchExports: true
     }, // form switch
     {filter: Webpack.Filters.byStrings("data-excessive-heading-level"), searchExports: true}, // text
+    {filter: Webpack.Filters.byKeys(["Justify"]), searchExports: true}, // flex
+    {filter: Webpack.Filters.byStrings("scrollbarType", "scrollerRef"), searchExports: true}, // scoller
+    {filter: Webpack.Filters.byStrings("circleBackgroundAlt"), searchExports: true}, // circle progress
+    {filter: Webpack.Filters.byStrings("cgdAs7"), searchExports: true}, // circle progress
+    {filter: Webpack.Filters.byStrings("{let{shortcut:"), searchExports: true}, // circle progress
 );
 
 const layerManager = {
@@ -146,6 +156,10 @@ export const DiscordComponents = {
     FormSwitch,
     RichTooltip,
     Text,
+    Scroller,
+    ProgressCircle,
+    LinkButton,
+    KeyCombo
 };
 
 export const Discord = {
@@ -168,7 +182,8 @@ export const Discord = {
     cssVars,
     intl: {intl: intl.intl, t: intl.t},
     useStateFromStores,
-    ReactSpring
+    ReactSpring,
+    Flex
 };
 
 Object.freeze(Discord);
