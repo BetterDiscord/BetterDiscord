@@ -105,8 +105,11 @@ interface GetOwnerInstanceOptions {
 
 const exoticComponents = {
     memo: Symbol.for("react.memo"),
-    forwardRef: Symbol.for("react.forward_ref")
+    forwardRef: Symbol.for("react.forward_ref"),
+    lazy: Symbol.for("react.lazy")
 };
+
+type ElementType<T extends React.FC> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
 
 interface ReactUtils {
     rootInstance: any;
@@ -114,11 +117,11 @@ interface ReactUtils {
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
     wrapInHooks<T extends React.FC>(
-        functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
+        functionComponent: ElementType<T>,
         customPatches: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
     forceUpdateFiber(fiber: Fiber): boolean;
-    getType<T extends React.FC>(elementType: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>): T;
+    getType<T extends React.FC>(elementType: ElementType<T>): T;
 }
 
 /**
@@ -286,7 +289,7 @@ const ReactUtils: ReactUtils = {
         return false;
     },
 
-    getType<T extends React.FC>(elementType: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>): T {
+    getType<T extends React.FC>(elementType: ElementType<T>): T {
         while (true) {
             switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:
@@ -295,6 +298,18 @@ const ReactUtils: ReactUtils = {
                 case exoticComponents.forwardRef:
                     elementType = (elementType as React.ForwardRefExoticComponent<T> & {render: T;}).render;
                     break;
+                case exoticComponents.lazy: {
+                    const _payload = (elementType as any)._payload;
+
+                    if (_payload._status === 1) {
+                        elementType = _payload._result.default;
+                    }
+                    else {
+                        // Not possible but just incase
+                        elementType = (() => {}) as unknown as T;
+                    }
+                    break;
+                }
                 default:
                     return elementType as T;
             }
