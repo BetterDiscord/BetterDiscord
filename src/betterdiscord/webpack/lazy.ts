@@ -8,20 +8,19 @@ const FinalModuleIdRegex = /n\.bind\(n,\s*(\d+)\s*\)/g;
 const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(n\.bind\(n,\s*(\d+)\)\)/g;
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
+    const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false} = options;
+
+    if (abortSignal?.aborted) {
+        if (fatal) return Promise.reject(makeException());
+        return Promise.resolve(undefined);
+    }
+
     const cached = getModule<T>(filter, options);
     if (cached) return Promise.resolve(cached);
 
-    const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false} = options;
     filter = wrapFilter(filter);
 
     return new Promise((resolve, reject) => {
-        if (abortSignal?.aborted) {
-            if (fatal) reject(makeException());
-            else resolve(undefined);
-
-            return;
-        }
-
         const cancel = () => void lazyListeners.delete(listener);
 
         const listener: Webpack.Filter = (_, module) => {
