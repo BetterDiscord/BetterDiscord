@@ -10,14 +10,14 @@ type SaveArgs<Bounded extends boolean, T> = [
     data: T
 ];
 
-type OnChangeArgs<Bounded extends boolean, T> = [
-    ...(Bounded extends false ? [pluginName: string] : []),
-    key: string,
-    onChange: (value?: T) => void
-] | [
-    ...(Bounded extends false ? [pluginName: string] : []),
-    onChange: (key: string, value?: T) => void
-];
+// type OnChangeArgs<Bounded extends boolean, T> = [
+//     ...(Bounded extends false ? [pluginName: string] : []),
+//     key: string,
+//     onChange: (value?: T) => void
+// ] | [
+//     ...(Bounded extends false ? [pluginName: string] : []),
+//     onChange: (key: string, value?: T) => void
+// ];
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
@@ -93,37 +93,37 @@ class Data<Bounded extends boolean> {
         return JsonStore.deleteData(args[0], args[1]);
     }
 
-    public on<T>(...args: OnChangeArgs<Bounded, T>) {
-        if (this.#pluginName) {
-            if (typeof args[0] === "function") {
-                return JsonStore.addPluginChangeListener(this.#pluginName, args[0]);
-            }
+    // public on<T>(...args: OnChangeArgs<Bounded, T>) {
+    //     if (this.#pluginName) {
+    //         if (typeof args[0] === "function") {
+    //             return JsonStore.addPluginChangeListener(this.#pluginName, args[0]);
+    //         }
 
-            return JsonStore.addPluginChangeListener(this.#pluginName, args[1], args[0]);
-        }
+    //         return JsonStore.addPluginChangeListener(this.#pluginName, args[1], args[0]);
+    //     }
 
-        if (typeof args[1] === "function") {
-            return JsonStore.addPluginChangeListener(args[0] as string, args[1]);
-        }
+    //     if (typeof args[1] === "function") {
+    //         return JsonStore.addPluginChangeListener(args[0] as string, args[1]);
+    //     }
 
-        return JsonStore.addPluginChangeListener(args[0] as string, args[2], args[1]);
-    }
+    //     return JsonStore.addPluginChangeListener(args[0] as string, args[2], args[1]);
+    // }
 
-    public off(...args: OnChangeArgs<Bounded, unknown>) {
-        if (this.#pluginName) {
-            if (typeof args[0] === "function") {
-                return JsonStore.removePluginChangeListener(this.#pluginName, args[0]);
-            }
+    // public off(...args: OnChangeArgs<Bounded, unknown>) {
+    //     if (this.#pluginName) {
+    //         if (typeof args[0] === "function") {
+    //             return JsonStore.removePluginChangeListener(this.#pluginName, args[0]);
+    //         }
 
-            return JsonStore.removePluginChangeListener(this.#pluginName, args[1], args[0]);
-        }
+    //         return JsonStore.removePluginChangeListener(this.#pluginName, args[1], args[0]);
+    //     }
 
-        if (typeof args[1] === "function") {
-            return JsonStore.removePluginChangeListener(args[0] as string, args[1]);
-        }
+    //     if (typeof args[1] === "function") {
+    //         return JsonStore.removePluginChangeListener(args[0] as string, args[1]);
+    //     }
 
-        return JsonStore.removePluginChangeListener(args[0] as string, args[2], args[1]);
-    }
+    //     return JsonStore.removePluginChangeListener(args[0] as string, args[2], args[1]);
+    // }
 }
 
 Object.freeze(Data);
