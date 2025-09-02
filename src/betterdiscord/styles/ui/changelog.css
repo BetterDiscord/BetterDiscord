@@ -21,7 +21,6 @@
 .bd-changelog-modal .bd-modal-content {
     font-size: 16px;
     line-height: 20px;
-    padding-bottom: 20px;
 }
 
 .bd-changelog-modal .bd-modal-content .emoji {
@@ -236,6 +235,6 @@
     opacity: 1;
 }
 
-.bd-social + .bd-social {
+.bd-changelog-modal .bd-social:not(:first-child) {
     margin-left: 10px;
 }

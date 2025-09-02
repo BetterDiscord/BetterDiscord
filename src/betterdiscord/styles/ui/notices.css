@@ -25,6 +25,10 @@
     }
 }
 
+#bd-notices {
+    grid-area: notice;
+}
+
 .bd-notice {
     animation: bd-open-notice 400ms ease;
     overflow: hidden;
