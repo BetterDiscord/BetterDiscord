@@ -5,11 +5,11 @@ type BaseArgs<Bounded extends boolean> = [
     key: string
 ];
 
-
 type SaveArgs<Bounded extends boolean, T> = [
     ...BaseArgs<Bounded>,
     data: T
 ];
+
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
@@ -54,6 +54,22 @@ class Data<Bounded extends boolean> {
         }
 
         return JsonStore.getData(args[0], args[1]);
+    }
+
+    /**
+     * Recaches JSON-serializable save file.
+     *
+     * @param {string} pluginName Name of the plugin saving data
+     * @return {boolean} success Did the data recache
+     *
+     * @warning ⚠️ **Use of the recaching is discouraged!**
+     *
+     * Recache loads can block the filesystem and significantly degrade performance.
+     * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
+     */
+    async recache(...args: Bounded extends true ? [] : [callerName: string]) {
+        const callerName = this.#callerName || args[0];
+        return JsonStore.recache(callerName!);
     }
 
     /**

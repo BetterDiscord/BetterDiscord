@@ -16,15 +16,16 @@ export interface TextboxProps {
 
 export default function Textbox({value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled}: TextboxProps) {
     const [internalValue, setValue] = useState(initialValue);
-    const contextValue = useContext(SettingsContext);
+    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = (contextValue !== none ? contextValue : internalValue) as string;
+    const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const change = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (disabled) return;
+        if (isDisabled) return;
         onChange?.(e.currentTarget.value);
         setValue(e.currentTarget.value);
-    }, [onChange, disabled]);
+    }, [onChange, isDisabled]);
 
-    return <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-text-input" placeholder={placeholder} maxLength={maxLength} value={value} disabled={disabled} />;
+    return <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-text-input" placeholder={placeholder} maxLength={maxLength} value={value} disabled={isDisabled} />;
 }
