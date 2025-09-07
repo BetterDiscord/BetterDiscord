@@ -127,7 +127,7 @@ function StoreCard() {
  * @param {import("@modules/addonmanager").default} props.store
  * @returns
  */
-export default function AddonList({title, store}: {title: string; store: AddonManager;}) {
+export default function AddonList({store}: {store: AddonManager;}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState<ReturnType<typeof buildSortOptions>[number]["value"]>(getState.bind(null, store.prefix, "sort", "name"));
     const [ascending, setAscending] = useState(getState.bind(null, store.prefix, "ascending", true));

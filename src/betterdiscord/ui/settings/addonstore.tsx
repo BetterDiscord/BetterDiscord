@@ -113,7 +113,7 @@ function TagDropdown({type, selected, onChange}) {
 /**
  * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0
  */
-export default function AddonStorePage({type, title, refToScroller}) {
+export default function AddonStorePage({type, refToScroller}) {
     const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
