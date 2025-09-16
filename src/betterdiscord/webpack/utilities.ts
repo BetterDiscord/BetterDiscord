@@ -20,7 +20,7 @@ export function getById<T>(id: PropertyKey): Module<T> | undefined {
     const module = webpackRequire.c[id];
 
     if (!shouldSkipModule(module?.exports)) {
-        return module;
+        return module.exports;
     }
 }
 
