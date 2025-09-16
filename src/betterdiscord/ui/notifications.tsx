@@ -178,15 +178,32 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             <div className={"bd-notification-content"}>
                 <div className="bd-notification-header">
                     <div className="bd-notification-icon">
-                        {notification.icon ? <ErrorBoundary><notification.icon /></ErrorBoundary> : <Icon type={type} />}
+                        <div className="bd-notification-icon">
+                            {notification.icon ? (
+                                <ErrorBoundary>
+                                    <notification.icon />
+                                </ErrorBoundary>
+                            ) : (
+                                <Icon type={type} />
+                            )}
+                        </div>
                     </div>
                     {title && <div className="bd-notification-title">{title}</div>}
                 </div>
                 {content && (
                     <div className="bd-notification-body">
                         <div className="bd-notification-content-text">
-                            {React.Children.map(content, m => typeof m === "string"
-                                ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}
+                            {content && (
+                                <div className="bd-notification-body">
+                                    <div className="bd-notification-content-text">
+                                        {typeof content === "string" ? (
+                                            <Markdown>{content}</Markdown>
+                                        ) : (
+                                            <ErrorBoundary>{content}</ErrorBoundary>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
