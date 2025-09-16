@@ -2,6 +2,7 @@ import clsx from "clsx";
 import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
+import {sleep} from "@common/utils/sleep";
 
 
 /**
@@ -87,6 +88,12 @@ const Utils = {
     getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
     },
+
+    /**
+     * Async sleep with milliseconds delay
+     * @param {number} delay milliseconds delay
+     */
+    sleep: sleep,
 
     /**
      * This works on semantic versioning e.g. "1.0.0".

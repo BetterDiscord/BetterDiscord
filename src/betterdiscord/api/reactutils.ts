@@ -1,4 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
+import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import type {RefObject} from "react";
 import type {Fiber} from "react-reconciler";
@@ -105,6 +106,7 @@ interface GetOwnerInstanceOptions {
 
 interface ReactUtils {
     rootInstance: any;
+    forceReRender(selector: string): void;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
@@ -183,6 +185,18 @@ const ReactUtils: ReactUtils = {
         }
 
         return null;
+    },
+
+    /**
+     * Rerender a React component by a CSS selector.
+     * @param {string} selector CSS selector string used to find the target element. (e.g. ".my-class" or "#my-id")
+     */
+    forceReRender(selector: string) {
+        const target = document.querySelector(selector)?.parentElement;
+        if (!target) return;
+        const instance = ReactUtils.getOwnerInstance(target);
+        const unpatch = Patcher.instead("BetterDiscord-ReRender", instance, "render", () => unpatch());
+        instance.forceUpdate(() => instance.forceUpdate());
     },
 
     /**
