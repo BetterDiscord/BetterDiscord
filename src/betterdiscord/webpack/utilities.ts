@@ -5,7 +5,6 @@ import {bySource} from "./filter";
 import {getModule} from "./searching";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 import {webpackRequire} from "./require";
-import type {Module} from "../types/discord/webpack";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
@@ -16,12 +15,14 @@ export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, 
     yield target && Object.keys(target).find(k => filter(target[k]));
 }
 
-export function getById<T>(id: PropertyKey): Module<T> | undefined {
+export function getById<T extends object>(id: PropertyKey): T | null {
     const module = webpackRequire.c[id];
 
     if (!shouldSkipModule(module?.exports)) {
         return module.exports;
     }
+
+    return null;
 }
 
 function mapObject<T extends object>(module: any, mappers: Record<keyof T, Webpack.ExportedOnlyFilter>): T {
