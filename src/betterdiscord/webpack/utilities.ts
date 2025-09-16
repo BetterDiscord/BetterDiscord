@@ -15,14 +15,14 @@ export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, 
     yield target && Object.keys(target).find(k => filter(target[k]));
 }
 
-export function getById<T extends object>(id: PropertyKey): T | null {
+export function getById<T extends object>(id: PropertyKey): T | undefined {
     const module = webpackRequire.c[id];
 
     if (!shouldSkipModule(module?.exports)) {
         return module.exports;
     }
 
-    return null;
+    return undefined;
 }
 
 function mapObject<T extends object>(module: any, mappers: Record<keyof T, Webpack.ExportedOnlyFilter>): T {
