@@ -29,7 +29,15 @@ export default class DOMManager {
     }
 
     static escapeID(id: string) {
-        return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
+        // If it starts with a number, prepend a dash to avoid invalid IDs
+        if (id.match(/^[0-9]+/)) id = `-${id}`;
+
+        // Replace all non-alphanumeric characters (except for dashes and underscores) with a dash
+        // Also, ensure it starts with a letter
+        id = id.replaceAll(/^[^a-z]+|[^a-z0-9_-]/gi, "-");
+
+        // Remove any leading dashes to ensure it starts with a valid character
+        return id.replaceAll(/^-+/g, "");
     }
 
     // TODO: do more of this overloading for better typing and less assertions
@@ -44,12 +52,13 @@ export default class DOMManager {
      * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
     */
-    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<Node|string|Array<Node|string>>) {
+    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<Node | string | Array<Node | string>>) {
         const element = document.createElement(type);
 
         Object.assign(element, options);
 
-        element.append(...children.flat());
+        const flatChildren = children.flat(Infinity).filter(c => c !== null && c !== undefined) as Array<Node | string>;
+        element.append(...flatChildren);
 
         if (options.target) {
             Logger.warn("DOM.createElement", `Usage of the "target" option has been deprecated and will be removed in the next version.`);
@@ -69,7 +78,7 @@ export default class DOMManager {
      */
     static parseHTML(html: string, fragment = false) {
         const template = document.createElement("template");
-        template.innerHTML = html;
+        template.innerHTML = html.trim();
         const node = template.content.cloneNode(true);
         if (fragment) return node;
         return node.childNodes.length > 1 ? node.childNodes : node.childNodes[0];
@@ -139,7 +148,7 @@ export default class DOMManager {
     }
 
     // https://javascript.info/js-animation
-    static animate({timing = _ => _, update, duration}: {timing?: (_: number) => number; update: (p: number) => void; duration: number}) {
+    static animate({timing = _ => _, update, duration}: {timing?: (_: number) => number; update: (p: number) => void; duration: number;}) {
         const start = performance.now();
 
         let id = requestAnimationFrame(function animate(time) {
