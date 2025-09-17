@@ -55,7 +55,7 @@ function CoreUpdaterPanel({hasUpdate, remoteVersion, update}: {hasUpdate: boolea
 function NoUpdates({type}: {type: "plugins" | "themes";}) {
     return <div className="bd-empty-updates">
         <CheckIcon size="48px" />
-        {t("Updater.upToDateBlankslate", {type: type})}
+        {t("Updater.upToDateBlankslate", {context: type.slice(0, -1)})}
     </div>;
 }
 

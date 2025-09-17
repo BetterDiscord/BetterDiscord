@@ -18,7 +18,7 @@ import Settings from "@stores/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 
-import Toasts from "@ui/toasts";
+import Toasts from "@stores/toasts";
 import Notifications from "@ui/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
@@ -336,7 +336,7 @@ export class AddonUpdater {
             id: `addon-updates-${this.type}`,
             title: t("Updater.addonUpdaterNotificationTitle"),
             content: [
-                t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
+                t("Updater.addonUpdatesAvailable", {count: this.pending.length, context: this.type}),
                 React.createElement("ul", {className: "bd-notification-updates-list"},
                     addonDetails.map(addon =>
                         React.createElement("li", {}, [
