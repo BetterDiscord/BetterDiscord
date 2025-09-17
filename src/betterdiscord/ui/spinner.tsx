@@ -17,6 +17,7 @@ const AccessibilityContext = getModule<Context<{reducedMotion: {enabled: false;}
  * @property {string} [aria-label]
  */
 
+/** @enum */
 export const SpinnerType = Spinner.Type = Object.freeze({
     WANDERING_CUBES: "wandering-cubes",
     CHASING_DOTS: "chasing-dots",

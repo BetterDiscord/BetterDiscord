@@ -1,3 +1,7 @@
+/**
+ * iehu9f uwef hfewufh u9hf we
+ * @module THEAPI
+ */
 import BDLogger from "@common/logger";
 
 import PluginManager from "@modules/pluginmanager";
@@ -14,7 +18,7 @@ import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import ContextMenu from "./contextmenu";
-import fetch from "./fetch";
+import Net from "./net";
 import Logger from "./logger";
 import CommandAPI from "./commands";
 
@@ -31,6 +35,7 @@ import TextInput from "@ui/settings/components/textbox";
 import SettingGroup from "@ui/settings/group";
 import ErrorBoundary from "@ui/errorboundary";
 import Text from "@ui/base/text";
+/** @group ComponentGroup */
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
@@ -48,14 +53,11 @@ const ThemeAPI = new AddonAPI(ThemeManager);
 const PatcherAPI = new Patcher<false>();
 const DataAPI = new Data<false>();
 const DOMAPI = new DOM<false>();
-const ContextMenuAPI = new ContextMenu();
 const CommandsAPI = new CommandAPI<false>();
 const DefaultLogger = new Logger<false>();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
- * @summary {@link Components} a namespace holding a series of React components
- * @name Components
  */
 const Components = {
     get Tooltip() {return DiscordModules.Tooltip;},
@@ -72,6 +74,7 @@ const Components = {
     get SettingGroup() {return SettingGroup;},
     get ErrorBoundary() {return ErrorBoundary;},
     get Text() {return Text;},
+    /** @group ComponentGroup */
     get Flex() {return Flex;},
     get Button() {return Button;},
     get Spinner() {return Spinner;},
@@ -79,37 +82,38 @@ const Components = {
 
 /**
  * The React module being used inside Discord.
- * @type React
- * @memberof BdApi
  */
 const React: typeof ReactType = DiscordModules.React;
 
 /**
  * The ReactDOM module being used inside Discord.
- * @type ReactDOM
- * @memberof BdApi
  */
 const ReactDOM: ReactDOMType = DiscordModules.ReactDOM;
 
 /**
  * A reference string for BD's version.
- * @type string
- * @memberof BdApi
  */
 const version: string = Config.get("version");
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
- * @name BdApi
  */
 export default class BdApi {
+    /** @ignore */
     Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
-    Data: Data<true> = DataAPI as Data<true>;
+    /** @ignore */
+    Data: Data<true> = DataAPI as unknown as Data<true>;
+    /** @ignore */
     DOM: DOM<true> = DOMAPI as DOM<true>;
+    /** @ignore */
     Logger: Logger<true> = DefaultLogger as Logger<true>;
+    /** @ignore */
     Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    /** @ignore */
     React = React;
+    /** @ignore */
     ReactDOM = ReactDOM;
+    /** @ignore */
     version = version;
 
     static Patcher: Patcher<false>;
@@ -127,15 +131,17 @@ export default class BdApi {
     static UI: typeof UI;
     static ReactUtils: typeof ReactUtils;
     static Utils: typeof Utils;
-    static ContextMenu: ContextMenu;
+    static ContextMenu: typeof ContextMenu;
     static Components: typeof Components;
-    static Net: {fetch: typeof fetch;};
+    static Net: typeof Net;
 
     constructor(pluginName: string) {
+        // @ts-expect-error intentionally returning global
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof (pluginName) !== "string") {
             BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
+            // @ts-expect-error intentionally returning global
             return BdApi;
         }
 
@@ -150,15 +156,24 @@ export default class BdApi {
     }
 
     // Non-bound namespaces
+    /** @ignore */
     get Plugins() {return PluginAPI;}
+    /** @ignore */
     get Themes() {return ThemeAPI;}
+    /** @ignore */
     get Webpack() {return Webpack;}
+    /** @ignore */
     get Utils() {return Utils;}
+    /** @ignore */
     get UI() {return UI;}
+    /** @ignore */
     get ReactUtils() {return ReactUtils;}
-    get ContextMenu() {return ContextMenuAPI;}
+    /** @ignore */
+    get ContextMenu() {return ContextMenu;}
+    /** @ignore */
     get Components() {return Components;}
-    Net = {fetch};
+    /** @ignore */
+    Net = Net;
 }
 
 /**
@@ -219,7 +234,7 @@ BdApi.DOM = DOMAPI;
  * An instance of {@link ContextMenu} for interacting with context menus.
  * @type ContextMenu
  */
-BdApi.ContextMenu = ContextMenuAPI;
+BdApi.ContextMenu = ContextMenu;
 
 /**
  * An set of react components plugins can make use of.
@@ -237,7 +252,7 @@ BdApi.Commands = CommandsAPI;
  * An instance of {@link Net} for using network related tools.
  * @type Net
  */
-BdApi.Net = {fetch};
+BdApi.Net = Net;
 
 /**
  * An instance of {@link Logger} for logging information.

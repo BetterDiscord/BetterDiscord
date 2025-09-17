@@ -13,9 +13,6 @@ type SaveArgs<Bounded extends boolean, T> = [
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
- * @type Data
- * @summary {@link Data} is a simple utility class for the management of plugin data.
- * @name Data
  */
 class Data<Bounded extends boolean> {
 
@@ -62,7 +59,7 @@ class Data<Bounded extends boolean> {
      * @param {string} pluginName Name of the plugin saving data
      * @return {boolean} success Did the data recache
      *
-     * @warning ⚠️ **Use of the recaching is discouraged!**
+     * @experimental ⚠️ **Use of the recaching is discouraged!**
      *
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.

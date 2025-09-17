@@ -11,6 +11,7 @@ import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChild
 
 const {useCallback} = React;
 
+/** @enum */
 export const Looks = Object.freeze({
     FILLED: "bd-button-filled",
     OUTLINED: "bd-button-outlined",
@@ -18,6 +19,7 @@ export const Looks = Object.freeze({
     BLANK: "bd-button-blank"
 });
 
+/** @enum */
 export const Colors = Object.freeze({
     BRAND: "bd-button-color-brand",
     BLURPLE: "bd-button-color-blurple",
@@ -31,7 +33,7 @@ export const Colors = Object.freeze({
     CUSTOM: ""
 });
 
-
+/** @enum */
 export const Sizes = Object.freeze({
     NONE: "",
     TINY: "bd-button-tiny",
@@ -55,6 +57,7 @@ export type ButtonProps = PropsWithChildren<{
     grow?: boolean;
 }>;
 
+/** @group React Components */
 export default function Button({
     className,
     children,

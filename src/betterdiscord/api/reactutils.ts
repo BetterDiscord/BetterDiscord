@@ -103,31 +103,29 @@ interface GetOwnerInstanceOptions {
     filter?: (owner: any) => boolean;
 }
 
-interface ReactUtils {
-    rootInstance: any;
-    getInternalInstance(node: Element): any | null;
-    getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
-    wrapElement(element: Element | Element[]): React.ComponentType;
-    wrapInHooks<P extends object>(
-        functionComponent: React.FunctionComponent<P>,
-        customPatches?: Partial<PatchedReactHooks>
-    ): React.FunctionComponent<P>;
-}
+// interface ReactUtils {
+//     rootInstance: any;
+//     getInternalInstance(node: Element): any | null;
+//     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
+//     wrapElement(element: Element | Element[]): React.ComponentType;
+//     wrapInHooks<P extends object>(
+//         functionComponent: React.FunctionComponent<P>,
+//         customPatches?: Partial<PatchedReactHooks>
+//     ): React.FunctionComponent<P>;
+// }
 
 /**
  * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of the UI.
- * @type ReactUtils
- * @summary {@link ReactUtils} is a utility class for interacting with React internals.
- * @name ReactUtils
+ * @hideconstructor
  */
-const ReactUtils: ReactUtils = {
+class ReactUtils {
     /**
      * @deprecated
      */
     get rootInstance() {
         return (document.getElementById("app-mount") as any)?._reactRootContainer?._internalRoot?.current;
-    },
+    }
 
     /**
      * Gets the internal React data of a specified node.
@@ -140,7 +138,7 @@ const ReactUtils: ReactUtils = {
         const key = Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"));
         if (key) return node[key as keyof typeof node] as Fiber;
         return null;
-    },
+    }
 
     /**
      * Attempts to find the "owner" node to the current node. This is generally
@@ -183,15 +181,17 @@ const ReactUtils: ReactUtils = {
         }
 
         return null;
-    },
+    }
 
     /**
      * Creates an unrendered React component that wraps HTML elements.
      *
      * @param {HTMLElement} element Element or array of elements to wrap
-     * @returns {object} Unrendered React component
+     * @returns {React.Component} Unrendered React component
      */
-    wrapElement(element: HTMLElement | HTMLElement[]) {
+    wrapElement(element: HTMLElement | HTMLElement[]): typeof React.Component {
+        /** @ignore */
+        // @ts-expect-error It's the same thing
         return class ReactWrapper extends React.Component {
             element: HTMLElement | HTMLElement[];
             state: {hasError: boolean;};
@@ -225,7 +225,7 @@ const ReactUtils: ReactUtils = {
                 });
             }
         };
-    },
+    }
 
     wrapInHooks<P extends object>(
         functionComponent: React.FunctionComponent<P>,
@@ -252,5 +252,6 @@ const ReactUtils: ReactUtils = {
 };
 
 Object.freeze(ReactUtils);
+Object.freeze(ReactUtils.prototype);
 
-export default ReactUtils;
+export default new ReactUtils();

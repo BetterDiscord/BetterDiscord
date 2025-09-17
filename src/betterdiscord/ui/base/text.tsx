@@ -30,7 +30,7 @@ export const Sizes = Object.freeze({
 });
 
 
-type TextProps = PropsWithChildren<{
+export type TextProps = PropsWithChildren<{
     tag?: ElementType<HTMLAttributes<HTMLElement>>;
     className?: string;
     color?: typeof Colors[keyof typeof Colors];
@@ -40,6 +40,11 @@ type TextProps = PropsWithChildren<{
     style?: CSSProperties;
     [other: string]: any;
 }>;
+
+/**
+ * Text component for displaying text with various styles.
+ * @group React Components
+ */
 export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style, ...props}: TextProps) {
     return <Tag
         className={

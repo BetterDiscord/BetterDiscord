@@ -16,7 +16,7 @@ import type AddonManager from "@modules/addonmanager";
 
 
 // TODO: fix type after reworking the context module
-const ContextMenu = new ContextMenuPatcher() as InstanceType<typeof ContextMenuPatcher> & {
+const ContextMenu = ContextMenuPatcher as InstanceType<typeof ContextMenu> & {
     Separator: any;
     CheckboxItem: any;
     RadioItem: any;

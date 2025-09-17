@@ -2,11 +2,11 @@ import type AddonManager from "@modules/addonmanager";
 
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are accessible through the {@link BdApi}.
- * @name AddonAPI
  */
 class AddonAPI {
     #manager: AddonManager;
 
+    /** @hideconstructor */
     constructor(manager: AddonManager) {this.#manager = manager;}
 
     /**
