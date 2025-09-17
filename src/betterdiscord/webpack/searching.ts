@@ -1,9 +1,9 @@
 import type {Webpack} from "discord";
-import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
+import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";
 import {webpackRequire} from "./require";
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
-    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
+    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, fatal = false} = options;
 
     filter = wrapFilter(filter);
 
@@ -41,11 +41,12 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
         }
     }
 
+    if (fatal) throw makeException();
     return undefined;
 }
 
 export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, options: Webpack.Options = {}): T {
-    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
+    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, fatal = false} = options;
 
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
@@ -84,5 +85,6 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
         }
     }
 
+    if (fatal && modules.length === 0) throw makeException();
     return modules;
 }

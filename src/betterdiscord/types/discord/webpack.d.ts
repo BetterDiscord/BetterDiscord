@@ -23,6 +23,7 @@ export type Options = {
     defaultExport?: boolean,
     searchDefault?: boolean,
     raw?: boolean;
+    fatal?: boolean;
 };
 
 export type BulkQueries = Options & {

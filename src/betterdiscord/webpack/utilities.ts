@@ -3,7 +3,7 @@
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
 import {getModule} from "./searching";
-import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
+import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";
 import {webpackRequire} from "./require";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
@@ -90,8 +90,13 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         filter: wrapFilter(query.filter)
     }));
 
+    const shouldExitEarly = queries.every((m) => !m.all);
+    const shouldExit = () => shouldExitEarly && queries.every((query, index) => !query.all && index in returnedModules);
+
+    if (queries.length === 0) return returnedModules;
+
     const webpackModules = Object.values(webpackRequire.c);
-    for (let i = 0; i < webpackModules.length; i++) {
+    webpack: for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
@@ -108,6 +113,9 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
                 if (!all) {
                     returnedModules[index] = trueItem;
+
+                    if (shouldExit()) break webpack;
+
                     continue;
                 }
 
@@ -137,6 +145,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
                     if (!all) {
                         returnedModules[index] = value;
+                        if (shouldExit()) break webpack;
                         continue queries;
                     }
 
@@ -147,5 +156,31 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         }
     }
 
+    for (let index = 0; index < queries.length; index++) {
+        const query = queries[index];
+        const exists = index in returnedModules;
+
+        if (query.fatal) {
+            if (query.all) {
+                if (Array.isArray(returnedModules[index])) break;
+                if (returnedModules[index].length === 0) throw makeException();
+            }
+
+            if (!exists) throw makeException();
+        }
+
+        if (query.map && !exists) {
+            returnedModules[index] = {};
+            break;
+        }
+    }
+
     return returnedModules;
+}
+
+export function getBulkObject<T extends object>(queries: Record<keyof T, Webpack.BulkQueries>): T {
+    const modules = getBulk(...Object.values(queries) as Webpack.BulkQueries[]);
+    return Object.fromEntries(
+        Object.keys(queries).map((key, index) => [key, modules[index]])
+    ) as T;
 }
