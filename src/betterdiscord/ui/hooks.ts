@@ -1,11 +1,18 @@
 import {useInsertionEffect, useReducer, useRef} from "@modules/react";
 import type Store from "../stores/base";
 import type React from "react";
+import {shallowEqual} from "fast-equals";
+import type {FluxStore} from "discord/modules";
 
-export function useInternalStore<T>(stores: Store | Store[], factory: () => T, deps?: React.DependencyList, areStateEqual: (oldState: T, newState: T) => boolean = (oldState, newState) => oldState === newState): T {
+type StoreType = Store | FluxStore;
+
+export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: () => T, deps?: React.DependencyList, areStateEqual: true | ((oldState: T, newState: T) => boolean) = (oldState, newState) => oldState === newState): T {
     const [, forceUpdate] = useForceUpdate();
     const state = useRef(undefined as T);
     const factoryRef = useRef(undefined as unknown as () => T);
+
+    const compareStates = useRef(null as unknown as (oldState: T, newState: T) => boolean);
+    compareStates.current = areStateEqual === true ? shallowEqual : areStateEqual;
 
     if (factoryRef.current === undefined) {
         factoryRef.current = factory;
@@ -27,7 +34,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
 
             const newState = factory();
 
-            if (!areStateEqual(state.current, newState)) {
+            if (!compareStates.current(state.current, newState)) {
                 state.current = newState;
             }
 
@@ -45,7 +52,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
         const $stores = Array.isArray(stores) ? stores : [stores];
         function listener() {
             const newState = factoryRef.current();
-            if (!areStateEqual(state.current, newState)) {
+            if (!compareStates.current(state.current, newState)) {
                 state.current = newState;
                 forceUpdate();
             }

@@ -10,6 +10,14 @@ type SaveArgs<Bounded extends boolean, T> = [
     data: T
 ];
 
+// type OnChangeArgs<Bounded extends boolean, T> = [
+//     ...(Bounded extends false ? [pluginName: string] : []),
+//     key: string,
+//     onChange: (value?: T) => void
+// ] | [
+//     ...(Bounded extends false ? [pluginName: string] : []),
+//     onChange: (key: string, value?: T) => void
+// ];
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
@@ -18,12 +26,11 @@ type SaveArgs<Bounded extends boolean, T> = [
  * @name Data
  */
 class Data<Bounded extends boolean> {
+    #pluginName = "";
 
-    #callerName = "";
-
-    constructor(callerName?: string) {
-        if (!callerName) return;
-        this.#callerName = callerName;
+    constructor(pluginName?: string) {
+        if (!pluginName) return;
+        this.#pluginName = pluginName;
     }
 
     /**
@@ -33,9 +40,9 @@ class Data<Bounded extends boolean> {
      * @param {string} key Which piece of data to store
      * @param {any} data The data to be saved
      */
-    save<T>(...args: SaveArgs<Bounded, T>) {
-        if (this.#callerName) {
-            return JsonStore.setData(this.#callerName, ...(args as unknown as SaveArgs<true, T>));
+    public save<T>(...args: SaveArgs<Bounded, T>) {
+        if (this.#pluginName) {
+            return JsonStore.setData(this.#pluginName, ...(args as unknown as SaveArgs<true, T>));
         }
 
         return JsonStore.setData(...(args as unknown as SaveArgs<false, T>));
@@ -48,9 +55,9 @@ class Data<Bounded extends boolean> {
      * @param {string} key Which piece of data to load
      * @returns {any} The stored data
      */
-    load<T>(...args: BaseArgs<Bounded>): T {
-        if (this.#callerName) {
-            return JsonStore.getData(this.#callerName, args[0]);
+    public load<T>(...args: BaseArgs<Bounded>): T {
+        if (this.#pluginName) {
+            return JsonStore.getData(this.#pluginName, args[0]);
         }
 
         return JsonStore.getData(args[0], args[1]);
@@ -67,9 +74,9 @@ class Data<Bounded extends boolean> {
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
      */
-    async recache(...args: Bounded extends true ? [] : [callerName: string]) {
-        const callerName = this.#callerName || args[0];
-        return JsonStore.recache(callerName!);
+    public async recache(...args: Bounded extends true ? [] : [pluginName: string]) {
+        const pluginName = this.#pluginName || args[0];
+        return JsonStore.recache(pluginName!);
     }
 
     /**
@@ -78,16 +85,48 @@ class Data<Bounded extends boolean> {
      * @param {string} pluginName Name of the plugin deleting data
      * @param {string} key Which piece of data to delete.
      */
-    delete(...args: BaseArgs<Bounded>) {
-        if (this.#callerName) {
-            return JsonStore.deleteData(this.#callerName, args[0]);
+    public delete(...args: BaseArgs<Bounded>) {
+        if (this.#pluginName) {
+            return JsonStore.deleteData(this.#pluginName, args[0]);
         }
 
         return JsonStore.deleteData(args[0], args[1]);
     }
 
+    // public on<T>(...args: OnChangeArgs<Bounded, T>) {
+    //     if (this.#pluginName) {
+    //         if (typeof args[0] === "function") {
+    //             return JsonStore.addPluginChangeListener(this.#pluginName, args[0]);
+    //         }
+
+    //         return JsonStore.addPluginChangeListener(this.#pluginName, args[1], args[0]);
+    //     }
+
+    //     if (typeof args[1] === "function") {
+    //         return JsonStore.addPluginChangeListener(args[0] as string, args[1]);
+    //     }
+
+    //     return JsonStore.addPluginChangeListener(args[0] as string, args[2], args[1]);
+    // }
+
+    // public off(...args: OnChangeArgs<Bounded, unknown>) {
+    //     if (this.#pluginName) {
+    //         if (typeof args[0] === "function") {
+    //             return JsonStore.removePluginChangeListener(this.#pluginName, args[0]);
+    //         }
+
+    //         return JsonStore.removePluginChangeListener(this.#pluginName, args[1], args[0]);
+    //     }
+
+    //     if (typeof args[1] === "function") {
+    //         return JsonStore.removePluginChangeListener(args[0] as string, args[1]);
+    //     }
+
+    //     return JsonStore.removePluginChangeListener(args[0] as string, args[2], args[1]);
+    // }
 }
 
 Object.freeze(Data);
 Object.freeze(Data.prototype);
+
 export default Data;

@@ -14,7 +14,7 @@ import Filepicker from "./components/file";
 import Button, {type ButtonProps} from "../base/button";
 import Position from "@ui/settings/components/position";
 import {SettingsContext} from "@ui/contexts";
-import {useInternalStore} from "@ui/hooks";
+import {useStateFromStores} from "@ui/hooks";
 import SettingsStore from "@stores/settings";
 import type {Setting, SettingItem} from "@data/settings";
 import type {PropsWithChildren, ReactNode} from "react";
@@ -31,7 +31,7 @@ function SettingsProvider({collection, category, id, children}: PropsWithChildre
         };
     }, [collection, category, id]);
 
-    const settingState = useInternalStore(SettingsStore, getSettingState);
+    const settingState = useStateFromStores(SettingsStore, getSettingState);
 
     // Only recreate context value when data actually changes
     const context = React.useMemo(() => settingState, [settingState]);

@@ -3,8 +3,8 @@ import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
-import type {FluxStore} from "../types/discord/modules";
-import type {Channel, Guild} from "../types/discord/structs";
+import type {FluxStore} from "discord/modules";
+import type {Channel, Guild} from "discord/structs";
 
 // TODO: create better types for this file, too many "any"
 

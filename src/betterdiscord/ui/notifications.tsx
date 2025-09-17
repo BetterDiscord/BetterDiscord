@@ -7,8 +7,7 @@ import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "luc
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
 import type {MouseEvent, ReactNode} from "react";
-import {useInternalStore} from "@ui/hooks.ts";
-import {shallowEqual} from "fast-equals";
+import {useStateFromStores} from "@ui/hooks.ts";
 import Markdown from "@ui/base/markdown.tsx";
 import ErrorBoundary from "@ui/errorboundary.tsx";
 
@@ -120,8 +119,8 @@ class NotificationUI {
 }
 
 const PersistentNotificationContainer = () => {
-    const notifications = useInternalStore<Notification[]>(Notifications, () => Notifications.notifications.concat(), [], shallowEqual);
-    const position: string = useInternalStore(Settings, () => Settings.get("settings", "general", "notificationPosition"));
+    const notifications = useStateFromStores<Notification[]>(Notifications, () => Notifications.notifications.concat(), [], true);
+    const position: string = useStateFromStores(Settings, () => Settings.get("settings", "general", "notificationPosition"));
 
     return (
         <div

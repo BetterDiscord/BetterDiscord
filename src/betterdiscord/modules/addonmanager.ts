@@ -71,7 +71,7 @@ export default abstract class AddonManager extends Store {
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
-        super.emit();
+        super.emitChange();
 
         // Emit the events as a normal emitter while other parts
         // of the codebase are still converting to stores
