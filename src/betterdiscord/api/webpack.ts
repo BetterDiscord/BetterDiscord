@@ -163,7 +163,7 @@ const Webpack = {
 
     getStore(name: string) {return getStore(name);},
 
-    getById(id: string | number) {return getById(id);}
+    getById(id: PropertyKey) {return getById(id);}
 };
 
 Object.freeze(Webpack);
