@@ -75,7 +75,7 @@ function mapObject<T extends object>(module: any, mappers: Record<keyof T, Webpa
 }
 
 export function getMangled<T extends object>(
-    filter: Webpack.Filter | string | RegExp,
+    filter: Webpack.Filter | string | RegExp | number,
     mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
     options: Webpack.Options = {}
 ): T {
@@ -85,7 +85,7 @@ export function getMangled<T extends object>(
         filter = bySource(filter);
     }
 
-    let module = getModule<any>(filter, {raw, ...rest});
+    let module = typeof filter === "number" ? getById(filter) : getModule<any>(filter, {raw, ...rest});
     if (!module) return {} as T;
     if (raw) module = module.exports;
 
