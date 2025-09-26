@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Plug-ins",
         "themes": "Thema's",
-        "customcss": "Aangepaste CSS"
+        "customcss": "Eigen css",
+        "updates": "Updates"
     },
     "Collections": {
         "settings": {
@@ -10,52 +11,357 @@
             "general": {
                 "name": "Algemeen",
                 "voiceDisconnect": {
-                    "name": "Stem Verbroken",
-                    "note": "Verbreek de verbinding met de oproep"
+                    "name": "Spraakverbinding verbreken",
+                    "note": "Verbreek de verbinding met de spraakserver na het sluiten van Discord."
                 },
                 "showToasts": {
-                    "name": "Laat Toasts Zien",
-                    "note": "Toont een melding voor belangrijke informatie"
+                    "name": "Meldingen tonen",
+                    "note": "Toon meldingen met belangrijke informatie."
                 },
                 "mediaKeys": {
-                    "name": "Schakel mediatoetsen uit",
-                    "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
+                    "name": "Mediatoetsen uitschakelen",
+                    "note": "Voorkom dat Discord je mediatoetsen kaapt tijdens het afspelen van video's."
+                },
+                "bdContextMenu": {
+                    "name": "Instellingenmenu tonen",
+                    "note": "Toon een BetterDiscord-sectie in het rechtermuisknopmenu van de instellingen."
+                },
+                "themeAttributes": {
+                    "name": "Theme-attributen tonen",
+                    "note": "Voeg attributen toe aan diverse elementen om het maken van thema's makkelijker te maken."
+                },
+                "notificationPosition": {
+                    "name": "Meldingslocatie",
+                    "note": "Geef aan waar meldingen binnen het venster moeten worden getoond."
+                },
+                "notificationEnabled": {
+                    "name": "Meldingen tonen",
+                    "note": "Toon of verberg meldingen die op het scherm worden getoond."
+                }
+            },
+            "store": {
+                "name": "Uitbreidingenwinkel",
+                "bdAddonStore": {
+                    "name": "Uitbreidingenwinkel inschakelen",
+                    "note": "Schakel de BetterDiscord-uitbreidingenwinkel in."
+                },
+                "alwaysEnable": {
+                    "name": "Uitbreidingen automatisch inschakelen",
+                    "note": "Schakel uitbreidingen na het installeren ervan automatisch in."
+                },
+                "addonEmbeds": {
+                    "name": "Winkel tonen in gesprekken",
+                    "note": "Toon de winkel in gesprekken."
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Geen minimale vensterafmetingen",
+                    "note": "Verwijder de door Discord afgedwongen minimale vensnterafmetingen (940x500)."
+                },
+                "name": "Vensterinstellingen",
+                "transparency": {
+                    "name": "Doorzichtigheid gebruiken",
+                    "note": "Voorzie het hoofdvenster van doorzichtigheid (herstart vereist)."
+                },
+                "frame": {
+                    "name": "Vensterkader van systeem gebruiken",
+                    "note": "Maak gebruik van de vensterkaders van het systeem in plaans van die van Discord zelf."
+                },
+                "inAppTrafficLights": {
+                    "name": "Verkeerslichten van app gebruiken",
+                    "note": "Maak gebruik van de verkeerslichten van de app in plaats van die van het systeem."
+                }
+            },
+            "addons": {
+                "name": "Uitbreidingenbeheer",
+                "addonErrors": {
+                    "name": "Foutmeldingen tonen",
+                    "note": "Toon een venster met foutmeldingen van uitbreidingen en thema's."
+                },
+                "editAction": {
+                    "name": "Soort bewerkvenster",
+                    "note": "Hoe uitbreidingen en thema's moeten worden bewerkt.",
+                    "options": {
+                        "detached": "Afzonderlijk venster",
+                        "system": "Tekstbewerker van systeem"
+                    }
+                },
+                "checkForUpdates": {
+                    "name": "Automatisch controleren op updates",
+                    "note": "Controleer periodiek op updates van zowel BetterDiscord als uitbreidingen en thema's."
+                },
+                "updateInterval": {
+                    "name": "Controleren, iedere",
+                    "note": "Hoe vaak er er op updates moet worden gecontroleerd."
+                }
+            },
+            "customcss": {
+                "name": "Eigen css",
+                "customcss": {
+                    "name": "Eigen css gebruiken",
+                    "note": "Toon het tabblad ‘Eigen css’."
+                },
+                "liveUpdate": {
+                    "name": "Live bijwerken",
+                    "note": "Voer de css-aanpassingen door tijdens het typen."
+                },
+                "startDetached": {
+                    "name": "Openen in afzonderlijk venster",
+                    "note": "Open het css-bewerkvenster in een afzonderlijk venster."
+                },
+                "nativeOpen": {
+                    "name": "Openen in standaard tekstbewerker",
+                    "note": "Open het css-bestand in de standaard tekstbewerker van het systeem."
+                },
+                "openAction": {
+                    "name": "Soort bewerkvenster",
+                    "note": "Waar de css bewerkt moet worden.",
+                    "options": {
+                        "settings": "Instellingenmenu",
+                        "detached": "Afzonderlijk venster",
+                        "system": "Standaard tekstbewerker"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Ontwikkelaarsinstellingen",
+                "debuggerHotkey": {
+                    "name": "Foutopsporing openen met sneltoets",
+                    "note": "Open de foutopsporingsconsole met F8 als DevTools geopend is."
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools gebruiken",
+                    "note": "Maak gebruik van je lokale installatie van React Developer Tools."
+                },
+                "inspectElement": {
+                    "name": "Element inspecteren met sneltoets",
+                    "note": "Inspecteer elementen met behulp van een sneltoets (Ctrl + Shift + C), net als in webbrowsers."
+                },
+                "devToolsWarning": {
+                    "name": "DevTools-waarschuwing verbergen",
+                    "note": "Verberg de DevTools-waarschuwing."
+                },
+                "debugLogs": {
+                    "name": "Logboek aanleggen",
+                    "note": "Leg alles van de console vast in een logboek (debug.log) in de BetterDiscord-map."
+                },
+                "devTools": {
+                    "name": "DevTools openen met sneltoets",
+                    "note": "Open de DevTools met behulp van een sneltoets (Ctrl+Shift+I)."
+                },
+                "recovery": {
+                    "name": "Gegevens herstellen zonder te herladen",
+                    "note": "Probeer om Discord te redden zonder alles te herladen.",
+                    "button": "Discord herstellen (zonder garantie)",
+                    "report": "Melden op Github",
+                    "safeMode": "Opnieuw opstarten in veilige modus"
+                }
+            },
+            "editor": {
+                "name": "Bewerkinstellingen",
+                "lineNumbers": {
+                    "name": "Regelnummers tonen",
+                    "note": "Toon regelnummers aan de zijkant van het bewerkvenster."
+                },
+                "fontSize": {
+                    "name": "Tekstgrootte",
+                    "note": "De tekstgrootte (in pt) van het bewerkvenster."
+                },
+                "minimap": {
+                    "name": "Minikaart",
+                    "note": "Toon een minikaart met code aan de zijkant van de bewerker."
+                },
+                "hover": {
+                    "name": "Referentie-hulpballonnen",
+                    "note": "Toon hulpballonnen met referenties tijdens het aanwijzen van regels en selecties."
+                },
+                "quickSuggestions": {
+                    "name": "Automatisch aanvullen",
+                    "note": "Toon de pop-up met automatisch aanvullingen tijdens het typen."
+                },
+                "renderWhitespace": {
+                    "name": "Witruimtes tonen",
+                    "note": "Toon witruimtes in de bewerker.",
+                    "options": {
+                        "all": "Altijd",
+                        "none": "Nooit",
+                        "selection": "Tijdens selectie"
+                    }
                 }
             }
         }
     },
     "Addons": {
-        "byline": "door {{author}}",
-        "openFolder": "Open {{type}} folder",
-        "reload": "Herladeen",
+        "title": "{{name}} v{{version}} van {{author}}",
+        "byline": "van {{author}}",
+        "openFolder": "{{type}}-map openen",
+        "openStore": "{{type}}-winkel",
+        "storeMessage": "Blader door en installeer officiële {{type}} van de gemeenschap",
+        "store": "Winkel",
+        "viewInstalled": "Geïnstalleerde {{type}} tonen",
+        "reload": "Herladen",
         "addonSettings": "Instellingen",
         "website": "Website",
-        "source": "Bronnen",
-        "invite": "Support Server",
-        "donate": "Donatie",
+        "source": "Broncode",
+        "invite": "Ondersteuningsserver",
+        "donate": "Doneren",
         "patreon": "Patreon",
         "name": "Naam",
-        "author": "Schrijver",
+        "author": "Maker",
         "version": "Versie",
-        "added": "Datum toegevoegd",
-        "modified": "Datum gewijzigd ",
+        "added": "Toevoegdatum",
+        "modified": "Updatedatum",
+        "releaseDate": "Uitgavedatum",
+        "lastUpdated": "Recentste update",
+        "isEnabled": "Ingeschakeld",
+        "popularity": "Populariteit",
+        "isInstalled": "Geïnstalleerd",
+        "downloads": "Aantal downloads",
+        "likes": "Aantal vind-ik-leuks",
+        "listView": "Lijstweergave",
+        "gridView": "Roosterweergave",
+        "enableAll": "Alles inschakelen",
+        "disableAll": "Alles uitschakelen",
+        "enableAllWarning": "Let op: door alle {{type}} in te schakelen, kan er tijdelijke vertraging ontstaan en treden er mogelijk onverwachte foutmeldingen op. \n\n(Houd Shift ingedrukt tijdens het klikken om dit venster niet te tonen.)",
+        "search": "Zoeken naar {{type}}",
+        "results": {
+            "zero": "Er zijn geen zoekresultaten",
+            "one": "Er is {{count}} zoekresultaat",
+            "other": "Er zijn {{count}} zoekresultaten"
+        },
         "editAddon": "Bewerken",
         "deleteAddon": "Verwijderen",
-        "confirmDelete": "Weet je het zeker dat je {{name}} wilt verwijderen?",
-        "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
-        "unknownAuthor": "Onbekende schrijver",
-        "noDescription": "Beschrijving kon niet worden weergegeven"
+        "downloadAddon": "Downloaden",
+        "confirmDelete": "Weet je zeker dat je “{{name}}” wilt verwijderen?",
+        "confirmationText": "Je hebt wijzigingen aangebracht aan “{{name}}”. Door dit venster te sluiten, gaan alle wijzigingen verloren.",
+        "enabled": "“{{name}}” is ingeschakeld.",
+        "disabled": "“{{name}}” is uitgeschakeld.",
+        "couldNotEnable": "“{{name}}” kan niet worden ingeschakeld.",
+        "couldNotDisable": "“{{name}}” kan niet worden uitgeschakeld.",
+        "couldNotStart": "“{{name}}” kan niet worden gestart.",
+        "couldNotStop": "“{{name}}” kan niet worden gestopt.",
+        "settingsError": "De instellingen van “{{name}}” kunnen niet worden geopend.",
+        "methodError": "‘{{method}}’ kan niet worden gestart.",
+        "unknownAuthor": "Onbekende maker",
+        "noDescription": "Er is geen beschrijving beschikbaar.",
+        "alreadyExists": "Er is al een {{type}} genaamd “{{name}}”.",
+        "alreadWatching": "Je volgt de uitbreidingen al.",
+        "metaError": "De metagegevens kunnen niet worden verwerkt.",
+        "missingNameData": "De naamsgegevens ontbreken in de metagegevens.",
+        "metaNotFound": "De metagegevens zijn niet aangetroffen.",
+        "compileError": "Het compileren is mislukt. Bekijk voor meer informatie de console.",
+        "wasUnloaded": "“{{name}}” is ontladen.",
+        "blankSlateHeader": "Je hebt nog geen {{type}}!",
+        "blankSlateMessage": "Installeer ze via [onze website]({{link}}) en bewaar ze in de {{type}}-map.",
+        "blankSlateHeaderGeneric": "Je hebt nog niks!",
+        "blankSlateMessageGeneric": "Installeer ze.",
+        "wasLoaded": "“{{name}}” v{{version}} is geladen.",
+        "failedToDownload": "Het {{type}} genaamd “{{name}}” kan niet worden gedownload.",
+        "successfullyDownload": "“{{name}}” is gedownload.",
+        "alreadyInstalled": "“{{name}}” is al geïnstalleerd.",
+        "failedToFetch": "De lijst met uitbreidingen kan niet worden opgehaald.",
+        "new": "Nieuw",
+        "updated": "Bijgewerkt",
+        "downloadCount": {
+            "one": "{{count}} download",
+            "other": "{{count}} downloads"
+        },
+        "likeCount": {
+            "one": "{{count}} vind-ik-leuk",
+            "other": "{{count}} vind-ik-leuks"
+        },
+        "tags": "Labels",
+        "preview": "Vooraf vrijgegeven",
+        "official": "Stabiel"
+    },
+    "CustomCSS": {
+        "confirmationText": "Je hebt wijzigingen aangebracht aan de css die nog niet zijn opgeslagen. Door dit venster te sluiten, gaan alle aanpassingen verloren.",
+        "update": "Bijwerken",
+        "save": "Opslaan",
+        "openNative": "Openen in standaard tekstbewerker",
+        "openDetached": "Venster afzonderlijk openen",
+        "settings": "Bewerkerinstellingen",
+        "editorTitle": "Eigen css bewerken",
+        "cssInstallSuccess": "De css is toegevoegd aan je eigen css.",
+        "cssInstalled": "Css geïnstalleerd!",
+        "cssInstallError": "De css kan niet worden toegevoegd aan je eigen css.",
+        "cssReverted": "Css teruggedraaid.",
+        "cssReverting": "De wijzigingen worden over 10 seconden teruggedraaid.",
+        "cssKept": "De wijzigingen zijn behouden."
     },
     "Modals": {
         "confirmAction": "Weet je het zeker?",
+        "installCss": "Weet je zeker dat je deze css wilt toevoegen aan je eigen css?",
         "okay": "Oké",
+        "done": "Afronden",
         "cancel": "Annuleren",
-        "close": "Bijna",
+        "nevermind": "Liever niet",
+        "close": "Sluiten",
         "name": "Naam",
-        "message": "Berich",
-        "error": "Fout!"
+        "message": "Bericht",
+        "error": "Foutmelding",
+        "addonErrors": "Foutmeldingen van uitbreidingen",
+        "restartRequired": "Herstart vereist",
+        "restartNow": "Nu herstarten",
+        "restartLater": "Later herstarten",
+        "additionalInfo": "Aanvullende informatie",
+        "restartPrompt": "Discord moet worden herstart om de wijzigingen toe te passen. Wil je dat nu doen?",
+        "changelog": "Wijzigingslog",
+        "debuglog": "Het logboek is groter dan 100MB. Wil je de inhoud ervan wissen?",
+        "automaticallyEnable": "Automatisch inschakelen"
+    },
+    "ReactDevTools": {
+        "notFound": "Uitbreiding niet aangetroffen",
+        "notFoundDetails": "De React Developer Tools-uitbreiding is niet aangetroffen op je systeem. Installeer the uitbreiding via Google Chrome/Chromium."
     },
     "Sorting": {
-        "order": "Volgorde"
+        "sortBy": "Sorteren op",
+        "order": "Sorteervolgorde",
+        "ascending": "Oplopend",
+        "descending": "Aflopend"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Voor het gebruik van deze instelling is een doorzichtig thema vereist. Op Windows kan dit tot storingen i.c.m. Aero leiden.\n\nDiscord moet worden herstart om de wijziging toe te passen. Wil je dat nu doen?",
+        "disabledInfo": "Discord moet worden herstart om de wijziging toe te passen. Wil je dat nu doen?"
+    },
+    "Notices": {
+        "moreInfo": "Meer informatie"
+    },
+    "Toasts": {
+        "recoveryFailed": "Het herstel is onvolledig, omdat sommige handelingen niet konden worden afgerond."
+    },
+    "Updater": {
+        "updateFailed": "Bijwerken mislukt!",
+        "updateFailedMessage": "BetterDiscord kan niet worden bijgewerkt. Download de nieuwste versie van de installatiewizard van onze website (https://betterdiscord.app/) en herinstalleer BetterDiscord.",
+        "updateSuccessful": "Bijwerken gelukt!",
+        "updateAvailable": "Er is een nieuwe versie van BetterDiscord beschikbaar (v{{version}}).",
+        "addonUpdatesAvailable": {
+            "one": "Er is {{count}} update beschikbaar van een van je {{type}}!",
+            "other": "Er zijn {{count}} updates beschikbaar van je {{type}}!"
+        },
+        "addonUpdated": "“{{name}}” is bijgewerkt naar versie {{version}}!",
+        "addonUpdateFailed": "“{{name}}” kan niet worden bijgewerkt. Probeer het later opnieuw.",
+        "checking": "Bezig met controleren op updates…",
+        "finishedChecking": "De updatecontrole is voltooid!",
+        "checkForUpdates": "Controleren op updates!",
+        "updateAll": "Alles bijwerken!",
+        "noUpdatesAvailable": "Er zijn geen updates beschikbaar.",
+        "versionAvailable": "Versie {{version}} is beschikbaar!",
+        "upToDateBlankslate": "Je beschikt over de nieuwste versies van {{type}}!",
+        "updateButton": "Bijwerken!"
+    },
+    "Settings": {
+        "customColor": "Eigen kleur",
+        "resetSettings": "Standaardinstellingen",
+        "resetSettingsWarning": "Door de standaardinstellingen te herstellen, gaan al je aanpassingen verloren. Deze actie is onomkeerbaar."
+    },
+    "Socials": {
+        "twitter": "Volg ons!",
+        "github": "Geef ons een ster!"
+    },
+    "Paginator": {
+        "back": "Vorige",
+        "next": "Volgende"
     }
 }
