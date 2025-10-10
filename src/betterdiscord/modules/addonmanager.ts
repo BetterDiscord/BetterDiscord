@@ -415,7 +415,7 @@ export default abstract class AddonManager extends Store {
             }
             const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
-            else if(addon !== false) this.initialAddonsLoaded++;
+            else if (addon !== false) this.initialAddonsLoaded++;
         }
 
         this.saveState();
