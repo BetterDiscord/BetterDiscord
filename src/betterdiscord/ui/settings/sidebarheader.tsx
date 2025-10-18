@@ -9,8 +9,8 @@ import Button from "@ui/base/button";
 import {HistoryIcon} from "lucide-react";
 
 
-export default function SettingsTitle() {
-    return <div className="bd-sidebar-header">
+export default function SettingsTitle({inSettingsModal}: {inSettingsModal?: boolean;}) {
+    return <div className="bd-sidebar-header" data-in-settings-modal={inSettingsModal}>
         <h2 className="bd-sidebar-header-label">BetterDiscord</h2>
         <DiscordModules.Tooltip color="primary" position="top" aria-label={t("Modals.changelog")} text={t("Modals.changelog")}>
             {props =>

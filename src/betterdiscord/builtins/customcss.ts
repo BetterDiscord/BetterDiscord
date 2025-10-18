@@ -18,6 +18,7 @@ import SettingsTitle from "@ui/settings/title";
 import {getByKeys} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
+import {PencilIcon} from "lucide-react";
 
 
 const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"]);
@@ -46,7 +47,7 @@ export default new class CustomCSS extends Builtin {
     async enabled() {
         Settings.registerPanel(this.id, t("Panels.customcss"), {
             order: 2,
-            element: () => [React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")}), React.createElement(CSSEditor, {
+            element: () => [React.createElement(SettingsTitle, {_isSettingsTitle: true, text: t("CustomCSS.editorTitle")}), React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
@@ -61,7 +62,8 @@ export default new class CustomCSS extends Builtin {
                 else if (this.startAsExternal) return this.openExternal();
                 const settingsView = findInTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
-            }
+            },
+            icon: PencilIcon
         });
         this.loadCSS();
         this.insertCSS(this.savedCss);

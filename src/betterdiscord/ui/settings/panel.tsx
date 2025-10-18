@@ -52,7 +52,7 @@ export interface SettingsPanelProps {
 
 export default function SettingsPanel({id, title, groups, onChange, onDrawerToggle, getDrawerState}: SettingsPanelProps) {
     return <>
-        <SettingsTitle text={title}>
+        <SettingsTitle text={title} _isSettingsTitle>
             {makeResetButton(id)}
         </SettingsTitle>
         {groups.map(section => {

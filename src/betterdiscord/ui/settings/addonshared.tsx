@@ -60,6 +60,7 @@ export function AddonHeader({children, count, searching}) {
                     {searching && <span> - {t("Addons.results", {count: String(count)})}</span>}
                 </div>
             )}
+            _isSettingsTitle
         >
             {children}
         </SettingsTitle>

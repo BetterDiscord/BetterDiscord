@@ -144,7 +144,7 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
     }, [updateAddon, updates]);
 
     return [
-        <SettingsTitle text={t("Panels.updates")}>
+        <SettingsTitle text={t("Panels.updates")} _isSettingsTitle>
             {makeButton(t("Updater.checkForUpdates"), <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
         </SettingsTitle>,
         <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,

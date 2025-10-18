@@ -4,7 +4,7 @@
     align-items: center;
 }
 
-.bd-sidebar-header h2 {
+.bd-sidebar-header:not([data-in-settings-modal="true"]) h2 {
     padding: 6px 10px;
     box-sizing: border-box;
     color: #96989d;
@@ -22,6 +22,7 @@
 .bd-sidebar-header .bd-changelog-button {
     height: 16px;
     padding: 0;
+    margin-left: 40px;
 }
 
 .bd-sidebar-header .bd-icon {

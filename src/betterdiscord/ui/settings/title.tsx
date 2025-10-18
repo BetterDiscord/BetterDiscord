@@ -2,12 +2,10 @@ import React from "@modules/react";
 
 import Button from "../base/button";
 import type {MouseEvent, PropsWithChildren} from "react";
+import {portal, useInModalSettings} from "@ui/settings";
+import clsx from "clsx";
 
 const {useCallback} = React;
-
-
-const basicClass = "bd-settings-title";
-const groupClass = "bd-settings-title bd-settings-group-title";
 
 export type SettingsTitleProps = PropsWithChildren<{
     isGroup?: boolean;
@@ -15,9 +13,12 @@ export type SettingsTitleProps = PropsWithChildren<{
     button?: {title: string; onClick(e: MouseEvent): void;};
     onClick?(): void;
     text?: string;
+    _isSettingsTitle?: boolean;
 }>;
 
-export default function SettingsTitle({isGroup = false, className = "", button = undefined, onClick = undefined, text, children = []}: SettingsTitleProps) {
+export default function SettingsTitle({isGroup = false, className = "", button = undefined, onClick = undefined, text, children = [], _isSettingsTitle}: SettingsTitleProps) {
+    const inModalSettings = useInModalSettings() && _isSettingsTitle;
+
     const click = useCallback((event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
@@ -25,12 +26,15 @@ export default function SettingsTitle({isGroup = false, className = "", button =
     }, [button]);
 
 
-    const baseClass = isGroup ? groupClass : basicClass;
-    const titleClass = className ? `${baseClass} ${className}` : baseClass;
-    return <h2 className={titleClass} onClick={() => {onClick?.();}}>
-        {text}
-        {button && <Button className="bd-button-title" onClick={click} size={Button.Sizes.NONE}>{button.title}</Button>}
-        {children}
-    </h2>;
+    const node = (
+        <h2 className={clsx("bd-settings-title", isGroup && "bd-settings-group-title", className)} data-in-modal-settings={inModalSettings} onClick={() => {onClick?.();}}>
+            {text}
+            {button && <Button className="bd-button-title" onClick={click} size={Button.Sizes.NONE}>{button.title}</Button>}
+            {children}
+        </h2>
+    );
 
+    if (inModalSettings) return portal(node);
+
+    return node;
 }

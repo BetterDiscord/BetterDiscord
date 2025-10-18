@@ -28,6 +28,7 @@ import type {Release} from "github";
 import type {BdWebAddon} from "betterdiscordweb";
 import {getByKeys} from "@webpack";
 import {Logo} from "@ui/logo";
+import {CloudUpload} from "lucide-react";
 
 
 const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);
@@ -66,7 +67,8 @@ export default class Updater {
                     pluginUpdater: PluginUpdater,
                     themeUpdater: ThemeUpdater
                 });
-            }
+            },
+            icon: CloudUpload
         });
 
         CoreUpdater.initialize();

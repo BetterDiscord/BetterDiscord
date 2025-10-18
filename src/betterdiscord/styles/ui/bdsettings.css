@@ -171,17 +171,23 @@
     overflow: visible;
 }
 
-.bd-settings-title {
+.bd-settings-title:not([data-in-modal-settings="true"]) {
     display: flex;
     justify-content: space-between;
     color: var(--header-primary, #FFFFFF);
-    display: flex;
     font-weight: 600;
     cursor: default;
     flex: 1;
 }
 
-.bd-settings-title:not(.bd-settings-group-title) {
+.bd-settings-title[data-in-modal-settings="true"] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.bd-settings-title:not([data-in-modal-settings="true"]):not(.bd-settings-group-title) {
     margin-bottom: 20px;
     font-size: 20px;
     line-height: 24px;

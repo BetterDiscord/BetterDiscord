@@ -1,7 +1,8 @@
 import React from "@modules/react";
+import ReactDOM from "@modules/reactdom";
 import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
-import {getByKeys, getLazyByPrototypes, getLazyByStrings} from "@webpack";
+import {getByKeys, getLazyByPrototypes, getLazyBySource, getLazyByStrings} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -12,7 +13,7 @@ import SettingsPanel from "@ui/settings/panel";
 
 
 import type {SettingsCategory} from "@data/settings";
-import type {ComponentType, ReactNode} from "react";
+import {createContext, useContext, type ComponentType, type ReactNode} from "react";
 import VersionInfo from "./misc/versioninfo";
 import {findInTree} from "@common/utils";
 
@@ -26,10 +27,18 @@ interface Section {
     tabPredicate?: () => boolean;
 }
 
-export default new class SettingsRenderer {
+const inModalSettingsContext = createContext(false);
 
+const titlePortalConnection = document.createElement("div");
+export const portal = (node: React.ReactElement) => ReactDOM.createPortal(node, titlePortalConnection);
+export const useInModalSettings = () => useContext(inModalSettingsContext);
+
+const TitlePortal = ReactUtils.wrapElement(titlePortalConnection);
+
+export default new class SettingsRenderer {
     initialize() {
         this.patchSections();
+        this.patchSettingsModal();
         this.patchVersionInformation();
     }
 
@@ -107,6 +116,137 @@ export default new class SettingsRenderer {
                 });
             }
         });
+    }
+
+    async patchSettingsModal() {
+        const SettingsModal: any = await getLazyBySource(["destinationPanel:", ".default.getCurrentUser()"], {searchDefault: false});
+
+        interface BasicItem {
+            key: string;
+            type: number;
+            layout: BasicItem[];
+        }
+
+        Patcher.after("SettingsManager", SettingsModal, "default", (_: unknown, __: unknown, res: any) => {
+            const ref = React.useRef(false);
+
+            if (!ref.current) {
+                ref.current = true;
+
+                function push<T extends BasicItem>(item: T, parent: BasicItem) {
+                    Object.defineProperty(item, "parent", {value: parent});
+
+                    parent.layout.push(item);
+
+                    return item;
+                }
+
+                const section = push({
+                    key: "betterdiscord_section",
+                    layout: [],
+                    type: 1,
+                    useLabel: () => React.createElement(Header, {inSettingsModal: true})
+                }, res.props.root);
+
+
+                for (const collection of Settings.collections) {
+                    const sideBarItem = push({
+                        icon: ({className, color}: {className: string, color: string;}) => React.createElement(collection.icon, {className, color, width: 20, height: 20}),
+                        key: `betterdiscord_${collection.id}_sidebar_item`,
+                        layout: [],
+                        legacySearchKey: "BETTERDISCORD" + collection.id,
+                        parent: section,
+                        type: 2,
+                        useTitle: () => collection.name,
+                        trailing: null
+                    }, section);
+
+                    const panel = push({
+                        key: `betterdiscord_${collection.id}_panel`,
+                        layout: [],
+                        notice: null,
+                        type: 3,
+                        useTitle: () => React.createElement(TitlePortal)
+                    }, sideBarItem);
+
+                    const pane = push({
+                        key: `betterdiscord_${collection.id}_pane`,
+                        layout: [],
+                        // @ts-expect-error Blah
+                        targetPanel: panel,
+                        render: () => {
+                            return React.createElement(
+                                inModalSettingsContext.Provider,
+                                {value: true},
+                                this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))
+                            );
+                        }
+                    }, panel);
+
+                    res.props.directory.map.set(`betterdiscord_${collection.id}_pane`, {
+                        node: pane,
+                        targetPanel: panel
+                    });
+                    res.props.directory.map.set(`betterdiscord_${collection.id}_panel`, {
+                        node: panel,
+                        targetPanel: panel
+                    });
+                    res.props.directory.map.set(`betterdiscord_${collection.id}_sidebar_item`, {
+                        node: sideBarItem,
+                        targetPanel: panel
+                    });
+                }
+
+                for (const settingPanel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
+                    if (settingPanel.type === "addon" && !settingPanel.element) settingPanel.element = this.getAddonPanel(settingPanel.label, {store: settingPanel.manager});
+
+                    const sideBarItem = push({
+                        icon: ({className, color}: {className: string, color: string;}) => React.createElement(settingPanel.icon, {className, color, size: 20}),
+                        key: `betterdiscord_${settingPanel.id}_sidebar_item`,
+                        layout: [],
+                        legacySearchKey: "BETTERDISCORD" + settingPanel.id,
+                        parent: section,
+                        type: 2,
+                        useTitle: () => settingPanel.label,
+                        trailing: null
+                    }, section);
+
+                    const panel = push({
+                        key: `betterdiscord_${settingPanel.id}_panel`,
+                        layout: [],
+                        notice: null,
+                        type: 3,
+                        useTitle: () => React.createElement(TitlePortal)
+                    }, sideBarItem);
+
+                    const pane = push({
+                        key: `betterdiscord_${settingPanel.id}_pane`,
+                        layout: [],
+                        // @ts-expect-error Blah
+                        targetPanel: panel,
+                        render() {
+                            return React.createElement(inModalSettingsContext.Provider, {value: true}, React.createElement(settingPanel.element!));
+                        }
+                    }, panel);
+
+                    res.props.directory.map.set(`betterdiscord_${settingPanel.id}_pane`, {
+                        node: pane,
+                        targetPanel: panel
+                    });
+                    res.props.directory.map.set(`betterdiscord_${settingPanel.id}_panel`, {
+                        node: panel,
+                        targetPanel: panel
+                    });
+                    res.props.directory.map.set(`betterdiscord_${settingPanel.id}_sidebar_item`, {
+                        node: sideBarItem,
+                        targetPanel: panel
+                    });
+                }
+            }
+
+            return res;
+        });
+
     }
 
     async patchVersionInformation() {
