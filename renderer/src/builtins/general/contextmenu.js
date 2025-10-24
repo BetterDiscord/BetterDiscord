@@ -13,7 +13,7 @@ import DOMManager from "@modules/dommanager";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = Webpack.getByProps("open", "updateAccount");
+const UserSettings = Webpack.getByProps("openUserSettings", "openUserSettingsFromParsedUrl");
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -133,6 +133,8 @@ export default new class BDContextMenu extends Builtin {
 
     async openCategory(id) {
         ContextMenu.close();
-        UserSettingsWindow?.open?.(id);
+        UserSettings?.openUserSettings?.(`betterdiscord_${id}_panel`, {
+            section: id
+        });
     }
 };

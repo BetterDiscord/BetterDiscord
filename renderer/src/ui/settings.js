@@ -24,6 +24,7 @@ import Header from "@ui/settings/sidebarheader";
 
 import Restore from "./icons/restore";
 import Text from "./base/text";
+import BDLogo from "./icons/bdlogo";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -75,11 +76,14 @@ function getAddonCount(type) {
     return {total: 0, enabled: 0};
 }
 
+export const SettingsTitleContext = React.createContext();
+
 export default new class SettingsRenderer {
 
     constructor() {
         this.patchSections();
         this.patchVersionInformation();
+        this.patchModalSettings();
         Events.on("strings-updated", this.forceUpdate);
     }
 
@@ -233,6 +237,104 @@ export default new class SettingsRenderer {
                 return returnTree;
             };
             renderer.__patched = true;
+        });
+    }
+
+    async patchModalSettings() {
+        const rootBuilder = await WebpackModules.getLazy(m => m?.key === "$Root");
+
+        Patcher.after("SettingsManager", rootBuilder, "buildLayout", (that, args, res) => {
+            let index = res.findIndex(m => m.key === "activity_section") + 1;
+            if (index === 0) index = res.length;
+
+            const layouts = [];
+
+            for (const collection of Settings.collections) {
+                if (collection.disabled) continue;
+
+                const [title, settingsPanel] = this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id));                
+                
+
+                const pane = {
+                    buildLayout: () => [],
+                    key: `betterdiscord_${collection.id}_pane`,
+                    type: 4,
+                    render: () => settingsPanel
+                }
+
+                const panel = {
+                    buildLayout: () => [pane],
+                    key: `betterdiscord_${collection.id}_panel`,
+                    type: 3,
+                    useTitle: () => React.createElement("div", {
+                        className: "bd-settings-page-title",
+                        children: [
+                            collection.name.toString(),
+                            title.props.children
+                        ]
+                    })
+                }
+
+                layouts.push({
+                    icon: ({className, color}) => React.createElement(collection.icon || BDLogo, {className, color, width: 20, height: 20}),
+                    key: `openUserSettings${collection.id}_sidebar_item`,
+                    buildLayout: () => [panel],
+                    legacySearchKey: "BETTERDISCORD" + collection.id,
+                    type: 2,
+                    useTitle: () => collection.name.toString(),
+                    trailing: null
+                });
+            }
+
+            for (const item of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
+                const title = React.createRef();
+                let update;
+
+                function Title() {
+                    update = React.useReducer((prev) => prev + 1, 0)[1];
+                    
+                    return title.current || item.label.toString();
+                }
+                
+                const pane = {
+                    buildLayout: () => [],
+                    key: `betterdiscord_${item.id}_pane`,
+                    type: 4,
+                    render: (props) => React.createElement(SettingsTitleContext.Provider, {
+                        value: (value) => {
+                            title.current = value;
+                            update?.();
+                        },
+                        children: React.createElement(item.element, props)
+                    })
+                }
+
+                const panel = {
+                    buildLayout: () => [pane],
+                    key: `betterdiscord_${item.id}_panel`,
+                    type: 3,
+                    useTitle: () => React.createElement("div", {
+                        className: "bd-settings-page-title",
+                        children: React.createElement(Title)
+                    })
+                }
+
+                layouts.push({
+                    icon: ({className, color}) => React.createElement(item.icon || BDLogo, {className, color, width: 20, height: 20}),
+                    key: `betterdiscord_${item.id}_sidebar_item`,
+                    buildLayout: () => [panel],
+                    legacySearchKey: "BETTERDISCORD" + item.id,
+                    type: 2,
+                    useTitle: () => item.label.toString()
+                });
+            }
+            
+            res.splice(index, 0, {
+                buildLayout: () => layouts,
+                key: "betterdiscord",
+                type: 1,
+                useLabel: () => "BetterDiscord"
+            });
         });
     }
 

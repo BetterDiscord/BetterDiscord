@@ -123,6 +123,7 @@
     min-height: 280px;
     max-height: 900px;
     max-width: 750px;
+    z-index: 1002;
 }
 
 .floating-addon-window {

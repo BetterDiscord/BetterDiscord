@@ -23,6 +23,7 @@ import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
+import GlobeIcon from "@ui/icons/globe";
 
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
 
@@ -53,6 +54,7 @@ export default class Updater {
     static initialize() {
         Settings.registerPanel("updates", Strings.Panels.updates, {
             order: 1,
+            icon: GlobeIcon,
             element: () => {
                 return React.createElement(UpdaterPanel, {
                     coreUpdater: CoreUpdater,
