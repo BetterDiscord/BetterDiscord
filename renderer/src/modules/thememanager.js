@@ -24,9 +24,14 @@ export default new class ThemeManager extends AddonManager {
 
     initialize() {
         const errors = super.initialize();
+        const self = this;
+
         Settings.registerPanel("themes", Strings.Panels.themes, {
             order: 4,
             icon: ThemeIcon,
+            get searchableTitles() {
+                return self.addonList.flatMap((m) => [m.filename, m.name]);
+            },
             element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
                 type: this.prefix,
                 folder: this.addonFolder,

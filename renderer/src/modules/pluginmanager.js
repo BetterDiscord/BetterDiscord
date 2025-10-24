@@ -47,9 +47,14 @@ export default new class PluginManager extends AddonManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
+        const self = this;
+        
         Settings.registerPanel("plugins", Strings.Panels.plugins, {
             order: 3,
             icon: ExtIcon,
+            get searchableTitles() {
+                return self.addonList.flatMap((m) => [m.filename, m.name]);
+            },
             element: SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
                 type: this.prefix,
                 folder: this.addonFolder,

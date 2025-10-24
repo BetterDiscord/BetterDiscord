@@ -48,6 +48,11 @@ export default new class SettingsManager {
             order,
             get label() {return Strings.Panels[id].toString() || name;},
             section: id,
+            get searchableTitles() {
+                const {searchableTitles} = options;
+                
+                return Array.isArray(searchableTitles) && searchableTitles.every((item) => typeof item === "string") ? searchableTitles : [];
+            },
             icon
         };
         if (onClick) section.clickListener = onClick;

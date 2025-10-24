@@ -243,6 +243,8 @@ export default new class SettingsRenderer {
     async patchModalSettings() {
         const rootBuilder = await WebpackModules.getLazy(m => m?.key === "$Root");
 
+        this.patchSearchStuff();
+
         Patcher.after("SettingsManager", rootBuilder, "buildLayout", (that, args, res) => {
             let index = res.findIndex(m => m.key === "activity_section") + 1;
             if (index === 0) index = res.length;
@@ -279,7 +281,7 @@ export default new class SettingsRenderer {
                     icon: ({className, color}) => React.createElement(collection.icon || BDLogo, {className, color, width: 20, height: 20}),
                     key: `openUserSettings${collection.id}_sidebar_item`,
                     buildLayout: () => [panel],
-                    legacySearchKey: "BETTERDISCORD" + collection.id,
+                    legacySearchKey: "BETTERDISCORD_" + collection.id,
                     type: 2,
                     useTitle: () => collection.name.toString(),
                     trailing: null
@@ -323,7 +325,7 @@ export default new class SettingsRenderer {
                     icon: ({className, color}) => React.createElement(item.icon || BDLogo, {className, color, width: 20, height: 20}),
                     key: `betterdiscord_${item.id}_sidebar_item`,
                     buildLayout: () => [panel],
-                    legacySearchKey: "BETTERDISCORD" + item.id,
+                    legacySearchKey: "BETTERDISCORD_" + item.id,
                     type: 2,
                     useTitle: () => item.label.toString()
                 });
@@ -335,6 +337,45 @@ export default new class SettingsRenderer {
                 type: 1,
                 useLabel: () => "BetterDiscord"
             });
+        });
+    }
+
+    async patchSearchStuff() {        
+        const [module, key] = WebpackModules.getWithKey(Filters.byStrings(".SEARCH_NO_RESULTS]:{"), {
+            target: WebpackModules.getBySource(".SEARCH_NO_RESULTS]:{")
+        });        
+
+        Patcher.after("SettingsManager", module, key, (that, args, res) => {
+            // IDK if this is an attempt to block us from adding stuff
+            // but discord freezes the result
+            res = {...res};
+
+            for (const collection of Settings.collections) {
+                if (collection.disabled) continue;                
+
+                res["BETTERDISCORD_" + collection.id] = {
+                    ariaLabel: collection.name.toString(),
+                    label: collection.name.toString(),
+                    searchableTitles: [
+                        collection.name.toString(),
+                        ...collection.settings.flatMap(m => [m.name, m.settings.flatMap(m => m.name)].flat())
+                    ],
+                    section: collection.name.toString(),
+                    url: null
+                }
+            }
+
+            for (const item of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
+                res["BETTERDISCORD_" + item.id] = {
+                    ariaLabel: item.label.toString(),
+                    label: item.label.toString(),
+                    searchableTitles: [item.label.toString(), ...item.searchableTitles],
+                    section: item.label.toString(),
+                    url: null
+                }
+            }
+
+            return Object.freeze(res);
         });
     }
 
