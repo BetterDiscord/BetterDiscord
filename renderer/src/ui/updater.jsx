@@ -141,10 +141,10 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
     const set = React.useContext(SettingsTitleContext);
 
     if (set) {
-        set([
-            Strings.Panels.updates,
-            makeButton(Strings.Updater.checkForUpdates, <Sync />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})
-        ]);
+        set({
+            title: Strings.Panels.updates,
+            children: makeButton(Strings.Updater.checkForUpdates, <Sync />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})
+        });
     }
 
     return [

@@ -253,6 +253,32 @@ export default new class SettingsRenderer {
 
             const layouts = [];
 
+            function PaneHeader({text, children}) {
+                const [node, setNode] = React.useState();                
+
+                return (
+                    <>
+                        <div 
+                            className="bd-settings-page-title"
+                            ref={(v) => {
+                                if (v.parentElement?.parentElement) {
+                                    v.parentElement.parentElement.classList.add("bd-settings-page-title-extend");
+                                }
+
+                                return setNode(v.parentElement?.parentElement || v), setNode
+                            }}
+                        >
+                            {text}
+                        </div>
+
+                        {node && ReactDOM.createPortal(
+                            <div>{children}</div>,
+                            node
+                        )}
+                    </>
+                )
+            }
+
             for (const collection of Settings.collections) {
                 if (collection.disabled) continue;
 
@@ -270,13 +296,7 @@ export default new class SettingsRenderer {
                     buildLayout: () => [pane],
                     key: `betterdiscord_${collection.id}_panel`,
                     type: 3,
-                    useTitle: () => React.createElement("div", {
-                        className: "bd-settings-page-title",
-                        children: [
-                            collection.name.toString(),
-                            title.props.children
-                        ]
-                    })
+                    useTitle: () => <PaneHeader text={collection.name.toString()}>{title.props.children}</PaneHeader>
                 }
 
                 layouts.push({
@@ -291,13 +311,34 @@ export default new class SettingsRenderer {
             }
 
             for (const item of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
-                const title = React.createRef();
+                const ref = React.createRef({});
                 let update;
 
                 function Title() {
-                    update = React.useReducer((prev) => prev + 1, 0)[1];
-                    
-                    return title.current || item.label.toString();
+                    const [node, setNode] = React.useState();
+                    update = React.useReducer((prev) => prev + 1, 0)[1];                    
+
+                    return (
+                        <>
+                            <div 
+                                className="bd-settings-page-title"
+                                ref={(v) => {
+                                    if (v.parentElement?.parentElement) {
+                                        v.parentElement.parentElement.classList.add("bd-settings-page-title-extend");
+                                    }
+
+                                    return setNode(v.parentElement?.parentElement || v), setNode
+                                }}
+                            >
+                                {ref.current?.title}
+                            </div>
+
+                            {node && ReactDOM.createPortal(
+                                <div>{ref.current?.children}</div>,
+                                node
+                            )}
+                        </>
+                    )
                 }
                 
                 const pane = {
@@ -306,7 +347,7 @@ export default new class SettingsRenderer {
                     type: 4,
                     render: (props) => React.createElement(SettingsTitleContext.Provider, {
                         value: (value) => {
-                            title.current = value;
+                            ref.current = value;
                             update?.();
                         },
                         children: React.createElement(item.element, props)
@@ -317,10 +358,7 @@ export default new class SettingsRenderer {
                     buildLayout: () => [pane],
                     key: `betterdiscord_${item.id}_panel`,
                     type: 3,
-                    useTitle: () => React.createElement("div", {
-                        className: "bd-settings-page-title",
-                        children: React.createElement(Title)
-                    })
+                    useTitle: () => React.createElement(Title)
                 }
 
                 layouts.push({

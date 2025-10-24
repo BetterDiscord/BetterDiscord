@@ -42,3 +42,9 @@
     align-items: center;
     gap: 8px;
 }
+
+.bd-settings-page-title-extend {
+    flex: 1 auto;
+    justify-content: space-between;
+    margin-right: 16px;
+}

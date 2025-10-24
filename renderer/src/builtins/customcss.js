@@ -40,7 +40,7 @@ export default new class CustomCSS extends Builtin {
             const set = React.useContext(SettingsTitleContext);
 
             if (set) {
-                set(Strings.CustomCSS.editorTitle);
+                set({title: Strings.CustomCSS.editorTitle});
             }
         
             return [

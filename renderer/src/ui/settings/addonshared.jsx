@@ -63,7 +63,7 @@ export function AddonHeader({children, count, searching}) {
     );
 
     if (set) {
-        set([text, children]);
+        set({title: text, children});
         return;
     }
 
