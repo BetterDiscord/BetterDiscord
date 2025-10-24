@@ -1,6 +1,6 @@
 import Config from "@data/config";
 
-import React from "@modules/react";
+import React, {ReactDOM} from "@modules/react";
 import Strings from "@modules/strings";
 import Utilities from "@modules/utilities";
 import Events from "@modules/emitter";
@@ -25,6 +25,7 @@ import Header from "@ui/settings/sidebarheader";
 import Restore from "./icons/restore";
 import Text from "./base/text";
 import BDLogo from "./icons/bdlogo";
+import HistoryIcon from "@ui/icons/history";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -330,12 +331,37 @@ export default new class SettingsRenderer {
                     useTitle: () => item.label.toString()
                 });
             }
+
+            function Header() {
+                const [node, setNode] = React.useState();
+
+                return (
+                    <>
+                        <div 
+                            className="bd-sidebar-header" 
+                            ref={(v) => (setNode(v.parentElement?.parentElement || v), setNode)}
+                        >
+                            BetterDiscord
+                        </div>
+                        {node && ReactDOM.createPortal(
+                            <DiscordModules.Tooltip color="primary" position="top" text={Strings.Modals.changelog}>
+                                {props =>
+                                    <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(Changelog)}>
+                                        <HistoryIcon className="bd-icon" size="16px" />
+                                    </Button>
+                                }
+                            </DiscordModules.Tooltip>,
+                            node
+                        )}
+                    </>
+                )
+            }
             
             res.splice(index, 0, {
                 buildLayout: () => layouts,
                 key: "betterdiscord",
                 type: 1,
-                useLabel: () => "BetterDiscord"
+                useLabel: () => React.createElement(Header)
             });
         });
     }
