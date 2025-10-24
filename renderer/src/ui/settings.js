@@ -26,6 +26,7 @@ import Restore from "./icons/restore";
 import Text from "./base/text";
 import BDLogo from "./icons/bdlogo";
 import HistoryIcon from "@ui/icons/history";
+import changelog from "@data/changelog";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -346,7 +347,7 @@ export default new class SettingsRenderer {
                         {node && ReactDOM.createPortal(
                             <DiscordModules.Tooltip color="primary" position="top" text={Strings.Modals.changelog}>
                                 {props =>
-                                    <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(Changelog)}>
+                                    <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
                                         <HistoryIcon className="bd-icon" size="16px" />
                                     </Button>
                                 }
