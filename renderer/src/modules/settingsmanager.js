@@ -42,12 +42,18 @@ export default new class SettingsManager {
     // TODO: Move this to SettingsRenderer and also add a registerContentPanel
     registerPanel(id, name, options) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
-        const {element, onClick, order = 1} = options;
+        const {element, onClick, order = 1, icon} = options;
         const section = {
             id,
             order,
             get label() {return Strings.Panels[id].toString() || name;},
-            section: id
+            section: id,
+            get searchableTitles() {
+                const {searchableTitles} = options;
+                
+                return Array.isArray(searchableTitles) && searchableTitles.every((item) => typeof item === "string") ? searchableTitles : [];
+            },
+            icon
         };
         if (onClick) section.clickListener = onClick;
         if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;

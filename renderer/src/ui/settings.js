@@ -1,6 +1,6 @@
 import Config from "@data/config";
 
-import React from "@modules/react";
+import React, {ReactDOM} from "@modules/react";
 import Strings from "@modules/strings";
 import Utilities from "@modules/utilities";
 import Events from "@modules/emitter";
@@ -24,6 +24,9 @@ import Header from "@ui/settings/sidebarheader";
 
 import Restore from "./icons/restore";
 import Text from "./base/text";
+import BDLogo from "./icons/bdlogo";
+import HistoryIcon from "@ui/icons/history";
+import changelog from "@data/changelog";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -75,11 +78,14 @@ function getAddonCount(type) {
     return {total: 0, enabled: 0};
 }
 
+export const SettingsTitleContext = React.createContext();
+
 export default new class SettingsRenderer {
 
     constructor() {
         this.patchSections();
         this.patchVersionInformation();
+        this.patchModalSettings();
         Events.on("strings-updated", this.forceUpdate);
     }
 
@@ -233,6 +239,208 @@ export default new class SettingsRenderer {
                 return returnTree;
             };
             renderer.__patched = true;
+        });
+    }
+
+    async patchModalSettings() {
+        const rootBuilder = await WebpackModules.getLazy(m => m?.key === "$Root");
+
+        this.patchSearchStuff();
+
+        Patcher.after("SettingsManager", rootBuilder, "buildLayout", (that, args, res) => {
+            let index = res.findIndex(m => m.key === "activity_section") + 1;
+            if (index === 0) index = res.length;
+
+            const layouts = [];
+
+            function PaneHeader({text, children}) {
+                const [node, setNode] = React.useState();                
+
+                return (
+                    <>
+                        <div 
+                            className="bd-settings-page-title"
+                            ref={(v) => {
+                                if (v.parentElement?.parentElement) {
+                                    v.parentElement.parentElement.classList.add("bd-settings-page-title-extend");
+                                }
+
+                                return setNode(v.parentElement?.parentElement || v), setNode
+                            }}
+                        >
+                            {text}
+                        </div>
+
+                        {node && ReactDOM.createPortal(
+                            <div>{children}</div>,
+                            node
+                        )}
+                    </>
+                )
+            }
+
+            for (const collection of Settings.collections) {
+                if (collection.disabled) continue;
+
+                const [title, settingsPanel] = this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id));                
+                
+
+                const pane = {
+                    buildLayout: () => [],
+                    key: `betterdiscord_${collection.id}_pane`,
+                    type: 4,
+                    render: () => settingsPanel
+                }
+
+                const panel = {
+                    buildLayout: () => [pane],
+                    key: `betterdiscord_${collection.id}_panel`,
+                    type: 3,
+                    useTitle: () => <PaneHeader text={collection.name.toString()}>{title.props.children}</PaneHeader>
+                }
+
+                layouts.push({
+                    icon: ({className, color}) => React.createElement(collection.icon || BDLogo, {className, color, width: 20, height: 20}),
+                    key: `openUserSettings${collection.id}_sidebar_item`,
+                    buildLayout: () => [panel],
+                    legacySearchKey: "BETTERDISCORD_" + collection.id,
+                    type: 2,
+                    useTitle: () => collection.name.toString(),
+                    trailing: null
+                });
+            }
+
+            for (const item of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
+                const ref = React.createRef({});
+                let update;
+
+                function Title() {
+                    const [node, setNode] = React.useState();
+                    update = React.useReducer((prev) => prev + 1, 0)[1];                    
+
+                    return (
+                        <>
+                            <div 
+                                className="bd-settings-page-title"
+                                ref={(v) => {
+                                    if (v.parentElement?.parentElement) {
+                                        v.parentElement.parentElement.classList.add("bd-settings-page-title-extend");
+                                    }
+
+                                    return setNode(v.parentElement?.parentElement || v), setNode
+                                }}
+                            >
+                                {ref.current?.title}
+                            </div>
+
+                            {node && ReactDOM.createPortal(
+                                <div>{ref.current?.children}</div>,
+                                node
+                            )}
+                        </>
+                    )
+                }
+                
+                const pane = {
+                    buildLayout: () => [],
+                    key: `betterdiscord_${item.id}_pane`,
+                    type: 4,
+                    render: (props) => React.createElement(SettingsTitleContext.Provider, {
+                        value: (value) => {
+                            ref.current = value;
+                            update?.();
+                        },
+                        children: React.createElement(item.element, props)
+                    })
+                }
+
+                const panel = {
+                    buildLayout: () => [pane],
+                    key: `betterdiscord_${item.id}_panel`,
+                    type: 3,
+                    useTitle: () => React.createElement(Title)
+                }
+
+                layouts.push({
+                    icon: ({className, color}) => React.createElement(item.icon || BDLogo, {className, color, width: 20, height: 20}),
+                    key: `betterdiscord_${item.id}_sidebar_item`,
+                    buildLayout: () => [panel],
+                    legacySearchKey: "BETTERDISCORD_" + item.id,
+                    type: 2,
+                    useTitle: () => item.label.toString()
+                });
+            }
+
+            function Header() {
+                const [node, setNode] = React.useState();
+
+                return (
+                    <>
+                        <div 
+                            className="bd-sidebar-header" 
+                            ref={(v) => (setNode(v.parentElement?.parentElement || v), setNode)}
+                        >
+                            BetterDiscord
+                        </div>
+                        {node && ReactDOM.createPortal(
+                            <DiscordModules.Tooltip color="primary" position="top" text={Strings.Modals.changelog}>
+                                {props =>
+                                    <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
+                                        <HistoryIcon className="bd-icon" size="16px" />
+                                    </Button>
+                                }
+                            </DiscordModules.Tooltip>,
+                            node
+                        )}
+                    </>
+                )
+            }
+            
+            res.splice(index, 0, {
+                buildLayout: () => layouts,
+                key: "betterdiscord",
+                type: 1,
+                useLabel: () => React.createElement(Header)
+            });
+        });
+    }
+
+    async patchSearchStuff() {        
+        const [module, key] = WebpackModules.getWithKey(Filters.byStrings(".SEARCH_NO_RESULTS]:{"), {
+            target: WebpackModules.getBySource(".SEARCH_NO_RESULTS]:{")
+        });        
+
+        Patcher.after("SettingsManager", module, key, (that, args, res) => {
+            // IDK if this is an attempt to block us from adding stuff
+            // but discord freezes the result
+            res = {...res};
+
+            for (const collection of Settings.collections) {
+                if (collection.disabled) continue;                
+
+                res["BETTERDISCORD_" + collection.id] = {
+                    ariaLabel: collection.name.toString(),
+                    label: collection.name.toString(),
+                    searchableTitles: [
+                        collection.name.toString(),
+                        ...collection.settings.flatMap(m => [m.name, m.settings.flatMap(m => m.name)].flat())
+                    ],
+                    section: collection.name.toString(),
+                    url: null
+                }
+            }
+
+            for (const item of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
+                res["BETTERDISCORD_" + item.id] = {
+                    ariaLabel: item.label.toString(),
+                    label: item.label.toString(),
+                    searchableTitles: [item.label.toString(), ...item.searchableTitles],
+                    section: item.label.toString(),
+                    url: null
+                }
+            }
+
+            return Object.freeze(res);
         });
     }
 

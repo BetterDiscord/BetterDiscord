@@ -12,7 +12,7 @@ import Strings from "./strings";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import SettingsRenderer from "@ui/settings";
-
+import ThemeIcon from "@ui/icons/theme";
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
@@ -24,8 +24,14 @@ export default new class ThemeManager extends AddonManager {
 
     initialize() {
         const errors = super.initialize();
+        const self = this;
+
         Settings.registerPanel("themes", Strings.Panels.themes, {
             order: 4,
+            icon: ThemeIcon,
+            get searchableTitles() {
+                return self.addonList.flatMap((m) => [m.filename, m.name]);
+            },
             element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
                 type: this.prefix,
                 folder: this.addonFolder,

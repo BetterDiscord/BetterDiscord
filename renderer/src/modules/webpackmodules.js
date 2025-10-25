@@ -647,10 +647,6 @@ function listenToModules(modules) {
 
                 const listeners = [...WebpackModules.listeners];
                 for (let i = 0; i < listeners.length; i++) {
-                    if (moduleId == 503089 || moduleId == "503089") {
-                            console.log("Firing lazy listener for module", moduleId, "with exports", exports);
-                            console.log("Listener:", listeners[i]);
-                        }
                     try {listeners[i](exports, module, module.id);}
                     catch (error) {
                         Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);

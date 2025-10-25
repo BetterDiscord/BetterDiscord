@@ -7,6 +7,7 @@ import DataStore from "@modules/datastore";
 import SettingsTitle from "@ui/settings/title";
 import Caret from "@ui/icons/caret";
 import Checkmark from "@ui/icons/check";
+import {SettingsTitleContext} from "@ui/settings";
 
 export const buildDirectionOptions = () => [
   {label: Strings.Sorting.ascending, value: true},
@@ -41,26 +42,33 @@ export function AddonHeader({children, count, searching}) {
     /** @type {{ title: any, toggleStore(): void, showingStore: boolean }} */
     const {title, toggleStore, showingStore} = React.useContext(addonContext);
 
+    const set = React.useContext(SettingsTitleContext);
+
     const exitStore = React.useCallback(() => {
         if (!showingStore) return;
         toggleStore();
     }, [showingStore, toggleStore]);
 
-    return (
-        <SettingsTitle 
-            text={(
-                <div className="bd-addon-title" data-showing-store={showingStore}>
-                    <span onClick={exitStore}>{title}</span>
-                    {showingStore && (
-                        <>
-                            <Caret size={24} />
-                            <span>{Strings.Addons.store}</span>
-                        </>
-                    )}
-                    {searching && <span> - {Strings.Addons.results.format({count: String(count)})}</span>}
-                </div>
+    const text = (
+        <div className="bd-addon-title" data-showing-store={showingStore}>
+            <span onClick={exitStore}>{title}</span>
+            {showingStore && (
+                <>
+                    <Caret size={24} />
+                    <span>{Strings.Addons.store}</span>
+                </>
             )}
-        >
+            {searching && <span> - {Strings.Addons.results.format({count: String(count)})}</span>}
+        </div>
+    );
+
+    if (set) {
+        set({title: text, children});
+        return;
+    }
+
+    return (
+        <SettingsTitle text={text}>
             {children}
         </SettingsTitle>
     );

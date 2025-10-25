@@ -16,7 +16,8 @@ import Utilities from "@modules/utilities";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
-
+import {SettingsTitleContext} from "@ui/settings";
+import EditIcon from "@ui/icons/edit";
 
 const UserSettings = WebpackModules.getByProps("updateAccount");
 
@@ -35,16 +36,30 @@ export default new class CustomCSS extends Builtin {
     }
 
     async enabled() {
+        const CustomCSSPage = () => {
+            const set = React.useContext(SettingsTitleContext);
+
+            if (set) {
+                set({title: Strings.CustomCSS.editorTitle});
+            }
+        
+            return [
+                !set && <SettingsTitle text={Strings.CustomCSS.editorTitle} />,
+                React.createElement(CSSEditor, {
+                    css: this.savedCss,
+                    save: this.saveCSS.bind(this),
+                    update: this.insertCSS.bind(this),
+                    openNative: this.openNative.bind(this),
+                    openDetached: this.openDetached.bind(this),
+                    onChange: this.onChange.bind(this)
+                })
+            ]
+        }
+
         Settings.registerPanel(this.id, Strings.Panels.customcss, {
             order: 2,
-            element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, React.createElement(CSSEditor, {
-                css: this.savedCss,
-                save: this.saveCSS.bind(this),
-                update: this.insertCSS.bind(this),
-                openNative: this.openNative.bind(this),
-                openDetached: this.openDetached.bind(this),
-                onChange: this.onChange.bind(this)
-            })],
+            icon: EditIcon,
+            element: () => <CustomCSSPage />,
             onClick: (thisObject) => {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();

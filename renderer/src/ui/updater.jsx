@@ -15,6 +15,7 @@ import Checkmark from "@ui/icons/check";
 import Download from "@ui/icons/download";
 import Reload from "@ui/icons/reload";
 import Sync from "@ui/icons/sync";
+import {SettingsTitleContext} from "./settings";
 
 
 const {useState, useCallback, useEffect} = React;
@@ -137,8 +138,17 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
         }
     }, [updateAddon, updates]);
 
+    const set = React.useContext(SettingsTitleContext);
+
+    if (set) {
+        set({
+            title: Strings.Panels.updates,
+            children: makeButton(Strings.Updater.checkForUpdates, <Sync />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})
+        });
+    }
+
     return [
-        <SettingsTitle text={Strings.Panels.updates}>
+        !set && <SettingsTitle text={Strings.Panels.updates}>
             {makeButton(Strings.Updater.checkForUpdates, <Sync />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
         </SettingsTitle>,
         <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
