@@ -20,7 +20,7 @@ export type NotificationType = "warning" | "error" | "info" | "success";
 interface ButtonActions extends ButtonProps {
     label: string;
     dontClose?: boolean;
-    dontCloseOnActionIfHoldingShiftKey: boolean;
+    dontCloseOnActionIfHoldingShiftKey?: boolean;
 }
 
 export interface Notification {
@@ -29,13 +29,13 @@ export interface Notification {
     content?: string | ReactNode;
     type?: NotificationType;
     duration?: number;
-    actions: ButtonActions[];
+    actions?: ButtonActions[];
 
     onClose?(): void;
 
     onClick?(): void;
 
-    icon?: React.FC;
+    icon?: React.ComponentType<any>;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -54,19 +54,19 @@ const Icon = ({type}: {type: NotificationType;}) => {
 };
 
 class NotificationUI {
-    static root: HTMLDivElement | null = null;
+    static container: HTMLDivElement | null = null;
 
     constructor() {
-        const rootId = "bd-notifications-root";
-        let root = document.getElementById(rootId) as HTMLDivElement;
-        if (!root) {
-            root = document.createElement("div");
-            root.id = rootId;
-            DOMManager.bdBody.appendChild(root);
+        const containerId = "bd-notifications-container";
+        let container = document.getElementById(containerId) as HTMLDivElement;
+        if (!container) {
+            container = document.createElement("div");
+            container.id = containerId;
+            DOMManager.bdBody.appendChild(container);
         }
-        NotificationUI.root = root;
+        NotificationUI.container = container;
 
-        ReactDOM.createRoot(root).render(<PersistentNotificationContainer />);
+        ReactDOM.createRoot(container).render(<PersistentNotificationContainer />);
     }
 
     show(notif: Notification) {
@@ -83,13 +83,13 @@ class NotificationUI {
                 [kSelf]: true
             };
 
-            this.upsertNotification(notificationData);
+            this.upsertNotification(notificationData!);
         }
 
-        const kSelf = Reflect.ownKeys(notificationData).at(-1);
+        const kSelf = Reflect.ownKeys(notificationData!).at(-1);
 
         return {
-            id: notificationData.id,
+            id: notificationData!.id,
             isVisible: () => {
                 const currentNotifications = Notifications.notifications;
                 return currentNotifications.findIndex(notification => notification[kSelf]) !== -1;
@@ -99,7 +99,7 @@ class NotificationUI {
                 const notificationIndex = currentNotifications.findIndex(notification => notification[kSelf]);
 
                 if (notificationIndex !== -1) {
-                    this.hide(notificationData.id);
+                    this.hide(notificationData!.id);
                 }
             }
         };
@@ -176,17 +176,20 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             className={`bd-notification bd-notification-${type}`}
         >
             <div className={"bd-notification-content"}>
-                <div className="bd-notification-icon">
-                    {notification.icon ? <notification.icon /> : <Icon type={type} />}
-                </div>
-                <div>
-                    <div className="bd-notification-title">
-                        {title}
-                        <span
-                            className={"bd-notification-content-text"}>{React.Children.map(content, m => typeof m === "string"
-                                ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}</span>
+                <div className="bd-notification-header">
+                    <div className="bd-notification-icon">
+                        {notification.icon ? <ErrorBoundary><notification.icon /></ErrorBoundary> : <Icon type={type} />}
                     </div>
+                    {title && <div className="bd-notification-title">{title}</div>}
                 </div>
+                {content && (
+                    <div className="bd-notification-body">
+                        <div className="bd-notification-content-text">
+                            {React.Children.map(content, m => typeof m === "string"
+                                ? <Markdown>{m}</Markdown> : <ErrorBoundary>{m}</ErrorBoundary>)}
+                        </div>
+                    </div>
+                )}
             </div>
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
@@ -230,7 +233,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                         success: "var(--status-positive)",
                         error: "var(--status-danger)",
                         warning: "var(--status-warning)",
-                        info: "#3E82E5"
+                        info: "var(--bd-brand)"
                     }[type]
                 }}
             />

@@ -1,7 +1,3 @@
-.bd-setting-item.inline .bd-file-input-wrap {
-    max-width: 300px;
-}
-
 .bd-file-input-wrap {
     display: flex;
     align-items: center;
@@ -9,11 +5,19 @@
     position: relative;
     min-width: 250px;
     box-sizing: border-box;
-    border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     padding: 0 4px;
     height: 40px;
+}
+
+.bd-file-input-wrap:hover {
+    border-color: var(--bd-brand);
+}
+
+.bd-setting-item.inline .bd-file-input-wrap {
+    max-width: 300px;
 }
 
 .bd-file-input {
@@ -42,9 +46,10 @@
 
 .bd-file-input-wrap .bd-file-input-clear {
     margin-left: 5px;
+
     /* background: none!important; */
     opacity: 0.5;
-    padding-right: 4px!important;
+    padding-right: 4px !important;
 }
 
 .bd-file-input-wrap .bd-file-input-clear:hover {

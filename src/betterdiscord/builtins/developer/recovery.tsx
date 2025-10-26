@@ -5,13 +5,17 @@ import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
 import Settings from "@stores/settings";
+import Toasts from "@stores/toasts";
 import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import NotificationUIInstance from "@ui/notifications";
+import config from "@stores/config";
+import {Logo} from "@ui/logo";
 
 const Dispatcher = DiscordModules.Dispatcher;
+const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
 // TODO: arven if you get a chance
 async function attemptRecovery() {
@@ -206,14 +210,28 @@ export default new class Recovery extends Builtin {
             const errorStack = instance.state;
             const parsedError = errorStack ? this.parseModule.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
-            const foundIssue = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/.exec(errorStack.error?.stack);
+            const foundIssue = TEST_PLUGIN_REGEX.exec(errorStack.error?.stack);
             let pluginInfo = null;
 
             if (foundIssue) {
                 const pluginName = `${foundIssue[2]}.plugin.js`;
                 pluginInfo = this.getPluginInfo(pluginName);
                 pluginmanager.disableAddon(foundIssue[2]);
-                Toasts.show(`Plugin ${pluginName} has been disabled to prevent crashes. Please report this issue to the developer.`);
+                NotificationUIInstance.show({
+                    id: "plugin-crash",
+                    title: t("Addons.disabled", {name: pluginName}),
+                    content: t("Modals.addonCrashed"),
+                    duration: Infinity,
+                    type: "info",
+                    icon: () => <Logo width={16} height={16} />,
+                    actions: [
+                        ...(config.isCanary ? [{
+                            label: "Re-enable",
+                            onClick: () => pluginmanager.enableAddon(foundIssue[2]),
+                            dontClose: true,
+                        }] : [])
+                    ]
+                });
             }
 
             buttons.children.push(

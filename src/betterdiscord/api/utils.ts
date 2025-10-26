@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
+import {forceLoad} from "@webpack";
 
 
 /**
@@ -19,6 +20,14 @@ const Utils = {
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
     */
     findInTree: findInTree,
+
+    /**
+     * Loads the module ids within a chunk
+     *
+     * @param {number | string} id module with the chunk id.
+     * @returns {Promise<object>} resolved chunk module
+     */
+    forceLoad: forceLoad,
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list

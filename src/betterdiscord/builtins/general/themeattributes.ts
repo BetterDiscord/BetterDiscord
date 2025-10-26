@@ -1,8 +1,7 @@
 import Builtin from "@structs/builtin";
-import {getByStrings, getModule} from "@webpack";
+import {getByStrings, getLazyByStrings, getModule} from "@webpack";
 import {findInTree} from "@common/utils";
 
-const MessageComponent = getByStrings(["isSystemMessage", "hasReply"], {defaultExport: false});
 const TabBarComponent = getByStrings(["({getFocusableElements:()=>{let"], {searchExports: true});
 const UserProfileComponent = getModule((m) => m.render?.toString?.().includes("pendingThemeColors"));
 
@@ -12,6 +11,7 @@ export default new class ThemeAttributes extends Builtin {
     get id() {return "themeAttributes";}
 
     async enabled() {
+        const MessageComponent = await getLazyByStrings(["isSystemMessage", "hasReply"], {defaultExport: false});
         this.before(MessageComponent, "Z", (thisObject, [args]) => {
             if (args?.["aria-roledescription"] !== "Message") return;
             const author = findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});

@@ -4,6 +4,7 @@ import vm from "vm";
 import Logger from "@common/logger";
 
 import Config from "@stores/config";
+import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
@@ -11,7 +12,6 @@ import AddonManager, {type Addon} from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 
 
@@ -152,12 +152,13 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             this.trigger("disabled", addon);
-            Toasts.error(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
+            Toasts.warning(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
-        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
+
+        if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: addon.name, version: addon.version}));
     }
 
     stopPlugin(idOrAddon: string | Plugin) {
@@ -169,12 +170,12 @@ export default new class PluginManager extends AddonManager {
         }
         catch (err) {
             this.state[addon.id] = false;
-            Toasts.error(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
+            Toasts.warning(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
             return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("stopped", addon.id);
-        Toasts.show(t("Addons.disabled", {name: addon.name, version: addon.version}));
+        Toasts.error(t("Addons.disabled", {name: addon.name, version: addon.version}));
     }
 
     getPlugin(idOrFile: string) {
@@ -193,23 +194,19 @@ export default new class PluginManager extends AddonManager {
 
     onSwitch() {
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof (plugin?.onSwitch) === "function") {
-                try {plugin.onSwitch();}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
-            }
+            const plugin = this.addonList[i].instance;
+            try {plugin?.onSwitch?.();}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
 
     onMutation(mutation: MutationRecord) {
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof plugin?.observer === "function") {
-                try {plugin.observer(mutation);}
-                catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
-            }
+            const plugin = this.addonList[i].instance;
+            try {plugin?.observer?.(mutation);}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
 };

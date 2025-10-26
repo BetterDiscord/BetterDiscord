@@ -5,9 +5,9 @@
     position: relative;
     min-width: 250px;
     box-sizing: border-box;
-    border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
     padding: 0 4px;
     height: 40px;
     cursor: pointer;
@@ -18,7 +18,9 @@
     opacity: 0.5;
 }
 
-.bd-keybind-wrap.bd-keybind-disabled .bd-keybind-controls {
+.bd-keybind-wrap.bd-keybind-disabled .bd-keybind-record,
+.bd-keybind-wrap.bd-keybind-disabled .bd-keybind-clear,
+.bd-keybind-wrap.bd-keybind-disabled .bd-keybind-input {
     pointer-events: none;
 }
 
@@ -38,20 +40,25 @@
     text-transform: capitalize;
 }
 
-.bd-keybind-wrap.recording {
-    border-color: hsla(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%, .3);
+.bd-keybind-wrap.recording,
+.bd-keybind-wrap:not(.bd-keybind-disabled):hover {
+    border-color: hsl(var(--red-400-hsl)/.3);
 }
 
 .bd-keybind-wrap.recording {
-    box-shadow: 0 0 6px hsla(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%, .3);
+    box-shadow: 0 0 6px hsl(var(--red-400-hsl)/.3);
 }
 
 .bd-keybind-wrap.recording input {
-    color: hsl(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%)
+    color: var(--status-danger)
 }
 
 .bd-keybind-wrap .bd-keybind-record {
     padding: 3px 8px;
+}
+
+.bd-keybind-wrap .bd-keybind-record.bd-button-color-red svg {
+    color: var(--interactive-active);
 }
 
 .bd-keybind-clear {
@@ -70,3 +77,4 @@
     width: 18px !important;
     height: 18px !important;
 }
+
