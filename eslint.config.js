@@ -35,7 +35,60 @@ export default ts.config(
             "@stylistic": stylistic
         },
         rules: {
-            "@stylistic/no-trailing-spaces": ["error"]
+            "@stylistic/indent": ["error"],
+            "@stylistic/no-trailing-spaces": ["error"],
+            "@stylistic/array-bracket-newline": ["error"],
+            "@stylistic/brace-style": [
+                "error", "stroustrup",
+                {allowSingleLine: true}
+            ],
+            "@stylistic/block-spacing": ["error", "never"],
+            "@stylistic/dot-location": ["error", "property"],
+            "@stylistic/func-call-spacing": ["error"],
+            "@stylistic/key-spacing": ["error"],
+            "@stylistic/keyword-spacing": ["error"],
+            "@stylistic/no-floating-decimal": ["error"],
+            "@stylistic/no-mixed-spaces-and-tabs": ["error"],
+            "@stylistic/no-multi-spaces": ["error"],
+            "@stylistic/no-tabs": ["error"],
+            "@stylistic/no-whitespace-before-property": ["error"],
+            "@stylistic/object-curly-spacing": [
+                "error", "never",
+                {objectsInObjects: false}
+            ],
+            "@stylistic/object-property-newline": [
+                "error",
+                {allowAllPropertiesOnSameLine: true}
+            ],
+            "@stylistic/operator-linebreak": [
+                "error", "none",
+                {overrides: {"?": "before", ":": "before", "&&": "before"}}
+            ],
+            "@stylistic/quote-props": [
+                "error", "consistent-as-needed",
+                {keywords: true}
+            ],
+            "@stylistic/quotes": [
+                "error", "double",
+                {allowTemplateLiterals: true}
+            ],
+            "@stylistic/rest-spread-spacing": ["error"],
+            "@stylistic/semi": ["error"],
+            "@stylistic/semi-spacing": ["error"],
+            "@stylistic/space-before-blocks": ["error"],
+            "@stylistic/space-in-parens": ["error"],
+            "@stylistic/space-infix-ops": ["error"],
+            "@stylistic/space-unary-ops": [
+                "error",
+                {words: true, nonwords: false}
+            ],
+            "@stylistic/spaced-comment": [
+                "error", "always",
+                {exceptions: ["-", "*"]}
+            ],
+            "@stylistic/template-curly-spacing": ["error"],
+            "@stylistic/wrap-iife": ["error", "inside"],
+            "@stylistic/yield-star-spacing": ["error"],
         }
     },
 
@@ -44,15 +97,9 @@ export default ts.config(
         files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
         rules: {
             "accessor-pairs": "error",
-            "block-spacing": ["error", "never"],
-            "brace-style": ["error", "stroustrup", {allowSingleLine: true}],
             "curly": ["error", "multi-line", "consistent"],
-            "dot-location": ["error", "property"],
             "dot-notation": "error",
-            "func-call-spacing": "error",
             "handle-callback-err": "error",
-            "key-spacing": "error",
-            "keyword-spacing": "error",
             // "new-cap": ["error", {newIsCap: true}],
             "no-array-constructor": "error",
             "no-caller": "error",
@@ -60,14 +107,11 @@ export default ts.config(
             "no-duplicate-imports": "error",
             "no-else-return": "error",
             "no-eval": "error",
-            "no-floating-decimal": "error",
             "no-implied-eval": "error",
             "no-iterator": "error",
             "no-label-var": "error",
             "no-labels": "error",
             "no-lone-blocks": "error",
-            "no-mixed-spaces-and-tabs": "error",
-            "no-multi-spaces": "error",
             "no-multi-str": "error",
             "no-new": "error",
             "no-new-func": "error",
@@ -81,7 +125,6 @@ export default ts.config(
             "no-self-compare": "error",
             "no-sequences": "error",
             "no-shadow": ["warn", {builtinGlobals: false, hoist: "functions"}],
-            "no-tabs": "error",
             "no-template-curly-in-string": "error",
             "no-throw-literal": "error",
             "no-undef": "error",
@@ -93,31 +136,7 @@ export default ts.config(
             "no-useless-constructor": "error",
             "no-useless-rename": "error",
             "no-var": "error",
-            "no-whitespace-before-property": "error",
-            "object-curly-spacing": ["error", "never", {objectsInObjects: false}],
-            "object-property-newline": ["error", {allowAllPropertiesOnSameLine: true}],
-            "operator-linebreak": [
-                "error",
-                "none",
-                {overrides: {"?": "before", ":": "before", "&&": "before"}}
-            ],
             "prefer-const": "error",
-            "quote-props": ["error", "consistent-as-needed", {keywords: true}],
-            "quotes": ["error", "double", {allowTemplateLiterals: true}],
-            "rest-spread-spacing": "error",
-            "semi": "error",
-            "semi-spacing": "error",
-            "space-before-blocks": "error",
-            "space-in-parens": "error",
-            "space-infix-ops": "error",
-            "space-unary-ops": [
-                "error",
-                {words: true, nonwords: false}
-            ],
-            "spaced-comment": ["error", "always", {exceptions: ["-", "*"]}],
-            "template-curly-spacing": "error",
-            "wrap-iife": ["error", "inside"],
-            "yield-star-spacing": "error",
             "yoda": "error"
         },
     },
@@ -131,8 +150,14 @@ export default ts.config(
             "no-redeclare": "off",
             "@typescript-eslint/no-explicit-any": ["off"],
             "@typescript-eslint/no-unnecessary-type-constraint": ["off"],
-            "@typescript-eslint/array-type": ["error", {"default": "array-simple"}],
-            "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_", varsIgnorePattern: "^_"}]
+            "@typescript-eslint/array-type": [
+                "error",
+                {"default": "array-simple"}
+            ],
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                {argsIgnorePattern: "^_", varsIgnorePattern: "^_"}
+            ]
         }
     },
 
