@@ -29,15 +29,7 @@ export default class DOMManager {
     }
 
     static escapeID(id: string) {
-        // If it starts with a number, prepend a dash to avoid invalid IDs
-        if (id.match(/^[0-9]+/)) id = `-${id}`;
-
-        // Replace all non-alphanumeric characters (except for dashes and underscores) with a dash
-        // Also, ensure it starts with a letter
-        id = id.replaceAll(/^[^a-z]+|[^a-z0-9_-]/gi, "-");
-
-        // Remove any leading dashes to ensure it starts with a valid character
-        return id.replaceAll(/^-+/g, "");
+        return CSS.escape(id);
     }
 
     // TODO: do more of this overloading for better typing and less assertions

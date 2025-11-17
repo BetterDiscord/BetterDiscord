@@ -4,10 +4,11 @@ import DOMManager from "@modules/dommanager";
 describe("DOMManager", () => {
     describe("escapeID", () => {
         test("should return a valid id", () => {
-            expect(DOMManager.escapeID("123abc")).toBe("abc");
-            expect(DOMManager.escapeID("test@#$%")).toBe("test----");
+            expect(DOMManager.escapeID("123abc")).toBe(CSS.escape("123abc"));
+            expect(DOMManager.escapeID("test@#$%")).toBe(CSS.escape("test@#$%"));
             expect(DOMManager.escapeID("valid-id")).toBe("valid-id");
-            expect(DOMManager.escapeID("mixed_special@chars")).toBe("mixed_special-chars");
+            expect(DOMManager.escapeID("mixed_special@chars")).toBe(CSS.escape("mixed_special@chars"));
+            expect(DOMManager.escapeID("multiCASE_madness")).toBe("multiCASE_madness");
         });
     });
 
