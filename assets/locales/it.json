@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} di {{author}}",
         "byline": "di {{author}}",
-        "openFolder": "Apri cartella {{type}}",
         "reload": "Ricarica",
         "addonSettings": "Impostazioni",
         "website": "Website",
@@ -158,7 +157,6 @@
         "version": "Versione",
         "added": "Data di aggiunta",
         "modified": "Data di modifica",
-        "search": "Cerca {{type}}",
         "editAddon": "Modifica",
         "deleteAddon": "Elimina",
         "confirmDelete": "Sei sicuro di voler eliminare {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}} non può essere restituito.",
         "unknownAuthor": "Autore sconosciuto",
         "noDescription": "Descrizione non fornita.",
-        "alreadyExists": "C'è già un {{type}} chiamato {{name}}",
-        "alreadWatching": "Stai già vedendo gli addons.",
         "metaError": "META non può essere analizzato.",
         "missingNameData": "Dati del nome META mancanti.",
         "metaNotFound": "META non è stato trovato.",
         "compileError": "Impossibile compilare. Vedi la console per i dettagli.",
         "wasUnloaded": "{{name}} è stato disattivato.",
-        "blankSlateHeader": "Non hai nessun {{type}}s!",
-        "blankSlateMessage": "Prendine alcuni da [questo sito web]({{link}}) e aggiungili alla tua cartella {{type}}.",
         "isEnabled": "Attivato",
         "wasLoaded": "{{name}} v{{version}} è stato caricato.",
         "listView": "Vista a elenco",
@@ -213,10 +207,6 @@
         "additionalInfo": "Informazioni aggiuntive",
         "restartPrompt": "Per avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?"
     },
-    "ReactDevTools": {
-        "notFound": "Estensione non trovata",
-        "notFoundDetails": "Impossibile trovare l'estensione React Developer Tools sul tuo PC. Installa l'estensione sull'installazione locale di Chrome."
-    },
     "Sorting": {
         "sortBy": "Ordina per",
         "order": "Ordine",
@@ -227,15 +217,11 @@
         "enabledInfo": "Questa opzione richiede un tema trasparente per funzionare correttamente. Su Windows questo potrebbe interrompere l'aero snapping e la massimizzazione.\n\nPer avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?",
         "disabledInfo": "Per avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?"
     },
-    "Notices": {
-        "moreInfo": "Altre Info"
-    },
     "Updater": {
         "updateFailed": "Aggiornamento non riuscito!",
         "updateFailedMessage": "BetterDiscord non è stato aggiornato. Scarica l'ultima versione del programma di installazione dal nostro sito web (https://betterdiscord.app/) e reinstalla.",
         "updateSuccessful": "Aggiornamento riuscito!",
         "updateAvailable": "BetterDiscord ha un nuovo aggiornamento (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord ha trovato aggiornamenti per {{count}} dei tuoi {{type}}s!",
         "addonUpdated": "{{name}} è stato aggiornato alla versione {{version}}!",
         "checking": "Controlla aggiornamenti!",
         "finishedChecking": "Controllo degli aggiornamenti finito!",
@@ -243,7 +229,6 @@
         "updateAll": "Aggiorna tutto!",
         "noUpdatesAvailable": "Nessun aggiornamento disponibile.",
         "versionAvailable": "La versione {{version}} è ora disponibile!",
-        "upToDateBlankslate": "Tutti i tuoi {{type}} sembrano essere aggiornati!",
         "updateButton": "Aggiorna!"
     }
 }

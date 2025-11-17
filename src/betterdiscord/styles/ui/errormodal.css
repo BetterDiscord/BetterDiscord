@@ -17,11 +17,11 @@
 }
 
 .theme-dark .bd-addon-error {
-    border-color: var(--background-secondary-alt);
+    border-color: var(--background-base-lower);
 }
 
 .theme-light .bd-addon-error {
-    border-color: var(--background-tertiary);
+    border-color: var(--background-base-lowest);
 }
 
 .bd-addon-error-header {
@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: center;
     align-self: flex-start;
-    background-color: var(--background-floating);
+    background-color: var(--background-base-lowest);
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -91,9 +91,9 @@
     text-indent: 0;
     white-space: pre-wrap;
     scrollbar-width: thin;
-    scrollbar-color: var(--background-tertiary) var(--background-secondary);
-    background: var(--background-secondary);
-    border: 1px solid var(--background-tertiary);
+    scrollbar-color: var(--background-base-lowest) var(--background-base-lower);
+    background: var(--background-base-lower);
+    border: 1px solid var(--background-base-lowest);
 }
 
 .bd-addon-error-stack pre {
@@ -105,7 +105,7 @@
     display: none;
     right: 4px;
     top: 8px;
-    color: var(--text-normal);
+    color: var(--text-default);
 }
 
 .bd-addon-error-stack pre:hover [class^="codeActions"] {

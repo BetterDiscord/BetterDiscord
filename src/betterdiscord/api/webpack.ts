@@ -1,10 +1,10 @@
 import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
-const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [ T[], B ] => {
+const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [T[], B] => {
     if (args.length > 1
         && typeof (args[args.length - 1]) === "object"
         && !Array.isArray(args[args.length - 1])
@@ -12,11 +12,11 @@ const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOption
         Object.assign(defaultOptions, args.pop());
     }
 
-    return [ args as T[], defaultOptions ];
+    return [args as T[], defaultOptions];
 };
 
 interface WebpackOptions extends Options {
-    first?: boolean
+    first?: boolean;
 }
 
 /**
@@ -162,6 +162,8 @@ const Webpack = {
     },
 
     getStore(name: string) {return getStore(name);},
+
+    getById(id: PropertyKey) {return getById(id);}
 };
 
 Object.freeze(Webpack);
