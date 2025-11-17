@@ -205,10 +205,6 @@
         "additionalInfo": "További információk",
         "restartPrompt": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen a változtatás. Most akarod újraindítani?"
     },
-    "ReactDevTools": {
-        "notFound": "A kifejezés nem található",
-        "notFoundDetails": "Nem található a React Developer Tools bővítmény a számítógépén. Kérjük, telepítse a bővítményt a Chrome helyi telepítésébe."
-    },
     "Sorting": {
         "sortBy": "Rendezés",
         "order": "Rendezés",
@@ -218,9 +214,6 @@
     "WindowPrefs": {
         "enabledInfo": "Ez az opció átlátszó témát igényel a megfelelő működéshez. Windowson ez megszakíthatja az aero snappinget és a maximalizálást.\n\nA Discordot újra kell indítani, hogy érvénybe lépjen. Szeretnéd most újraindítani?",
         "disabledInfo": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen. Szeretnéd most újraindítani?"
-    },
-    "Notices": {
-        "moreInfo": "További információ"
     },
     "Updater": {
         "updateFailed": "A frissítés sikertelen!",

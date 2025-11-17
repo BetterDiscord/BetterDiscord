@@ -166,10 +166,6 @@
         "additionalInfo": "Zusätzliche Informationen",
         "restartPrompt": "Die Einstellung wurde gespeichert. Um sie anzuwenden, ist ein Neustart von Discord erforderlich."
     },
-    "ReactDevTools": {
-        "notFound": "Erweiterung nicht gefunden",
-        "notFoundDetails": "React-Entwicklerwerkzeuge-Erweiterung konnte nicht gefunden werden. Füg die Erweiterung zu deiner Chrome-Installation hinzu."
-    },
     "Sorting": {
         "sortBy": "Sortieren nach",
         "order": "Reihenfolge",

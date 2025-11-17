@@ -166,10 +166,6 @@
         "additionalInfo": "额外信息",
         "restartPrompt": "Discord 需要重新启动以应用最新变更。立刻进行重启吗？"
     },
-    "ReactDevTools": {
-        "notFound": "未找到扩展",
-        "notFoundDetails": "无法在你的电脑上找到 React 开发者工具扩展。请在本地的 Chrome 上安装该扩展。"
-    },
     "Sorting": {
         "sortBy": "排序方式",
         "order": "顺序",

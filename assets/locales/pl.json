@@ -209,10 +209,6 @@
         "additionalInfo": "Dodatkowe informacje",
         "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
     },
-    "ReactDevTools": {
-        "notFound": "Nie znaleziono rozszerzenia",
-        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuować, zainstaluj to rozszerzenie w swojej przeglądarce Chrome."
-    },
     "Sorting": {
         "sortBy": "Sortuj wg",
         "order": "Kolejność",
@@ -222,9 +218,6 @@
     "WindowPrefs": {
         "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
-    },
-    "Notices": {
-        "moreInfo": "Dowiedz się więcej"
     },
     "Updater": {
         "updateFailed": "Aktualizacja nie powiodła się!",

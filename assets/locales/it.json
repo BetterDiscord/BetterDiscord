@@ -207,10 +207,6 @@
         "additionalInfo": "Informazioni aggiuntive",
         "restartPrompt": "Per avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?"
     },
-    "ReactDevTools": {
-        "notFound": "Estensione non trovata",
-        "notFoundDetails": "Impossibile trovare l'estensione React Developer Tools sul tuo PC. Installa l'estensione sull'installazione locale di Chrome."
-    },
     "Sorting": {
         "sortBy": "Ordina per",
         "order": "Ordine",
@@ -220,9 +216,6 @@
     "WindowPrefs": {
         "enabledInfo": "Questa opzione richiede un tema trasparente per funzionare correttamente. Su Windows questo potrebbe interrompere l'aero snapping e la massimizzazione.\n\nPer avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?",
         "disabledInfo": "Per avere effetto, Discord deve essere riavviato. Vuoi riavviare ora?"
-    },
-    "Notices": {
-        "moreInfo": "Altre Info"
     },
     "Updater": {
         "updateFailed": "Aggiornamento non riuscito!",

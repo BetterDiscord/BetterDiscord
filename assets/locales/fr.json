@@ -166,10 +166,6 @@
         "additionalInfo": "Info Additionnelle",
         "restartPrompt": "Pour appliquer ces changements, Discord à besoin d'être redémarré. Voulez-vous redémarrer l'application maintenant?"
     },
-    "ReactDevTools": {
-        "notFound": "Extension Introuvable",
-        "notFoundDetails": "Impossible de trouver l'extension de React Developer Tools sur ton PC. Merci d'installer l'extension dans votre installation locale de Chrome."
-    },
     "Sorting": {
         "sortBy": "Trier Par",
         "order": "Ordre",

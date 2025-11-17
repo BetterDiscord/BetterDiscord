@@ -166,10 +166,6 @@
         "additionalInfo": "Informações Adicionais",
         "restartPrompt": "Para as mudanças terem efeito o discord precisa ser reinciado. Você deseja reiniciar agora?"
     },
-    "ReactDevTools": {
-        "notFound": "Extensão Não Encontrada",
-        "notFoundDetails": "Não foi possível encontrar a exntesão do React Developer Tools no seu PC. Por favor instale a extensão na sua instalação do Chrome local."
-    },
     "Sorting": {
         "sortBy": "Ordenar Por",
         "order": "Ordem",

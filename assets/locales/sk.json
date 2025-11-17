@@ -166,10 +166,6 @@
         "additionalInfo": "Ďalšie Info",
         "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
     },
-    "ReactDevTools": {
-        "notFound": "Rozšírenie sa nenašlo",
-        "notFoundDetails": "Nebolo možné nájsť rozšírenie React Developer Tools na vašom PC. Prosím nainštalujte rozšírenie vo vašom prehliadači Chrome."
-    },
     "Sorting": {
         "sortBy": "Triediť podľa",
         "order": "Poradie",

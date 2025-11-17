@@ -205,10 +205,6 @@
         "additionalInfo": "その他の情報",
         "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
     },
-    "ReactDevTools": {
-        "notFound": "拡張機能が見つかりません",
-        "notFoundDetails": "PCにReact Developer Tools拡張機能が見つかりません。Chromeに拡張機能をインストールしてください。"
-    },
     "Sorting": {
         "sortBy": "並び順",
         "order": "順序",
@@ -218,9 +214,6 @@
     "WindowPrefs": {
         "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
         "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
-    },
-    "Notices": {
-        "moreInfo": "詳細"
     },
     "Updater": {
         "updateFailed": "アップデートに失敗しました！",

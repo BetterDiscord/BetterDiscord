@@ -205,10 +205,6 @@
         "additionalInfo": "Dodatečné informace",
         "restartPrompt": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
     },
-    "ReactDevTools": {
-        "notFound": "Rozšíření nenalezeno",
-        "notFoundDetails": "Nepodařilo se nalézt rozšíření React Developer Tools na tvém počítači. Nainstaluj si prosím rozšíření na své lokální Chrome instalaci."
-    },
     "Sorting": {
         "sortBy": "Seřadit podle",
         "order": "Pořadí",
@@ -218,9 +214,6 @@
     "WindowPrefs": {
         "enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
         "disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
-    },
-    "Notices": {
-        "moreInfo": "Více informací"
     },
     "Updater": {
         "updateFailed": "Aktualizace selhala!",

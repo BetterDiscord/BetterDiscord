@@ -166,10 +166,6 @@
         "additionalInfo": "Ek Bilgi",
         "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
     },
-    "ReactDevTools": {
-        "notFound": "Eklenti Bulunamadı",
-        "notFoundDetails": "React Geliştirici Araçları bilgisayarınızda bulunamadı.\nLütfen eklentiyi Chrome tarayıcınıza indiriniz."
-    },
     "Sorting": {
         "sortBy": "Göre Sırala",
         "order": "Sıra",

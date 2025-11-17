@@ -166,10 +166,6 @@
         "additionalInfo": "Informații adiționale",
         "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
     },
-    "ReactDevTools": {
-        "notFound": "Extensia nu a putut fi găsită",
-        "notFoundDetails": "Nu s-au putut găsi extensia React Developer Tools in calculatorul tău. Te rugăm să instalezi extensia în cadrul Chrome."
-    },
     "Sorting": {
         "sortBy": "Sortează După",
         "order": "Ordonează",

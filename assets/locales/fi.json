@@ -203,10 +203,6 @@
         "additionalInfo": "Lisätietoja",
         "restartPrompt": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
     },
-    "ReactDevTools": {
-        "notFound": "Laajennusta Ei Löydy",
-        "notFoundDetails": "React Developer Tools -laajennusta ei löydy tietokoneeltasi. Asenna laajennus paikalliseen Chrome-asennukseesi."
-    },
     "Sorting": {
         "sortBy": "Järjestä",
         "order": "Järjestys",
@@ -216,9 +212,6 @@
     "WindowPrefs": {
         "enabledInfo": "Tämä vaihtoehto vaatii läpinäkyvän teeman toimiakseen kunnolla. Windowsissa tämä voi katkaista aerosnapsauksen ja maksimoimisen.\n\nJotta Discord tulisi voimaan, se on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?",
         "disabledInfo": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
-    },
-    "Notices": {
-        "moreInfo": "Enemmän tietoa"
     },
     "Updater": {
         "updateFailed": "Päivitys epäonnistui",

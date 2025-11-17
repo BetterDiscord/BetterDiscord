@@ -208,10 +208,6 @@
         "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？",
         "changelog": "更新日誌"
     },
-    "ReactDevTools": {
-        "notFound": "未找到擴充套件",
-        "notFoundDetails": "無法在您的電腦上找到 React 開發者工具擴充套件。請在本機的 Chrome 上安裝該擴充套件。"
-    },
     "Sorting": {
         "sortBy": "排序方式",
         "order": "順序",
@@ -221,9 +217,6 @@
     "WindowPrefs": {
         "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap和最大化。\n\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
         "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
-    },
-    "Notices": {
-        "moreInfo": "更多資訊"
     },
     "Updater": {
         "updateFailed": "更新失敗！",
