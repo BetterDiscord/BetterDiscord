@@ -48,12 +48,12 @@ function Blankslate({type, folder}: {type: "plugin" | "theme"; folder: string;})
     // TODO: doggy update context type as needed
     const {toggleStore} = React.useContext(addonContext) as {title: string; toggleStore(): void;};
     const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
-    const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], type}).toString();
+    const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], context: type}).toString();
     const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
     const buttonKey = storeEnabled ? "Addons.openStore" : "Addons.openFolder";
-    return <EmptySlate title={t("Addons.blankSlateHeader", {type})} message={storeEnabled ? "" : message}>
+    return <EmptySlate title={t("Addons.blankSlateHeader", {context: type})} message={storeEnabled ? "" : message}>
         <Button size={Button.Sizes.LARGE} onClick={onClick}>
-            {t(buttonKey, {type: `${type[0].toUpperCase()}${type.substring(1)}`})}
+            {t(buttonKey, {context: type})}
         </Button>
     </EmptySlate>;
 }
@@ -88,7 +88,7 @@ function confirmEnable(action: () => void, type: string) {
      */
     return function (event: MouseEvent) {
         if (event.shiftKey) return action();
-        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.enableAllWarning", {type: type.toLocaleLowerCase()}), {
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.enableAllWarning", {context: type.toLocaleLowerCase()}), {
             confirmText: t("Modals.okay"),
             cancelText: t("Modals.cancel"),
             danger: true,
@@ -99,7 +99,7 @@ function confirmEnable(action: () => void, type: string) {
 
 function StoreCard() {
     // TODO: doggy update context type as needed
-    const {title, toggleStore} = React.useContext(addonContext) as {title: string; toggleStore(): void;};
+    const {toggleStore, store} = React.useContext(addonContext) as {toggleStore(): void; store: AddonManager;};
 
     if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
@@ -112,8 +112,8 @@ function StoreCard() {
                 <StoreIcon size="24px" />
             </div>
             <div className="bd-store-card-body">
-                <Text color={Text.Colors.HEADER_PRIMARY} className="bd-store-card-title">{t("Addons.openStore", {type: title})}</Text>
-                <Text color={Text.Colors.HEADER_SECONDARY} className="bd-store-card-description">{t("Addons.storeMessage", {type: title.toLocaleLowerCase()})}</Text>
+                <Text color={Text.Colors.HEADER_PRIMARY} className="bd-store-card-title">{t("Addons.openStore", {context: store.prefix})}</Text>
+                <Text color={Text.Colors.HEADER_SECONDARY} className="bd-store-card-description">{t("Addons.storeMessage", {context: store.prefix})}</Text>
             </div>
             <div className="bd-store-card-caret">
                 <ChevronRightIcon size="24px" />
@@ -127,7 +127,7 @@ function StoreCard() {
  * @param {import("@modules/addonmanager").default} props.store
  * @returns
  */
-export default function AddonList({title, store}: {title: string; store: AddonManager;}) {
+export default function AddonList({store}: {store: AddonManager;}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState<ReturnType<typeof buildSortOptions>[number]["value"]>(getState.bind(null, store.prefix, "sort", "name"));
     const [ascending, setAscending] = useState(getState.bind(null, store.prefix, "ascending", true));
@@ -216,13 +216,12 @@ export default function AddonList({title, store}: {title: string; store: AddonMa
 
     return [
         <AddonHeader count={renderedCards.length} searching={isSearching}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {type: `${renderedCards.length} ${title}`})}...`} />
+            <Search onChange={search} placeholder={`${t("Addons.search", {count: renderedCards.length, context: store.prefix})}...`} />
         </AddonHeader>,
         <div className={"bd-controls bd-addon-controls"}>
-            {/* <Search onChange={search} placeholder={`${t("Addons.search", {type: title})}...`} /> */}
             <div className="bd-controls-basic">
-                {makeBasicButton(t("Addons.openFolder", {type: title}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder), "folder")}
-                {makeBasicButton(t("Addons.enableAll"), <CheckIcon size="20px" />, confirmEnable(enableAll, title), "enable-all")}
+                {makeBasicButton(t("Addons.openFolder", {context: store.prefix}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.enableAll"), <CheckIcon size="20px" />, confirmEnable(enableAll, store.prefix), "enable-all")}
                 {makeBasicButton(t("Addons.disableAll"), <XIcon size="20px" />, disableAll, "disable-all")}
             </div>
             <div className="bd-controls-advanced">

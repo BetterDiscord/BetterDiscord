@@ -246,7 +246,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {context: this.prefix, name: addon.name}), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }
