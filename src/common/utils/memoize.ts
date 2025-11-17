@@ -17,7 +17,7 @@ export default function memoizeObject<T extends Record<string | number | symbol,
         },
         set: function (obj, mod, value) {
             if (typeof (mod) === "symbol") return false;
-            if (mod in obj) return false;
+            if (Object.prototype.hasOwnProperty.call(obj, mod)) return false;
             obj[mod as keyof typeof obj] = value;
             return true;
         }

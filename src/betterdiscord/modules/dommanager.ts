@@ -1,5 +1,14 @@
 import Logger from "@common/logger";
 
+
+type DeepArray<T> = T | Array<DeepArray<T>>;
+
+interface AnimationOptions {
+    timing?: (fraction: number) => number;
+    update: (progress: number) => void;
+    duration: number;
+}
+
 // TODO: revamp the "manager" part
 export default class DOMManager {
 
@@ -44,12 +53,12 @@ export default class DOMManager {
      * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
     */
-    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<Node | string | Array<Node | string>>) {
+    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<DeepArray<Node | string>>) {
         const element = document.createElement(type);
 
         Object.assign(element, options);
 
-        const flatChildren = children.flat(Infinity).filter(c => c !== null && c !== undefined) as Array<Node | string>;
+        const flatChildren = (Array.prototype.flat as (count: number) => Array<Node | string>).call(children, Infinity).filter(c => c !== null && c !== undefined) as Array<Node | string>;
         element.append(...flatChildren);
 
         if (options.target) {
@@ -140,7 +149,7 @@ export default class DOMManager {
     }
 
     // https://javascript.info/js-animation
-    static animate({timing = _ => _, update, duration}: {timing?: (_: number) => number; update: (p: number) => void; duration: number;}) {
+    static animate({timing = _ => _, update, duration}: AnimationOptions) {
         const start = performance.now();
 
         let id = requestAnimationFrame(function animate(time) {

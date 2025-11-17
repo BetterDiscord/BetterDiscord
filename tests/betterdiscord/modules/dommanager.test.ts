@@ -1,6 +1,7 @@
 import {test, expect, describe, beforeEach, afterEach} from "bun:test";
 import DOMManager from "@modules/dommanager";
 
+
 describe("DOMManager", () => {
     describe("escapeID", () => {
         test("should return a valid id", () => {
@@ -51,13 +52,13 @@ describe("DOMManager", () => {
         test("should parse single element", () => {
             const result = DOMManager.parseHTML("<div>test</div>");
             expect(result).toBeInstanceOf(HTMLDivElement);
-            expect(result.textContent).toBe("test");
+            expect((result as HTMLDivElement).textContent).toBe("test");
         });
 
         test("should return NodeList for multiple elements when fragment=false", () => {
             const result = DOMManager.parseHTML("<span>1</span><span>2</span>");
             expect(result).toBeInstanceOf(NodeList);
-            expect(result.length).toBe(2);
+            expect((result as NodeList).length).toBe(2);
         });
 
         test("should return DocumentFragment when fragment=true", () => {
@@ -97,7 +98,7 @@ describe("DOMManager", () => {
         });
 
         test("should return node when given a node", () => {
-            const node = container.querySelector("#test");
+            const node = container.querySelector("#test")!;
             const result = DOMManager.getElement(node!, container);
             expect(result).toBe(node);
         });
