@@ -1,6 +1,6 @@
 import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
@@ -162,6 +162,8 @@ const Webpack = {
     },
 
     getStore(name: string) {return getStore(name);},
+
+    getById(id: PropertyKey) {return getById(id);}
 };
 
 Object.freeze(Webpack);
