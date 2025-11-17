@@ -1,4 +1,4 @@
-export function getKeys<T extends Record<string|number|symbol, unknown>>(object: T) {
+export function getKeys<T extends Record<string | number, unknown>>(object: T) {
     const keys: Array<keyof typeof object> = [];
 
     for (const key in object) keys.push(key);
@@ -6,7 +6,7 @@ export function getKeys<T extends Record<string|number|symbol, unknown>>(object:
     return keys;
 }
 
-export default function cloneObject<T extends Record<string|number|symbol, unknown>>(target: T, newObject: Partial<T> = {}, keys?: Array<keyof T>) {
+export default function cloneObject<T extends Record<string | number, unknown>>(target: T, newObject: Partial<T> = {}, keys?: Array<keyof T>) {
     if (!Array.isArray(keys)) keys = getKeys(target);
 
     return keys.reduce((clone, key) => {
