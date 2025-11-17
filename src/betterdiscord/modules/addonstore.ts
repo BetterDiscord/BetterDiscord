@@ -4,7 +4,7 @@ import fs from "fs";
 import request from "@polyfill/request";
 
 import Logger from "@common/logger";
-import Toasts from "@ui/toasts";
+import Toasts from "@stores/toasts";
 import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
 import React from "@modules/react";
