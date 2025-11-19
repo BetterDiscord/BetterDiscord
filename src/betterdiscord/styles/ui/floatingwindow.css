@@ -17,7 +17,7 @@
     flex-direction: column;
     -webkit-app-region: no-drag;
     position: fixed;
-    z-index: 1001;
+    z-index: 1002;
     box-sizing: border-box;
 }
 

@@ -4,6 +4,12 @@
     background: var(--bd-editor-background, var(--background-base-lower));
 }
 
+/* div:has(> #bd-editor-panel) {
+    margin-block: auto;
+    margin-inline: auto;
+    max-width: unset;
+} */
+
 #bd-editor-controls button {
     margin: 0 5px 0 0;
     background: none;
