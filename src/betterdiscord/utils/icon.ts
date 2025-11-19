@@ -1,11 +1,16 @@
 import React from "react";
 import type {LucideIcon, LucideProps} from "lucide-react";
 
-export interface DiscordProps {
-    color: string;
-    size: keyof typeof sizes;
-    className: string;
-}
+export type DiscordProps = {
+    color?: string;
+    className?: string;
+} & ({
+    size?: keyof typeof sizes;
+} | {
+    size: "custom",
+    width: React.CSSProperties["width"];
+    height: React.CSSProperties["height"];
+});
 
 export type DiscordIcon = React.ComponentType<DiscordProps>;
 
@@ -23,22 +28,24 @@ const sizes = <const>{
 type LucideMiddleware = (props: LucideProps, passedProps: DiscordProps) => LucideProps;
 type DiscordMiddleware = (props: DiscordProps, passedProps: LucideProps) => DiscordProps;
 
+type LucideToDiscord = (lucide: LucideIcon, middleWare?: LucideMiddleware) => DiscordIcon;
+type DiscordToLucide = (lucide: DiscordIcon, middleWare?: DiscordMiddleware) => LucideIcon;
+
 // TODO: Extend for all discord icon prop types
-export const lucideToDiscordIcon = (lucide: LucideIcon, middleWare: LucideMiddleware = v => v) => (
-    (props: DiscordProps) => React.createElement(lucide, middleWare({
-        size: sizes[props.size],
+export const lucideToDiscordIcon: LucideToDiscord = (lucide, middleWare = v => v) => (
+    (props) => React.createElement(lucide, middleWare({
+        size: sizes[props.size || "md"],
         className: props.className,
         color: props.color
     }, props))
 );
 
-// TODO: Extend for all discord icon prop types
-export const discordIconToLucide = (discord: DiscordIcon, middleWare: DiscordMiddleware = v => v) => (
-    (props: LucideProps) => React.createElement(discord, middleWare({
+export const discordIconToLucide: DiscordToLucide = (discord, middleWare = v => v) => (
+    (props) => React.createElement(discord, middleWare({
         size: "custom",
         width: props.size,
         height: props.size,
         className: props.className,
         color: props.color
-    } as any, props))
-);
+    }, props))
+) as LucideIcon; // React.forwardRef is deprecated so we do not need it here

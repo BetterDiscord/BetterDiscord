@@ -99,6 +99,14 @@ type LayoutConstructor = {
     onClick(): void;
 });
 
+/** @description On true clicking open will open not open the page. On false will open the page */
+const useCustomCSSClickable = () => {
+    const state = useInternalStore(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+
+    return ["detached", "external", "system"].includes(state);
+};
+const useCustomCSSViewable = () => !useCustomCSSClickable();
+
 export const SettingsTitleContext = React.createContext((v: React.ReactNode) => v);
 
 export default new class SettingsRenderer {
@@ -343,24 +351,17 @@ export default new class SettingsRenderer {
                     const icon = panel.icon ? lucideToDiscordIcon(panel.icon) : () => panel.id;
 
                     if (panel.id === "customcss") {
-                        const predicator = () => {
-                            // eslint-disable-next-line react-hooks/rules-of-hooks
-                            const state = useInternalStore(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
-
-                            return ["detached", "external", "system"].includes(state);
-                        };
-
                         insert("customcss_tab", {
                             ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                             icon,
                             title: () => panel.label,
-                            predicate: () => !predicator()
+                            predicate: useCustomCSSViewable
 
                         });
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
-                            predicate: () => predicator(),
+                            predicate: useCustomCSSClickable,
                             onClick: () => CustomCSS.open()
                         });
 

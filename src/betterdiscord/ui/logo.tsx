@@ -1,8 +1,13 @@
+import React from "@modules/react";
 import {lucideToDiscordIcon} from "@utils/icon";
 import {Icon, type LucideProps} from "lucide-react";
 
 type Props = Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement> & {accent?: boolean; secondaryColor?: React.CSSProperties["color"];};
 type PsuedoLucideIcon = React.ForwardRefExoticComponent<Props>;
+
+const IconRenderer: React.FC<React.ComponentProps<typeof Icon>> = typeof (Icon as any).render === "function"
+    ? (Icon as unknown as {render: React.FC<React.ComponentProps<typeof Icon>>;}).render
+    : Icon;
 
 const BDLogo = ((props: Props) => {
     const makeNode = (d: string, color: React.CSSProperties["color"] | undefined | null): [elementName: "circle" | "ellipse" | "g" | "line" | "path" | "polygon" | "polyline" | "rect", attrs: Record<string, string>] => {
@@ -16,7 +21,7 @@ const BDLogo = ((props: Props) => {
         ];
     };
 
-    const p = (((Icon as any).render || Icon) as React.FC<React.ComponentProps<typeof Icon>>)({
+    const element = IconRenderer({
         ...props,
         iconNode: [
             makeNode(
@@ -30,12 +35,11 @@ const BDLogo = ((props: Props) => {
         ]
     }) as React.ReactElement<any, any>;
 
-    p.props.viewBox = "0 0 2000 2000";
-    p.props.enableBackground = "new 0 0 2000 2000";
-
-    delete p.props.stroke;
-
-    return p;
+    return React.cloneElement(element, {
+        viewBox: "0 0 2000 2000",
+        enableBackground: "new 0 0 2000 2000",
+        stoke: undefined
+    });
 }) as PsuedoLucideIcon;
 
 export const Logo = Object.assign(BDLogo, {
