@@ -55,11 +55,11 @@
                 }
             },
             "window": {
+                "name": "Window Preferences",
                 "removeMinimumSize": {
                     "name": "Remove Minimum Size",
                     "note": "Removes Discord's forced minimum window size of 940x500"
                 },
-                "name": "Window Preferences",
                 "transparency": {
                     "name": "Enable Transparency",
                     "note": "Enables the main window to be see-through (requires restart)"
@@ -127,7 +127,7 @@
                 }
             },
             "developer": {
-                "name": "Developer Settings",
+                "name": "Developer Options",
                 "debuggerHotkey": {
                     "name": "Debugger Hotkey",
                     "note": "Allows activating debugger when pressing F8 with DevTools open"
@@ -161,7 +161,7 @@
                 }
             },
             "editor": {
-                "name": "Editor Preferences",
+                "name": "Editor Options",
                 "theme": {
                     "name": "Theme",
                     "note": "The theme for the code editor",
@@ -216,11 +216,23 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
-        "openFolder": "Open {{type}} Folder",
-        "openStore": "Open {{type}} Store",
-        "storeMessage": "Browse and install official community {{type}}",
+        "openFolder": {
+            "plugin": "Open Plugin Folder",
+            "theme": "Open Theme Folder"
+        },
+        "openStore": {
+            "plugin": "Open Plugin Store",
+            "theme": "Open Theme Store"
+        },
+        "storeMessage": {
+            "plugin": "Browse and install official community plugins",
+            "theme": "Browse and install official community themes"
+        },
         "store": "Store",
-        "viewInstalled": "View Installed {{type}}",
+        "viewInstalled": {
+            "plugin": "View Installed Plugins",
+            "theme": "View Installed Themes"
+        },
         "reload": "Reload",
         "addonSettings": "Settings",
         "website": "Website",
@@ -244,8 +256,22 @@
         "gridView": "Grid View",
         "enableAll": "Enable All",
         "disableAll": "Disable All",
-        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
-        "search": "Search {{type}}",
+        "enableAllWarning": {
+            "plugin": "Enabling all plugins can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
+            "theme": "Enabling all themes can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)"
+        },
+        "search": {
+            "plugin": {
+                "zero": "No plugins to search",
+                "one": "Search one plugin",
+                "other": "Search {{count}} plugins"
+            },
+            "theme": {
+                "zero": "No themes to search",
+                "one": "Search one theme",
+                "other": "Search {{count}} themes"
+            }
+        },
         "results": {
             "zero": "No Results",
             "one": "{{count}} Result",
@@ -266,19 +292,30 @@
         "methodError": "{{method}} could not be fired.",
         "unknownAuthor": "Unknown Author",
         "noDescription": "Description not provided.",
-        "alreadyExists": "There is already a {{type}} with name {{name}}",
-        "alreadWatching": "Already watching addons.",
+        "alreadyExists": {
+            "plugin": "There is already a plugin with name {{name}}",
+            "theme": "There is already a theme with name {{name}}"
+        },
         "metaError": "META could not be parsed.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}!",
-        "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
+        "blankSlateHeader": {
+            "plugin": "You don't have any plugins!",
+            "theme": "You don't have any themes!"
+        },
+        "blankSlateMessage": {
+            "plugin": "Grab some from [our website]({{link}}) and add them to your plugin folder.",
+            "theme": "Grab some from [our website]({{link}}) and add them to your theme folder."
+        },
         "blankSlateHeaderGeneric": "You don't have anything!",
         "blankSlateMessageGeneric": "You should probably get some.",
         "wasLoaded": "{{name}} v{{version}} was loaded.",
-        "failedToDownload": "Failed to download {{type}} {{name}}",
+        "failedToDownload": {
+            "plugin": "Failed to download plugin {{name}}",
+            "theme": "Failed to download theme {{name}}"
+        },
         "successfullyDownload": "Successfully downloaded {{name}}",
         "alreadyInstalled": "{{name}} is already installed",
         "failedToFetch": "Unable to get addons",
@@ -296,8 +333,14 @@
         "preview": "Preview",
         "official": "Official",
         "manyEnabled": {
-            "one": "{{count}} {{type}} has been enabled.",
-            "other": "{{count}} {{type}}s have been enabled."
+            "plugin": {
+                "one": "One plugin has been enabled.",
+                "other": "{{count}} plugins have been enabled."
+            },
+            "theme": {
+                "one": "One theme has been enabled.",
+                "other": "{{count}} themes have been enabled."
+            }
         }
     },
     "CustomCSS": {
@@ -337,10 +380,6 @@
         "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?",
         "automaticallyEnable": "Automatically Enable"
     },
-    "ReactDevTools": {
-        "notFound": "Extension Not Found",
-        "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
-    },
     "Sorting": {
         "sortBy": "Sort By",
         "order": "Order",
@@ -350,9 +389,6 @@
     "WindowPrefs": {
         "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
-    },
-    "Notices": {
-        "moreInfo": "More Info"
     },
     "Toasts": {
         "recoveryFailed": "Recovery incomplete. Some actions failed to complete."
@@ -365,8 +401,14 @@
         "viewUpdates": "View Updates",
         "addonUpdaterNotificationTitle": "Addon Updater",
         "addonUpdatesAvailable": {
-            "one": "{{count}} {{type}} has an update!",
-            "other": "{{count}} {{type}}s have updates!"
+            "plugin": {
+                "one": "One plugin has an update!",
+                "other": "{{count}} plugins have updates!"
+            },
+            "theme": {
+                "one": "One theme has an update!",
+                "other": "{{count}} themes have updates!"
+            }
         },
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
@@ -376,7 +418,10 @@
         "updateAll": "Update All!",
         "noUpdatesAvailable": "No updates available.",
         "versionAvailable": "Version {{version}} now available!",
-        "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
+        "upToDateBlankslate": {
+            "plugin": "All of your plugins seem to be up to date!",
+            "theme": "All of your themes seem to be up to date!"
+        },
         "updateButton": "Update!"
     },
     "Settings": {

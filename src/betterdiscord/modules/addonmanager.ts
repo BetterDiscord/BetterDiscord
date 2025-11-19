@@ -83,13 +83,15 @@ export default abstract class AddonManager extends Store {
     state: Record<string, boolean> = {};
     windows = new Set<string>();
     hasInitialized = false;
+    initialAddonsLoaded = 0;
 
     initialize() {
         Settings.registerAddonPanel(this);
 
         const errors = this.loadAllAddons();
-        const numEnabled = Object.values(this.state).filter(b => b).length;
-        if (numEnabled > 0) Toasts.show(t("Addons.manyEnabled", {count: numEnabled, type: this.prefix}));
+        if (this.initialAddonsLoaded > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, type: this.prefix}));
+        }
         this.hasInitialized = true;
         return errors;
     }
@@ -244,7 +246,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {context: this.prefix, name: addon.name}), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }
@@ -413,6 +415,7 @@ export default abstract class AddonManager extends Store {
             }
             const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
+            else if (addon !== false) this.initialAddonsLoaded++;
         }
 
         this.saveState();

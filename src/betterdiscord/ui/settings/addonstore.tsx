@@ -113,7 +113,7 @@ function TagDropdown({type, selected, onChange}) {
 /**
  * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0
  */
-export default function AddonStorePage({type, title, refToScroller}) {
+export default function AddonStorePage({type, refToScroller}) {
     const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
@@ -229,12 +229,12 @@ export default function AddonStorePage({type, title, refToScroller}) {
 
     return [
         <AddonHeader key="title" count={filtered.length} searching={query.length !== 0}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {type: `${filtered.length} ${title}`})}...`} />
+            <Search onChange={search} placeholder={`${t("Addons.search", {count: filtered.length, context: type})}...`} />
         </AddonHeader>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
                 {/* {makeBasicButton(t("Addons.website"), <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
-                {makeBasicButton(t("Addons.openFolder", {type: title}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.openFolder", {context: type}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
                 {makeBasicButton(t("Addons.reload"), <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">

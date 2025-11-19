@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} von {{author}}",
         "byline": "von {{author}}",
-        "openFolder": "{{type}}-Ordner öffnen",
         "reload": "Neu laden",
         "addonSettings": "Einstellungen",
         "website": "Webseite",
@@ -121,7 +120,6 @@
         "version": "Version",
         "added": "Hinzufügedatum",
         "modified": "Bearbeitungsdatum",
-        "search": "{{type}} suchen",
         "editAddon": "Bearbeiten",
         "deleteAddon": "Löschen",
         "confirmDelete": "Bist du dir sicher, dass du {{name}} löschen willst?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} konnte nicht ausgeführt werden.",
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
-        "alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",
-        "alreadWatching": "Erweiterungen werden bereits beobachtet.",
         "metaError": "META konnte nicht geparst werden.",
         "missingNameData": "META enthält keinen \\\"name\\\" Parameter.",
         "metaNotFound": "META nicht gefunden.",
         "compileError": "Konnte nicht kompiliert werden.",
-        "wasUnloaded": "{{name}} wurde entladen.",
-        "blankSlateHeader": "Du besitzt keine {{type}}s!",
-        "blankSlateMessage": "Lade dir welche von [this website]({{link}}) herunter und füge sie deinem {{type}} Ordner hinzu."
+        "wasUnloaded": "{{name}} wurde entladen."
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -171,10 +165,6 @@
         "restartLater": "Später neustarten",
         "additionalInfo": "Zusätzliche Informationen",
         "restartPrompt": "Die Einstellung wurde gespeichert. Um sie anzuwenden, ist ein Neustart von Discord erforderlich."
-    },
-    "ReactDevTools": {
-        "notFound": "Erweiterung nicht gefunden",
-        "notFoundDetails": "React-Entwicklerwerkzeuge-Erweiterung konnte nicht gefunden werden. Füg die Erweiterung zu deiner Chrome-Installation hinzu."
     },
     "Sorting": {
         "sortBy": "Sortieren nach",
