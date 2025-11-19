@@ -149,10 +149,10 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
-        if (!UserSettings) return;
+        const UserSettingsLayer = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
+        if (!UserSettingsLayer) return;
 
-        Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
+        Patcher.after("SettingsManager", UserSettingsLayer.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
             let location = returnValue.findIndex((s: Section) => s.section.toLowerCase() == "changelog") - 1;
             if (location < 0) return;
             const insert = (section: Section) => {
