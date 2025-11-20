@@ -1,7 +1,7 @@
 import React, {ReactDOM} from "@modules/react";
 import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
-import {getByKeys, getBySource, getLazy, getLazyByPrototypes, getLazyByStrings} from "@webpack";
+import {Filters, getByKeys, getBySource, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -171,7 +171,7 @@ export default new class SettingsRenderer {
             insert({section: "CUSTOM", element: Header});
             for (const collection of Settings.collections) {
                 insert({
-                    section: collection.name,
+                    section: collection.id,
                     label: collection.name.toString(),
                     className: `bd-${collection.id}-tab`,
                     element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))
@@ -231,6 +231,8 @@ export default new class SettingsRenderer {
         }>(m => m?.key === "$Root");
         if (!rootLayout) return;
 
+        this.patchSettingsSearch();
+
         const layoutBuilder = this.getLayoutBuilder();
 
         const section = layoutBuilder.section("betterdiscord", {
@@ -265,6 +267,8 @@ export default new class SettingsRenderer {
                     if (typeof item.predicate === "function") {
                         sidebar.usePredicate = () => !!item.predicate!();
                     }
+
+                    (sidebar as any).useSearchable = () => ["test"];
 
                     if ("onClick" in item) {
                         sidebar.onClick = item.onClick;
@@ -387,6 +391,64 @@ export default new class SettingsRenderer {
             if (index === -1) index = res.length;
 
             res.splice(index, 0, section);
+        });
+    }
+
+    patchSettingsSearch() {
+        const search = getMangled<{
+            search(): Record<string, any>;
+        }>(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]", {
+            search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
+        });
+
+        Patcher.after("SettingsManager", search, "search", (that, args, res) => {
+            res = {...res}; // Discord freezes the object
+
+            function insert(key: string, item: {
+                label: string;
+                searchableTitles: string[];
+            }) {
+                res[`BETTERDISCORD_${key}`] = {
+                    ...item,
+                    ariaLabel: item.label,
+                    section: "betterdiscord"
+                };
+            }
+
+            for (const collection of Settings.collections) {
+                const items = collection.settings.map(m => [m.name, m.settings.map(setting => setting.name)]).flat(2) as string[];
+
+                insert(collection.id, {
+                    label: collection.name,
+                    searchableTitles: [
+                        "betterdiscord",
+                        collection.name,
+                        ...items
+                    ]
+                });
+            }
+
+            for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
+                const content = {
+                    label: panel.label,
+                    searchableTitles: [
+                        "betterdiscord",
+                        panel.label,
+                        typeof panel.searchable === "function" ? panel.searchable().filter(m => typeof m === "string") : []
+                    ].flat()
+                };
+
+                if (panel.id === "customcss") {
+                    insert("customcss_tab", content);
+                    insert("customcss_clickable", content);
+
+                    continue;
+                }
+
+                insert(panel.id, content);
+            }
+
+            return Object.freeze(res);
         });
     }
 

@@ -30,6 +30,7 @@ export interface SettingsPanel {
     icon?: LucideIcon;
     type?: "addon" | "settings";
     manager?: AddonManager;
+    searchable?(): string[];
 }
 
 type State = Record<string, Record<string, any>>;
@@ -61,7 +62,7 @@ export default new class SettingsManager extends Store {
         this.collections.splice(location, 1);
     }
 
-    registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager; icon?: LucideIcon;}) {
+    registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager; icon?: LucideIcon; searchable?(): string[];}) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1, type = "settings"} = options;
         const section: SettingsPanel = {
@@ -70,7 +71,8 @@ export default new class SettingsManager extends Store {
             order,
             get label() {return t(`Panels.${id}`) || name;},
             section: id,
-            icon: options.icon
+            icon: options.icon,
+            searchable: options.searchable
         };
         if (options.manager) section.manager = options.manager;
         if (onClick) section.clickListener = onClick;
@@ -81,7 +83,14 @@ export default new class SettingsManager extends Store {
     registerAddonPanel(manager: AddonManager) {
         const plural = manager.prefix + "s";
         const title = t(`Panels.${plural as "plugins" | "themes"}`)!;
-        this.registerPanel(plural, title, {order: manager.order, type: "addon", manager: manager, icon: manager.prefix === "plugin" ? PlugIcon : PaletteIcon});
+
+        this.registerPanel(plural, title, {
+            order: manager.order,
+            type: "addon",
+            manager: manager,
+            icon: manager.prefix === "plugin" ? PlugIcon : PaletteIcon,
+            searchable: () => manager.addonList.flatMap((addon) => [addon.name, addon.filename])
+        });
     }
 
     removePanel(id: string) {
