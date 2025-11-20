@@ -243,7 +243,7 @@ export default new class SettingsManager extends Store {
     onSettingChange(collection: string, category: string, id: string, value: unknown) {
         this.state[collection][category][id] = value;
         Events.dispatch("setting-updated", collection, category, id, value);
-        this.emit();
+        this.emitChange();
         this.saveCollection(collection);
     }
 
