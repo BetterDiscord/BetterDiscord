@@ -118,7 +118,7 @@ interface ReactUtils {
     wrapElement(element: Element | Element[]): React.ComponentType;
     wrapInHooks<T extends React.FC>(
         functionComponent: ElementType<T>,
-        customPatches: Partial<PatchedReactHooks>
+        customPatches?: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
     // forceUpdateFiber(fiber: Fiber): boolean;
     getType<T extends React.FC>(elementType: ElementType<T>): T;
