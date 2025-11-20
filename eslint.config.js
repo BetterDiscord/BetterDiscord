@@ -44,7 +44,7 @@ export default ts.config(
             ],
             "@stylistic/block-spacing": ["error", "never"],
             "@stylistic/dot-location": ["error", "property"],
-            "@stylistic/func-call-spacing": ["error"],
+            "@stylistic/function-call-spacing": ["error"],
             "@stylistic/key-spacing": ["error"],
             "@stylistic/keyword-spacing": ["error"],
             "@stylistic/no-floating-decimal": ["error"],
@@ -70,7 +70,7 @@ export default ts.config(
             ],
             "@stylistic/quotes": [
                 "error", "double",
-                {allowTemplateLiterals: true}
+                {allowTemplateLiterals: "always"}
             ],
             "@stylistic/rest-spread-spacing": ["error"],
             "@stylistic/semi": ["error"],
