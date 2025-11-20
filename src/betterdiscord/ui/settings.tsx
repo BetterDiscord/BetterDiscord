@@ -13,7 +13,7 @@ import type {SettingsCategory} from "@data/settings";
 import type {ComponentType, ReactNode} from "react";
 import VersionInfo from "./misc/versioninfo";
 import {findInTree} from "@common/utils";
-import {useForceUpdate, useInternalStore} from "./hooks";
+import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
 import {lucideToDiscordIcon, type DiscordIcon} from "@utils/icon";
@@ -101,7 +101,7 @@ type LayoutConstructor = {
 
 /** @description On true clicking open will open not open the page. On false will open the page */
 const useCustomCSSClickable = () => {
-    const state = useInternalStore(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
 
     return ["detached", "external", "system"].includes(state);
 };
