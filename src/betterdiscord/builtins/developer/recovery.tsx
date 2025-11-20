@@ -223,7 +223,7 @@ export default new class Recovery extends Builtin {
                     content: t("Modals.addonCrashed"),
                     duration: Infinity,
                     type: "info",
-                    icon: () => <Logo width={16} height={16} />,
+                    icon: () => <Logo size={16} />,
                     actions: [
                         ...(config.isCanary ? [{
                             label: "Re-enable",

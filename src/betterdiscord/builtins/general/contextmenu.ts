@@ -1,7 +1,7 @@
 import Builtin from "@structs/builtin";
 
 import {t} from "@common/i18n";
-import Settings, {type SettingsCollection} from "@stores/settings";
+import SettingsStore, {type SettingsCollection} from "@stores/settings";
 
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager, {type Plugin} from "@modules/pluginmanager";
@@ -9,10 +9,10 @@ import themeManager from "@modules/thememanager";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
 import Modals from "@ui/modals";
-import {getByKeys} from "@webpack";
 import {findInTree} from "@common/utils";
 import {CustomCSS} from "@builtins/builtins";
 import type AddonManager from "@modules/addonmanager";
+import settings from "@ui/settings";
 
 
 // TODO: fix type after reworking the context module
@@ -25,7 +25,6 @@ const ContextMenu = new ContextMenuPatcher() as InstanceType<typeof ContextMenuP
     Item: any;
     Menu: any;
 };
-const UserSettingsWindow = getByKeys<{open(id: string): void;}>(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -56,7 +55,7 @@ export default new class BDContextMenu extends Builtin {
 
         // BetterDiscord Settings
         // TODO: de-dup when converting context menu module
-        const items: Array<{type?: string; label: any; action: () => Promise<void>; items?: any;}> = Settings.collections.map(c => this.buildCollectionMenu(c));
+        const items: Array<{type?: string; label: any; action: () => Promise<void>; items?: any;}> = SettingsStore.collections.map(c => this.buildCollectionMenu(c));
 
         // Updater
         items.push({
@@ -65,16 +64,16 @@ export default new class BDContextMenu extends Builtin {
         });
 
         // Custom CSS
-        if (Settings.get("settings", "customcss", "customcss")) {
+        if (SettingsStore.get("settings", "customcss", "customcss")) {
             items.push({
                 label: t("Panels.customcss"),
-                action: () => CustomCSS.open()
+                action: async () => CustomCSS.open()
             });
         }
 
         // Plugins & Themes
-        items.push(this.buildAddonMenu(t("Panels.plugins"), pluginManager));
-        items.push(this.buildAddonMenu(t("Panels.themes"), themeManager));
+        items.push(this.buildAddonMenu("plugin", t("Panels.plugins"), pluginManager));
+        items.push(this.buildAddonMenu("theme", t("Panels.themes"), themeManager));
 
         // Parent SubMenu
         const bdSubMenu = ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items});
@@ -97,8 +96,8 @@ export default new class BDContextMenu extends Builtin {
                             type: "toggle",
                             label: setting.name,
                             disabled: setting.disabled,
-                            active: Settings.get(collection.id, category.id, setting.id),
-                            action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
+                            active: SettingsStore.get(collection.id, category.id, setting.id),
+                            action: () => SettingsStore.set(collection.id, category.id, setting.id, !SettingsStore.get(collection.id, category.id, setting.id))
                         };
                     })
                 };
@@ -112,7 +111,7 @@ export default new class BDContextMenu extends Builtin {
      * @param {import("../../modules/addonmanager").default} manager
      * @returns
      */
-    buildAddonMenu(label: string, manager: AddonManager) {
+    buildAddonMenu(type: "plugin" | "theme", label: string, manager: AddonManager) {
         const names = manager.addonList.map(a => a.name || (a as any).getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         const toggles: Array<{type?: string; label?: any; disabled?: boolean; active?: boolean; action?: (e: any) => void;}> = names.map(name => {
             return {
@@ -137,13 +136,13 @@ export default new class BDContextMenu extends Builtin {
         });
 
         // If the store is enabled, add a separate item to open it
-        if (Settings.get("settings", "store", "bdAddonStore")) {
+        if (SettingsStore.get("settings", "store", "bdAddonStore")) {
             if (toggles.length) toggles.push({type: "separator"}); // Add separator when addons exist
 
             toggles.push({
-                label: t("Addons.openStore", {type: label}),
+                label: t("Addons.openStore", {context: type}),
                 action: () => {
-                    this.openCategory(label.toLowerCase());
+                    this.openCategory(manager.prefix);
                     // If the addon store instantly opens have it just stop basically
                     DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
                 }
@@ -153,13 +152,13 @@ export default new class BDContextMenu extends Builtin {
         return {
             type: "submenu",
             label: label,
-            action: () => this.openCategory(label.toLowerCase()),
+            action: () => this.openCategory(manager.prefix),
             items: toggles
         };
     }
 
     async openCategory(id: string) {
         ContextMenu.close();
-        UserSettingsWindow?.open?.(id);
+        settings.openSettingsPage(id);
     }
 };

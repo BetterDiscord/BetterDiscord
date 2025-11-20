@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} bởi {{author}}",
         "byline": "bởi {{author}}",
-        "openFolder": "Mở thư mục {{type}}",
         "reload": "Tải lại",
         "addonSettings": "Cài đặt",
         "website": "Trang web",
@@ -158,7 +157,6 @@
         "version": "Phiên bản",
         "added": "Ngày thêm",
         "modified": "Ngày sửa đổi",
-        "search": "Tìm kiếm {{type}}",
         "editAddon": "Chỉnh sửa",
         "deleteAddon": "Xóa",
         "confirmDelete": "Bạn chắc chắn muốn xóa {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}} không thể được kích hoạt.",
         "unknownAuthor": "Tác giả không xác định",
         "noDescription": "Không có miêu tả.",
-        "alreadyExists": "Đã có {{type}} với tên {{name}} rồi!",
-        "alreadWatching": "Đã đang xem tiện ích.",
         "metaError": "Không thể phân tích META.",
         "missingNameData": "Thiếu dữ liệu tên META.",
         "metaNotFound": "Không thể tìm thấy META.",
         "compileError": "Không thể biên dịch. Vui lòng kiểm tra Console để biết thêm chi tiết.",
         "wasUnloaded": "{{name}} đã được gỡ.",
-        "blankSlateHeader": "Bạn không có {{type}}!",
-        "blankSlateMessage": "Lấy một số ở [trang web]({{link}}) và thêm vào thư mục {{type}}.",
         "isEnabled": "Đã kích hoạt",
         "wasLoaded": "{{name}} v{{version}} đã được thêm.",
         "listView": "Dạng Danh Sách",
@@ -214,10 +208,6 @@
         "restartPrompt": "Để có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
         "changelog": "Nhật ký thay đổi"
     },
-    "ReactDevTools": {
-        "notFound": "Không Thể Tìm Thấy Tiện Ích",
-        "notFoundDetails": "Không thể tìm thấy tiện ích React Developer Tools trong máy bạn. Vui lòng cài đặt tiện ích trên Chrome."
-    },
     "Sorting": {
         "sortBy": "Lọc Bởi",
         "order": "Thứ tự",
@@ -228,15 +218,11 @@
         "enabledInfo": "Lựa chọn này cần phải có một chủ đề trong suốt để có thể hoạt động đúng cách. Trên Windows, tính năng sắp xếp và thu phóng cửa số (Aero Snapping) và toàn cửa sổ có thể không hoạt động.\n\nĐể có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
         "disabledInfo": "Để có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?"
     },
-    "Notices": {
-        "moreInfo": "Thông Tin Thêm"
-    },
     "Updater": {
         "updateFailed": "Cập Nhật Thất Bại!",
         "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
         "updateSuccessful": "Cập Nhật Thành Công!",
         "updateAvailable": "BetterDiscord có cập nhật mới (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord đã phát hiện {{count}} cho {{type}} của bạn!",
         "addonUpdated": "{{name}} đã được cập nhật lên phiên bản {{version}}!",
         "checking": "Đang kiểm tra cập nhât...",
         "finishedChecking": "Kiểm tra cập nhật thành công!",
@@ -244,7 +230,6 @@
         "updateAll": "Cập Nhật Mọi Thứ!",
         "noUpdatesAvailable": "Không có cập nhật mới.",
         "versionAvailable": "Phiên bản {{version}} đã có sẵn!",
-        "upToDateBlankslate": "Tất cả {{type}} của bạn đều ở phiên bản mới nhất!",
         "updateButton": "Cập nhật!"
     }
 }

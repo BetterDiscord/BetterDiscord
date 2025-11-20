@@ -4,7 +4,7 @@ import fs from "fs";
 import request from "@polyfill/request";
 
 import Logger from "@common/logger";
-import Toasts from "@ui/toasts";
+import Toasts from "@stores/toasts";
 import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
 import React from "@modules/react";
@@ -315,7 +315,7 @@ class Addon {
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error as Error);
 
-                    Toasts.show(t("Addons.failedToDownload", {type: this.type, name: this.name}), {
+                    Toasts.show(t("Addons.failedToDownload", {context: this.type, name: this.name}), {
                         type: "error"
                     });
 

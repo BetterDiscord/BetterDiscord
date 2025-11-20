@@ -76,3 +76,12 @@
     /* text-transform: capitalize; */
     cursor: pointer;
 }
+
+.bd-settings-title-extend {
+    width: 100%;
+}
+
+.bd-settings-page-title-children {
+    margin-left: auto;
+    margin-right: 12px;
+}

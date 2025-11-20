@@ -14,6 +14,7 @@ import SettingsTitle from "@ui/settings/title";
 import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 import type {CoreUpdater, ThemeUpdater, PluginUpdater, AddonUpdater} from "@modules/updater";
 import type {MouseEvent, ReactNode} from "react";
+import {SettingsTitleContext} from "./settings";
 
 
 const {useState, useCallback, useEffect} = React;
@@ -55,7 +56,7 @@ function CoreUpdaterPanel({hasUpdate, remoteVersion, update}: {hasUpdate: boolea
 function NoUpdates({type}: {type: "plugins" | "themes";}) {
     return <div className="bd-empty-updates">
         <CheckIcon size="48px" />
-        {t("Updater.upToDateBlankslate", {type: type})}
+        {t("Updater.upToDateBlankslate", {context: type.slice(0, -1)})}
     </div>;
 }
 
@@ -143,10 +144,14 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
         }
     }, [updateAddon, updates]);
 
+    const set = React.useContext(SettingsTitleContext);
+
     return [
-        <SettingsTitle text={t("Panels.updates")}>
-            {makeButton(t("Updater.checkForUpdates"), <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
-        </SettingsTitle>,
+        set(
+            <SettingsTitle text={t("Panels.updates")}>
+                {makeButton(t("Updater.checkForUpdates"), <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
+            </SettingsTitle>
+        ),
         <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
         <AddonUpdaterPanel type="plugins" pending={updates.plugins} update={updateAddon} updateAll={updateAllAddons} updater={pluginUpdater} />,
         <AddonUpdaterPanel type="themes" pending={updates.themes} update={updateAddon} updateAll={updateAllAddons} updater={themeUpdater} />,
