@@ -120,7 +120,7 @@ interface ReactUtils {
         functionComponent: ElementType<T>,
         customPatches: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
-    forceUpdateFiber(fiber: Fiber): boolean;
+    // forceUpdateFiber(fiber: Fiber): boolean;
     getType<T extends React.FC>(elementType: ElementType<T>): T;
 }
 
@@ -262,32 +262,32 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    forceUpdateFiber(fiber: Fiber): boolean {
-        fiber.type = ReactUtils.getType(fiber.elementType);
+    // forceUpdateFiber(fiber: Fiber): boolean {
+    //     fiber.type = ReactUtils.getType(fiber.elementType);
 
-        // React Class Components
-        if (fiber.stateNode?.isReactComponent) {
-            fiber.stateNode.forceUpdate();
-            return true;
-        }
+    //     // React Class Components
+    //     if (fiber.stateNode?.isReactComponent) {
+    //         fiber.stateNode.forceUpdate();
+    //         return true;
+    //     }
 
-        let memoizedState = fiber.memoizedState;
+    //     let memoizedState = fiber.memoizedState;
 
-        while (memoizedState) {
-            if (memoizedState.queue?.lanes === 0) {
-                const lastRenderedState = memoizedState.queue.lastRenderedState;
+    //     while (memoizedState) {
+    //         if (memoizedState.queue?.lanes === 0) {
+    //             const lastRenderedState = memoizedState.queue.lastRenderedState;
 
-                memoizedState.queue.dispatch((m: any) => !m);
-                memoizedState.queue.dispatch(lastRenderedState);
+    //             memoizedState.queue.dispatch((m: any) => !m);
+    //             memoizedState.queue.dispatch(lastRenderedState);
 
-                return true;
-            }
+    //             return true;
+    //         }
 
-            memoizedState = memoizedState.next;
-        }
+    //         memoizedState = memoizedState.next;
+    //     }
 
-        return false;
-    },
+    //     return false;
+    // },
 
     getType<T extends React.FC>(elementType: ElementType<T>): T {
         while (true) {
