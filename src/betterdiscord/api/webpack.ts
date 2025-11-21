@@ -1,6 +1,6 @@
 import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getBulkObject, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
@@ -103,7 +103,7 @@ const Webpack = {
     },
 
     getBulk<T extends any[]>(...queries: BulkQueries[]) {return getBulk<T>(...queries);},
-    getBulkObject<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkObject<T>(queries);},
+    getBulkKeyed<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyed<T>(queries);},
 
     waitForModule<T>(filter: Filter, options: LazyOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");

@@ -192,7 +192,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     return returnedModules;
 }
 
-export function getBulkObject<T extends object>(queries: Record<keyof T, Webpack.BulkQueries>): T {
+export function getBulkKeyed<T extends object>(queries: Record<keyof T, Webpack.BulkQueries>): T {
     const modules = getBulk(...Object.values(queries) as Webpack.BulkQueries[]);
     return Object.fromEntries(
         Object.keys(queries).map((key, index) => [key, modules[index]])
