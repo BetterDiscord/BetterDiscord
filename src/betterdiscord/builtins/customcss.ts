@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import fs from "fs";
 import path from "path";
 import electron from "electron";
 
 import Builtin from "@structs/builtin";
 
-import Settings from "@stores/settings";
+import SettingsStore from "@stores/settings";
+import Settings, {SettingsTitleContext} from "@ui/settings";
 import Config from "@stores/config";
 import React from "@modules/react";
 import Events from "@modules/emitter";
@@ -15,20 +17,21 @@ import DiscordModules from "@modules/discordmodules";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
-import {getByKeys} from "@webpack";
+import {getByKeys, getByStrings} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
+import {PencilIcon} from "lucide-react";
 
-
+const closeUserSettings = getByStrings<() => boolean>(["closeUserSettings"]);
 const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"]);
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
     get category() {return "customcss";}
     get id() {return "customcss";}
-    get startDetached() {return Settings.get(this.collection, this.category, "openAction") == "detached";}
-    get nativeOpen() {return Settings.get(this.collection, this.category, "openAction") == "system";}
-    get startAsExternal() {return Settings.get(this.collection, this.category, "openAction") == "external";}
+    get startDetached() {return SettingsStore.get(this.collection, this.category, "openAction") == "detached";}
+    get nativeOpen() {return SettingsStore.get(this.collection, this.category, "openAction") == "system";}
+    get startAsExternal() {return SettingsStore.get(this.collection, this.category, "openAction") == "external";}
     get file() {return path.resolve(Config.get("channelPath"), "custom.css");}
 
     savedCss: string;
@@ -43,17 +46,27 @@ export default new class CustomCSS extends Builtin {
         this.isDetached = false;
     }
 
-    async enabled() {
-        Settings.registerPanel(this.id, t("Panels.customcss"), {
-            order: 2,
-            element: () => [React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")}), React.createElement(CSSEditor, {
+    Page = () => {
+        const set = React.useContext(SettingsTitleContext);
+
+        return [
+            set(React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")})),
+            React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
                 openNative: this.openNative.bind(this),
                 openDetached: this.openDetached.bind(this),
                 onChange: this.onChange.bind(this)
-            })],
+            })
+        ];
+    };
+
+    async enabled() {
+        SettingsStore.registerPanel(this.id, t("Panels.customcss"), {
+            order: 2,
+            icon: PencilIcon,
+            element: () => React.createElement(this.Page),
             onClick: (thisObject) => {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();
@@ -69,7 +82,7 @@ export default new class CustomCSS extends Builtin {
     }
 
     async disabled() {
-        Settings.removePanel(this.id);
+        SettingsStore.removePanel(this.id);
         this.unwatchContent();
         this.insertCSS("");
     }
@@ -110,7 +123,7 @@ export default new class CustomCSS extends Builtin {
     }
 
     onChange(value: string) {
-        if (!Settings.get("settings", "customcss", "liveUpdate")) return;
+        if (!SettingsStore.get("settings", "customcss", "liveUpdate")) return;
         this.insertCSS(value);
         this.saveCSS(value);
     }
@@ -140,7 +153,7 @@ export default new class CustomCSS extends Builtin {
         if (this.nativeOpen) return this.openNative();
         else if (this.startDetached) return this.openDetached(this.savedCss);
         else if (this.startAsExternal) return this.openExternal();
-        return UserSettings?.open?.(this.id);
+        return Settings.openSettingsPage(this.id);
     }
 
     openNative() {
@@ -176,12 +189,15 @@ export default new class CustomCSS extends Builtin {
             children: editor,
             confirmClose: () => {
                 if (!editorRef || !editorRef.current) return false;
-                if (Settings.get("settings", "customcss", "liveUpdate")) return false;
+                if (SettingsStore.get("settings", "customcss", "liveUpdate")) return false;
                 return editorRef.current.hasUnsavedChanges;
             },
             confirmationText: t("CustomCSS.confirmationText")
         });
         this.isDetached = true;
+
+        if (closeUserSettings?.()) return;
+
         UserSettings?.close();
         DiscordModules.Dispatcher?.dispatch({type: "LAYER_POP"});
     }
