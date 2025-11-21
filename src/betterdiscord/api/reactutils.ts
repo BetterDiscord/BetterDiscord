@@ -103,15 +103,25 @@ interface GetOwnerInstanceOptions {
     filter?: (owner: any) => boolean;
 }
 
+const exoticComponents = {
+    memo: Symbol.for("react.memo"),
+    forwardRef: Symbol.for("react.forward_ref"),
+    lazy: Symbol.for("react.lazy")
+};
+
+type ElementType<T extends React.FC> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
+
 interface ReactUtils {
     rootInstance: any;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
-    wrapInHooks<P extends object>(
-        functionComponent: React.FunctionComponent<P>,
+    wrapInHooks<T extends React.FC>(
+        functionComponent: ElementType<T>,
         customPatches?: Partial<PatchedReactHooks>
-    ): React.FunctionComponent<P>;
+    ): React.FunctionComponent<React.ComponentProps<T>>;
+    // forceUpdateFiber(fiber: Fiber): boolean;
+    getType<T extends React.FC>(elementType: ElementType<T>): T;
 }
 
 /**
@@ -173,7 +183,7 @@ const ReactUtils: ReactUtils = {
             return name !== null && (nameFilter?.includes(name) !== excluding);
         }
 
-        let curr = this.getInternalInstance(node);
+        let curr = ReactUtils.getInternalInstance(node);
         while (curr && curr.return) {
             curr = curr.return;
             const owner = curr.stateNode;
@@ -227,18 +237,20 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    wrapInHooks<P extends object>(
-        functionComponent: React.FunctionComponent<P>,
+    wrapInHooks<T extends React.FC>(
+        functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
-        return function wrappedComponent(props: P) {
+        const FC = ReactUtils.getType(functionComponent);
+
+        return function wrappedComponent(props: React.ComponentProps<T>) {
             const reactDispatcher = (React as any).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE.H;
             const originalDispatcher = {...reactDispatcher};
 
             Object.assign(reactDispatcher, patchedReactHooks, customPatches);
 
             try {
-                return functionComponent(props);
+                return FC(props);
             }
             catch (error) {
                 if (error instanceof Error && error.message === USE_ERR_MSG) return;
@@ -248,6 +260,60 @@ const ReactUtils: ReactUtils = {
                 Object.assign(reactDispatcher, originalDispatcher);
             }
         };
+    },
+
+    // forceUpdateFiber(fiber: Fiber): boolean {
+    //     fiber.type = ReactUtils.getType(fiber.elementType);
+
+    //     // React Class Components
+    //     if (fiber.stateNode?.isReactComponent) {
+    //         fiber.stateNode.forceUpdate();
+    //         return true;
+    //     }
+
+    //     let memoizedState = fiber.memoizedState;
+
+    //     while (memoizedState) {
+    //         if (memoizedState.queue?.lanes === 0) {
+    //             const lastRenderedState = memoizedState.queue.lastRenderedState;
+
+    //             memoizedState.queue.dispatch((m: any) => !m);
+    //             memoizedState.queue.dispatch(lastRenderedState);
+
+    //             return true;
+    //         }
+
+    //         memoizedState = memoizedState.next;
+    //     }
+
+    //     return false;
+    // },
+
+    getType<T extends React.FC>(elementType: ElementType<T>): T {
+        while (true) {
+            switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
+                case exoticComponents.memo:
+                    elementType = (elementType as React.MemoExoticComponent<T>).type;
+                    break;
+                case exoticComponents.forwardRef:
+                    elementType = (elementType as React.ForwardRefExoticComponent<T> & {render: T;}).render;
+                    break;
+                case exoticComponents.lazy: {
+                    const _payload = (elementType as any)._payload;
+
+                    if (_payload._status === 1) {
+                        elementType = _payload._result.default;
+                    }
+                    else {
+                        // Not possible but just incase
+                        elementType = (() => {}) as unknown as T;
+                    }
+                    break;
+                }
+                default:
+                    return elementType as T;
+            }
+        }
     }
 };
 

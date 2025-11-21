@@ -39,3 +39,5 @@ export function getDefaultKey(module: Webpack.Module): Webpack.DefaultKey | unde
     if ("ZP" in module.exports) return "ZP";
     if (module.exports.__esModule && "default" in module.exports) return "default";
 }
+
+export const makeException = () => new Error("Module search failed!");
