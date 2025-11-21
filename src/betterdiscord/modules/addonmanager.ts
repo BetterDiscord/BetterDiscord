@@ -90,7 +90,7 @@ export default abstract class AddonManager extends Store {
 
         const errors = this.loadAllAddons();
         if (this.initialAddonsLoaded > 0) {
-            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, type: this.prefix}));
+            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
         }
         this.hasInitialized = true;
         return errors;
