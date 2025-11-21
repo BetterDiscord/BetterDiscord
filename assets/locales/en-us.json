@@ -33,10 +33,6 @@
                 "notificationPosition": {
                     "name": "Notification",
                     "note": "Lets you choose where you want notifications to popup."
-                },
-                "notificationEnabled": {
-                    "name": "Show Notifications",
-                    "note": "Prevents or allows notifications to be shown on screen."
                 }
             },
             "store": {
