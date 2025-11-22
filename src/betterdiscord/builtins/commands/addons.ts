@@ -83,7 +83,7 @@ export default (type: "plugin" | "theme") => {
             }
 
             if (action === "share") {
-                DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${addon.name}>`});
+                DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${addon.name}>`}, undefined, {});
             }
         }
     };
