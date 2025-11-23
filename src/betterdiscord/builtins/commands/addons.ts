@@ -1,3 +1,4 @@
+import {t} from "@common/i18n";
 import {OptionTypes} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
@@ -40,21 +41,32 @@ export default (type: "plugin" | "theme") => {
         execute: async (data, {channel}) => {
             const action = data.find(o => o.name === "action").value;
             const addonId = data.find(o => o.name === "name").value;
-            const addon = manager.getAddon(addonId);
+            const addon = manager.getAddon(addonId)!;
             const isEnabled = manager.isEnabled(addon.id);
 
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};
 
-                manager.enableAddon(addon.id);
-                return {content: `${addon.name} has been enabled!`};
+                const err = manager.enableAddon(addon.id);
+
+                if (err) {
+                    return {content: t("Addons.couldNotEnable", {name: addon.id})};
+                }
+
+                return {content: t("Addons.enabled", {name: addon.id})};
             }
 
             if (action === "disable") {
                 if (!isEnabled) return {content: `${addon.name} is already disabled!`};
 
-                manager.disableAddon(addon.id);
-                return {content: `${addon.name} has been disabled!`};
+                const err = manager.disableAddon(addon.id);
+
+                if (err) {
+                    return {content: t("Addons.couldNotDisable", {name: addon.id})};
+                }
+
+                t("Addons.disabled");
+                return {content: t("Addons.disabled", {name: addon.id})};
             }
 
             if (action === "info") {
