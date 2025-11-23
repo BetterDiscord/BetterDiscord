@@ -72,15 +72,18 @@ export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
 
 export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
     return module => {
-        if (!module?.toString || typeof (module?.toString) !== "function") return; // Not stringable
-        let moduleString = "";
-        try {moduleString = module?.toString([]);}
-        catch {moduleString = module?.toString();}
-        if (!moduleString) return false; // Could not create string
-        for (const s of strings) {
-            if (!moduleString.includes(s)) return false;
+        if (typeof module !== "function") return false;
+
+        try {
+            const str = String(module);
+
+            for (const s of strings) {
+                if (!str.includes(s)) return false;
+            }
+
+            return true;
         }
-        return true;
+        catch {return false;}
     };
 }
 

@@ -71,6 +71,7 @@
     filter: saturate(var(--saturation-factor, 1));
     margin-right: 6px;
     flex-shrink: 0;
+    color: var(--text-default);
 }
 
 .bd-notification-topbar {
