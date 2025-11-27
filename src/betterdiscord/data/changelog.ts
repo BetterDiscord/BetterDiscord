@@ -15,7 +15,7 @@ export default {
             type: "added",
             blurb: "Here's a quick overview of some of the biggest new features in this release!",
             items: [
-                "New **InstallCSS** system that let's you install CSS snippets directly from codeblocks complete with safety fallbacks!",
+                "New **InstallCSS** system that lets you install CSS snippets directly from codeblocks complete with safety fallbacks!",
                 "Banners are dead, long live the new **In-App Notifications**! These notifications are less intrusive and more reliable than the old banner system.",
                 "You can now __directly open a plugin's settings__ from the context menu in the Plugins list via `shift`+`click`.",
                 "The code editor used for Custom CSS and plugin/theme editors has been given a massive facelift! It now supports many of the Visual Studio Code features you may be familiar with!",
@@ -43,7 +43,7 @@ export default {
             items: [
                 "Fixed some issues with plugins clashing when registering slash commands.",
                 "Auto enabling new downloads through the store should now work more reliably.",
-                "Keybind settings can now be cleared properly",
+                "Keybind settings can now be cleared properly.",
                 "All the various editors should now be focused when in-use.",
                 "Fixed some theme compatibility issues for themes using advanced features.",
                 "Many tiny tweaks and fixes to the updater system to improve reliability.",
