@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    // Enable latest features
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment",
+    "allowJs": false,
+
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+
+    // Some stricter flags
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Import aliases
+    "paths": {
+        "@assets/*": ["./assets/*"],
+        "@common/*": ["./src/common/*"],
+        "@builtins/*": ["./src/betterdiscord/builtins/*"],
+        "@data/*": ["./src/betterdiscord/data/*"],
+        "@api/*": ["./src/betterdiscord/api/*"],
+        "@modules/*": ["./src/betterdiscord/modules/*"],
+        "@polyfill/*": ["./src/betterdiscord/polyfill/*"],
+        "@stores/*": ["./src/betterdiscord/stores/*"],
+        "@structs/*": ["./src/betterdiscord/structs/*"],
+        "@styles/*": ["./src/betterdiscord/styles/*"],
+        "@ui/*": ["./src/betterdiscord/ui/*"],
+        "@utils/*": ["./src/betterdiscord/utils/*"],
+        "@webpack": ["./src/betterdiscord/webpack"],
+    },
+    "typeRoots": ["node_modules/@types", "src/betterdiscord/types"]
+  },
+  "include": [
+    "src/**/*",
+    "scripts/*",
+    "tests/**/*"
+  ],
+}

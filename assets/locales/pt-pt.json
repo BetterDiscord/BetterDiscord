@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} feito por {{author}}",
         "byline": "feito por {{author}}",
-        "openFolder": "Abrir a pasta {{type}}",
         "reload": "Recarregar",
         "addonSettings": "Definições",
         "website": "Website",
@@ -121,7 +120,6 @@
         "version": "Versão",
         "added": "Data Adicionada",
         "modified": "Data Modificada",
-        "search": "Procurar {{type}}",
         "editAddon": "Editar",
         "deleteAddon": "Apagar",
         "confirmDelete": "Tem a certeza que quer apagar {{name}}?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} não pode ser retirado.",
         "unknownAuthor": "Autor Desconhecido",
         "noDescription": "Descrição não fornecida.",
-        "alreadyExists": "Já existe um {{type}} com o nome {{name}}",
-        "alreadWatching": "Já assiste as extensões.",
         "metaError": "META não pôde ser analisado.",
         "missingNameData": "Em falta dados do nome de META.",
         "metaNotFound": "META não encontrada.",
         "compileError": "Não foi possível compilar.",
-        "wasUnloaded": "{{name}} foi descarregado.",
-        "blankSlateHeader": "Não tem nenhum {{type}}!",
-        "blankSlateMessage": "Pega um pouco deste [this website]({{link}}) e adiciona eles à tua pasta {{type}}."
+        "wasUnloaded": "{{name}} foi descarregado."
     },
     "CustomCSS": {
         "confirmationText": "Tem alterações não guardadas no CSS Personalizado. Se fechar esta janela irá perder essas alterações.",
@@ -171,10 +165,6 @@
         "restartLater": "Reniciar Mais Tarde",
         "additionalInfo": "Informação Adicional",
         "restartPrompt": "Para ter efeito, o Discord precisa ser reiniciado. Deseja reiniciar agora?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensão não encontrada",
-        "notFoundDetails": "Não foi possivel achar a extensão Ferramenta Desenvolvedor React no seu computador. Por favor instale a extensão no seu Chrome local."
     },
     "Sorting": {
         "sortBy": "Ordenar por",

@@ -1,0 +1,87 @@
+/* stylelint-disable no-descending-specificity */
+
+/* TODO: find a way to go back to glob imports */
+
+@import "./builtins/customcss.css";
+@import "./ui/addonlist.css";
+@import "./ui/addonstore.css";
+@import "./ui/bdsettings.css";
+@import "./ui/changelog.css";
+@import "./ui/checkbox.css";
+@import "./ui/colorpicker.css";
+@import "./ui/errormodal.css";
+@import "./ui/file.css";
+@import "./ui/flex.css";
+@import "./ui/floatingwindow.css";
+@import "./ui/installmodal.css";
+@import "./ui/keybind.css";
+@import "./ui/modal.css";
+@import "./ui/notices.css";
+@import "./ui/notifications.css";
+@import "./ui/number.css";
+@import "./ui/paginator.css";
+@import "./ui/radio.css";
+@import "./ui/scroller.css";
+@import "./ui/sidebar.css";
+@import "./ui/slider.css";
+@import "./ui/switch.css";
+@import "./ui/tabbar.css";
+@import "./ui/textbox.css";
+@import "./ui/toasts.css";
+@import "./ui/tooltip.css";
+@import "./ui/updater.css";
+@import "./blankslates/emptyimage.css";
+@import "./blankslates/noresults.css";
+@import "./buttons.css";
+@import "./spinner.css";
+@import "./search.css";
+@import "./text.css";
+
+:root {
+    --bd-brand: #3E82E5;
+    --bd-brand-hover: #3875CE;
+    --bd-brand-active: #3268B7;
+}
+
+.bd-chat-badge {
+    vertical-align: bottom;
+    line-height: 1.375rem;
+    display: inline-block;
+    height: 1.25rem;
+}
+
+.bd-member-badge {
+    height: 15px;
+    margin-left: 4px;
+}
+
+.bd-link {
+    text-decoration: none;
+}
+
+.bd-link:hover {
+    text-decoration: underline;
+}
+
+.bd-divider {
+    width: 100%;
+    height: 1px;
+    margin: 0;
+    border: none;
+    border-top: thin solid var(--app-border-frame);
+}
+
+.bd-version-info {
+    padding: 8px 10px;
+    /* text-transform: capitalize; */
+    cursor: pointer;
+}
+
+.bd-settings-title-extend {
+    width: 100%;
+}
+
+.bd-settings-page-title-children {
+    margin-left: auto;
+    margin-right: 12px;
+}

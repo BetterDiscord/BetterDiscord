@@ -1,0 +1,78 @@
+{
+    // General file formatting
+    "files.eol": "\n",
+    "files.encoding": "utf8",
+    "files.trimTrailingWhitespace": true,
+
+    // Editor settings
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+
+    "search.smartCase": true,
+
+    // JavaScript
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "javascript.format.semicolons": "insert",
+    "javascript.preferences.quoteStyle": "double",
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+    "javascript.preferences.autoImportFileExcludePatterns": ["src/betterdiscord/api/*"],
+
+    // TypeScript
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "typescript.format.semicolons": "insert",
+    "typescript.preferences.quoteStyle": "double",
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+    "typescript.preferences.autoImportFileExcludePatterns": ["src/betterdiscord/api/*"],
+
+
+    // Extensions
+
+    // VsCode Action Buttons
+    "actionButtons": {
+        "defaultColor": "statusBar.foreground",
+        "loadNpmCommands": false,
+        "reloadButton": null, // null = auto reload
+        "commands": [
+            {
+               "name": "$(tools) Build",
+               "useVsCodeApi": true,
+               "command": "workbench.action.tasks.runTask",
+               "args": ["Build"]
+            },
+            {
+               "name": "$(eye) Watch",
+               "useVsCodeApi": true,
+               "command": "workbench.action.tasks.runTask",
+               "args": ["Watch"]
+            },
+            {
+               "name": "$(beaker) Test",
+               "useVsCodeApi": true,
+               "command": "workbench.action.tasks.runTask",
+               "args": ["Test"]
+            },
+            {
+                "name": "$(list-tree) Todos",
+                "useVsCodeApi": true,
+                "command": "todo-tree-view.focus"
+            },
+        ]
+    }
+}

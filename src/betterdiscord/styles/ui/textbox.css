@@ -1,0 +1,20 @@
+.bd-text-input {
+    min-width: 250px;
+    font-size: 16px;
+    box-sizing: border-box;
+    border-radius: var(--radius-sm);
+    color: var(--text-default);
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    padding: 10px;
+    height: 40px;
+}
+
+.bd-text-input:focus-within {
+    border-color: var(--bd-brand);
+}
+
+.bd-text-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

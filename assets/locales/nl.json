@@ -26,7 +26,6 @@
     },
     "Addons": {
         "byline": "door {{author}}",
-        "openFolder": "Open {{type}} folder",
         "reload": "Herladeen",
         "addonSettings": "Instellingen",
         "website": "Website",

@@ -1,0 +1,47 @@
+.bd-number-input-wrapper {
+    display: flex;
+}
+
+.bd-number-input::-webkit-inner-spin-button,
+.bd-number-input::-webkit-outer-spin-button {
+    display: none;
+}
+
+.bd-number-input {
+    box-sizing: border-box;
+    padding: 8px 12px;
+    background-color: var(--input-background);
+    border: 1px solid var(--input-border);
+    color: var(--text-default);
+    text-align: center;
+    font-size: 16px;
+}
+
+.bd-number-input:focus-within {
+    border-color: var(--bd-brand);
+}
+
+.bd-number-input:not([min][max]) {
+    width: 65px;
+}
+
+.bd-button.bd-number-input-decrement {
+    border-right: unset;
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.bd-button.bd-number-input-increment {
+    border-left: unset;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.bd-number-input-wrapper.bd-number-input-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-number-input-wrapper.bd-number-input-disabled .bd-number-input,
+.bd-number-input-wrapper.bd-number-input-disabled .bd-button.bd-number-input-decrement,
+.bd-number-input-wrapper.bd-number-input-disabled .bd-button.bd-number-input-increment {
+    pointer-events: none;
+}

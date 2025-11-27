@@ -29,6 +29,14 @@
                 "themeAttributes": {
                     "name": "Theme Attributes",
                     "note": "Adds attributes to various elements to assist in theming."
+                },
+                "notificationPosition": {
+                    "name": "Notification",
+                    "note": "Lets you choose where you want notifications to popup."
+                },
+                "notificationEnabled": {
+                    "name": "Show Notifications",
+                    "note": "Prevents or allows notifications to be shown on screen."
                 }
             },
             "store": {
@@ -47,11 +55,11 @@
                 }
             },
             "window": {
+                "name": "Window Preferences",
                 "removeMinimumSize": {
                     "name": "Remove Minimum Size",
                     "note": "Removes Discord's forced minimum window size of 940x500"
                 },
-                "name": "Window Preferences",
                 "transparency": {
                     "name": "Enable Transparency",
                     "note": "Enables the main window to be see-through (requires restart)"
@@ -76,6 +84,7 @@
                     "note": "Where plugins & themes appear when editing",
                     "options": {
                         "detached": "Detached Window",
+                        "external": "External Window",
                         "system": "System Editor"
                     }
                 },
@@ -112,12 +121,13 @@
                     "options": {
                         "settings": "Settings Menu",
                         "detached": "Detached Window",
+                        "external": "External Window",
                         "system": "System Editor"
                     }
                 }
             },
             "developer": {
-                "name": "Developer Settings",
+                "name": "Developer Options",
                 "debuggerHotkey": {
                     "name": "Debugger Hotkey",
                     "note": "Allows activating debugger when pressing F8 with DevTools open"
@@ -146,11 +156,23 @@
                     "name": "Recovery",
                     "note": "Enables the ability to attempt to save discord without reloading",
                     "button": "Attempt to recover Discord",
-                    "report": "Report on Github"
+                    "report": "Report on Github",
+                    "safeMode": "Relaunch in Safe Mode"
                 }
             },
             "editor": {
-                "name": "Editor Preferences",
+                "name": "Editor Options",
+                "theme": {
+                    "name": "Theme",
+                    "note": "The theme for the code editor",
+                    "options": {
+                        "system": "System",
+                        "vs-dark": "Dark",
+                        "vs": "Light",
+                        "hc-black": "High Contrast Black",
+                        "hc-light": "High Contrast Light"
+                    }
+                },
                 "lineNumbers": {
                     "name": "Line Numbers",
                     "note": "Enables showing line numbers on the side of the editor"
@@ -171,6 +193,14 @@
                     "name": "Quick Suggestions",
                     "note": "Enables showing the autocomplete suggestions as you type"
                 },
+                "insertSpaces": {
+                    "name": "Insert Spaces",
+                    "note": "Insert spaces instead of tabs"
+                },
+                "tabSize": {
+                    "name": "Tab Size",
+                    "note": "The number of spaces a tab is equal to"
+                },
                 "renderWhitespace": {
                     "name": "Show Whitespace",
                     "note": "When whitespace should be shown by the editor",
@@ -186,11 +216,23 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
-        "openFolder": "Open {{type}} Folder",
-        "openStore": "Open {{type}} Store",
-        "storeMessage": "Browse and install official community {{type}}",
+        "openFolder": {
+            "plugin": "Open Plugin Folder",
+            "theme": "Open Theme Folder"
+        },
+        "openStore": {
+            "plugin": "Open Plugin Store",
+            "theme": "Open Theme Store"
+        },
+        "storeMessage": {
+            "plugin": "Browse and install official community plugins",
+            "theme": "Browse and install official community themes"
+        },
         "store": "Store",
-        "viewInstalled": "View Installed {{type}}",
+        "viewInstalled": {
+            "plugin": "View Installed Plugins",
+            "theme": "View Installed Themes"
+        },
         "reload": "Reload",
         "addonSettings": "Settings",
         "website": "Website",
@@ -214,9 +256,27 @@
         "gridView": "Grid View",
         "enableAll": "Enable All",
         "disableAll": "Disable All",
-        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
-        "search": "Search {{type}}",
-        "results": "{{count}} Results",
+        "enableAllWarning": {
+            "plugin": "Enabling all plugins can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
+            "theme": "Enabling all themes can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)"
+        },
+        "search": {
+            "plugin": {
+                "zero": "No plugins to search",
+                "one": "Search one plugin",
+                "other": "Search {{count}} plugins"
+            },
+            "theme": {
+                "zero": "No themes to search",
+                "one": "Search one theme",
+                "other": "Search {{count}} themes"
+            }
+        },
+        "results": {
+            "zero": "No Results",
+            "one": "{{count}} Result",
+            "other": "{{count}} Results"
+        },
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "downloadAddon": "Download",
@@ -232,29 +292,56 @@
         "methodError": "{{method}} could not be fired.",
         "unknownAuthor": "Unknown Author",
         "noDescription": "Description not provided.",
-        "alreadyExists": "There is already a {{type}} with name {{name}}",
-        "alreadWatching": "Already watching addons.",
+        "alreadyExists": {
+            "plugin": "There is already a plugin with name {{name}}",
+            "theme": "There is already a theme with name {{name}}"
+        },
         "metaError": "META could not be parsed.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
+        "blankSlateHeader": {
+            "plugin": "You don't have any plugins!",
+            "theme": "You don't have any themes!"
+        },
+        "blankSlateMessage": {
+            "plugin": "Grab some from [our website]({{link}}) and add them to your plugin folder.",
+            "theme": "Grab some from [our website]({{link}}) and add them to your theme folder."
+        },
         "blankSlateHeaderGeneric": "You don't have anything!",
         "blankSlateMessageGeneric": "You should probably get some.",
         "wasLoaded": "{{name}} v{{version}} was loaded.",
-        "failedToDownload": "Failed to download {{type}} {{name}}",
+        "failedToDownload": {
+            "plugin": "Failed to download plugin {{name}}",
+            "theme": "Failed to download theme {{name}}"
+        },
         "successfullyDownload": "Successfully downloaded {{name}}",
         "alreadyInstalled": "{{name}} is already installed",
         "failedToFetch": "Unable to get addons",
         "new": "New",
         "updated": "Updated",
-        "downloadCount": "{{downloads}} Downloads",
-        "likeCount": "{{likes}} Likes",
+        "downloadCount": {
+            "one": "{{count}} Download",
+            "other": "{{count}} Downloads"
+        },
+        "likeCount": {
+            "one": "{{count}} Like",
+            "other": "{{count}} Likes"
+        },
         "tags": "Tags",
         "preview": "Preview",
-        "official": "Official"
+        "official": "Official",
+        "manyEnabled": {
+            "plugin": {
+                "one": "One plugin has been enabled.",
+                "other": "{{count}} plugins have been enabled."
+            },
+            "theme": {
+                "one": "One theme has been enabled.",
+                "other": "{{count}} themes have been enabled."
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -263,10 +350,18 @@
         "openNative": "Open in System Editor",
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor"
+        "editorTitle": "Custom CSS Editor",
+        "cssInstallSuccess": "CSS was successfully added into CustomCSS.",
+        "cssInstalled": "CSS installed!",
+        "cssInstallError": "CSS failed to be added into CustomCSS.",
+        "cssReverted": "CSS was reverted.",
+        "cssReverting": "Changes will be reverted in 10 seconds",
+        "cssKept": "CSS changes kept permanently"
     },
     "Modals": {
         "confirmAction": "Are You Sure?",
+        "installCss": "Are you sure you want to add this CSS to your Custom CSS?",
+        "addonCrashed": "This plugin has been disabled to prevent crashes. Please report this issue to the developer.",
         "okay": "Okay",
         "done": "Done",
         "cancel": "Cancel",
@@ -285,10 +380,6 @@
         "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?",
         "automaticallyEnable": "Automatically Enable"
     },
-    "ReactDevTools": {
-        "notFound": "Extension Not Found",
-        "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
-    },
     "Sorting": {
         "sortBy": "Sort By",
         "order": "Order",
@@ -299,15 +390,26 @@
         "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
-    "Notices": {
-        "moreInfo": "More Info"
+    "Toasts": {
+        "recoveryFailed": "Recovery incomplete. Some actions failed to complete."
     },
     "Updater": {
         "updateFailed": "Update Failed!",
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{type}}s!",
+        "viewUpdates": "View Updates",
+        "addonUpdaterNotificationTitle": "Addon Updater",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "One plugin has an update!",
+                "other": "{{count}} plugins have updates!"
+            },
+            "theme": {
+                "one": "One theme has an update!",
+                "other": "{{count}} themes have updates!"
+            }
+        },
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
         "checking": "Checking for updates!",
@@ -316,7 +418,10 @@
         "updateAll": "Update All!",
         "noUpdatesAvailable": "No updates available.",
         "versionAvailable": "Version {{version}} now available!",
-        "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
+        "upToDateBlankslate": {
+            "plugin": "All of your plugins seem to be up to date!",
+            "theme": "All of your themes seem to be up to date!"
+        },
         "updateButton": "Update!"
     },
     "Settings": {

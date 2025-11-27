@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} par {{author}}",
         "byline": "par {{author}}",
-        "openFolder": "Ouvrir dossier {{type}}",
         "reload": "Recharger",
         "addonSettings": "Réglages",
         "website": "Site web",
@@ -121,7 +120,6 @@
         "version": "Version",
         "added": "Date d'Ajout",
         "modified": "Date Modifiée",
-        "search": "Rechercher {{type}}",
         "editAddon": "Édition",
         "deleteAddon": "Suppression",
         "confirmDelete": "Êtes-vous sûr de vouloir supprimer {{name}}?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} n'a pas pu être renvoyé.",
         "unknownAuthor": "Auteur Inconnu",
         "noDescription": "Description non fournie.",
-        "alreadyExists": "Il y a déjà un {{type}} avec comme nom {{name}}",
-        "alreadWatching": "Déjà en train de regarder les extensions.",
         "metaError": "Le META n'a pas pu être analysé.",
         "missingNameData": "Les données de META ne possèdent pas de nom.",
         "metaNotFound": "Les données de META sont introuvables.",
         "compileError": "Compilation impossible.",
-        "wasUnloaded": "{{name}} a été déchargé.",
-        "blankSlateHeader": "Vous n'avez pas de {{type}}!",
-        "blankSlateMessage": "Récupère-les depuis [ce site]({{link}}) et ajoute-les dans ton dossier {{type}}."
+        "wasUnloaded": "{{name}} a été déchargé."
     },
     "CustomCSS": {
         "confirmationText": "Vous avez des changements non sauvegardés dans votre CSS Personnalisé. Fermer cette fenêtre vous fera perdre ces changements.",
@@ -171,10 +165,6 @@
         "restartLater": "Redémarrer Ultérieurement",
         "additionalInfo": "Info Additionnelle",
         "restartPrompt": "Pour appliquer ces changements, Discord à besoin d'être redémarré. Voulez-vous redémarrer l'application maintenant?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extension Introuvable",
-        "notFoundDetails": "Impossible de trouver l'extension de React Developer Tools sur ton PC. Merci d'installer l'extension dans votre installation locale de Chrome."
     },
     "Sorting": {
         "sortBy": "Trier Par",

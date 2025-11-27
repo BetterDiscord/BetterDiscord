@@ -143,7 +143,6 @@
         }
     },
     "Addons": {
-        "openFolder": "Avaa {{type}} kansio",
         "reload": "Lataa uudelleen",
         "addonSettings": "Asetukset",
         "website": "Nettisivu",
@@ -156,7 +155,6 @@
         "version": "Versio",
         "added": "lisäyspäivämäärä",
         "modified": "Muutospäivämäärä",
-        "search": "Etsi {{type}}",
         "editAddon": "Muokkaa",
         "deleteAddon": "Poista",
         "confirmDelete": "Haluatko varmasti poistaa {{name}}?",
@@ -171,15 +169,11 @@
         "methodError": "{{method}} ei voitu laukaista.",
         "unknownAuthor": "Tuntematon tekijä",
         "noDescription": "Kuvausta ei ole annettu.",
-        "alreadyExists": "On jo olemassa {{type}} , jonka nimi on {{type}}",
-        "alreadWatching": "Katsot jo lisäosia.",
         "metaError": "META:a ei voitu jäsentää.",
         "missingNameData": "META:lta puuttuu nimitiedot.",
         "metaNotFound": "META:a ei löytynyt.",
         "compileError": "Ei voitu koota. Katso lisätietoja konsolista.",
         "wasUnloaded": "{{name}} purettiin.",
-        "blankSlateHeader": "Sinulla ei ole yhtään {{type}}!",
-        "blankSlateMessage": "Nappaa joitain [tältä verkkosivustolta]({{link}}) ja lisää ne kansioon {{type}}.",
         "isEnabled": "Otettu käyttöön",
         "wasLoaded": "\n{{name}} v{{version}} ladattiin."
     },
@@ -209,10 +203,6 @@
         "additionalInfo": "Lisätietoja",
         "restartPrompt": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
     },
-    "ReactDevTools": {
-        "notFound": "Laajennusta Ei Löydy",
-        "notFoundDetails": "React Developer Tools -laajennusta ei löydy tietokoneeltasi. Asenna laajennus paikalliseen Chrome-asennukseesi."
-    },
     "Sorting": {
         "sortBy": "Järjestä",
         "order": "Järjestys",
@@ -223,15 +213,11 @@
         "enabledInfo": "Tämä vaihtoehto vaatii läpinäkyvän teeman toimiakseen kunnolla. Windowsissa tämä voi katkaista aerosnapsauksen ja maksimoimisen.\n\nJotta Discord tulisi voimaan, se on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?",
         "disabledInfo": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
     },
-    "Notices": {
-        "moreInfo": "Enemmän tietoa"
-    },
     "Updater": {
         "updateFailed": "Päivitys epäonnistui",
         "updateFailedMessage": "BetterDiscordin päivitys epäonnistui. Lataa asennusohjelman uusin versio verkkosivustoltamme (https://betterdiscord.app/) ja asenna se uudelleen.",
         "updateSuccessful": "Päivittäminen onnistui!",
         "updateAvailable": "BetterDiscordilla on uusi päivitys",
-        "addonUpdatesAvailable": "BetterDiscord on löytänyt päivityksiä {{count}}:lle {{type}}:lle!",
         "addonUpdated": "{{name}} on päivitetty versioon {{version}}!",
         "checking": "Tarkistetaan päivityksiä!",
         "finishedChecking": "Päivitysten tarkistaminen on valmis!",
@@ -239,7 +225,6 @@
         "updateAll": "Päivitä kaikki!",
         "noUpdatesAvailable": "Päivityksiä ei ole saatavilla.",
         "versionAvailable": "Versio {{version}} on saatavilla!",
-        "upToDateBlankslate": "Kaikki sinun {{type}} näyttävät olevan ajan tasalla!",
         "updateButton": "Päivitä!"
     }
 }
