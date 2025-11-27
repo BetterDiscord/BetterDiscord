@@ -103,3 +103,9 @@ export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
         return filters.every(filter => filter(exports, module, id));
     };
 }
+
+export function not(filter: Webpack.ExportedOnlyFilter): Webpack.ExportedOnlyFilter;
+export function not(filter: Webpack.ExportedOnlyFilter | Webpack.Filter): Webpack.Filter;
+export function not(filter: Webpack.Filter): Webpack.Filter {
+    return (exports, module, id) => !filter(exports, module, id);
+}
