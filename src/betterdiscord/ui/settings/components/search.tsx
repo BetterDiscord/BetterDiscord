@@ -29,11 +29,10 @@ export default function Search({onChange, className, onKeyDown, placeholder}: Se
     }, [onChange]);
 
     const reset = useCallback(() => {
-        onChange?.({target: {value: ""}});
         setValue("");
-        if (!input.current) return;
-        input.current.focus();
-    }, [onChange, input]);
+        onChange?.({target: {value: ""}, currentTarget: {value: ""}} as any);
+        input.current?.focus();
+    }, [onChange]);
 
     return <div className={"bd-search-wrapper" + (className ? ` ${className}` : "")}>
         <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-search" placeholder={placeholder} maxLength={50} value={value} ref={input} />
