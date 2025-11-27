@@ -6,6 +6,7 @@ import Button from "@ui/base/button";
 import JsonStore from "@stores/json";
 import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
+import {SettingsTitleContext} from "@ui/settings";
 
 export const buildDirectionOptions = () => [
     {label: t("Sorting.ascending"), value: true},
@@ -46,7 +47,9 @@ export function AddonHeader({children, count, searching}) {
         toggleStore();
     }, [showingStore, toggleStore]);
 
-    return (
+    const set = React.useContext(SettingsTitleContext);
+
+    return set(
         <SettingsTitle
             text={(
                 <div className="bd-addon-title" data-showing-store={showingStore}>

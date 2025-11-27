@@ -4,6 +4,12 @@
     background: var(--bd-editor-background, var(--background-base-lower));
 }
 
+/* div:has(> #bd-editor-panel) {
+    margin-block: auto;
+    margin-inline: auto;
+    max-width: unset;
+} */
+
 #bd-editor-controls button {
     margin: 0 5px 0 0;
     background: none;
@@ -110,6 +116,10 @@
     max-width: 400px;
     margin: 0;
     transition: all 0.2s ease;
+}
+
+.bd-recovery-buttons.bd-recovery-buttons {
+    justify-content: center;
 }
 
 .bd-button-recovery {

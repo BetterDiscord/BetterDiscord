@@ -4,7 +4,7 @@ import DOMManager from "@modules/dommanager";
 import ReactDOM from "@modules/reactdom";
 import ToastStore from "@stores/toasts";
 import ToastIcon from "@ui/toasts/ToastIcon";
-import {useInternalStore} from "@ui/hooks";
+import {useStateFromStores} from "@ui/hooks";
 
 import clsx from "clsx";
 import type {Root} from "react-dom/client";
@@ -39,7 +39,7 @@ export function Toast({content, type, icon, style}: ToastItemProps) {
 }
 
 export function ToastContainer() {
-    const toasts = useInternalStore(ToastStore, () => ToastStore.toasts);
+    const toasts = useStateFromStores(ToastStore, () => ToastStore.toasts);
 
     const transition = ReactSpring.useTransition(toasts, {
         keys: (toast: ToastProps) => toast.key,
