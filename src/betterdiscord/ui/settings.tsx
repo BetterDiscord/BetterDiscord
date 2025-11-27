@@ -18,6 +18,12 @@ import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
 import {lucideToDiscordIcon, type DiscordIcon} from "@utils/icon";
 import {Logo} from "./logo";
+import DiscordModules from "@modules/discordmodules";
+import Button from "./base/button";
+import {HistoryIcon} from "lucide-react";
+import {t} from "@common/i18n";
+import Modals from "./modals";
+import changelog from "@data/changelog";
 
 const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"]);
 
@@ -106,6 +112,34 @@ const useCustomCSSClickable = () => {
     return ["detached", "external", "system"].includes(state);
 };
 const useCustomCSSViewable = () => !useCustomCSSClickable();
+
+function LayerSettingTitle() {
+    const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();
+
+    return (
+        <>
+            <div
+                className="bd-sidebar-header"
+                ref={(v) => {
+                    setNode(v?.parentElement?.parentElement || v);
+                    return setNode;
+                }}
+            >
+                BetterDiscord
+            </div>
+            {node && ReactDOM.createPortal(
+                <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
+                    {props =>
+                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
+                            <HistoryIcon className="bd-icon" size="16px" />
+                        </Button>
+                    }
+                </DiscordModules.Tooltip>,
+                node
+            )}
+        </>
+    );
+}
 
 export const SettingsTitleContext = React.createContext((v: React.ReactNode) => v);
 
@@ -381,9 +415,7 @@ export default new class SettingsRenderer {
 
                 return layouts;
             },
-            useLabel() {
-                return "BetterDiscord";
-            }
+            useLabel: () => <LayerSettingTitle />
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {
@@ -462,7 +494,7 @@ export default new class SettingsRenderer {
     }
 
     public openSettingsPage(key: string) {
-        UserSettings?.openUserSettings?.(`betterdiscord_${key}_panel`, {
+        UserSettings?.openUserSettings?.(`betterdiscord_${key === "customcss" ? "customcss_tab" : key}_panel`, {
             section: key
         });
     }

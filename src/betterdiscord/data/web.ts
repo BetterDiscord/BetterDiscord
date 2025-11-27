@@ -97,6 +97,8 @@ export default class Web {
 
     static API_VERSION = API_VERSION;
 
+    static hostname = HOSTNAME;
+
     static redirects = {
         github: makeRedirects("/gh-redirect"),
         download: makeRedirects("/download"),
