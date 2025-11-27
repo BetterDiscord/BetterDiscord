@@ -1,4 +1,4 @@
-import {Filters, getByKeys, getModule, modules, webpackRequire} from "@webpack";
+import {Filters, getByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
 import React from "@modules/react";
@@ -25,48 +25,47 @@ startupComplete = Object.values(MenuComponents).every(v => v);
 if (!startupComplete) {
     const REGEX = /(function .{1,3}\(.{1,3}\){return null}){5}/;
     const EXTRACT_REGEX = /\.type===.{1,3}\.(.{1,3})\)return .{1,3}\.push\((?:null!=.{1,3}\.props\..+?)?{type:"(.+?)",/g;
-    const EXTRACT_GROUP_REGEX = /\.type===.{1,3}\.(.{1,3})\){.+{type:"groupstart"/;
+    const EXTRACT_GROUP_ITEM_REGEX = /\.type===.{1,3}\.(.{1,3})\){.+{type:"(groupstart|customitem)".+\.type===.{1,3}\.(.{1,3})\){.+?{type:"(groupstart|customitem)"/;
 
     let menuItemsId;
     let menuParser = "";
 
-    for (const key in modules) {
-        if (Object.prototype.hasOwnProperty.call(modules, key)) {
-            if (REGEX.test(modules[key].toString())) {
+    for (const key in webpackRequire.m) {
+        if (Object.prototype.hasOwnProperty.call(webpackRequire.m, key)) {
+            if (REGEX.test(webpackRequire.m[key].toString())) {
                 menuItemsId = key;
                 break;
             }
         }
     }
 
-    for (const key in modules) {
-        if (Object.prototype.hasOwnProperty.call(modules, key)) {
-            const string = modules[key].toString();
+    for (const key in webpackRequire.m) {
+        if (Object.prototype.hasOwnProperty.call(webpackRequire.m, key)) {
+            const string = webpackRequire.m[key].toString();
 
-            if (string.includes(menuItemsId) && string.includes("separator")) {
+            if (string.includes(menuItemsId!) && string.includes("Menu API only allows Items and groups of Items as children")) {
                 menuParser = string;
                 break;
             }
         }
     }
 
-    const contextMenuComponents = webpackRequire(menuItemsId);
+    const contextMenuComponents = webpackRequire(menuItemsId!);
 
     for (const [, key, type] of menuParser.matchAll(EXTRACT_REGEX)) {
         switch (type) {
             case "separator": MenuComponents.Separator ??= contextMenuComponents[key]; break;
             case "radio": MenuComponents.RadioItem ??= contextMenuComponents[key]; break;
             case "checkbox": MenuComponents.CheckboxItem ??= contextMenuComponents[key]; break;
-            case "item":
-            case "customitem": MenuComponents.Item ??= contextMenuComponents[key]; break;
             case "compositecontrol":
             case "control": MenuComponents.ControlItem ??= contextMenuComponents[key]; break;
         }
     }
 
-    const match = menuParser.match(EXTRACT_GROUP_REGEX);
+    const match = menuParser.match(EXTRACT_GROUP_ITEM_REGEX);
     if (match) {
-        MenuComponents.Group ??= contextMenuComponents[match[1]];
+        MenuComponents.Group ??= contextMenuComponents[match[match[2] === "groupstart" ? 1 : 3]];
+        MenuComponents.Item ??= contextMenuComponents[match[match[2] === "customitem" ? 1 : 3]];
     }
 
     MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
@@ -75,25 +74,19 @@ if (!startupComplete) {
 startupComplete = Object.values(MenuComponents).every(v => v);
 
 const ContextMenuActions = (() => {
-    const out = {};
+    const out: any = {};
 
     try {
-        const ActionsModule = getModule((mod, target, id) => modules[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false});
-
-        for (const key of Object.keys(ActionsModule)) {
-            if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
-                out.closeContextMenu = ActionsModule[key];
-            }
-            else if (ActionsModule[key].toString().includes("renderLazy")) {
-                out.openContextMenu = ActionsModule[key];
-            }
-        }
+        Object.assign(out, getMangled(Filters.bySource("new DOMRect", "CONTEXT_MENU_CLOSE"), {
+            closeContextMenu: Filters.byStrings("CONTEXT_MENU_CLOSE"),
+            openContextMenu: Filters.byStrings("renderLazy")
+        }, {searchDefault: false}));
 
         startupComplete &&= typeof (out.closeContextMenu) === "function" && typeof (out.openContextMenu) === "function";
     }
     catch (error) {
         startupComplete = false;
-        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
+        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error as Error);
 
         Object.assign(out, {
             closeContextMenu: () => {},
