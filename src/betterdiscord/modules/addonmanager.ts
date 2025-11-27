@@ -90,7 +90,7 @@ export default abstract class AddonManager extends Store {
 
         const errors = this.loadAllAddons();
         if (this.initialAddonsLoaded > 0) {
-            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, type: this.prefix}));
+            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
         }
         this.hasInitialized = true;
         return errors;
@@ -330,8 +330,10 @@ export default abstract class AddonManager extends Store {
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
         // setTimeout(() => {
-        this.startAddon(addon);
+
+        const err = this.startAddon(addon);
         this.saveState();
+        return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 
@@ -352,8 +354,9 @@ export default abstract class AddonManager extends Store {
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
         // setTimeout(() => {
-        this.stopAddon(addon);
+        const err = this.stopAddon(addon);
         this.saveState();
+        return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 

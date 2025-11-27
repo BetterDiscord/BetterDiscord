@@ -27,15 +27,23 @@ import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
+import {getStore} from "@webpack";
+import Patcher from "./patcher";
 
 export default new class Core {
     hasStarted = false;
+
+    trustBetterDiscordProtocol() {
+        Patcher.after("BetterDiscordProtocol", getStore("MaskedLinkStore")!, "isTrustedProtocol", (_, [url]: any, ret) => ret || url.startsWith("betterdiscord://"));
+    }
 
     async startup() {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
+
+        this.trustBetterDiscordProtocol();
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
