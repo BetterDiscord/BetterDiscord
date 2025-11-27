@@ -85,12 +85,12 @@ export default new class BDContextMenu extends Builtin {
         return {
             type: "submenu",
             label: collection.name,
-            action: () => this.openCategory(collection.name),
+            action: () => this.openCategory(collection.id),
             items: collection.settings.map(category => {
                 return {
                     type: "submenu",
                     label: category.name,
-                    action: () => this.openCategory(collection.name),
+                    action: () => this.openCategory(collection.id),
                     items: category.settings.filter(s => s.type === "switch" && !s.hidden && s.id !== this.id).map(setting => {
                         return {
                             type: "toggle",
@@ -142,7 +142,7 @@ export default new class BDContextMenu extends Builtin {
             toggles.push({
                 label: t("Addons.openStore", {context: type}),
                 action: () => {
-                    this.openCategory(manager.prefix);
+                    this.openCategory(manager.prefix + "s");
                     // If the addon store instantly opens have it just stop basically
                     DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
                 }
@@ -152,7 +152,7 @@ export default new class BDContextMenu extends Builtin {
         return {
             type: "submenu",
             label: label,
-            action: () => this.openCategory(manager.prefix),
+            action: () => this.openCategory(manager.prefix + "s"),
             items: toggles
         };
     }
