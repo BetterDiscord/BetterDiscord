@@ -3,6 +3,158 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.13.0
+
+### Added
+- InstallCSS button next to CSS snippets for easy installation, with safety fallbacks like "Keep Changes", automatically reverting changes after 10 seconds if not kept
+- In-App Notification API `BdApi.UI.showNotification`
+- Ability to shift+click to open a plugin's settings from context menu
+- Support for custom modal sizing to allow plugins to create modals with different dimensions and improved theming flexibility
+- `aria-label` to buttons within the BD settings to improve screen reader compatibility and accessibility for users with disabilities
+- React hook wrapper (`BdApi.ReactUtils.wrapInHooks`)
+- Early groundwork for theme settings
+- Recovery action for closing Discord modals
+- `BdApi.Webpack.getBulk` for bulk getting all needed modules within one search
+- `BdApi.Utils.forceLoad` to force lazy chunks to be loaded
+- `BdApi.Webpack.Stores` added for easy access to all stores
+- Added a changelog button to the layer modal settings
+
+### Removed
+- `Filters.byProps` removed
+- `Filters.byPrototypeFields` removed
+- All functions directly on `BdApi` have been removed
+
+### Changed
+- Repository reorganization, move from node/npm to bun, from webpack to esbuild, from mocha to bun:test, start TypeScript, and upgrade eslint
+- Switched to using lucide icons
+- Full transition to TypeScript
+- Added our own react compatible stores and moved the addon manager and settings to a new model
+- Added some useful defaults for VS Code
+- Switched to text-based lockfile (chore)
+- Revamped the i18n to support pluralization
+- Updated module filtering to use `moduleCache[id]` instead of `webpackRequire.m[module.id]` for more reliable module string access
+- Updated module resolution to handle Discord's new proxy-based i18n system by fixing export handling and store filtering
+- Improved startup performance by replacing DataStore with lazy-loading JSON cache system
+- Enhanced code editor with features including autocomplete, status bar, problems panel (VS Code-like), and improved Monaco Editor integration
+- Moved update notices for BetterDiscord Core and Plugins & Themes away from Notices, to the new Notification API
+- General freshen up of the CSS since Discord's large visual refresh
+- Monaco editor is now lazy-loaded, improving startup performance
+- Rewrote toasts to make them more in-line with NotificationApi logic & styling refresh
+- Startup toasts now only show "XX Plugins/Themes enabled" rather than individual toasts for each plugin
+- Changes the markdown for the betterdiscord:// protocol so it works in slate and masked links
+- Hijack opening links to open the download modal on all bd addon download urls
+- Visual changes to the react error recovery page to increase aesthetics.
+
+### Fixed
+- Context issue on BdApi.Webpack where `this.getModule` could return `not a function`
+- Slash Command API conflicts
+- getMangled utility function to properly handle undefined properties when mapping object keys
+- ThemeAttributes builtin throwing errors when message components lack aria-roledescription property
+- `clearable` option for `keybind` setting, if set to `true` it will now allow clearing a keybind
+- Compatibility with newer Electron/Node.js versions by using stats.mtimeMs and adding OS check for accent color API
+- BrowserWindow minimum size removal
+- `Automatically Enable` tickbox not enabling the plugin if the file's name differed from the plugins store name
+- Webpack module listening to include initial modules and optimized plugin lifecycle calls with better error handling
+- Editor focus being lost in settings panel
+- Issues with the BetterDiscord updater functionality and resolved problems with the getlazy utility
+- Fixes a bug where if `pluginInstance.onSwitch` or `pluginInstance.observer` were non-nullable but not a function it would error
+- Fixed `/[addon type] action:Enable name:[addon name]` from saying the addon started even if it errored
+- Slight changes to `getByStrings` to increase webpack search speed
+- Updated the context menu module for Discord's changes
+
+
+## 1.12.8
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed for Discord modal changes
+
+
+## 1.12.7
+
+### Added
+
+### Removed
+
+### Changed
+- Move settings patch to after user connection
+
+### Fixed
+
+
+## 1.12.6
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed theme attribute selectors
+ - Fixed remove minimum size
+ - Fixed bad css
+
+
+## 1.12.5
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed more using old reactdom apis
+ - Fixed webpack require hijack
+ - Fixed customcss watcher
+
+
+## 1.12.4
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed using old reactdom apis
+
+
+## 1.12.3
+
+### Added
+
+### Removed
+
+### Changed
+ - Added a temporary delay to renderer injection in response to Discord changes
+
+### Fixed
+
+
+## 1.12.2
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed pasting in monaco
+ - Fixed command auth
+ - Fixed toast location
+ - Fixed notice location
+ - Fixed mtime usages
+
+
 ## 1.12.1
 
 ### Added
