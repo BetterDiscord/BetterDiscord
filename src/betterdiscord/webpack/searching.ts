@@ -37,10 +37,18 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filte
 }
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
+    filter = wrapFilter(filter);
+
+    if(options.firstId) {
+        const module = webpackRequire.c[options.firstId];
+        if (module) {
+            const matched = getMatched<T>(module, filter, options);
+            if (matched) return matched;
+        }
+    }
+
     let cacheId = options.cacheId;
     if (!cacheId && cacheId !== null) cacheId = WebpackCache.getIdFromStack();
-
-    filter = wrapFilter(filter);
 
     if (cacheId) {
         const id = WebpackCache.get(cacheId);

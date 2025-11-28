@@ -1,5 +1,5 @@
 /* eslint-disable no-labels */
- 
+
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
 import {getModule} from "./searching";
@@ -143,6 +143,20 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const shouldExitEarly = queries.every((m) => !m.all);
     const shouldExit = () => shouldExitEarly && queries.every((query, index) => !query.all && index in returnedModules);
 
+    // Check the firstId for each query
+    for (let i = 0; i < queries.length; i++) {
+        const {firstId} = queries[i];
+        if (!firstId) continue;
+
+        const module = webpackRequire.c[firstId];
+        if (!module) continue;
+
+        const matched = bulkGetMatched(module, queries[i]);
+        if(matched) returnedModules[i] = matched;
+    }
+
+    if (shouldExit()) return returnedModules;
+
     // Check if modules are cached
     for (let i = 0; i < queries.length; i++) {
         const {all, cacheId} = queries[i];
@@ -155,9 +169,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if (!matched) continue;
-
-        returnedModules[i] = matched;
+        if (matched) returnedModules[i] = matched;
     }
 
     if (shouldExit()) return returnedModules;

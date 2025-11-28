@@ -24,6 +24,7 @@ export type Options = {
     searchDefault?: boolean,
     raw?: boolean;
     fatal?: boolean;
+    firstId?: PropertyKey;
     cacheId?: string | null;
 };
 
