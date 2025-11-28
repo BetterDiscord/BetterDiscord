@@ -24,7 +24,7 @@ export type Options = {
     searchDefault?: boolean,
     raw?: boolean;
     fatal?: boolean;
-    cacheId?: string;
+    cacheId?: string | null;
 };
 
 export type BulkQueries = Options & {

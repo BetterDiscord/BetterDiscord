@@ -1,30 +1,40 @@
-import JsonStore from "@stores/json";
+import fs from "@polyfill/fs";
+import path from "path";
+import Config from "@stores/config";
 
 export default class WebpackCache {
     private static data: Record<string, string>;
 
     static get(id: string) {
-        if (!this.data) {
-            this.data = JsonStore.get("webpack") as Record<string, string>;
-        }
-
+        if (!this.data) this.load();
         return this.data[id];
     }
 
     static set(id: string, moduleId: string) {
         this.data[id] = moduleId;
-        this.save();
+        this.saveDebounced();
+    }
+
+    static load() {
+        // This can't use JsonStore since for some reason it doesn't exist at this point
+        const filePath = path.resolve(Config.get("channelPath"), `webpack.json`);
+        try {
+            const data = fs.readFileSync(filePath).toString();
+            this.data = JSON.parse(data);
+        } catch {
+            this.data = {};
+        }
     }
 
     private static saveDebounceTimeout?: Timer;
     private static saveTimeout?: Timer;
 
-    private static save() {
+    private static saveDebounced() {
         // save after 100ms of inactivity
         if (this.saveDebounceTimeout) clearTimeout(this.saveDebounceTimeout);
 
         this.saveDebounceTimeout = setTimeout(() => {
-            JsonStore.set("webpack", this.data);
+            this.save();
             if (this.saveTimeout) {
                 clearTimeout(this.saveTimeout);
                 this.saveTimeout = undefined;
@@ -34,11 +44,16 @@ export default class WebpackCache {
         // save guaranteed after 10 seconds
         if (!this.saveTimeout) {
             this.saveTimeout = setTimeout(() => {
-                JsonStore.set("webpack", this.data);
+                this.save();
                 this.saveTimeout = undefined;
                 if (this.saveDebounceTimeout) clearTimeout(this.saveDebounceTimeout);
             }, 10000);
         }
+    }
+
+    private static save() {
+        const filePath = path.resolve(Config.get("channelPath"), `webpack.json`);
+        fs.writeFileSync(filePath, JSON.stringify(this.data, null, 4));
     }
 
     private static stackPluginRegex = /\/([^\/]+)\.plugin\.js:(\d+):(\d+)/g;

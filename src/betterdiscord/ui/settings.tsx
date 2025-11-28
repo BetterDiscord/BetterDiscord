@@ -25,7 +25,7 @@ import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
 
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"]);
+const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {cacheId: "core-settings-UserSettings"});
 
 interface Section {
     section: string;
@@ -230,7 +230,7 @@ export default new class SettingsRenderer {
     private getLayoutBuilder() {
         if (this.layoutBuilder) return this.layoutBuilder;
 
-        const layoutModuleRaw = getBySource<Record<string, any>>(["$Root", "buildLayout"], {searchDefault: false})!;
+        const layoutModuleRaw = getBySource<Record<string, any>>(["$Root", "buildLayout"], {searchDefault: false, cacheId: "core-settings-layout"})!;
 
         const out: Partial<LayoutBuilder> = {};
         for (const key in layoutModuleRaw) {
@@ -431,7 +431,7 @@ export default new class SettingsRenderer {
             search(): Record<string, any>;
         }>(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]", {
             search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
-        });
+        }, {cacheId: "core-settings-search"});
 
         Patcher.after("SettingsManager", search, "search", (that, args, res) => {
             res = {...res}; // Discord freezes the object
@@ -500,7 +500,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"], {cacheId: "core-settings-viewClass"})?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});

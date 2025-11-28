@@ -13,7 +13,7 @@ import Switch from "./components/switch";
 import Modals from "@ui/modals";
 
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
-import {getByKeys} from "@webpack";
+import {getByKeys, getStore} from "@webpack";
 import type {Addon} from "@modules/addonmanager";
 import type {MouseEvent, ReactNode} from "react";
 import type AddonManager from "@modules/addonmanager"; // eslint-disable-line no-duplicate-imports
@@ -48,10 +48,10 @@ const LayerManager = {
     }
 };
 
-const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser"]);
-const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"]);
-const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"]);
-const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"]);
+const UserStore = getStore("UserStore");
+const ChannelStore = getStore("ChannelStore");
+const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"], {cacheId: "core-addoncard-PrivateChannelActions"});
+const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"], {cacheId: "core-addoncard-ChannelActions"});
 const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value.toString();
 
 function makeButton(title: string, children: ReactNode, action?: () => void, {isControl = false, danger = false, disabled = false} = {}) {

@@ -137,7 +137,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     queries = queries.map((query, i) => ({
         ...query,
         filter: wrapFilter(query.filter),
-        cacheId: query.cacheId || WebpackCache.getIdFromStack(i)
+        cacheId: query.cacheId || (query.cacheId === null ? undefined : WebpackCache.getIdFromStack(i))
     }));
 
     const shouldExitEarly = queries.every((m) => !m.all);
@@ -178,7 +178,6 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
             if (!all) {
                 returnedModules[index] = matched;
-                if (cacheId) console.trace("Cache miss", cacheId);
                 if (cacheId) WebpackCache.set(cacheId, keys[i]);
 
                 if (shouldExit()) break webpack;

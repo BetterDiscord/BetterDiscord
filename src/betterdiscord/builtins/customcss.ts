@@ -22,8 +22,8 @@ import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
 import {PencilIcon} from "lucide-react";
 
-const closeUserSettings = getByStrings<() => boolean>(["closeUserSettings"]);
-const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"]);
+const closeUserSettings = getByStrings<() => boolean>(["closeUserSettings"], {cacheId: "core-customcss-closeUserSettings"});
+const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"], {cacheId: "core-customcss-UserSettings"});
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}

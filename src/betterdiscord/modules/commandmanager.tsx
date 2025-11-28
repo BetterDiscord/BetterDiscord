@@ -95,8 +95,8 @@ export interface Command {
 }
 
 const iconClasses = {
-    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {cacheId: "core-commandmanager-iconClasses"}),
+    builtInSeparator: getModule<any>(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeparator"})?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
@@ -122,10 +122,10 @@ class CommandManager {
         isBD?: boolean;
     }>();
 
-    static User = getByStrings<any>(["hasHadPremium(){"]);
-    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true});
-    static MessagesModule = getModule<any>(x => x.receiveMessage);
-    static IconsModule = getModule<any>(x => x.BOT_AVATARS);
+    static User = getByStrings<any>(["hasHadPremium(){"], {cacheId: "core-commandmanager-User"});
+    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true, cacheId: "core-commandmanager-createBotMessage"});
+    static MessagesModule = getModule<any>(x => x.receiveMessage, {cacheId: "core-commandmanager-Message"});
+    static IconsModule = getModule<any>(x => x.BOT_AVATARS, {cacheId: "core-commandmanager-Icons"});
     static localBDBot: any;
 
     static initialize() {
@@ -133,12 +133,6 @@ class CommandManager {
     }
 
     static #patchCommandSystem() {
-
-        this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
-        this.MessagesModule = getModule(x => x.receiveMessage);
-        this.IconsModule = getModule(x => x.BOT_AVATARS);
-
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
             id: "676620914632294467",
@@ -157,7 +151,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false, cacheId: "core-commandmanager-Sidebar"});
 
         Patcher.after("CommandManager", SidebarModule!, "Z", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
@@ -245,7 +239,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
+            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {cacheId: "core-commandmanager-appIcons"})
         });
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {

@@ -161,7 +161,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
         let protocols: string[] = [];
 
-        const link = getModule<any>(m => m.html && m.requiredFirstCharacters?.[0] === "[")!;
+        const link = getModule<any>(m => m.html && m.requiredFirstCharacters?.[0] === "[", {cacheId: "core-addonstore-linkParser"})!;
 
         const includes = Array.prototype.includes;
         Array.prototype.includes = function (...args) {

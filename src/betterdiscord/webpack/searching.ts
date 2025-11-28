@@ -38,7 +38,7 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filte
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
     let cacheId = options.cacheId;
-    if (!cacheId) cacheId = WebpackCache.getIdFromStack();
+    if (!cacheId && cacheId !== null) cacheId = WebpackCache.getIdFromStack();
 
     filter = wrapFilter(filter);
 
@@ -58,7 +58,6 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
         const matched = getMatched<T>(module, filter, options);
 
         if (matched) {
-            if (cacheId) console.trace("Cache miss", cacheId);
             if (cacheId) WebpackCache.set(cacheId, keys[i]);
             return matched;
         }
