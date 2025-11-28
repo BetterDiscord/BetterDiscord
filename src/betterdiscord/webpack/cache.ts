@@ -21,7 +21,8 @@ export default class WebpackCache {
         try {
             const data = fs.readFileSync(filePath).toString();
             this.data = JSON.parse(data);
-        } catch {
+        }
+        catch {
             this.data = {};
         }
     }
@@ -56,6 +57,7 @@ export default class WebpackCache {
         fs.writeFileSync(filePath, JSON.stringify(this.data, null, 4));
     }
 
+    // eslint-disable-next-line no-useless-escape
     private static stackPluginRegex = /\/([^\/]+)\.plugin\.js:(\d+):(\d+)/g;
 
     static getIdFromStack(suffix?: string | number) {

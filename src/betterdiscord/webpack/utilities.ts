@@ -1,5 +1,5 @@
 /* eslint-disable no-labels */
-/* eslint-disable no-label-var */
+ 
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
 import {getModule} from "./searching";
@@ -160,7 +160,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         returnedModules[i] = matched;
     }
 
-    if(shouldExit()) return returnedModules;
+    if (shouldExit()) return returnedModules;
 
     const keys = Object.keys(webpackRequire.c);
     webpack: for (let i = 0; i < keys.length; i++) {
