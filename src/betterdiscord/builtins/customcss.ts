@@ -17,13 +17,12 @@ import DiscordModules from "@modules/discordmodules";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
-import {getByKeys, getByStrings} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
 import {PencilIcon} from "lucide-react";
 
-const closeUserSettings = getByStrings<() => boolean>(["closeUserSettings"], {cacheId: "core-customcss-closeUserSettings"});
-const UserSettings = getByKeys<{open(id: string): void; close(): void;}>(["updateAccount"], {cacheId: "core-customcss-UserSettings"});
+const closeUserSettings = DiscordModules.closeUserSettings;
+const UserSettings = DiscordModules.UserSettingsActions;
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}

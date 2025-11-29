@@ -25,7 +25,7 @@ import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
 
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {cacheId: "core-settings-UserSettings"});
+const UserSettings = DiscordModules.UserSettings;
 
 interface Section {
     section: string;

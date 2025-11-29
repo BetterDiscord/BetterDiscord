@@ -14,13 +14,12 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
 import {GithubIcon, TwitterIcon} from "lucide-react";
-import {getByKeys} from "@webpack";
 import type {MouseEvent, ReactNode} from "react";
 
 const {useMemo} = React;
 
 
-const AnchorClasses: {anchor: string; anchorUnderlineOnHover: string;} = getByKeys(["anchorUnderlineOnHover"], {cacheId: "core-changelog-AnchorClasses"}) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+const AnchorClasses = DiscordModules.AnchorClasses || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
 const joinSupportServer = (click: MouseEvent) => {
     click.preventDefault();
     click.stopPropagation();

@@ -2,9 +2,10 @@ import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import {Filters, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "discord/modules";
 import type {Channel, Guild} from "discord/structs";
+import DiscordModules from "./discordmodules";
 
 // TODO: create better types for this file, too many "any"
 
@@ -95,8 +96,8 @@ export interface Command {
 }
 
 const iconClasses = {
-    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {cacheId: "core-commandmanager-iconClasses"}),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeparator"})?.builtInSeparator
+    ...DiscordModules.iconClasses,
+    builtInSeparator: DiscordModules.builtInSeperatorClasses?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
@@ -122,10 +123,10 @@ class CommandManager {
         isBD?: boolean;
     }>();
 
-    static User = getByStrings<any>(["hasHadPremium(){"], {cacheId: "core-commandmanager-User"});
-    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true, cacheId: "core-commandmanager-createBotMessage"});
-    static MessagesModule = getModule<any>(x => x.receiveMessage, {cacheId: "core-commandmanager-Message"});
-    static IconsModule = getModule<any>(x => x.BOT_AVATARS, {cacheId: "core-commandmanager-Icons"});
+    static User = DiscordModules.User;
+    static createBotMessage = DiscordModules.createBotMessage;
+    static MessagesModule = DiscordModules.Messages;
+    static IconsModule = DiscordModules.Icons;
     static localBDBot: any;
 
     static initialize() {
@@ -151,9 +152,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false, cacheId: "core-commandmanager-Sidebar"});
-
-        Patcher.after("CommandManager", SidebarModule!, "Z", (_, [props]: [{sections: any[];}], res: any) => {
+        Patcher.after("CommandManager", DiscordModules.Sidebar, "Z", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
 
             const child = res.props.children;
@@ -181,7 +180,9 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {
+            target: DiscordModules.IndexStore
+        });
 
         Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -311,7 +312,9 @@ class CommandManager {
     }
 
     static #patchAuthorizer() {
-        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
+        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {
+            target: DiscordModules.Authorizer
+        });
 
         Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {

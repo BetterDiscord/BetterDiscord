@@ -141,7 +141,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     }));
 
     const shouldExitEarly = queries.every((m) => !m.all);
-    const shouldExit = () => shouldExitEarly && queries.every((query, index) => !query.all && index in returnedModules);
+    const shouldExit = () => shouldExitEarly && queries.every((_, index) => index in returnedModules);
 
     // Check the firstId for each query
     for (let i = 0; i < queries.length; i++) {
@@ -152,7 +152,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if(matched) returnedModules[i] = matched;
+        if (matched) returnedModules[i] = matched;
     }
 
     if (shouldExit()) return returnedModules;

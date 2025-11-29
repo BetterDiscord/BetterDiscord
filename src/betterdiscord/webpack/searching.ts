@@ -39,7 +39,7 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filte
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
     filter = wrapFilter(filter);
 
-    if(options.firstId) {
+    if (options.firstId) {
         const module = webpackRequire.c[options.firstId];
         if (module) {
             const matched = getMatched<T>(module, filter, options);

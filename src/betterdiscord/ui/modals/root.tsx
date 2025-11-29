@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getByKeys, getModule} from "@webpack";
 import type {PropsWithChildren} from "react";
 import DiscordModules from "@modules/discordmodules";
 
 
 // TODO: rewrite these types properly
-const Anims: any = getByKeys(["Easing"], {cacheId: "core-modals-Anims"});
+const Anims: any = DiscordModules.Anims;
 
 
 export const Sizes = Object.freeze({
@@ -22,8 +21,7 @@ export const Styles = Object.freeze({
 });
 
 
-const AccessibilityContext: any = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true, cacheId: "core-AccessibilityContext"});
-const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true, cacheId: "core-modal-FocusLock"}) ?? React.Fragment;
+const FocusLock: any = DiscordModules.FocusLock ?? React.Fragment;
 
 type RootProps = PropsWithChildren<{
     className?: string;
@@ -35,7 +33,7 @@ type RootProps = PropsWithChildren<{
 export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}: RootProps) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
 
-    const preferences: any = React.useContext(AccessibilityContext ?? {});
+    const preferences: any = React.useContext(DiscordModules.AccessibilityContext ?? {});
     const reducedMotion = preferences?.reducedMotion?.enabled ?? document.documentElement?.classList.contains("reduce-motion");
 
     const springStyles = DiscordModules.ReactSpring.useSpring({
