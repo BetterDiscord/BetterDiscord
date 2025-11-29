@@ -8,7 +8,7 @@ import type {ComponentClass, PropsWithChildren} from "react";
 let DiscordMarkdown: ComponentClass<PropsWithChildren<{className: string; parser: ReturnType<SimpleMarkdown["parserFor"]>; output: ReturnType<SimpleMarkdown["reactFor"]>;}>> & {rules: Rules;}, rules: Rules;
 
 function setupMarkdown() {
-    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules)!;
+    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules, {cacheId: "core-markdown-DiscordMarkdown"})!;
     rules = {} as Rules;
     if (DiscordMarkdown) {
         rules = {
