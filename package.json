@@ -15,10 +15,9 @@
         "lint-css": "stylelint src/betterdiscord/styles/*.css && stylelint src/betterdiscord/styles/**/*.css",
         "test": "bun test tests/",
         "dist": "bun run build:production && bun scripts/pack.ts",
-        "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
+        "docs": "typedoc",
         "translations": "bun -r dotenv/config scripts/translations.ts",
-        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.ts",
-        "typedoc": "typedoc"
+        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.ts"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
@@ -40,10 +39,13 @@
         "globals": "^15.14.0",
         "stylelint": "^14.16.1",
         "stylelint-config-standard": "^24.0.0",
-        "typedoc": "^0.28.5",
+        "typedoc": "^0.28.11",
+        "typedoc-plugin-markdown": "^4.8.1",
+        "typedoc-plugin-mdn-links": "^5.0.9",
         "typedoc-plugin-merge-modules": "^7.0.0",
-        "typedoc-plugin-missing-exports": "^4.0.0",
+        "typedoc-plugin-missing-exports": "^4.1.0",
         "typedoc-plugin-rename-defaults": "^0.7.3",
+        "typedoc-vitepress-theme": "^1.1.2",
         "typescript-eslint": "^8.22.0"
     },
     "dependencies": {
