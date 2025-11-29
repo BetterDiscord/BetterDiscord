@@ -55,6 +55,7 @@
     "entryPoints": ["src/betterdiscord/api/index.ts"],
     "out": "docs",
     "sidebarLinks": {},
+    "navigationJson": "./docs/navigation.json",
     "navigation": {
         // "includeCategories": true,
         "includeGroups": true,
