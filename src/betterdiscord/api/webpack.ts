@@ -2,7 +2,6 @@ import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, L
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
-import Web from "../data/web";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
