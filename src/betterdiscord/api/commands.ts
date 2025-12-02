@@ -12,9 +12,8 @@ type UnregisterArgs<Bounded extends boolean> = [
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
  * This allows plugins to register and manage their own commands.
- * @type CommandAPI
  * @summary {@link CommandAPI} is a utility class for managing commands.
- * @name CommandAPI
+ * @hideconstructor
  */
 class CommandAPI<Bounded extends boolean> {
     #callerName = "";

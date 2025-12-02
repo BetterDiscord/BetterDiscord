@@ -53,22 +53,19 @@
   "typedocOptions": {
     "name": "BetterDiscordAPI",
     "entryPoints": ["src/betterdiscord/api/index.ts"],
+    "entryPointStrategy": "resolve",
     "out": "docs",
     "sidebarLinks": {},
-    "navigationJson": "./docs/navigation.json",
     "navigation": {
-        // "includeCategories": true,
+        "includeCategories": true,
         "includeGroups": true,
         "excludeReferences": false,
     },
-    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-mdn-links", "typedoc-plugin-merge-modules", "typedoc-plugin-missing-exports", "typedoc-plugin-rename-defaults"],
+    "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-frontmatter", "typedoc-vitepress-theme", "typedoc-plugin-mdn-links", "typedoc-plugin-merge-modules", "typedoc-plugin-missing-exports", "typedoc-plugin-rename-defaults"],
     "skipErrorChecking": true,
-    "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
-    "mergeModulesMergeMode": "project", // NEW option of TypeDoc added by this plugin
     "placeInternalsInOwningModule": true,
-    "resolveUtilityTypes": true, // Added by typedoc-plugin-mdn-links
     "includeVersion": false,
-    "disableSources": true,
+    "disableSources": false,
     "excludeExternals": true,
     "excludeInternal": true,
     "excludeReferences": true,
@@ -76,9 +73,38 @@
     "readme": "none",
     "router": "kind",
     "externalPattern": ["node_modules/**/*", "src/betterdiscord/modules/*.ts"],
+
+    // Markdown plugin options
+    "hideBreadcrumbs": true,
+    "useCodeBlocks": true,
+    "expandObjects": true,
+    "expandParameters": true,
+    // These all default to list
+    "indexFormat": "list",
+    "parametersFormat": "table",
+    "interfacePropertiesFormat": "list",
+    "classPropertiesFormat": "list",
+    "typeAliasPropertiesFormat": "list",
+    "enumMembersFormat": "list",
+    "propertyMembersFormat": "list",
+    "typeDeclarationFormat": "list",
+
+    // Vitepress theme options
     "sidebar": {
       "collapsed": false,
       "pretty": true
-    }
+    },
+
+    // Frontmatter plugin for index.md
+    "indexFrontmatter": {
+      "title": "Overview",
+    },
+
+    // MDN Links plugin options
+    "resolveUtilityTypes": true, // Added by typedoc-plugin-mdn-links
+
+    // Merge modules plugin options
+    "mergeModulesRenameDefaults": true, // NEW option of TypeDoc added by this plugin
+    "mergeModulesMergeMode": "project", // NEW option of TypeDoc added by this plugin
   }
 }
