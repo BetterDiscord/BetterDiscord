@@ -240,7 +240,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {cacheId: "core-commandmanager-appIcons"})
+            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {firstId: 826298, cacheId: "core-commandmanager-appIcons"})
         });
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {

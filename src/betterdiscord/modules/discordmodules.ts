@@ -7,7 +7,7 @@
 
 import {memoize} from "@common/utils";
 import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring} from "discord/modules";
-import {Filters, getBulkKeyed, getByKeys, getByStrings} from "@webpack";
+import {Filters, getBulkKeyed, getByKeys, getBySource, getByStrings, getModule} from "@webpack";
 import type React from "react";
 import type ReactDOMBaseType from "react-dom";
 import type ReactDOMClientType from "react-dom/client";
@@ -35,6 +35,9 @@ interface Modules {
     UserSettings: any;
     PrivateChannelActions: {openPrivateChannel(me: string, them: string): void;};
     ChannelActions: {selectPrivateChannel(id: string): void; selectVoiceChannel(a: any, b: any): void;};
+    ContextMenuMethods: unknown;
+    // This is supposed to be a fallback but the original filter is broken, so this always is needed
+    ContextMenuComponent: any;
 
     IndexStore: unknown;
     Authorizer: unknown;
@@ -161,6 +164,17 @@ const SyncModules = getBulkKeyed<Modules>({
         firstId: 287734,
         cacheId: "core-ChannelActions"
     },
+    ContextMenuMethods: {
+        filter: m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)),
+        firstId: 239091,
+        cacheId: "core-ContextMenuMethods"
+    },
+    ContextMenuComponent: {
+        filter: Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="),
+        searchExports: true,
+        firstId: 481060,
+        cacheId: "core-ContextMenuComponent"
+    },
     // Used as target for getWithKey
     IndexStore: {
         filter: Filters.byStrings(".getScoreWithoutLoadingLatest"),
@@ -199,6 +213,12 @@ const MemoModules = memoize({
     get UserAgentInfo(): UserAgentInfo | undefined {return getByKeys(["os", "layout"], {firstId: 264344, cacheId: "core-UserAgentInfo"});},
     get GetClientInfo(): GetClientInfo | undefined {return getByStrings(["versionHash"], {firstId: 104639, cacheId: "core-GetClientInfo"});},
     get MessageUtils() {return getByKeys(["sendMessage"], {firstId: 904245, cacheId: "core-MessageUtils"});},
+    get LinkParser(): any {return getModule(m => m.html && m.requiredFirstCharacters?.[0] === "[", {firstId: 772096, cacheId: "core-LinkParser"});},
+    get DiscordMarkdown(): any {return getModule(m => m?.prototype?.render && m.rules, {firstId: 241209, cacheId: "core-DiscordMarkdown"});},
+    get Layout(): Record<string, any> {return getBySource(["$Root", "buildLayout"], {searchDefault: false, firstId: 509613, cacheId: "core-Layout"})!;},
+    get NoticesBaseClasses(): {base: string;} | undefined {return getByKeys(["container", "base", "sidebar"], {cacheId: "core-NoticesBaseClasses"});},
+    get NoticesPageClasses(): {errorPage: string;} | undefined {return getByKeys(["errorPage"], {cacheId: "core-NoticesPageClasses"});},
+    get ViewClasses(): {standardSidebarView: string;} | undefined {return getByKeys(["standardSidebarView"], {cacheId: "core-ViewClasses"});},
 });
 
 const DiscordModules = Object.assign(MemoModules, SyncModules);

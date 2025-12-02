@@ -1,7 +1,7 @@
 import React, {ReactDOM} from "@modules/react";
 import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getBySource, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
+import {Filters, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -230,7 +230,7 @@ export default new class SettingsRenderer {
     private getLayoutBuilder() {
         if (this.layoutBuilder) return this.layoutBuilder;
 
-        const layoutModuleRaw = getBySource<Record<string, any>>(["$Root", "buildLayout"], {searchDefault: false, cacheId: "core-settings-layout"})!;
+        const layoutModuleRaw = DiscordModules.Layout;
 
         const out: Partial<LayoutBuilder> = {};
         for (const key in layoutModuleRaw) {
@@ -500,7 +500,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"], {cacheId: "core-settings-viewClass"})?.standardSidebarView.split(" ")[0];
+        const viewClass = DiscordModules.ViewClasses?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
