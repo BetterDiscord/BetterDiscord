@@ -89,6 +89,15 @@ export default new class CustomCSS extends Builtin {
 
     watchContent() {
         if (this.watcher) return this.error("Already watching content.");
+        if (!fs.existsSync(this.file)) {
+            try {
+                fs.mkdirSync(path.dirname(this.file), {recursive: true});
+                fs.writeFileSync(this.file, "");
+            }
+            catch (err) {
+                return this.error("Could not create custom.css file.", err);
+            }
+        }
         const timeCache: Record<string, number> = {};
         this.log("Starting to watch content.");
         this.watcher = fs.watch(this.file, {persistent: false}, async (eventType, filename) => {

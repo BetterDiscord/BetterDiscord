@@ -438,7 +438,7 @@ export default new class SettingsRenderer {
 
                 return layouts;
             },
-            useLabel: () => <LayerSettingTitle/>
+            useLabel: () => Object.assign(<LayerSettingTitle />, {toString: () => "BetterDiscord"}),
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {
