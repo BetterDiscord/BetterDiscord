@@ -262,7 +262,7 @@ export default new class SettingsRenderer {
         const rootLayout = await getLazy<{
             key: "$Root";
             buildLayout(): SectionLayout[];
-        }>(m => m?.key === "$Root");
+        }>(m => m?.key === "$Root", {searchExports: true, searchDefault: false});
         if (!rootLayout) return;
 
         this.patchSettingsSearch();
