@@ -16,7 +16,7 @@ import {findInTree} from "@common/utils";
 import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
-import {lucideToDiscordIcon, type DiscordIcon} from "@utils/icon";
+import {type DiscordIcon, lucideToDiscordIcon} from "@utils/icon";
 import {Logo} from "./logo";
 import DiscordModules from "@modules/discordmodules";
 import Button from "./base/button";
@@ -38,12 +38,15 @@ interface Section {
 
 interface PaneLayout {
     buildLayout(): [];
+
     render(): React.ReactNode;
 
     useTitle?(): React.ReactNode;
 }
+
 interface PanelLayout {
     buildLayout(): [pane: PaneLayout];
+
     useTitle(): React.ReactNode;
 }
 
@@ -65,8 +68,11 @@ type Trailing = ({
 
 interface SidebarItemLayout {
     icon: DiscordIcon;
+
     useTitle(): React.ReactNode;
+
     getLegacySearchKey(): string;
+
     buildLayout(): [] | [panel: PanelLayout];
 
     /**
@@ -82,14 +88,19 @@ interface SidebarItemLayout {
 
 interface SectionLayout {
     useLabel(): React.ReactNode;
+
     buildLayout(): SidebarItemLayout[];
+
     usePredicate?(): boolean;
 }
 
 interface LayoutBuilder {
     pane(key: string, panel: PaneLayout): PaneLayout;
+
     panel(key: string, panel: PanelLayout): PanelLayout;
+
     sidebarItem(key: string, panel: SidebarItemLayout): SidebarItemLayout;
+
     section(key: string, panel: SectionLayout): SectionLayout;
 }
 
@@ -130,8 +141,10 @@ function LayerSettingTitle() {
             {node && ReactDOM.createPortal(
                 <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
                     {props =>
-                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
-                            <HistoryIcon className="bd-icon" size="16px" />
+                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK}
+                                color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE}
+                                onClick={() => Modals.showChangelogModal(changelog)}>
+                            <HistoryIcon className="bd-icon" size="16px"/>
                         </Button>
                     }
                 </DiscordModules.Tooltip>,
@@ -178,7 +191,14 @@ export default new class SettingsRenderer {
     }
 
     buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: (c: string, s: string, v: unknown) => void) {
-        return React.createElement(SettingsPanel, {id, title, groups, onChange: this.onChange(onChange).bind(this), onDrawerToggle: this.onDrawerToggle.bind(this), getDrawerState: this.getDrawerState.bind(this)});
+        return React.createElement(SettingsPanel, {
+            id,
+            title,
+            groups,
+            onChange: this.onChange(onChange).bind(this),
+            onDrawerToggle: this.onDrawerToggle.bind(this),
+            getDrawerState: this.getDrawerState.bind(this)
+        });
     }
 
     getAddonPanel(title: string, options = {}) {
@@ -191,7 +211,9 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettingsLayer = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
+        const UserSettingsLayer = await getLazyByPrototypes<{
+            prototype: { getPredicateSections(): Section[]; };
+        }>(["getPredicateSections"]);
         if (!UserSettingsLayer) return;
 
         Patcher.after("SettingsManager", UserSettingsLayer.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
@@ -227,6 +249,7 @@ export default new class SettingsRenderer {
     }
 
     private layoutBuilder?: LayoutBuilder;
+
     private getLayoutBuilder() {
         if (this.layoutBuilder) return this.layoutBuilder;
 
@@ -262,7 +285,7 @@ export default new class SettingsRenderer {
         const rootLayout = await getLazy<{
             key: "$Root";
             buildLayout(): SectionLayout[];
-        }>(m => m?.key === "$Root");
+        }>(m => m?.key === "$Root", {searchExports: true, searchDefault: false});
         if (!rootLayout) return;
 
         this.patchSettingsSearch();
@@ -322,6 +345,7 @@ export default new class SettingsRenderer {
                     };
 
                     let forceUpdate: () => void;
+
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
                         forceUpdate = useForceUpdate()[1];
@@ -334,8 +358,7 @@ export default new class SettingsRenderer {
                                         if (v?.parentElement?.parentElement) {
                                             v.parentElement.parentElement.classList.add("bd-settings-title-extend");
                                             setNode(v.parentElement.parentElement);
-                                        }
-                                        else {
+                                        } else {
                                             setNode(v!);
                                         }
 
@@ -356,11 +379,11 @@ export default new class SettingsRenderer {
                     }
 
                     return {
-                        header: () => <PanelHeader />,
+                        header: () => <PanelHeader/>,
                         render: () => (
                             <SettingsTitleContext
                                 value={(value) => {
-                                    ref.current = (value as {props: typeof ref["current"];}).props;
+                                    ref.current = (value as { props: typeof ref["current"]; }).props;
                                     forceUpdate();
                                     return null;
                                 }}
@@ -415,7 +438,7 @@ export default new class SettingsRenderer {
 
                 return layouts;
             },
-            useLabel: () => <LayerSettingTitle />
+            useLabel: () => <LayerSettingTitle/>
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {
@@ -485,7 +508,9 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazyByStrings<{Z(): void;}>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
+        const versionDisplayModule = await getLazyByStrings<{
+            Z(): void;
+        }>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
@@ -500,10 +525,14 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys<{
+            standardSidebarView: string;
+        }>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {
+            getPredicateSections: any;
+        }) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };
