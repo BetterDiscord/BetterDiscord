@@ -16,7 +16,7 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {Addon} from "@modules/addonmanager";
 import type {MouseEvent, ReactNode} from "react";
-import type AddonManager from "@modules/addonmanager"; // eslint-disable-line no-duplicate-imports
+import type AddonManager from "@modules/addonmanager";  
 
 const {useCallback, useMemo} = React;
 

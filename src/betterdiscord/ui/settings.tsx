@@ -358,7 +358,8 @@ export default new class SettingsRenderer {
                                         if (v?.parentElement?.parentElement) {
                                             v.parentElement.parentElement.classList.add("bd-settings-title-extend");
                                             setNode(v.parentElement.parentElement);
-                                        } else {
+                                        }
+ else {
                                             setNode(v!);
                                         }
 

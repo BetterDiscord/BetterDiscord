@@ -183,6 +183,6 @@ Object.defineProperty(global, "appSettings", {
 });
 
 declare global {
-    // eslint-disable-next-line no-var
+     
     var appSettings: any;
 }
