@@ -47,8 +47,8 @@ export default function VersionInfo() {
         if (clicks > 0 && clicks < (CLICKS_REQUIRED / 2)) return "Copied";
         if (clicks >= (CLICKS_REQUIRED / 2) && clicks < CLICKS_REQUIRED) return `${CLICKS_REQUIRED - clicks} clicks to go`;
         if (clicks >= CLICKS_REQUIRED) {
-            if (isCanary) return "Switched to BD stable";
-            return "Switched to BD canary";
+            if (isCanary) return "Switched to BD canary";
+            return "Switched to BD stable";
         }
     }, [clicks, isCanary]);
 

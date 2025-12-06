@@ -262,7 +262,7 @@ export default new class SettingsRenderer {
         const rootLayout = await getLazy<{
             key: "$Root";
             buildLayout(): SectionLayout[];
-        }>(m => m?.key === "$Root");
+        }>(m => m?.key === "$Root", {searchExports: true, searchDefault: false});
         if (!rootLayout) return;
 
         this.patchSettingsSearch();
@@ -415,7 +415,7 @@ export default new class SettingsRenderer {
 
                 return layouts;
             },
-            useLabel: () => <LayerSettingTitle />
+            useLabel: () => Object.assign(<LayerSettingTitle />, {toString: () => "BetterDiscord"}),
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {

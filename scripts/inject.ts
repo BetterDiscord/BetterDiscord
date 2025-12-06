@@ -1,18 +1,29 @@
 const args = process.argv;
 import fs from "fs";
 import path from "path";
+import bun from "bun";
 
 import doSanityChecks from "./helpers/validate";
 import buildPackage from "./helpers/package";
+import copyFiles from "./helpers/copy";
 
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
 const release = releaseInput === "canary" ? "Discord Canary" : releaseInput === "ptb" ? "Discord PTB" : "Discord";
 const bdPath = useBdRelease ? path.resolve(__dirname, "..", "dist", "betterdiscord.asar") : path.resolve(__dirname, "..", "dist");
-const discordPath = (function () {
+const discordPath = await (async function () {
     let resourcePath = "";
     if (process.platform === "win32") {
         const basedir = path.join(process.env.LOCALAPPDATA!, release.replace(/ /g, ""));
+        if (!fs.existsSync(basedir)) throw new Error(`Cannot find directory for ${release}`);
+        const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
+        // To account for discord_desktop_core-1 or any other number
+        const coreWrap = fs.readdirSync(path.join(basedir, version, "modules")).filter(e => e.indexOf("discord_desktop_core") === 0).sort().reverse()[0];
+        resourcePath = path.join(basedir, version, "modules", coreWrap, "discord_desktop_core");
+    }
+    else if (process.env.WSL_DISTRO_NAME) {
+        const appdata = (await bun.$`wslpath "$(cmd.exe /c "echo %LOCALAPPDATA%" 2>/dev/null | tr -d '\r')"`.text()).trim();
+        const basedir = path.join(appdata, release.replace(/ /g, ""));
         if (!fs.existsSync(basedir)) throw new Error(`Cannot find directory for ${release}`);
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
         // To account for discord_desktop_core-1 or any other number
@@ -43,7 +54,13 @@ console.log(`    ✅ Found ${release} in ${discordPath}`);
 
 const indexJs = path.join(discordPath, "index.js");
 if (fs.existsSync(indexJs)) fs.unlinkSync(indexJs);
-fs.writeFileSync(indexJs, `require("${bdPath.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}");\nmodule.exports = require("./core.asar");`);
+if (process.env.WSL_DISTRO_NAME) {
+    copyFiles(bdPath, path.join(discordPath, "betterdiscord"));
+    fs.writeFileSync(indexJs, `require("./betterdiscord");\nmodule.exports = require("./core.asar");`);
+}
+else {
+    fs.writeFileSync(indexJs, `require("${bdPath.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}");\nmodule.exports = require("./core.asar");`);
+}
 
 console.log("    ✅ Wrote index.js");
 console.log("");
