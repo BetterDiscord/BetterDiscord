@@ -19,11 +19,11 @@
 }
 
 .bd-header-primary {
-  color: var(--neutral-1);
+  color: var(--header-primary);
 }
 
 .bd-header-secondary {
-  color: var(--neutral-9);
+  color: var(--text-default);
 }
 
 .bd-text-yellow {
