@@ -57,7 +57,7 @@
   /* font-weight: bold; */
   font-size: 0.85em;
   font-weight: 600;
-  color: var(--neutral-9);
+  color: var(--text-default);
   flex: 1;
   padding: 0 8px;
 }
