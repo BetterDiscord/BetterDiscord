@@ -1,12 +1,12 @@
 .bd-filled-checkmark {
-    background: #43B581;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 3px;
-    margin-right: 4px; /* Align with other icons */
-    color: var(--interactive-active);
+  background: #43b581;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  margin-right: 4px; /* Align with other icons */
+  color: var(--interactive-active);
 }
 
 .bd-empty-updates {
@@ -14,13 +14,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: var(--header-primary);
+  color: var(--neutral-1);
   font-weight: 500;
   font-size: 16px;
 }
 
 .bd-empty-updates svg {
-  color: #43B581;
+  color: #43b581;
   margin-bottom: 20px;
 }
 
@@ -47,12 +47,12 @@
 
 @keyframes bd-update-spin {
   0% {
-      transform: rotate(0);
+    transform: rotate(0);
   }
   50% {
-      transform: rotate(180deg)
+    transform: rotate(180deg);
   }
   100% {
-      transform: rotate(360deg)
+    transform: rotate(360deg);
   }
 }
