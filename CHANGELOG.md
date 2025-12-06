@@ -2,6 +2,17 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.1
+
+### Fixed:
+- Navigating to Plugins, Themes, or Settings from the context menu now correctly opens the intended page
+- Custom CSS file is now automatically created if it doesn't exist
+- aria-label for BetterDiscord section in settings panel now sets correctly
+- Plugins/Themes Search bar clear button now properly resets the input field
+- Fixed css to match Discord's latest changes
+- BetterDiscord Settings section now appears correctly in the settings menu
+- Fixes for theme attributes
+- Flipped canary tooltip status fixed
 
 ## 1.13.0
 
