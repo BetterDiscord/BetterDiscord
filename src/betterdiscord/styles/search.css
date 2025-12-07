@@ -4,7 +4,7 @@
     outline: none;
     border: 0;
     background-color: var(--background-base-lowest);
-    color: var(--text-secondary);
+    color: var(--text-default);
     display: flex;
     align-items: center;
 }
@@ -18,7 +18,7 @@
 }
 
 .bd-search::-webkit-input-placeholder {
-    color: var(--text-secondary);
+    color: var(--text-default);
 }
 
 .bd-search-wrapper > svg {
