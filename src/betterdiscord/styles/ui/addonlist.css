@@ -49,7 +49,7 @@
 }
 
 .bd-addon-list .bd-addon-header {
-  color: var(--neutral-1);
+  color: var(--header-primary);
   background: var(--background-mod-subtle);
   border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -65,7 +65,7 @@
 
 .bd-addon-header .bd-icon {
   margin-right: 8px;
-  color: var(--neutral-1);
+  color: var(--header-primary);
 }
 
 .bd-grid-view .bd-addon-header .bd-icon {
@@ -160,7 +160,7 @@
   font-size: 14px;
   line-height: 18px;
   -webkit-line-clamp: 3;
-  color: var(--neutral-9);
+  color: var(--text-default);
 }
 
 .bd-description em {
@@ -346,7 +346,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-primary-bg);
+  background-color: var(--card-background-default);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   cursor: pointer;

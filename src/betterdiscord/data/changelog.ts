@@ -15,13 +15,9 @@ export default {
             type: "fixed",
             blurb: "Here are the fixes included in this patch release:",
             items: [
-                "Navigating to Plugins, Themes, or Settings from the context menu now correctly opens the intended page",
-                "Custom CSS file is now automatically created if it doesn't exist",
-                "aria-label for BetterDiscord section in settings panel now sets correctly",
-                "Plugins/Themes Search bar clear button now properly resets the input field",
-                "Fixed css to match Discord's latest changes",
                 "BetterDiscord Settings section now appears correctly in the settings menu",
-                "Fixes for theme attributes",
+                "Fixed css to match Discord's latest changes",
+                "Context Menu patches fixed"
             ]
         },
     ]

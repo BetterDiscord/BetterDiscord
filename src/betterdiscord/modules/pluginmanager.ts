@@ -154,7 +154,7 @@ export default new class PluginManager extends AddonManager {
             this.trigger("disabled", addon);
             Toasts.warning(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
-            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
 

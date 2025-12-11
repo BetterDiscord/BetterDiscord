@@ -72,7 +72,7 @@
   align-items: center;
   gap: 4px;
   min-width: 0;
-  color: var(--neutral-9);
+  color: var(--text-default);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -144,7 +144,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--neutral-1);
+  color: var(--header-primary);
   font-family: var(--font-display);
   font-size: 16px;
   line-height: 1.25;
@@ -152,7 +152,7 @@
 }
 
 .bd-addon-store-card-description {
-  color: var(--neutral-9);
+  color: var(--text-default);
   overflow: hidden;
   margin: 4px 0 8px;
   -webkit-line-clamp: 4;

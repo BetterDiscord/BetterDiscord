@@ -7,7 +7,7 @@
 }
 
 .bd-empty-image-title {
-  color: var(--neutral-1);
+  color: var(--header-primary);
   font-size: 24px;
   font-weight: 600;
   text-align: center;
@@ -15,7 +15,7 @@
 }
 
 .bd-empty-image-message {
-  color: var(--neutral-9);
+  color: var(--text-default);
   margin-bottom: 16px;
   text-align: center;
 }
