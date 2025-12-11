@@ -154,7 +154,7 @@ export default new class PluginManager extends AddonManager {
             this.trigger("disabled", addon);
             Toasts.warning(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
-            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
         this.trigger("started", addon.id);
 
@@ -196,7 +196,11 @@ export default new class PluginManager extends AddonManager {
         for (let i = 0; i < this.addonList.length; i++) {
             if (!this.state[this.addonList[i].id]) continue;
             const plugin = this.addonList[i].instance;
-            try {plugin?.onSwitch?.();}
+            try {
+                if (typeof plugin?.onSwitch === "function") {
+                    plugin.onSwitch();
+                }
+            }
             catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
@@ -205,7 +209,11 @@ export default new class PluginManager extends AddonManager {
         for (let i = 0; i < this.addonList.length; i++) {
             if (!this.state[this.addonList[i].id]) continue;
             const plugin = this.addonList[i].instance;
-            try {plugin?.observer?.(mutation);}
+            try {
+                if (typeof plugin?.observer === "function") {
+                    plugin.observer(mutation);
+                }
+            }
             catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }

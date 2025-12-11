@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} 版本 {{version}} 作者 {{author}}",
         "byline": "作者 {{author}}",
-        "openFolder": "開啟 {{type}} 資料夾",
         "reload": "重新載入",
         "addonSettings": "設定",
         "website": "網站",
@@ -158,7 +157,6 @@
         "version": "版本",
         "added": "安裝時間",
         "modified": "最後更新時間",
-        "search": "搜尋 {{type}}",
         "editAddon": "編輯",
         "deleteAddon": "刪除",
         "confirmDelete": "您真的要刪除 {{name}} 嗎？",
@@ -173,15 +171,11 @@
         "methodError": "無法調用 {{method}}。",
         "unknownAuthor": "未知的作者",
         "noDescription": "作者没有留下任何描述。",
-        "alreadyExists": "已存在相同名稱 {{name}} 的 {{type}}。",
-        "alreadWatching": "已在監視擴充功能了。",
         "metaError": "無法解析元資料。",
         "missingNameData": "元資料缺少名稱。",
         "metaNotFound": "無法找到元資料。",
         "compileError": "無法編譯。詳細資訊請見控制台。",
         "wasUnloaded": "已解除安裝 {{name}}。",
-        "blankSlateHeader": "您還未新增任何 {{type}}！",
-        "blankSlateMessage": "您可以在[此網站]({{link}})中取得，並將其新增到您的 {{type}} 資料夾中。",
         "isEnabled": "已啟用",
         "wasLoaded": "已載入 {{name}} 版本 {{version}}。",
         "listView": "清單檢視",
@@ -214,10 +208,6 @@
         "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？",
         "changelog": "更新日誌"
     },
-    "ReactDevTools": {
-        "notFound": "未找到擴充套件",
-        "notFoundDetails": "無法在您的電腦上找到 React 開發者工具擴充套件。請在本機的 Chrome 上安裝該擴充套件。"
-    },
     "Sorting": {
         "sortBy": "排序方式",
         "order": "順序",
@@ -228,15 +218,11 @@
         "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap和最大化。\n\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
         "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
     },
-    "Notices": {
-        "moreInfo": "更多資訊"
-    },
     "Updater": {
         "updateFailed": "更新失敗！",
         "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https://betterdiscord.app/) 下載最新版本的安裝程式並重新安裝。",
         "updateSuccessful": "更新成功！",
         "updateAvailable": "BetterDiscord 已有新的版本 ({{version}})",
-        "addonUpdatesAvailable": "BetterDiscord 已為您 {{type}} 中的 {{count}} 找到更新！",
         "addonUpdated": "{{name}} 已更新到版本 {{version}}！",
         "checking": "正在檢查更新！",
         "finishedChecking": "已完成檢查更新！",
@@ -244,7 +230,6 @@
         "updateAll": "全部更新！",
         "noUpdatesAvailable": "沒有可供使用的更新。",
         "versionAvailable": "版本 {{version}} 已可供使用！",
-        "upToDateBlankslate": "您所有的 {{type}} 似乎都是最新的！",
         "updateButton": "更新！"
     }
 }

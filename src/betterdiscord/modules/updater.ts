@@ -14,11 +14,12 @@ import IPC from "./ipc";
 import {t} from "@common/i18n";
 import JsonStore from "@stores/json";
 import React from "./react";
-import Settings from "@stores/settings";
+import SettingsStore from "@stores/settings";
+import Settings from "@ui/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 
-import Toasts from "@ui/toasts";
+import Toasts from "@stores/toasts";
 import Notifications from "@ui/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
@@ -26,11 +27,8 @@ import Web from "@data/web";
 import type AddonManager from "./addonmanager";
 import type {Release} from "github";
 import type {BdWebAddon} from "betterdiscordweb";
-import {getByKeys} from "@webpack";
 import {Logo} from "@ui/logo";
-
-
-const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);
+import {RefreshCcwIcon} from "lucide-react";
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -58,8 +56,9 @@ export default class Updater {
 
     static initialize() {
         // TODO: get rid of element creation
-        Settings.registerPanel("updates", t("Panels.updates"), {
+        SettingsStore.registerPanel("updates", t("Panels.updates"), {
             order: 1,
+            icon: RefreshCcwIcon,
             element: () => {
                 return React.createElement(UpdaterPanel, {
                     coreUpdater: CoreUpdater,
@@ -89,9 +88,9 @@ export default class Updater {
             this.updateCheckInterval = null;
         }
 
-        if (!Settings.get("addons", "checkForUpdates")) return;
+        if (!SettingsStore.get("addons", "checkForUpdates")) return;
 
-        const hours = Settings.get<number>("addons", "updateInterval");
+        const hours = SettingsStore.get<number>("addons", "updateInterval");
         this.updateCheckInterval = setInterval(() => {
             CoreUpdater.checkForUpdate();
             PluginUpdater.checkAll();
@@ -108,7 +107,7 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
-        if (!Settings.get("addons", "checkForUpdates")) return;
+        if (!SettingsStore.get("addons", "checkForUpdates")) return;
         this.checkForUpdate();
     }
 
@@ -166,7 +165,7 @@ export class CoreUpdater {
     static async checkForUpdate(showNotice = true) {
         if (Config.isDevelopment) return; // Don't run updater on development build
         const isOnCanary = Config.isCanary;
-        const isCanaryEnabled = Settings.get("developer", "canary");
+        const isCanaryEnabled = SettingsStore.get("developer", "canary");
 
         /**
          * If canary is enabled, then check for canary update.
@@ -186,7 +185,7 @@ export class CoreUpdater {
             id: "BD-core-update",
             title: t("Updater.updateAvailable", {version: this.remoteVersion}),
             type: "warning",
-            icon: () => React.createElement(Logo, {width: "16px", height: "16px"}),
+            icon: () => React.createElement(Logo, {size: 16, accent: true}),
             duration: Infinity,
             actions: [
                 {
@@ -214,7 +213,7 @@ export class CoreUpdater {
                     return resolve(body);
                 }));
 
-            const asarPath = path.join(Config.get("bdPath"), "betterdiscord.asar");
+            const asarPath = path.join(Config.get("dataPath"), "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
             const fs = require("original-fs");
             fs.writeFileSync(asarPath, buff);
@@ -222,7 +221,7 @@ export class CoreUpdater {
             this.hasUpdate = false;
 
             // For canary, save the last updated data. For stable, overwrite the current version to prevent further updates
-            if (Settings.get("developer", "canary")) JsonStore.set("misc", "canaryUpdated", this.remoteVersion);
+            if (SettingsStore.get("developer", "canary")) JsonStore.set("misc", "canaryUpdated", this.remoteVersion);
             else Config.set("version", this.remoteVersion);
 
             Modals.showConfirmationModal(t("Updater.updateSuccessful"), t("Modals.restartPrompt"), {
@@ -258,10 +257,10 @@ export class AddonUpdater {
 
     async initialize() {
         await this.updateCache();
-        if (Settings.get("addons", "checkForUpdates")) this.checkAll();
+        if (SettingsStore.get("addons", "checkForUpdates")) this.checkAll();
 
         Events.on(`${this.type}-loaded`, addon => {
-            if (!Settings.get("addons", "checkForUpdates")) return;
+            if (!SettingsStore.get("addons", "checkForUpdates")) return;
             this.checkForUpdate(addon.filename, addon.version);
         });
 
@@ -336,7 +335,7 @@ export class AddonUpdater {
             id: `addon-updates-${this.type}`,
             title: t("Updater.addonUpdaterNotificationTitle"),
             content: [
-                t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
+                t("Updater.addonUpdatesAvailable", {count: this.pending.length, context: this.type}),
                 React.createElement("ul", {className: "bd-notification-updates-list"},
                     addonDetails.map(addon =>
                         React.createElement("li", {}, [
@@ -346,12 +345,12 @@ export class AddonUpdater {
                 )
             ],
             type: "info",
-            icon: () => React.createElement(Logo, {width: "16px", height: "16px"}),
+            icon: () => React.createElement(Logo, {size: 16, accent: true}),
             duration: Infinity,
             actions: [
                 {
                     label: t("Updater.viewUpdates"),
-                    onClick: () => UserSettingsWindow?.open?.("updates")
+                    onClick: () => Settings.openSettingsPage("updates")
                 },
                 {
                     label: t("Updater.updateAll"),

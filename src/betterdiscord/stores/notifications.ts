@@ -6,17 +6,17 @@ export default new class Notifications extends Store {
 
     setNotifications(notifications: Notification[]) {
         this.notificationsArray = notifications;
-        this.emit();
+        this.emitChange();
     }
 
     removeNotification(id: string) {
         this.notificationsArray = this.notificationsArray.filter((n: Notification) => n.id !== id);
-        this.emit();
+        this.emitChange();
     }
 
     addNotification(notification: Notification) {
         this.notificationsArray.push(notification);
-        this.emit();
+        this.emitChange();
     }
 
     get notifications(): Notification[] {

@@ -3,6 +3,7 @@ import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {isDesktopApp} from "@common/utils/isDesktopApp";
 import {forceLoad} from "@webpack";
+import Store from "@stores/base";
 
 
 /**
@@ -104,6 +105,7 @@ const Utils = {
      * @returns {boolean} True if the environment is Electron desktop app, false otherwise
      **/
     isDesktopApp: isDesktopApp,
+    Store
 } as const;
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959

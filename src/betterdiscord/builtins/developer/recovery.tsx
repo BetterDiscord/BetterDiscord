@@ -14,6 +14,7 @@ import keybindsmanager from "@modules/keybindsmanager";
 import NotificationUIInstance from "@ui/notifications";
 import config from "@stores/config";
 import {Logo} from "@ui/logo";
+import clsx from "clsx";
 
 const Dispatcher = DiscordModules.Dispatcher;
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
@@ -224,7 +225,7 @@ export default new class Recovery extends Builtin {
                     content: t("Modals.addonCrashed"),
                     duration: Infinity,
                     type: "info",
-                    icon: () => <Logo width={16} height={16} />,
+                    icon: () => <Logo size={16} accent />,
                     actions: [
                         ...(config.isCanary ? [{
                             label: "Re-enable",
@@ -239,6 +240,7 @@ export default new class Recovery extends Builtin {
                 Toasts.show("All keybinds have been unregistered to prevent conflicts on reload.");
             }
 
+            buttons.className = clsx(buttons.className, "bd-recovery-buttons");
             buttons.children.push(
                 <Button
                     className="bd-button-recovery"
@@ -253,9 +255,15 @@ export default new class Recovery extends Builtin {
                     }}
                 >
                     {t("Collections.settings.developer.recovery.button")}
-                </Button>,
-                parsedError && <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
+                </Button>
             );
+
+            if (parsedError) {
+                retValue.props.action = [
+                    retValue?.props?.action,
+                    <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
+                ];
+            }
         });
     }
 };

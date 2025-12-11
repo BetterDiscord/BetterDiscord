@@ -58,7 +58,7 @@ function Video({src, poster}: {src: string; poster?: string;}) {
     return <video src={src} poster={poster} controls={true} className="bd-changelog-poster" />;
 }
 
-export type ChangelogEntryType = "changed" | "fixed" | "added" | "improved";
+export type ChangelogEntryType = "progress" | "fixed" | "added" | "improved";
 export interface ChangelogEntry {
     type: ChangelogEntryType;
     blurb?: string;
