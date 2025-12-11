@@ -1,7 +1,7 @@
 import config from "@stores/config";
 
 
-export default [
+const DefaultSettings = [
     {
         type: "category",
         id: "general",
@@ -95,63 +95,70 @@ export default [
             {type: "switch", id: "recovery", value: true, enableWith: "devTools"},
             {type: "switch", id: "canary", value: config.isCanary, hidden: true},
         ]
-    },
-    {
-        type: "category",
-        id: "debug",
-        name: "Debug",
-        collapsible: true,
-        shown: true,
-        settings: [
-            {name: "Text test", note: "Just testing it", type: "text", id: "texttest", value: ""},
-            {
-                name: "Slider test",
-                note: "Just testing it",
-                type: "slider",
-                id: "slidertest",
-                value: 30,
-                min: 20,
-                max: 50,
-                step: 10,
-                units: "em",
-                markers: [
-                    {label: "max", value: 50},
-                    30,
-                    {label: "min", value: 20},
-                    {label: "anything", value: 40}
-                ],
-            },
-            {
-                name: "Radio test",
-                note: "Just testing it",
-                type: "radio",
-                id: "radiotest",
-                value: "test",
-                options: [
-                    {name: "First", value: 30, description: "little hint"},
-                    {name: "IDK", value: "test", description: "who cares"},
-                    {name: "Something", value: 666, description: "something else"},
-                    {name: "Last", value: "last", description: "nothing more to add"}
-                ]
-            },
-            {
-                type: "slider",
-                id: "maxWidth",
-                name: "Notification Width",
-                note: "Maximum width of notifications",
-                value: 370,
-                min: 100,
-                max: 400,
-                markers: [100, 200, 300, 400],
-                units: "px",
-                defaultValue: 370,
-                stickToMarkers: false
-            },
-            {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
-            {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
-        ]
     }
 ] as SettingsCategory[];
+
+if (config.isDevelopment) {
+    DefaultSettings.push(
+        {
+            type: "category",
+            id: "debug",
+            name: "Debug",
+            collapsible: true,
+            shown: true,
+            settings: [
+                {name: "Text test", note: "Just testing it", type: "text", id: "texttest", value: ""},
+                {
+                    name: "Slider test",
+                    note: "Just testing it",
+                    type: "slider",
+                    id: "slidertest",
+                    value: 30,
+                    min: 20,
+                    max: 50,
+                    step: 10,
+                    units: "em",
+                    markers: [
+                        {label: "max", value: 50},
+                        30,
+                        {label: "min", value: 20},
+                        {label: "anything", value: 40}
+                    ],
+                },
+                {
+                    name: "Radio test",
+                    note: "Just testing it",
+                    type: "radio",
+                    id: "radiotest",
+                    value: "test",
+                    options: [
+                        {name: "First", value: 30, description: "little hint"},
+                        {name: "IDK", value: "test", description: "who cares"},
+                        {name: "Something", value: 666, description: "something else"},
+                        {name: "Last", value: "last", description: "nothing more to add"}
+                    ]
+                },
+                {
+                    type: "slider",
+                    id: "maxWidth",
+                    name: "Notification Width",
+                    note: "Maximum width of notifications",
+                    value: 370,
+                    min: 100,
+                    max: 400,
+                    markers: [100, 200, 300, 400],
+                    units: "px",
+                    defaultValue: 370,
+                    stickToMarkers: false
+                },
+                {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
+                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
+            ]
+        } as SettingsCategory
+    );
+}
+
+export default DefaultSettings;
 
 
 export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";

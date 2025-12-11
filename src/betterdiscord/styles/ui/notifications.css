@@ -21,7 +21,7 @@
 }
 
 .bd-notification {
-    background-color: var(--card-primary-bg);
+    background-color: var(--card-background-default);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-medium);
@@ -138,7 +138,7 @@
 }
 
 .bd-notification-footer {
-    background-color: var(--card-primary-bg);
+    background-color: var(--card-background-default);
     border-radius: 0 0 8px 8px;
     display: flex;
     flex-wrap: wrap;

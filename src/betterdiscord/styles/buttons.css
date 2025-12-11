@@ -61,16 +61,6 @@
     cursor: not-allowed;
 } */
 
-
-
-
-
-
-
-
-
-
-
 /* Generic Button Styles */
 .bd-button {
     position: relative;
@@ -496,7 +486,7 @@
 }
 
 .bd-button-filled.bd-button-color-primary {
-    color: var(--white-500);
+    color: var(--text-default);
     background-color: var(--button-secondary-background)
 }
 
