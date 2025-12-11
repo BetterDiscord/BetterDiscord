@@ -35,15 +35,9 @@ interface Section {
     onClick?: (t: any) => void;
     tabPredicate?: () => boolean;
 }
-
-interface PaneLayout {
-    buildLayout(): [];
-    render(): React.ReactNode;
-
-    useTitle?(): React.ReactNode;
-}
 interface PanelLayout {
-    buildLayout(): [pane: PaneLayout];
+    buildLayout(): [];
+    StronglyDiscouragedCustomComponent(): React.ReactNode;
     useTitle(): React.ReactNode;
 }
 
@@ -87,7 +81,6 @@ interface SectionLayout {
 }
 
 interface LayoutBuilder {
-    pane(key: string, panel: PaneLayout): PaneLayout;
     panel(key: string, panel: PanelLayout): PanelLayout;
     sidebarItem(key: string, panel: SidebarItemLayout): SidebarItemLayout;
     section(key: string, panel: SectionLayout): SectionLayout;
@@ -277,13 +270,9 @@ export default new class SettingsRenderer {
                     let layout: [] | [panel: PanelLayout] = [];
 
                     if ("render" in item) {
-                        const pane = layoutBuilder.pane(key, {
-                            buildLayout: () => [],
-                            render: item.render
-                        });
-
                         const panel = layoutBuilder.panel(key, {
-                            buildLayout: () => [pane],
+                            buildLayout: () => [],
+                            StronglyDiscouragedCustomComponent: item.render,
                             useTitle: item.header
                         });
 
