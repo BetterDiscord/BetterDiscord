@@ -346,7 +346,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-primary-bg);
+  background-color: var(--card-background-default);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   cursor: pointer;
