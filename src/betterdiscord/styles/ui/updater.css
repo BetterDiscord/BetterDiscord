@@ -14,7 +14,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: var(--header-primary);
+  color: var(--text-strong);
   font-weight: 500;
   font-size: 16px;
 }

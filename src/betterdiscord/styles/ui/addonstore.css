@@ -144,7 +144,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--header-primary);
+  color: var(--text-strong);
   font-family: var(--font-display);
   font-size: 16px;
   line-height: 1.25;

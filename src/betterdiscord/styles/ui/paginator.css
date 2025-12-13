@@ -30,7 +30,7 @@
   padding: 6px;
   margin: 4px;
   cursor: pointer;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 :where(.bd-paginator-back, .bd-paginator-next):disabled {

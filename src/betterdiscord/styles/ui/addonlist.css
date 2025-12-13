@@ -49,7 +49,7 @@
 }
 
 .bd-addon-list .bd-addon-header {
-  color: var(--header-primary);
+  color: var(--text-strong);
   background: var(--background-mod-subtle);
   border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -65,7 +65,7 @@
 
 .bd-addon-header .bd-icon {
   margin-right: 8px;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-grid-view .bd-addon-header .bd-icon {

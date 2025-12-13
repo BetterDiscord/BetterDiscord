@@ -138,7 +138,7 @@
   word-wrap: break-word;
   font-size: 16px;
   line-height: 24px;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-setting-note {
@@ -174,7 +174,7 @@
 .bd-settings-title {
   display: flex;
   justify-content: space-between;
-  color: var(--header-primary, var(--text-default));
+  color: var(--text-strong, var(--text-default));
   display: flex;
   font-weight: 600;
   cursor: default;

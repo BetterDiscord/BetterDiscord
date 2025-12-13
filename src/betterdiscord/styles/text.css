@@ -19,7 +19,7 @@
 }
 
 .bd-header-primary {
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-header-secondary {
