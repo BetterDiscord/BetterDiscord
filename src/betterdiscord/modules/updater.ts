@@ -15,7 +15,6 @@ import {t} from "@common/i18n";
 import JsonStore from "@stores/json";
 import React from "./react";
 import SettingsStore from "@stores/settings";
-import Settings from "@ui/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 
@@ -350,7 +349,7 @@ export class AddonUpdater {
             actions: [
                 {
                     label: t("Updater.viewUpdates"),
-                    onClick: () => Settings.openSettingsPage("updates")
+                    onClick: () => console.log("OPEN UPDATER PAGE!!!!!!!!!!!!")
                 },
                 {
                     label: t("Updater.updateAll"),

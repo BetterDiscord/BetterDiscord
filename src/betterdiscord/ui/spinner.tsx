@@ -3,7 +3,6 @@ import React from "@modules/react";
 import {getModule} from "@webpack";
 import {type Context} from "react";
 
-
 const AccessibilityContext = getModule<Context<{reducedMotion: {enabled: false;};}>>(m => m?._currentValue?.reducedMotion, {searchExports: true}) || React.createContext({
     reducedMotion: {enabled: false}
 });

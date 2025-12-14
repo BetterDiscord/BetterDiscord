@@ -35,6 +35,9 @@ export interface SettingsPanel {
 
 type State = Record<string, Record<string, any>>;
 
+// TODO: Make this only handle collections
+// no more addons
+
 export default new class SettingsManager extends Store {
     state: State = {};
     collections: SettingsCollection[] = [];

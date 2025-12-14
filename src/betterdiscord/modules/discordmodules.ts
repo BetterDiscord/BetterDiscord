@@ -37,6 +37,7 @@ const DiscordModules = memoize({
     get UserAgentInfo(): UserAgentInfo | undefined {return getByKeys(["os", "layout"]);},
     get GetClientInfo(): GetClientInfo | undefined {return getByStrings(["versionHash"]);},
     get MessageUtils() {return getByKeys(["sendMessage"]);},
+    get transitionTo() {return getByStrings<(path: string) => void>(["transitionTo - Transitioning to"], {searchExports: true})!;}
 });
 
 export default DiscordModules;

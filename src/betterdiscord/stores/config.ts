@@ -3,7 +3,7 @@ import Store from "./base";
 
 
 export default new class ConfigStore extends Store {
-    data = {
+    private data = {
         branch: process.env.__BRANCH__!,
         commit: process.env.__COMMIT__!,
         build: process.env.__BUILD__!,
@@ -19,15 +19,15 @@ export default new class ConfigStore extends Store {
         channelPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data", window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable"),
     };
 
-    get(id: keyof typeof this.data) {
+    public get(id: keyof typeof this.data) {
         return this.data[id];
     }
 
-    set(id: keyof typeof this.data, value: string) {
+    public set(id: keyof typeof this.data, value: string) {
         this.data[id] = value;
         this.emitChange();
     }
 
-    get isDevelopment() {return this.data.build !== "production";}
-    get isCanary() {return this.data.branch !== "main";}
+    public get isDevelopment() {return this.data.build !== "production";}
+    public get isCanary() {return this.data.branch !== "main";}
 };

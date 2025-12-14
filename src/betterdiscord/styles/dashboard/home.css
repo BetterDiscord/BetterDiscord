@@ -1,0 +1,21 @@
+.bd-hero-floating {
+    height: calc(200px + var(--custom-channel-header-height, 48px));
+    width: 100%;
+    top: 0;
+    position: absolute;
+    z-index: -1;
+    /* background: rgb(from var(--bd-brand) r g b / 0.5); */
+    display: flex;
+}
+
+.bd-hero {
+    flex: 0 0 200px;
+}
+
+.bd-wave {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}

@@ -13,7 +13,6 @@ import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
-import {FlowerStar} from "@ui/settings/addonshared";
 import {CircleHelpIcon, ClockIcon, GithubIcon, InfoIcon, TagIcon, UserIcon} from "lucide-react";
 import type {MouseEvent, ReactNode} from "react";
 
@@ -180,7 +179,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
                 </div>
             </div>
             <div className="bd-install-modal-header">
-                <FlowerStar size={20} />
+                {/* <FlowerStar size={20} /> */}
                 <Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text>
             </div>
             <div className="bd-install-modal-items">

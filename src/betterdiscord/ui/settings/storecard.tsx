@@ -7,7 +7,7 @@ import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
-import {FlowerStar} from "./addonshared";
+// import {FlowerStar} from "./addonshared";
 import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
@@ -159,7 +159,7 @@ export default function AddonCard({addon, isEmbed}) {
             </div>
             <div className="bd-addon-store-card-body">
                 <div className="bd-addon-store-card-name">
-                    <FlowerStar />
+                    {/* <FlowerStar /> */}
                     <span>{addon.name}</span>
                 </div>
                 <div className="bd-addon-store-card-description">{addon.description}</div>

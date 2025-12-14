@@ -23,12 +23,13 @@ import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
-import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 import {getStore} from "@webpack";
 import Patcher from "./patcher";
+
+import Dashboard from "@ui/dashboard";
 
 export default new class Core {
     hasStarted = false;
@@ -49,6 +50,9 @@ export default new class Core {
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
+        Logger.log("Startup", "Initializing Dashboard");
+        Dashboard.initialize();
+
         Logger.log("Startup", "Initializing AddonStore");
         AddonStore.initialize();
 
@@ -57,7 +61,6 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
-        SettingsRenderer.initialize();
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();

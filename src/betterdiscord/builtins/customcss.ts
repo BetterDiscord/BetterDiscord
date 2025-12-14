@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+
 import fs from "fs";
 import path from "path";
 import electron from "electron";
@@ -6,7 +6,6 @@ import electron from "electron";
 import Builtin from "@structs/builtin";
 
 import SettingsStore from "@stores/settings";
-import Settings, {SettingsTitleContext} from "@ui/settings";
 import Config from "@stores/config";
 import React from "@modules/react";
 import Events from "@modules/emitter";
@@ -16,7 +15,6 @@ import DiscordModules from "@modules/discordmodules";
 
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
-import SettingsTitle from "@ui/settings/title";
 import {getByKeys, getByStrings} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
@@ -46,27 +44,18 @@ export default new class CustomCSS extends Builtin {
         this.isDetached = false;
     }
 
-    Page = () => {
-        const set = React.useContext(SettingsTitleContext);
-
-        return [
-            set(React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")})),
-            React.createElement(CSSEditor, {
+    async enabled() {
+        SettingsStore.registerPanel(this.id, t("Panels.customcss"), {
+            order: 2,
+            icon: PencilIcon,
+            element: () => React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
                 openNative: this.openNative.bind(this),
                 openDetached: this.openDetached.bind(this),
                 onChange: this.onChange.bind(this)
-            })
-        ];
-    };
-
-    async enabled() {
-        SettingsStore.registerPanel(this.id, t("Panels.customcss"), {
-            order: 2,
-            icon: PencilIcon,
-            element: () => React.createElement(this.Page),
+            }),
             onClick: (thisObject) => {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();

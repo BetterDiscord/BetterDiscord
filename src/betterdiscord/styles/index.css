@@ -30,6 +30,8 @@
 @import "./ui/toasts.css";
 @import "./ui/tooltip.css";
 @import "./ui/updater.css";
+@import "./dashboard/route.css";
+@import "./dashboard/home.css";
 @import "./blankslates/emptyimage.css";
 @import "./blankslates/noresults.css";
 @import "./buttons.css";
