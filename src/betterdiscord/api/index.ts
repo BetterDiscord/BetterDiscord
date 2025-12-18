@@ -164,7 +164,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    get Common() {return CommonModules.CommonModules};
+    get Common() {return CommonModules.CommonModules;};
     Net = {fetch};
 }
 
