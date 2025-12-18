@@ -100,7 +100,7 @@
     position: relative;
 }
 
-.bd-addon-error-stack pre [class^="codeActions"] {
+.bd-addon-error-stack pre [class*="codeActions"] {
     position: absolute;
     display: none;
     right: 4px;
@@ -108,11 +108,11 @@
     color: var(--text-default);
 }
 
-.bd-addon-error-stack pre:hover [class^="codeActions"] {
+.bd-addon-error-stack pre:hover [class*="codeActions"] {
     display: block;
 }
 
-.bd-addon-error-stack pre [class^="codeActions"] > div {
+.bd-addon-error-stack pre [class*="codeActions"] > div {
     cursor: pointer;
 }
 
