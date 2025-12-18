@@ -13,7 +13,7 @@
 #bd-editor-controls button {
   margin: 0 5px 0 0;
   background: none;
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
   height: 26px;
   font-weight: 600;
   border-radius: 3px;
@@ -22,12 +22,12 @@
 }
 
 #bd-editor-controls button:hover {
-  background: var(--background-modifier-hover);
-  color: var(--interactive-hover);
+  background: var(--interactive-background-hover);
+  color: var(--interactive-text-hover);
 }
 
 #bd-editor-controls button:active {
-  background: var(--background-modifier-active);
+  background: var(--interactive-background-active);
 }
 
 /* #bd-editor-controls button svg {
@@ -103,7 +103,7 @@
   white-space: nowrap;
 }
 
-[class*="errorPage_"] [class*="buttons_"] {
+[class*="-errorPage"] [class*="-buttons"] {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +111,7 @@
   padding: 16px;
 }
 
-[class*="errorPage_"] [class*="buttons_"] [class*="button_"] {
+[class*="-errorPage"] [class*="-buttons"] [class*="-button"] {
   width: 100%;
   max-width: 400px;
   margin: 0;
@@ -147,11 +147,11 @@
 }
 
 .bd-error-toggle.expanded {
-  background: var(--background-modifier-selected) !important;
+  background: var(--interactive-background-selected) !important;
 }
 
 .bd-error-toggle:hover {
-  background: var(--background-modifier-hover) !important;
+  background: var(--interactive-background-hover) !important;
 }
 
 .bd-error-content-wrapper {
@@ -234,11 +234,11 @@
 }
 
 .bd-error-toggle.expanded {
-  background: var(--background-modifier-selected) !important;
+  background: var(--interactive-background-selected) !important;
 }
 
 .bd-error-toggle:hover {
-  background: var(--background-modifier-hover) !important;
+  background: var(--interactive-background-hover) !important;
 }
 
 .bd-error-actions {
@@ -269,9 +269,9 @@
 }
 
 .bd-error-discord {
-  background-color: var(--button-positive-background) !important;
+  background-color: var(--control-connect-background-default) !important;
 }
 
 .bd-error-discord:hover {
-  background-color: var(--button-positive-background-hover) !important;
+  background-color: var(--control-connect-background-hover) !important;
 }

@@ -36,12 +36,12 @@
 .bd-select {
   position: relative;
   cursor: pointer;
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--input-background);
-  border: 1px solid var(--input-border);
+  background-color: var(--input-background-default);
+  border: 1px solid var(--input-border-default);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   transition: 150ms ease border-color;
@@ -60,7 +60,7 @@
 
 .bd-select:hover,
 .bd-select.menu-open {
-  border-color: var(--input-border);
+  border-color: var(--input-border-default);
 }
 
 .bd-select.bd-select-transparent {
@@ -76,7 +76,7 @@
 
 .bd-select-arrow {
   margin-left: 10px;
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-select .bd-select-options {
@@ -88,7 +88,7 @@
   min-width: calc(100% + 2px);
   overflow-y: auto;
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px 0;
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--input-border-default);
   margin-top: 8px;
   margin-left: -12px;
   z-index: 2;
@@ -106,13 +106,13 @@
 }
 
 .bd-select .bd-select-option:hover {
-  background: var(--background-modifier-hover);
-  color: var(--interactive-hover);
+  background: var(--interactive-background-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-select .bd-select-option.selected {
-  background: var(--background-modifier-selected);
-  color: var(--interactive-active);
+  background: var(--interactive-background-selected);
+  color: var(--interactive-text-active);
 }
 
 .bd-setting-item .bd-select {
@@ -138,7 +138,7 @@
   word-wrap: break-word;
   font-size: 16px;
   line-height: 24px;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-setting-note {
@@ -174,7 +174,7 @@
 .bd-settings-title {
   display: flex;
   justify-content: space-between;
-  color: var(--header-primary, var(--text-default));
+  color: var(--text-strong, var(--text-default));
   display: flex;
   font-weight: 600;
   cursor: default;
@@ -237,7 +237,7 @@
   margin-bottom: 10px;
   text-transform: uppercase;
   font-size: 14px;
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .checkbox-item {

@@ -6,7 +6,7 @@
   align-items: center;
   padding: 3px;
   margin-right: 4px; /* Align with other icons */
-  color: var(--interactive-active);
+  color: var(--interactive-text-active);
 }
 
 .bd-empty-updates {
@@ -14,7 +14,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: var(--header-primary);
+  color: var(--text-strong);
   font-weight: 500;
   font-size: 16px;
 }
@@ -25,11 +25,11 @@
 }
 
 .bd-button.bd-button-icon svg {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-button.bd-button-icon:hover svg {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-button.bd-button-icon.animate {

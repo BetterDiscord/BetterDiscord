@@ -39,7 +39,7 @@
   margin-bottom: 20px;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: var(--background-mod-faint);
+  background: var(--background-mod-subtle);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-low);
 }
@@ -49,7 +49,7 @@
 }
 
 .bd-addon-list .bd-addon-header {
-  color: var(--header-primary);
+  color: var(--text-strong);
   background: var(--background-mod-subtle);
   border-bottom: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -65,7 +65,7 @@
 
 .bd-addon-header .bd-icon {
   margin-right: 8px;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-grid-view .bd-addon-header .bd-icon {
@@ -201,7 +201,7 @@
 }
 
 .bd-controls > .bd-addon-button svg {
-  color: var(--interactive-active);
+  color: var(--interactive-text-active);
 }
 
 .bd-controls > .bd-addon-button:first-of-type {
@@ -281,7 +281,7 @@
 }
 
 .bd-addon-controls .bd-button svg {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-addon-controls .bd-button.selected svg {
@@ -289,7 +289,7 @@
 }
 
 .bd-addon-controls .bd-button:hover {
-  background-color: var(--background-modifier-selected);
+  background-color: var(--interactive-background-selected);
 }
 
 .bd-addon-controls .bd-button:active {
@@ -320,19 +320,19 @@
 }
 
 .bd-addon-list .bd-footer .bd-link {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-addon-list .bd-footer .bd-link:hover {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-addon-list .bd-footer .bd-link:active {
-  color: var(--interactive-active);
+  color: var(--interactive-text-active);
 }
 
 .bd-addon-list .bd-footer .bd-link svg {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-addon-list .bd-footer .bd-links .bd-addon-button {
@@ -354,7 +354,7 @@
 }
 
 .bd-store-card:hover {
-  background-color: var(--background-modifier-hover);
+  background-color: var(--interactive-background-hover);
 }
 
 .bd-store-card-icon {
@@ -366,7 +366,7 @@
   justify-content: center;
   align-items: center;
   background: var(--background-base-low);
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
   padding: 8px;
 }
 
@@ -381,5 +381,5 @@
 }
 
 .bd-store-card-caret {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }

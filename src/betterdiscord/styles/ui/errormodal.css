@@ -34,7 +34,7 @@
 }
 
 .bd-addon-error-header:focus-visible {
-    box-shadow: 0 0 0 4px var(--focus-primary);
+    box-shadow: 0 0 0 4px var(--border-focus);
 }
 
 .bd-addon-error-icon {
@@ -50,14 +50,14 @@
 }
 
 .bd-addon-error-icon svg {
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     width: 24px !important;
     height: 24px !important;
 }
 
 .bd-addon-error-expander {
     transform: none;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     transition: transform 0.2s ease;
 }
 
@@ -100,7 +100,7 @@
     position: relative;
 }
 
-.bd-addon-error-stack pre [class^="codeActions"] {
+.bd-addon-error-stack pre [class*="codeActions"] {
     position: absolute;
     display: none;
     right: 4px;
@@ -108,11 +108,11 @@
     color: var(--text-default);
 }
 
-.bd-addon-error-stack pre:hover [class^="codeActions"] {
+.bd-addon-error-stack pre:hover [class*="codeActions"] {
     display: block;
 }
 
-.bd-addon-error-stack pre [class^="codeActions"] > div {
+.bd-addon-error-stack pre [class*="codeActions"] > div {
     cursor: pointer;
 }
 
@@ -125,5 +125,5 @@
 
 .bd-addon-error-details-icon {
     margin-right: 4px;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
 }

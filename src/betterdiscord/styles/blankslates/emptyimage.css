@@ -7,7 +7,7 @@
 }
 
 .bd-empty-image-title {
-  color: var(--header-primary);
+  color: var(--text-strong);
   font-size: 24px;
   font-weight: 600;
   text-align: center;

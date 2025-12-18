@@ -30,7 +30,7 @@
   padding: 6px;
   margin: 4px;
   cursor: pointer;
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 :where(.bd-paginator-back, .bd-paginator-next):disabled {
@@ -39,7 +39,7 @@
 }
 
 #app-mount :where(.bd-paginator-back, .bd-paginator-next):hover {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
   background-color: var(--background-base-lower);
 }
 

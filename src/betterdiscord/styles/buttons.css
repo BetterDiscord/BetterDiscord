@@ -205,20 +205,20 @@
 }
 
 .bd-button-outlined.bd-button-color-brand {
-    color: var(--button-outline-brand-text);
-    border-color: var(--button-outline-brand-border);
+    color: var(--control-secondary-text-default);
+    border-color: var(--control-secondary-border-default);
 }
 
 .bd-button-outlined.bd-button-color-brand:hover {
     background-color: var(--button-outline-brand-background-hover);
-    border-color: var(--button-outline-brand-border-hover);
-    color: var(--button-outline-brand-text-hover);
+    border-color: var(--control-secondary-border-hover);
+    color: var(--control-secondary-text-hover);
 }
 
 .bd-button-outlined.bd-button-color-brand:active {
-    background-color: var(--button-outline-brand-background-active);
+    background-color: var(--control-secondary-background-active);
     border-color: var(--button-outline-brand-border-active);
-    color: var(--button-outline-brand-text-active);
+    color: var(--control-secondary-text-active);
 }
 
 .bd-button-link.bd-button-color-brand {
@@ -250,20 +250,20 @@
 }
 
 .bd-button-outlined.bd-button-color-blurple {
-    color: var(--button-outline-brand-text);
-    border-color: var(--button-outline-brand-border)
+    color: var(--control-secondary-text-default);
+    border-color: var(--control-secondary-border-default)
 }
 
 .bd-button-outlined.bd-button-color-blurple:hover {
     background-color: var(--button-outline-brand-background-hover);
-    border-color: var(--button-outline-brand-border-hover);
-    color: var(--button-outline-brand-text-hover)
+    border-color: var(--control-secondary-border-hover);
+    color: var(--control-secondary-text-hover)
 }
 
 .bd-button-outlined.bd-button-color-blurple:active {
-    background-color: var(--button-outline-brand-background-active);
+    background-color: var(--control-secondary-background-active);
     border-color: var(--button-outline-brand-border-active);
-    color: var(--button-outline-brand-text-active)
+    color: var(--control-secondary-text-active)
 }
 
 .bd-button-link.bd-button-color-blurple {
@@ -381,36 +381,32 @@
 /* Color Red/Danger/Error */
 .bd-button-filled.bd-button-color-red {
     color: var(--white-500);
-    background-color: var(--button-danger-background)
+    background-color: var(--control-critical-primary-background-default)
 }
 
 .bd-button-filled.bd-button-color-red:hover {
-    background-color: var(--button-danger-background-hover)
+    background-color: var(--control-critical-primary-background-hover)
 }
 
 .bd-button-filled.bd-button-color-red:active {
-    background-color: var(--button-danger-background-active)
-}
-
-.bd-button-filled.bd-button-color-red:disabled {
-    background-color: var(--button-danger-background-disabled)
+    background-color: var(--control-critical-primary-background-active)
 }
 
 .bd-button-outlined.bd-button-color-red {
-    color: var(--button-outline-danger-text);
-    border-color: var(--button-outline-danger-border)
+    color: var(--control-critical-secondary-text-default);
+    border-color: var(--control-critical-secondary-border-default)
 }
 
 .bd-button-outlined.bd-button-color-red:hover {
-    background-color: var(--button-outline-danger-background-hover);
-    border-color: var(--button-outline-danger-border-hover);
-    color: var(--button-outline-danger-text-hover)
+    background-color: var(--control-critical-secondary-border-hover);
+    border-color: var(--control-critical-secondary-border-hover);
+    color: var(--control-critical-secondary-border-hover)
 }
 
 .bd-button-outlined.bd-button-color-red:active {
-    background-color: var(--button-outline-danger-background-active);
-    border-color: var(--button-outline-danger-border-active);
-    color: var(--button-outline-danger-text-active)
+    background-color: var(--control-critical-secondary-background-active);
+    border-color: var(--control-critical-secondary-border-active);
+    color: var(--control-critical-secondary-text-active)
 }
 
 .bd-button-link.bd-button-color-red {
@@ -425,36 +421,32 @@
 /* Color Green Success */
 .bd-button-filled.bd-button-color-green {
     color: var(--white-500);
-    background-color: var(--button-positive-background)
+    background-color: var(--control-connect-background-default)
 }
 
 .bd-button-filled.bd-button-color-green:hover {
-    background-color: var(--button-positive-background-hover)
+    background-color: var(--control-connect-background-hover)
 }
 
 .bd-button-filled.bd-button-color-green:active {
-    background-color: var(--button-positive-background-active)
-}
-
-.bd-button-filled.bd-button-color-green:disabled {
-    background-color: var(--button-positive-background-disabled)
+    background-color: var(--control-connect-background-active)
 }
 
 .bd-button-outlined.bd-button-color-green {
-    color: var(--button-outline-positive-text);
-    border-color: var(--button-outline-positive-border)
+    color: var(--control-primary-text-default);
+    border-color: var(--control-connect-border-default)
 }
 
 .bd-button-outlined.bd-button-color-green:hover {
-    background-color: var(--button-outline-positive-background-hover);
-    border-color: var(--button-outline-positive-border-hover);
-    color: var(--button-outline-positive-text-hover)
+    background-color: var(--control-connect-background-hover);
+    border-color: var(--control-connect-border-hover);
+    color: var(--control-primary-text-hover)
 }
 
 .bd-button-outlined.bd-button-color-green:active {
-    background-color: var(--button-outline-positive-background-active);
-    border-color: var(--button-outline-positive-border-active);
-    color: var(--button-outline-positive-text-active)
+    background-color: var(--control-connect-background-active);
+    border-color: var(--control-connect-border-active);
+    color: var(--control-primary-text-active)
 }
 
 .bd-button-link.bd-button-color-green {
@@ -470,36 +462,32 @@
 /* Color Primary/Grey */
 .bd-button-outlined.bd-button-color-primary {
     color: var(--button-outline-primary-text);
-    border-color: var(--button-outline-primary-border)
+    border-color: var(--control-secondary-border-default)
 }
 
 .bd-button-outlined.bd-button-color-primary:hover {
-    background-color: var(--button-outline-primary-background-hover);
-    border-color: var(--button-outline-primary-border-hover);
-    color: var(--button-outline-primary-text-hover)
+    background-color: var(--control-secondary-background-hover);
+    border-color: var(--control-secondary-border-hover);
+    color: var(--control-secondary-text-hover)
 }
 
 .bd-button-outlined.bd-button-color-primary:active {
-    background-color: var(--button-outline-primary-background-active);
-    border-color: var(--button-outline-primary-border-active);
-    color: var(--button-outline-primary-text-active)
+    background-color: var(--control-secondary-background-active);
+    border-color: var(--control-secondary-border-active);
+    color: var(--control-secondary-text-active)
 }
 
 .bd-button-filled.bd-button-color-primary {
     color: var(--text-default);
-    background-color: var(--button-secondary-background)
+    background-color: var(--control-secondary-background-default)
 }
 
 .bd-button-filled.bd-button-color-primary:hover {
-    background-color: var(--button-secondary-background-hover)
+    background-color: var(--control-secondary-background-hover)
 }
 
 .bd-button-filled.bd-button-color-primary:active {
-    background-color: var(--button-secondary-background-active)
-}
-
-.bd-button-filled.bd-button-color-primary:disabled {
-    background-color: var(--button-secondary-background-disabled)
+    background-color: var(--control-secondary-background-active)
 }
 
 .theme-dark .bd-button-link.bd-button-color-primary {
