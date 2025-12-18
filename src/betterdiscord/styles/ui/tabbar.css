@@ -18,7 +18,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     flex-shrink: 0;
     font-weight: 500;
     font-size: 16px;
@@ -31,18 +31,18 @@
 
 .bd-tab-item:hover,
 .bd-tab-item.selected {
-    color: var(--interactive-active);
+    color: var(--interactive-text-active);
 }
 
 .bd-tab-item.selected {
     cursor: default;
-    background-color: var(--background-modifier-selected);
+    background-color: var(--interactive-background-selected);
 }
 
 .bd-tab-item:hover {
-    background-color: var(--background-modifier-hover);
+    background-color: var(--interactive-background-hover);
 }
 
 .bd-tab-item:active {
-    background-color: var(--background-modifier-active);
+    background-color: var(--interactive-background-active);
 }

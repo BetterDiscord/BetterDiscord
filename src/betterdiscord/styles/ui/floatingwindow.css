@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .floating-window-buttons .button svg,
@@ -82,11 +82,11 @@
 }
 
 .floating-window-buttons .maximize-button:hover {
-  background: var(--background-modifier-hover);
+  background: var(--interactive-background-hover);
 }
 
 .floating-window-buttons .maximize-button:active {
-  background: var(--background-modifier-active);
+  background: var(--interactive-background-active);
 }
 
 .floating-window-buttons .close-button:hover {
@@ -187,16 +187,16 @@
 }
 
 .bd-editor-problem.bd-editor-severity-8 svg {
-  color: var(--info-danger-foreground);
+  color: var(--background-feedback-critical);
 }
 
 .bd-editor-problem.bd-editor-severity-4 svg {
-  color: var(--info-warning-foreground);
+  color: var(--background-feedback-info);
 }
 
 .bd-editor-problem.bd-editor-severity-2 svg,
 .bd-editor-problem.bd-editor-severity-1 svg {
-  color: var(--info-help-foreground);
+  color: var(--background-feedback-info);
 }
 
 .bd-editor-problem > :nth-child(2) ~ span {

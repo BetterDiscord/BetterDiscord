@@ -118,7 +118,7 @@
 }
 
 .bd-notification-close {
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     cursor: pointer;
     opacity: .5;
     position: absolute;
@@ -129,7 +129,7 @@
 }
 
 .bd-notification-close:hover {
-    color: var(--interactive-hover);
+    color: var(--interactive-text-hover);
 }
 
 .bd-notification-updates-list {
@@ -147,8 +147,8 @@
 }
 
 .bd-notification-action {
-    background-color: var(--button-secondary-background);
-    color: var(--button-secondary-text);
+    background-color: var(--control-secondary-background-default);
+    color: var(--control-secondary-text-default);
     border: none;
     border-radius: 8px;
     padding: 8px 16px;
@@ -161,7 +161,7 @@
 }
 
 .bd-notification-action:hover {
-    background-color: var(--button-secondary-background-hover);
+    background-color: var(--control-secondary-background-hover);
 }
 
 .bd-notification-progress {
