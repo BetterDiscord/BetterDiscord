@@ -15,7 +15,7 @@ const redirectCodes = new Set([301, 302, 307, 308]);
  * @property {number} [timeout] - Request timeout time.
  */
 
-interface FetchOptions {
+export interface FetchOptions {
     method: "GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
     headers: Record<string, string>;
     redirect: "manual" | "follow";
@@ -25,7 +25,7 @@ interface FetchOptions {
     timeout: number;
 }
 
-interface FetchData {
+export interface FetchResponseData {
     content: Buffer[] | Buffer;
     headers?: Record<string, any>;
     statusCode?: number;
@@ -40,7 +40,7 @@ interface FetchData {
  */
 export function nativeFetch(requestedUrl: string, fetchOptions: Partial<FetchOptions>) {
     let state = "PENDING";
-    const data: FetchData = {content: [], headers: undefined, statusCode: undefined, url: requestedUrl, statusText: "", redirected: false};
+    const data: FetchResponseData = {content: [], headers: undefined, statusCode: undefined, url: requestedUrl, statusText: "", redirected: false};
     const finishListeners = new Set<() => void>();
     const errorListeners = new Set<(e: Error) => void>();
 

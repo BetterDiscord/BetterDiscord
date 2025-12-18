@@ -5,9 +5,8 @@ type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: str
 
 /**
  * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
- * @type DOM
  * @summary {@link DOM} is a simple utility class for dom manipulation.
- * @name DOM
+ * @hideconstructor
  */
 class DOM<Bound extends boolean> {
 
@@ -117,7 +116,7 @@ class DOM<Bound extends boolean> {
 
     /**
      * Parses a string of HTML and returns the results. If the second parameter is true,
-     * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
+     * the parsed HTML will be returned as a document fragment {@link https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
      *
      * If the second parameter is false, then the return value will be the list of parsed
