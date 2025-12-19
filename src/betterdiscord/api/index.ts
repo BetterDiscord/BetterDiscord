@@ -39,6 +39,7 @@ import Spinner from "@ui/spinner";
 import type ReactType from "react";
 import type ReactDOMBaseType from "react-dom";
 import type ReactDOMClientType from "react-dom/client";
+import ReactDOMImport from "@modules/reactdom";
 
 type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
 
@@ -91,7 +92,7 @@ const React: typeof ReactType = DiscordModules.React;
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM: ReactDOMType = DiscordModules.ReactDOM;
+const ReactDOM: ReactDOMType = ReactDOMImport;
 
 /**
  * A reference string for BD's version.

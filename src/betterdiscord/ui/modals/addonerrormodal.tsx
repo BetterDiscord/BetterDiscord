@@ -12,11 +12,11 @@ import Content from "./content";
 import ModalRoot from "./root";
 import Footer from "./footer";
 import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
-import {getByKeys} from "@webpack";
 import clsx from "clsx";
 import type AddonErrorType from "@structs/addonerror";
+import DiscordModules from "@modules/discordmodules";
 
-const Parser = Object(getByKeys(["defaultRules", "parse"])).defaultRules;
+const Parser = DiscordModules.SimpleMarkdownWrapper.defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 
@@ -30,7 +30,7 @@ function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
         return <div className="bd-addon-error-body">
             <Divider />
             <div className="bd-addon-error-stack">
-                {Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}
+                {Parser ? Parser.codeBlock.react?.({content: stack, lang: "js"}, null, {}) : stack}
             </div>
         </div>;
     }
