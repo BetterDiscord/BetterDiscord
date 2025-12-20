@@ -210,7 +210,7 @@
     }
   },
   {
-    "MappedFetchUtils": {
+    "Fetching": {
       "type": "bySource",
       "properties": [
         "type:\"USER_PROFILE_FETCH_START\""
@@ -515,6 +515,15 @@
         "Color"
       ],
       "searchExports": true,
+      "space": "Helpers"
+    }
+  },
+  {
+    "Electron": {
+      "type": "byKeys",
+      "properties": [
+        "setBadge"
+      ],
       "space": "Helpers"
     }
   }
