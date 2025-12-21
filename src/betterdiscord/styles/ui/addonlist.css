@@ -293,7 +293,7 @@
 }
 
 .bd-addon-controls .bd-button:active {
-  background-color: var(--app-border-frame);
+  background-color: var(--app-frame-border);
 }
 
 .bd-addon-controls .bd-button.selected {

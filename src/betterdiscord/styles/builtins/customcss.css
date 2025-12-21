@@ -167,7 +167,7 @@
   line-height: 1.5;
   color: var(--text-default);
   background: var(--background-base-lower);
-  border-top: 1px solid var(--app-border-frame);
+  border-top: 1px solid var(--border-subtle);
   opacity: 1;
   transform-origin: top;
   transition: opacity 0.2s ease, transform 0.2s ease;

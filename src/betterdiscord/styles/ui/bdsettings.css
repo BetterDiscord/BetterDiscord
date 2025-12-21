@@ -196,7 +196,7 @@
 
 .bd-settings-group.collapsible .bd-settings-title::before {
   content: "";
-  background-color: var(--app-border-frame);
+  background-color: var(--app-frame-border);
   height: 2px;
   order: 2;
   flex: 1;
