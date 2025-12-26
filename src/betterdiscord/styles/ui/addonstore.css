@@ -144,7 +144,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: var(--header-primary);
+  color: var(--text-strong);
   font-family: var(--font-display);
   font-size: 16px;
   line-height: 1.25;
@@ -173,7 +173,7 @@
 }
 
 .bd-addon-store-card-tag {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
   background: var(--background-mod-subtle);
   border: 1px solid var(--bg-surface-raised);
   padding: 2px 5px;
@@ -183,29 +183,29 @@
 }
 
 .bd-addon-store-card-tag:hover {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-addon-store-card-tag-selected,
 .bd-addon-store-card-tag:hover:active {
   border-color: var(--brand-500);
-  color: var(--interactive-active);
+  color: var(--interactive-text-active);
 }
 
 button.bd-addon-store-card-button {
-  color: var(--interactive-normal);
+  color: var(--interactive-text-default);
 }
 
 .bd-addon-store-card-button:hover {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-addon-store-card-button:hover:active {
-  color: var(--interactive-active);
+  color: var(--interactive-text-active);
 }
 
 .bd-addon-store-card .bd-button.bd-button-filled svg {
-  color: var(--interactive-hover);
+  color: var(--interactive-text-hover);
 }
 
 .bd-addon-store-card .bd-button.bd-button-filled.bd-color-red {
@@ -247,7 +247,7 @@ button.bd-addon-store-card-button {
 
 .bd-addon-store-warning {
   background: var(--info-warning-background);
-  border: 1px solid var(--info-warning-foreground);
+  border: 1px solid var(--background-feedback-warning);
   padding: 6px;
   border-radius: 6px;
   color: var(--info-warning-text);
@@ -282,7 +282,7 @@ img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="
 }
 
 .bd-addon-title[data-showing-store="true"] > span:first-child:hover {
-  background: var(--background-modifier-hover);
+  background: var(--interactive-background-hover);
 }
 
 .bd-addon-title > span {

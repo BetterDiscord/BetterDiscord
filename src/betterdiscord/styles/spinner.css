@@ -56,7 +56,7 @@
     width: 6px;
     height: 6px;
     margin-right: 2px;
-    background-color: var(--interactive-normal);
+    background-color: var(--interactive-text-normal);
     border-radius: 3px;
     display: inline-block;
     opacity: 0.3;

@@ -2,6 +2,19 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.4
+
+### Fixed:
+- Fixed styles breaking in certain areas.
+- Fixed theme attributes from causing a bunch of lag.
+
+1.13.3
+
+### Fixed:
+- BetterDiscord Settings section now appears correctly in the settings menu
+- Fixed css to match Discord's latest changes
+- Context Menu patches fixed
+
 1.13.2
 
 ### Fixed:

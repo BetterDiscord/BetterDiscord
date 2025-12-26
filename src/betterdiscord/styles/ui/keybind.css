@@ -6,8 +6,8 @@
     min-width: 250px;
     box-sizing: border-box;
     border-radius: var(--radius-sm);
-    background-color: var(--input-background);
-    border: 1px solid var(--input-border);
+    background-color: var(--input-background-default);
+    border: 1px solid var(--input-border-default);
     padding: 0 4px;
     height: 40px;
     cursor: pointer;
@@ -58,7 +58,7 @@
 }
 
 .bd-keybind-wrap .bd-keybind-record.bd-button-color-red svg {
-    color: var(--interactive-active);
+    color: var(--interactive-text-active);
 }
 
 .bd-keybind-clear {
