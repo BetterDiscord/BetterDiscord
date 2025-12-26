@@ -399,8 +399,8 @@
     "FormSwitch": {
       "type": "bySource",
       "properties": [
-        "onChange",
-        "disabledText"
+        "mana-toggle-inputs",
+        "switchIconsEnabled:"
       ],
       "searchExports": true,
       "space": "Components"
