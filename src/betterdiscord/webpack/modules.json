@@ -385,7 +385,7 @@
       "space": "Components"
     }
   },
-  {
+  /*{
     "RichTooltip": {
       "type": "byStrings",
       "properties": [
@@ -394,7 +394,7 @@
       "searchExports": true,
       "space": "Components"
     }
-  },
+  },*/
   {
     "FormSwitch": {
       "type": "byStrings",
