@@ -397,7 +397,7 @@
   },
   {
     "FormSwitch": {
-      "type": "bySource",
+      "type": "byStrings",
       "properties": [
         "mana-toggle-inputs",
         "switchIconsEnabled:"
