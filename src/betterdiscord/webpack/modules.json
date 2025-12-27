@@ -1,0 +1,520 @@
+[
+  {
+    "FluxDispatch": {
+      "type": "byKeys",
+      "properties": [
+        "_dispatch"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Parser": {
+      "type": "byKeys",
+      "properties": [
+        "parseTopic"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Popout": {
+      "type": "byStrings",
+      "properties": [
+        "Unsupported animation config: "
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "MessageActions": {
+      "type": "byKeys",
+      "properties": [
+        "editMessage"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Clickable": {
+      "type": "byStrings",
+      "properties": [
+        "renderNonInteractive()"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Slider": {
+      "type": "byStrings",
+      "properties": [
+        "markerPositions"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Modal": {
+      "type": "byStrings",
+      "properties": [
+        "actionBarInputLayout"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "CloudUpload": {
+      "type": "byStrings",
+      "properties": [
+        "uploadFileToCloud"
+      ],
+      "searchExports": true,
+      "space": "Helpers"
+    }
+  },
+  {
+    "Moment": {
+      "type": "byKeys",
+      "properties": [
+        "parseTwoDigitYear"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Hljs": {
+      "type": "byKeys",
+      "properties": [
+        "registerLanguage"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Snowflake": {
+      "type": "byKeys",
+      "properties": [
+        "extractTimestamp"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Lodash": {
+      "type": "byKeys",
+      "properties": [
+        "forEachRight"
+      ],
+      "searchExports": false,
+      "space": "Helpers"
+    }
+  },
+  {
+    "CssVars": {
+      "type": "byKeys",
+      "properties": [
+        "unsafe_rawColors"
+      ],
+      "searchExports": false,
+      "space": "Helpers"
+    }
+  },
+  {
+    "Intl": {
+      "type": "byKeys",
+      "properties": [
+        "intl"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Flux": {
+      "type": "byKeys",
+      "properties": [
+        "connectStores"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Permissions": {
+      "type": "byKeys",
+      "properties": [
+        "ADD_REACTIONS"
+      ],
+      "searchExports": true,
+      "space": "Helpers"
+    }
+  },
+  {
+    "ComponentDispatch": {
+      "type": "bySource",
+      "properties": [
+        "ComponentDispatchUtils"
+      ],
+      "searchDefault": false,
+      "map": {
+        "ComponentDispatch": {
+          "type": "byKeys",
+          "properties": [
+            "_savedDispatches"
+          ]
+        }
+      },
+      "space": "Helpers"
+    }
+  },
+  {
+    "FormNotice": {
+      "type": "byStrings",
+      "properties": [
+        "HORIZONTAL_REVERSE",
+        "imageData"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "ColorPicker": {
+      "type": "byStrings",
+      "properties": [
+        "Qp04h"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "ImageUtils": {
+      "type": "byKeys",
+      "properties": [
+        "getChannelIconURL"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "ReactSpring": {
+      "type": "byKeys",
+      "properties": [
+        "a",
+        "animated"
+      ],
+      "space": "Helpers"
+    }
+  },
+  {
+    "Fetching": {
+      "type": "bySource",
+      "properties": [
+        "type:\"USER_PROFILE_FETCH_START\""
+      ],
+      "map": {
+        "fetchProfile": {
+          "type": "byStrings",
+          "properties": [
+            "USER_PROFILE_FETCH_START"
+          ]
+        },
+        "getUser": {
+          "type": "byStrings",
+          "properties": [
+            "USER_UPDATE"
+          ]
+        }
+      },
+      "space": "Helpers"
+    }
+  },
+  {
+    "ModalActions": {
+      "type": "bySource",
+      "properties": [
+        ".modalKey?"
+      ],
+      "map": {
+        "openModalLazy": {
+          "type": "byStrings",
+          "properties": [
+            ".modalKey?"
+          ]
+        },
+        "openModal": {
+          "type": "byStrings",
+          "properties": [
+            ",instant:"
+          ]
+        },
+        "closeModal": {
+          "type": "byStrings",
+          "properties": [
+            ".onCloseCallback()"
+          ]
+        },
+        "closeAllModals": {
+          "type": "byStrings",
+          "properties": [
+            ".getState();for"
+          ]
+        },
+        "updateModal": {
+          "type": "byStrings",
+          "properties": [
+            "arguments.length>4&&void 0"
+          ]
+        }
+      },
+      "space": "Helpers"
+    }
+  },
+  {
+    "Navigation": {
+      "type": "bySource",
+      "properties": [
+        "transitionTo - Transitioning to"
+      ],
+      "map": {
+        "transitionTo": {
+          "type": "byStrings",
+          "properties": [
+            "\"transitionTo - Transitioning to \""
+          ]
+        },
+        "replace": {
+          "type": "byStrings",
+          "properties": [
+            "\"Replacing route with \""
+          ]
+        },
+        "goBack": {
+          "type": "byStrings",
+          "properties": [
+            ".goBack()"
+          ]
+        },
+        "goForward": {
+          "type": "byStrings",
+          "properties": [
+            ".goForward()"
+          ]
+        },
+        "transitionToGuild": {
+          "type": "byStrings",
+          "properties": [
+            "\"transitionToGuild - Transitioning to \""
+          ]
+        }
+      },
+      "space": "Helpers"
+    }
+  },
+  {
+    "LoadingPopout": {
+      "type": "byStrings",
+      "properties": [
+        "loadingPopout"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Progress": {
+      "type": "byStrings",
+      "properties": [
+        "percent",
+        "foregroundGradientColor"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Spinner": {
+      "type": "byStrings",
+      "properties": [
+        "=\"wanderingCubes\""
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "TextArea": {
+      "type": "byStrings",
+      "properties": [
+        "getPaddingRight(){let"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "CopyInput": {
+      "type": "byStrings",
+      "properties": [
+        "select(){var"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "SearchableSelect": {
+      "type": "byStrings",
+      "properties": [
+        "SearchableSelect"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Switch": {
+      "type": "byStrings",
+      "properties": [
+        "xMinYMid meet"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "FormSwitch": {
+      "type": "byStrings",
+      "properties": [
+        "mana-toggle-inputs",
+        "switchIconsEnabled:"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Text": {
+      "type": "byStrings",
+      "properties": [
+        "data-excessive-heading-level"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Flex": {
+      "type": "byKeys",
+      "properties": [
+        "Justify"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Scroller": {
+      "type": "byStrings",
+      "properties": [
+        "scrollbarType",
+        "scrollerRef"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "ProgressCircle": {
+      "type": "byStrings",
+      "properties": [
+        "circleBackgroundAlt"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "KeyCombo": {
+      "type": "byStrings",
+      "properties": [
+        "{let{shortcut:"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Avatar": {
+      "type": "byStrings",
+      "properties": [
+        "typingIndicatorRef",
+        "statusBackdropColor"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Slides": {
+      "type": "byStrings",
+      "properties": [
+        "contentDisplay"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "AnimatedAvatar": {
+      "type": "byStrings",
+      "properties": [
+        "avatarTooltipAsset"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Button": {
+      "type": "byStrings",
+      "properties": [
+        "pfChQ"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "CalendarPicker": {
+      "type": "byStrings",
+      "properties": [
+        "react-datepicker__day[tabindex=\"0\"]"
+      ],
+      "searchExports": true,
+      "space": "Components"
+    }
+  },
+  {
+    "Color": {
+      "type": "byKeys",
+      "properties": [
+        "Color"
+      ],
+      "searchExports": true,
+      "space": "Helpers"
+    }
+  },
+  {
+    "Electron": {
+      "type": "byKeys",
+      "properties": [
+        "setBadge"
+      ],
+      "space": "Helpers"
+    }
+  }
+]
