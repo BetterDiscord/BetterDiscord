@@ -56,6 +56,7 @@ export default function Select({value: initialValue, options, style, onChange, d
         };
     }, []);
 
+    // ?? options[0] provides a double failsafe
     const selected = options.find(o => o.value == value) ?? options[0];
     return (
         <>
