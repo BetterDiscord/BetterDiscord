@@ -2,9 +2,8 @@ import React from "@modules/react";
 import clsx from "clsx";
 import {none, SettingsContext} from "@ui/contexts";
 import {ChevronDown} from "lucide-react";
-import {useRef} from "react";
 
-const {useState, useCallback, useContext, useEffect} = React;
+const {useState, useCallback, useContext, useEffect, useRef} = React;
 
 
 export interface SelectOption {
