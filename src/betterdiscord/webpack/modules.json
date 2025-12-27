@@ -385,16 +385,6 @@
       "space": "Components"
     }
   },
-  /*{
-    "RichTooltip": {
-      "type": "byStrings",
-      "properties": [
-        "[\"children\",\"className\",\"element\"]"
-      ],
-      "searchExports": true,
-      "space": "Components"
-    }
-  },*/
   {
     "FormSwitch": {
       "type": "byStrings",
