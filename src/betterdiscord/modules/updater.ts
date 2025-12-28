@@ -280,7 +280,8 @@ export class AddonUpdater {
         this.pending.splice(0, this.pending.length);
     }
 
-    checkAll(showNotice = true) {
+    async checkAll(showNotice = true) {
+        await this.updateCache();
         for (const addon of this.manager.addonList) this.checkForUpdate(addon.filename, addon.version);
         if (showNotice) this.showUpdateNotice();
     }
