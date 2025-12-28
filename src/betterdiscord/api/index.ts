@@ -1,3 +1,17 @@
+/**
+ * The plugin API for BetterDiscord is a globally (`window.BdApi`) accessible
+ * object for use by plugins and developers to make their lives easier.
+ *
+ * The global instance can be accessed without binding to a specific plugin, but
+ * in that case, some methods will require the plugin name to be passed in.
+ *
+ * Alternatively, a plugin can create a bound instance by calling `new BdApi("PluginName")`.
+ * In that case, the plugin name is automatically used for methods that require it.
+ *
+ * To start exploring the API, check out the {@link BdApi} class and its members.
+ *
+ * @module
+ */
 import BDLogger from "@common/logger";
 
 import PluginManager from "@modules/pluginmanager";
@@ -14,27 +28,12 @@ import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import ContextMenu from "./contextmenu";
-import fetch from "./fetch";
+import Net from "./net";
 import Logger from "./logger";
 import CommandAPI from "./commands";
 import Hooks from "./hooks";
 
-import ColorInput from "@ui/settings/components/color";
-import DropdownInput from "@ui/settings/components/dropdown";
-import SettingItem from "@ui/settings/components/item";
-import KeybindInput from "@ui/settings/components/keybind";
-import NumberInput from "@ui/settings/components/number";
-import RadioInput from "@ui/settings/components/radio";
-import SearchInput from "@ui/settings/components/search";
-import SliderInput from "@ui/settings/components/slider";
-import SwitchInput from "@ui/settings/components/switch";
-import TextInput from "@ui/settings/components/textbox";
-import SettingGroup from "@ui/settings/group";
-import ErrorBoundary from "@ui/errorboundary";
-import Text from "@ui/base/text";
-import Flex from "@ui/base/flex";
-import Button from "@ui/base/button";
-import Spinner from "@ui/spinner";
+import Components from "./components";
 
 import type ReactType from "react";
 import type ReactDOMBaseType from "react-dom";
@@ -54,30 +53,6 @@ const CommandsAPI = new CommandAPI<false>();
 const HooksAPI = new Hooks();
 const DefaultLogger = new Logger<false>();
 
-/**
- * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
- * @summary {@link Components} a namespace holding a series of React components
- * @name Components
- */
-const Components = {
-    get Tooltip() {return DiscordModules.Tooltip;},
-    get ColorInput() {return ColorInput;},
-    get DropdownInput() {return DropdownInput;},
-    get SettingItem() {return SettingItem;},
-    get KeybindInput() {return KeybindInput;},
-    get NumberInput() {return NumberInput;},
-    get RadioInput() {return RadioInput;},
-    get SearchInput() {return SearchInput;},
-    get SliderInput() {return SliderInput;},
-    get SwitchInput() {return SwitchInput;},
-    get TextInput() {return TextInput;},
-    get SettingGroup() {return SettingGroup;},
-    get ErrorBoundary() {return ErrorBoundary;},
-    get Text() {return Text;},
-    get Flex() {return Flex;},
-    get Button() {return Button;},
-    get Spinner() {return Spinner;},
-};
 
 /**
  * The React module being used inside Discord.
@@ -102,7 +77,6 @@ const version: string = Config.get("version");
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
- * @name BdApi
  */
 export default class BdApi {
     Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
@@ -132,7 +106,7 @@ export default class BdApi {
     static Utils: typeof Utils;
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
-    static Net: {fetch: typeof fetch;};
+    static Net: typeof Net;
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -159,10 +133,10 @@ export default class BdApi {
     get Webpack() {return Webpack;}
     get Utils() {return Utils;}
     get UI() {return UI;}
+    get Net() {return Net;}
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    Net = {fetch};
 }
 
 /**
@@ -241,7 +215,7 @@ BdApi.Commands = CommandsAPI;
  * An instance of {@link Net} for using network related tools.
  * @type Net
  */
-BdApi.Net = {fetch};
+BdApi.Net = Net;
 
 /**
  * An instance of {@link Logger} for logging information.
@@ -256,6 +230,5 @@ BdApi.Logger = DefaultLogger;
 BdApi.Hooks = HooksAPI;
 
 Object.freeze(BdApi);
-Object.freeze(BdApi.Net);
 Object.freeze(BdApi.prototype);
 Object.freeze(BdApi.Components);

@@ -11,6 +11,9 @@ import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChild
 
 const {useCallback} = React;
 
+/**
+ * @enum {string}
+ */
 export const Looks = Object.freeze({
     FILLED: "bd-button-filled",
     OUTLINED: "bd-button-outlined",
@@ -18,6 +21,9 @@ export const Looks = Object.freeze({
     BLANK: "bd-button-blank"
 });
 
+/**
+ * @enum {string}
+ */
 export const Colors = Object.freeze({
     BRAND: "bd-button-color-brand",
     BLURPLE: "bd-button-color-blurple",
@@ -31,7 +37,9 @@ export const Colors = Object.freeze({
     CUSTOM: ""
 });
 
-
+/**
+ * @enum {string}
+ */
 export const Sizes = Object.freeze({
     NONE: "",
     TINY: "bd-button-tiny",

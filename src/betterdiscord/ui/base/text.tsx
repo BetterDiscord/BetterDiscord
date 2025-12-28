@@ -3,6 +3,9 @@ import React from "@modules/react";
 import type {CSSProperties, ElementType, HTMLAttributes, PropsWithChildren} from "react";
 
 
+/**
+ * @enum {string}
+ */
 export const Colors = Object.freeze({
     STANDARD: "bd-text-normal",
     MUTED: "bd-text-muted",
@@ -19,6 +22,9 @@ export const Colors = Object.freeze({
 });
 
 
+/**
+ * @enum {string}
+ */
 export const Sizes = Object.freeze({
     SIZE_10: "bd-text-10",
     SIZE_12: "bd-text-12",
@@ -30,7 +36,7 @@ export const Sizes = Object.freeze({
 });
 
 
-type TextProps = PropsWithChildren<{
+export type TextProps = PropsWithChildren<{
     tag?: ElementType<HTMLAttributes<HTMLElement>>;
     className?: string;
     color?: typeof Colors[keyof typeof Colors];
