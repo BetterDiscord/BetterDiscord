@@ -140,7 +140,7 @@ export function nativeFetch(requestedUrl: string, fetchOptions: Partial<FetchOpt
      * reference to the object below so they have no way of
      * listening to the error through onError.
      */
-    const parsed = new URL(requestedUrl);
+    const parsed = new URL(requestedUrl, location.href);
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
         throw new Error(`Unsupported protocol: ${parsed.protocol}`);
     }
