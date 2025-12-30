@@ -14,7 +14,7 @@
   z-index: 1002;
   will-change: opacity, transform;
   box-shadow: var(--elevation-high);
-  color: var(--header-primary);
+  color: var(--text-strong);
 }
 
 .bd-tooltip-content {

@@ -167,7 +167,7 @@
 }
 
 .bd-changelog-added::after {
-    background-color: var(--info-positive-foreground);
+    background-color: var(--background-feedback-positive);
 }
 
 .bd-changelog-fixed {
@@ -183,7 +183,7 @@
 }
 
 .bd-changelog-progress::after {
-    background-color: var(--info-warning-foreground);
+    background-color: var(--background-feedback-warning);
 }
 
 .bd-changelog-improved {

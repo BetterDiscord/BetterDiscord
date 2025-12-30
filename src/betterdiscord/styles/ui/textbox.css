@@ -4,8 +4,8 @@
     box-sizing: border-box;
     border-radius: var(--radius-sm);
     color: var(--text-default);
-    background-color: var(--input-background);
-    border: 1px solid var(--input-border);
+    background-color: var(--input-background-default);
+    border: 1px solid var(--input-border-default);
     padding: 10px;
     height: 40px;
 }

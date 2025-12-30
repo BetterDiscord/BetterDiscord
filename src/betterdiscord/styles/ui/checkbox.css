@@ -40,7 +40,7 @@
     border-style: solid;
     box-sizing: border-box;
     border-radius: 6px;
-    color: var(--interactive-active);
+    color: var(--interactive-text-active);
 }
 .bd-checkbox-input:checked + .bd-checkbox-box {
     border-color: var(--bd-brand);

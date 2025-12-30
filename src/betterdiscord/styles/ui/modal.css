@@ -91,13 +91,13 @@
     opacity: 0.5;
     cursor: pointer;
     border-radius: 3px;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     box-sizing: content-box;
 }
 
 .bd-close-button:hover {
     opacity: 1;
-    color: var(--interactive-hover);
+    color: var(--interactive-text-hover);
 }
 
 .bd-modal-small {
