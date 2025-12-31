@@ -1,5 +1,5 @@
+import DiscordModules from "@modules/discordmodules";
 import DOMManager from "@modules/dommanager";
-import {getByKeys} from "@webpack";
 import clsx from "clsx";
 
 
@@ -19,8 +19,8 @@ export interface NoticeOptions {
 export default class Notices {
     private static __baseClass?: string;
     private static __errorPageClass?: string;
-    static get baseClass() {return this.__baseClass ??= getByKeys<{base: string;}>(["container", "base", "sidebar"])?.base;}
-    static get errorPageClass() {return this.__errorPageClass ??= getByKeys<{errorPage: string;}>(["errorPage"])?.errorPage;}
+    static get baseClass() {return this.__baseClass ??= DiscordModules.NoticesBaseClasses?.base;}
+    static get errorPageClass() {return this.__errorPageClass ??= DiscordModules.NoticesPageClasses?.errorPage;}
 
     /** Shorthand for `type = "info"` for {@link module:Notices.show} */
     static info(content: string, options: NoticeOptions = {}) {return this.show(content, Object.assign({}, options, {type: "info"}));}

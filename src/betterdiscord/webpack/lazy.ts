@@ -9,6 +9,7 @@ const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(n\.bind\(n,
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
     const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false} = options;
+    if (!options.cacheId) options.cacheId = null;
 
     if (abortSignal?.aborted) {
         if (fatal) return Promise.reject(makeException());

@@ -1,2 +1,3 @@
 import DiscordModules from "./discordmodules";
-export default DiscordModules.ReactDOM;
+const ReactDOM = Object.assign({}, DiscordModules.ReactDOMBase, DiscordModules.ReactDOMClient);
+export default ReactDOM;
