@@ -220,5 +220,4 @@ const MemoModules = memoize({
 });
 
 const DiscordModules = Object.assign(MemoModules, SyncModules);
-window.temp = DiscordModules;
 export default DiscordModules;
