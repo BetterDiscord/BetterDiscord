@@ -182,8 +182,7 @@ const SyncModules = getBulkKeyed<Modules>({
         cacheId: "core-IndexStore"
     },
     Authorizer: {
-        filter: Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"),
-        searchExports: true,
+        filter: Filters.bySource("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"),
         firstId: 104919,
         cacheId: "core-Authorizer"
     },
