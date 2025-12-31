@@ -177,8 +177,7 @@ const SyncModules = getBulkKeyed<Modules>({
     },
     // Used as target for getWithKey
     IndexStore: {
-        filter: Filters.byStrings(".getScoreWithoutLoadingLatest"),
-        searchExports: true,
+        filter: Filters.bySource(".getScoreWithoutLoadingLatest"),
         firstId: 213459,
         cacheId: "core-IndexStore"
     },
@@ -222,4 +221,5 @@ const MemoModules = memoize({
 });
 
 const DiscordModules = Object.assign(MemoModules, SyncModules);
+window.temp = DiscordModules;
 export default DiscordModules;
