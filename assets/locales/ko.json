@@ -346,7 +346,7 @@
     },
     "Updater": {
         "updateFailed": "업데이트가 실패했습니다!",
-        "updateFailedMessage": "BetterDiscord가 업데이트에 실패했습니다. 저희 웹사이트 (https://betterdiscord.app/) 에서 설치프로그램를 받아 재설치하십시오.",
+        "updateFailedMessage": "BetterDiscord가 업데이트에 실패했습니다. 저희 웹사이트 (https://betterdiscord.app/) 에서 설치 프로그램을 받아 재설치하십시오.",
         "updateSuccessful": "업데이트가 성공적으로 완료되었습니다!",
         "updateAvailable": "BetterDiscord에 새로운 업데이트가 있습니다 (v{{version}})",
         "addonUpdatesAvailable": {
