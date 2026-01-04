@@ -32,7 +32,7 @@ const DiscordModules = memoize({
 
         return getModule(Filters.byPrototypeKeys(["renderTooltip"]), {searchExports: true}) ?? fallback;
     },
-    get promptToUpload() {return getByStrings(["getUploadCount", "instantBatchUpload"], {searchExports: true});},
+    get promptToUpload() {return getByStrings(["getUploadCount", ".UPLOAD_FILE_LIMIT_ERROR"], {searchExports: true});},
     get RemoteModule(): RemoteModule | undefined {return getByKeys(["setBadge"]);},
     get UserAgentInfo(): UserAgentInfo | undefined {return getByKeys(["os", "layout"]);},
     get GetClientInfo(): GetClientInfo | undefined {return getByStrings(["versionHash"]);},

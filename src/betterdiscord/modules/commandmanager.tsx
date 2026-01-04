@@ -3,8 +3,8 @@ import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
-import type {FluxStore} from "../types/discord/modules";
-import type {Channel, Guild} from "../types/discord/structs";
+import type {FluxStore} from "discord/modules";
+import type {Channel, Guild} from "discord/structs";
 
 // TODO: create better types for this file, too many "any"
 
@@ -251,7 +251,7 @@ class CommandManager {
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
             const getIconUrl = () => {
                 // @ts-expect-error cba
-                const metadataIcon = pluginmanager.getAddon(id)?.icon ?? null;
+                const metadataIcon = pluginmanager.getAddon(id)?.icon || pluginmanager.getPlugin(id)?.instance?.icon || null;
                 const sectionIcon = this.#sections.has(id) ? this.#sections.get(id)?.icon : null;
                 return metadataIcon || sectionIcon;
             };

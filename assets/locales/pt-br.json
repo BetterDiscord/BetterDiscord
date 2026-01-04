@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "por {{author}}",
-        "openFolder": "Abrir Pasta de {{type}}s",
         "reload": "Recarregar",
         "addonSettings": "Configurações",
         "website": "Site",
@@ -121,7 +120,6 @@
         "version": "Versão",
         "added": "Date de Adição",
         "modified": "Data de Modificação",
-        "search": "Pesquisar {{type}}",
         "editAddon": "Editar",
         "deleteAddon": "Remover",
         "confirmDelete": "Você tem certeza que quer remover o {{name}}?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} não pode ser disparado.",
         "unknownAuthor": "Autor Desconhecido",
         "noDescription": "Descrição não fornecida.",
-        "alreadyExists": "Já existe um {{type}} com o nome {{name}}",
-        "alreadWatching": "Já assistindo os addons.",
         "metaError": "META não pode ser reconhecida.",
         "missingNameData": "META sem dados de nome.",
         "metaNotFound": "META não encontrado.",
         "compileError": "Não foi possível compilar.",
-        "wasUnloaded": "{{name}} foi descarregado.",
-        "blankSlateHeader": "Você não tem nenhum {{type}}!",
-        "blankSlateMessage": "Baixe alguns [desse website]({{link}}) e os adicione na sua pasta de {{type}}s."
+        "wasUnloaded": "{{name}} foi descarregado."
     },
     "CustomCSS": {
         "confirmationText": "Você tem mudanças ainda não salvas no seu CSS Personalizado. Fechar essa janela fará você perder todas elas.",
@@ -171,10 +165,6 @@
         "restartLater": "Reiniciar Mais Tarde",
         "additionalInfo": "Informações Adicionais",
         "restartPrompt": "Para as mudanças terem efeito o discord precisa ser reinciado. Você deseja reiniciar agora?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensão Não Encontrada",
-        "notFoundDetails": "Não foi possível encontrar a exntesão do React Developer Tools no seu PC. Por favor instale a extensão na sua instalação do Chrome local."
     },
     "Sorting": {
         "sortBy": "Ordenar Por",

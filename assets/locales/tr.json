@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{author}} tarafından {{name}} v{{version}}",
         "byline": "{{author}} tarafından",
-        "openFolder": "{{type}} Dosyasını Aç",
         "reload": "Yeniden-Başlat",
         "addonSettings": "Ayarlar",
         "website": "Website",
@@ -121,7 +120,6 @@
         "version": "Versiyon",
         "added": "Eklenim Tarihi",
         "modified": "Düzenlenme Tarihi",
-        "search": "{{type}} ara",
         "editAddon": "Düzenle",
         "deleteAddon": "Sil",
         "confirmDelete": "{{name}} eklentisini silmek istediğinize emin misiniz?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} çalıştırılamadı.",
         "unknownAuthor": "Bilinmeyen Yapımcı",
         "noDescription": "Açıklama Yok.",
-        "alreadyExists": "{{name}} isimli bir {{type}} zaten var",
-        "alreadWatching": "Eklentiler zaten izleniyor.",
         "metaError": "META ayrıştırılamadı.",
         "missingNameData": "META isim verisi yok.",
         "metaNotFound": "META bulunamadı.",
         "compileError": "Derlenemedi.",
-        "wasUnloaded": "{{name}} çıkarıldı.",
-        "blankSlateHeader": "Hiç {{type}}(a/e)arın yok!",
-        "blankSlateMessage": "[Bu siteden]({{link}}) al ve {{type}} klasörüne ekle."
+        "wasUnloaded": "{{name}} çıkarıldı."
     },
     "CustomCSS": {
         "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
@@ -171,10 +165,6 @@
         "restartLater": "Sonra Yeniden Başlat",
         "additionalInfo": "Ek Bilgi",
         "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
-    },
-    "ReactDevTools": {
-        "notFound": "Eklenti Bulunamadı",
-        "notFoundDetails": "React Geliştirici Araçları bilgisayarınızda bulunamadı.\nLütfen eklentiyi Chrome tarayıcınıza indiriniz."
     },
     "Sorting": {
         "sortBy": "Göre Sırala",

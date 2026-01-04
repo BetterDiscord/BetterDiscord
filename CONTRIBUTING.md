@@ -133,10 +133,10 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### Translations
 
-BetterDiscord supports a number of languages thanks to translations provided by the community. Translations for the BetterDiscord project should be submitted via [POEditor](https://poeditor.com/join/project?hash=nRljcnV0ET).
+BetterDiscord supports a number of languages thanks to translations provided by the community. Translations for the BetterDiscord project should be submitted via [Crowdin](https://translate.betterdiscord.app).
 
-* After joining the project, contact staff about your request being approved.
 * Do not submit translations generated with a translation such as Google Translate, DeepL, or anything of the sorts.
+  * Crowdin's tools can be used for assistance but not full human replacements
 * Only submit translations for languages you are at the very least fluent in, better yet if it's your first language.
 
 ## Styleguides
@@ -162,7 +162,7 @@ Some other style related points not covered by ESLint:
   ```js
   // Use this:
   export default class ClassName {
-  
+
   }
 
   // Instead of:

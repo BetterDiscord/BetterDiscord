@@ -11,12 +11,10 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getByKeys, getLazy} from "@webpack";
+import {Filters, getLazy, getLazyBySource, getModule, getWithKey} from "@webpack";
 import {findInTree} from "@common/utils";
 
 
-// TODO: doggy can handle this translation
-const SimpleMarkdownWrapper = getByKeys(["parse", "defaultRules"]);
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;
@@ -108,9 +106,11 @@ export default new class AddonStoreBuiltin extends Builtin {
     get category() {return "store";}
     get id() {return "bdAddonStore";}
 
-    enabled() {
+    async enabled() {
         this.patchEmbeds();
-        this.patchMarkdown();
+        this.patchLinkOpener();
+
+        this.extractDiscordProtocolList().push("betterdiscord:");
     }
 
     /** The patches are slightly late sometimes, so this will upate chat */
@@ -134,56 +134,50 @@ export default new class AddonStoreBuiltin extends Builtin {
         }
     }
 
-    // TODO: Patch slate to add markdown support for the betterdiscord:// protocol
-    patchMarkdown() {
-        SimpleMarkdownWrapper.defaultRules[this.id] = {
-            order: 5,
-            /**
-             * @param {text} text
-             * @param {Record<string, any>} state
-             */
-            match: (text, state) => {
-                if (!state.allowLinks) return;
-                return PROTOCOL_REGEX.exec(text);
-            },
-            /**
-             * @param {RegExpExecArray} exec
-             * @param {Function} parse
-             * @param {Record<string, any>} state
-             */
-            parse: (exec) => ({
-                type: this.id,
-                content: [{
-                    type: "text",
-                    content: exec[0].slice(1, -1)
-                }],
-                exec
-            }),
-            /**
-             * @param {{ content: any, exec: RegExpExecArray }} node
-             * @param {Function} parse
-             * @param {Record<string, any>} state
-             */
-            react: (node, parse, state) => {
-                const href = node.exec[0].slice(1, -1);
+    private linkOpener?: Generator;
+    async patchLinkOpener() {
+        const [module, key] = this.linkOpener ??= getWithKey((m) => String(m).includes(".trackAnnouncementMessageLinkClicked("), {
+            target: await getLazyBySource([".trackAnnouncementMessageLinkClicked("])
+        });
 
-                return React.createElement("a", {
-                    key: state.key,
-                    className: "bd-link",
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    href,
-                    title: href,
-                    onClick(event) {
-                        event.preventDefault();
+        this.before(module, key, (_, args) => {
+            if (args[0].href) {
+                const url = new URL(args[0].href, location.href);
 
-                        AddonStore.requestAddon(node.exec[1]).then(addon => addon.download(false));
-                    }
-                }, parse(node.content, state));
+                const id = Number(url.searchParams.get("id"));
+                if (url.host === Web.hostname && url.pathname.toLowerCase() === "/download" && !isNaN(id)) {
+                    (args[1] || window.event)?.preventDefault?.();
+
+                    args[0].href = `betterdiscord://store/${id}`;
+                    args[0].shouldConfirm = true;
+                }
             }
+        });
+    }
+
+    private protocolList: string[] | undefined;
+    private extractDiscordProtocolList() {
+        if (this.protocolList) return this.protocolList;
+
+        let protocols: string[] = [];
+
+        const link = getModule<any>(m => m.html && m.requiredFirstCharacters?.[0] === "[")!;
+
+        const includes = Array.prototype.includes;
+        Array.prototype.includes = function (...args) {
+            if (includes.call(this, "discord:")) {
+                Array.prototype.includes = includes;
+                protocols = this as string[];
+
+                return false;
+            }
+
+            return includes.apply(this, args);
         };
 
-        SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
+        link.parse(["", "link", "betterdiscord://foo/bar"]);
+
+        return this.protocolList = protocols;
     }
 
     async patchEmbeds() {
@@ -240,9 +234,12 @@ export default new class AddonStoreBuiltin extends Builtin {
         this.forceUpdateChat();
     }
 
-    disabled() {
-        delete SimpleMarkdownWrapper.defaultRules[this.id];
-        SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
+    async disabled() {
+        const list = this.extractDiscordProtocolList();
+        const index = list.indexOf("betterdiscord:");
+        if (index !== -1) {
+            list.splice(index, 1);
+        }
 
         this.unpatchAll();
         this.forceUpdateChat();

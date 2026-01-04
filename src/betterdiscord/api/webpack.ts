@@ -1,10 +1,11 @@
 import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import ReactUtils from "./reactutils";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
-const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [ T[], B ] => {
+const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOptions: B = {} as B): [T[], B] => {
     if (args.length > 1
         && typeof (args[args.length - 1]) === "object"
         && !Array.isArray(args[args.length - 1])
@@ -12,11 +13,11 @@ const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOption
         Object.assign(defaultOptions, args.pop());
     }
 
-    return [ args as T[], defaultOptions ];
+    return [args as T[], defaultOptions];
 };
 
 interface WebpackOptions extends Options {
-    first?: boolean
+    first?: boolean;
 }
 
 /**
@@ -63,6 +64,17 @@ const Webpack = {
 
         /** Generates a combined function from a list of filters. */
         combine(...filters: Filter[]): Filter {return Filters.combine(...filters);},
+
+        /** Generates a filter that returns the opposite of the passed filter. */
+        not(filter: Filter): Filter {return Filters.not(filter);},
+
+        /** Generates a filter to search React functional components. */
+        byComponentType(filter: ExportedOnlyFilter): ExportedOnlyFilter {
+            return (exports) => {
+                const component = ReactUtils.getType(exports);
+                return typeof component === "function" && filter(component);
+            };
+        }
     },
 
     getWithKey(filter: ExportedOnlyFilter, options: WithKeyOptions = {}) {
@@ -91,6 +103,7 @@ const Webpack = {
     },
 
     getBulk<T extends any[]>(...queries: BulkQueries[]) {return getBulk<T>(...queries);},
+    getBulkKeyed<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyed<T>(queries);},
 
     waitForModule<T>(filter: Filter, options: LazyOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
@@ -162,6 +175,8 @@ const Webpack = {
     },
 
     getStore(name: string) {return getStore(name);},
+
+    getById(id: PropertyKey) {return getById(id);}
 };
 
 Object.freeze(Webpack);

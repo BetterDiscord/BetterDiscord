@@ -295,6 +295,8 @@
         "tags": "태그",
         "preview": "미리보기",
         "official": "공식"
+        "isEnabled": "활성화됨",
+        "wasLoaded": "{{name}} v{{version}} 가 로드됨."
     },
     "CustomCSS": {
         "confirmationText": "사용자 지정 CSS에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다",
@@ -332,10 +334,6 @@
         "debuglog": "디버그 로그 파일이 100MB를 초과했습니다. 로그를 지우시겠습니까?",
         "automaticallyEnable": "자동으로 활성화"
     },
-    "ReactDevTools": {
-        "notFound": "확장 프로그램을 찾을 수 없음",
-        "notFoundDetails": "PC에서 반응 개발자 도구 확장 프로그램을 찾을 수 없습니다. 기본 Chrome 설치 위치에 확장 프로그램을 설치해주세요."
-    },
     "Sorting": {
         "sortBy": "유형",
         "order": "순서",
@@ -345,9 +343,6 @@
     "WindowPrefs": {
         "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows에서는 에어로 스냅(Aero Snap)과 최대화가 고장날 수 있습니다.\n\n적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?",
         "disabledInfo": "적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?"
-    },
-    "Notices": {
-        "moreInfo": "더 많은 정보 보기"
     },
     "Updater": {
         "updateFailed": "업데이트가 실패했습니다!",
@@ -367,6 +362,13 @@
         "noUpdatesAvailable": "사용 가능한 업데이트가 없습니다.",
         "versionAvailable": "버전 {{version}}을 사용할 수 있습니다!",
         "upToDateBlankslate": "당신의 {{type}}는 모두 최신버전입니다!",
+        "addonUpdated": "{{name}} 이 버전 {{version}} 으로 업데이트 되었습니다!",
+        "checking": "업데이트를 확인하고 있습니다!",
+        "finishedChecking": "업데이트 확인을 마쳤습니다!",
+        "checkForUpdates": "업데이트 확인하기!",
+        "updateAll": "모두 업데이트 되었습니다!",
+        "noUpdatesAvailable": "사용 가능한 업데이트가 없습니다.",
+        "versionAvailable": "버전 {{version}} 을 사용할 수 있습니다!",
         "updateButton": "업데이트!"
     },
     "Settings": {

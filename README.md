@@ -2,7 +2,7 @@
 
 <a href="https://betterdiscord.app"><img src="https://betterdiscord.app/resources/branding/logo_large.svg" alt="BetterDiscord Logo" style="width: 70%"/></a>
 
-[![CI Status][build-badge]][build-link] [![GitHub Releases][downloads-badge]][downloads-link] [![Discord][discord-badge]][discord-link] [![Website][website-badge]][website-link] [![Docs][docs-badge]][docs-link]
+[![CI Status][build-badge]][build-link] [![GitHub Releases][downloads-badge]][downloads-link] [![Discord][discord-badge]][discord-link] [![Website][website-badge]][website-link] [![Docs][docs-badge]][docs-link] [![Crowdin][i18n-badge]][i18n-link]
 
 
 [build-badge]: https://img.shields.io/github/actions/workflow/status/BetterDiscord/BetterDiscord/ci.yml?branch=main&logo=Github&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
@@ -19,6 +19,9 @@
 
 [docs-badge]: https://img.shields.io/badge/docs-green?labelColor=0c0d10&color=3a71c1&style=for-the-badge&logo=readthedocs&logoColor=3a71c1
 [docs-link]: https://docs.betterdiscord.app
+
+[i18n-badge]: https://img.shields.io/badge/Translate-green?labelColor=0c0d10&color=3a71c1&style=for-the-badge&logo=crowdin&logoColor=3a71c1
+[i18n-link]: https://translate.betterdiscord.app
 
 
 BetterDiscord is a client modification for Discord with endless flexibility and addons. The only limit to the customization is your own imagination.
@@ -77,3 +80,24 @@ For information on contributing to this project, please see [CONTRIBUTING.md](/C
 
 [contributors-image]: https://contrib.rocks/image?repo=betterdiscord/betterdiscord
 [contributors-link]: https://github.com/betterdiscord/betterdiscord/graphs/contributors
+
+# Translations
+
+If you want to help translate BetterDiscord, please see [CONTRIBUTING.md](/CONTRIBUTING.md#translations).
+
+[![Translations][translation-image]][translation-link]
+
+[translation-image]: https://badges.awesome-crowdin.com/translation-14530084-450178.png
+[translation-link]: https://translate.betterdiscord.app
+
+# Star History
+
+<p align="center">
+  <a href="https://star-history.com/#betterdiscord/betterdiscord&Date">
+   <picture>
+     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date&theme=dark" />
+     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date" />
+     <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date" />
+   </picture>
+  </a>
+</p>

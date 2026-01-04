@@ -82,7 +82,7 @@
     border-radius: 5px;
     background: hsl(217,calc(var(--saturation-factor, 1)*7.6%),33.5%);
     transition: opacity .2s;
-    background-image: linear-gradient(#3E82E5, #3E82E5);
+    background-image: linear-gradient(var(--bd-brand), var(--bd-brand));
     background-size: 70% 100%;
     background-repeat: no-repeat;
     cursor: pointer;

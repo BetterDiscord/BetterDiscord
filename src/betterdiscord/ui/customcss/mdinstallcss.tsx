@@ -2,12 +2,12 @@ import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import Settings from "@stores/settings";
+import Toasts from "@stores/toasts";
 import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
 import {getModule} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
-import Toasts from "@ui/toasts.js";
 import Modals from "@ui/modals.js";
 import {findInTree} from "@common/utils";
 import type {Rule, SimpleMarkdown} from "discord/modules";
@@ -86,7 +86,7 @@ class InstallCSS {
                     label: "Keep",
                     onClick: () => this.keepChanges(notificationId)
                 }],
-                onDurationDone: () => this.revertCSS(notificationId)
+                onClose: () => this.revertCSS(notificationId)
             });
         }
         catch (error) {

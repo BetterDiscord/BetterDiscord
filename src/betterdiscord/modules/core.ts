@@ -16,26 +16,34 @@ import JsonStore from "@stores/json";
 import DiscordModules from "./discordmodules";
 
 import IPC from "./ipc";
-import Editor from "./editor";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
 import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
+import Toasts from "@ui/toasts";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
+import {getStore} from "@webpack";
+import Patcher from "./patcher";
 
 export default new class Core {
     hasStarted = false;
+
+    trustBetterDiscordProtocol() {
+        Patcher.after("BetterDiscordProtocol", getStore("MaskedLinkStore")!, "isTrustedProtocol", (_, [url]: any, ret) => ret || url.startsWith("betterdiscord://"));
+    }
 
     async startup() {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
+
+        this.trustBetterDiscordProtocol();
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
@@ -66,11 +74,11 @@ export default new class Core {
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
 
-        Logger.log("Startup", "Initializing Editor");
-        await Editor.initialize();
-
         Logger.log("Startup", "Initializing FloatingWindows");
         FloatingWindows.initialize();
+
+        Logger.log("Startup", "Initializing Toasts");
+        Toasts.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {

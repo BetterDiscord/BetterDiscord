@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.12.1",
+    "version": "1.13.4",
     "description": "Enhances Discord by adding functionality and themes.",
     "type": "module",
     "scripts": {
@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
+        "@happy-dom/global-registrator": "^18.0.1",
         "@react-spring/web": "^10.0.1",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",

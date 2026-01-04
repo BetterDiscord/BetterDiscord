@@ -58,7 +58,7 @@ function Video({src, poster}: {src: string; poster?: string;}) {
     return <video src={src} poster={poster} controls={true} className="bd-changelog-poster" />;
 }
 
-export type ChangelogEntryType = "changed" | "fixed" | "added" | "improved";
+export type ChangelogEntryType = "progress" | "fixed" | "added" | "improved";
 export interface ChangelogEntry {
     type: ChangelogEntryType;
     blurb?: string;
@@ -84,7 +84,7 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
     const ChangelogHeader = useMemo(() => <Header justify={Flex.Justify.BETWEEN}>
         <Flex direction={Flex.Direction.VERTICAL}>
             <Text tag="h1" size={Text.Sizes.SIZE_20} strong={true}>{title}</Text>
-            <Text size={Text.Sizes.SIZE_12} color={Text.Colors.HEADER_SECONDARY}>{subtitle}</Text>
+            <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{subtitle}</Text>
         </Flex>
         <CloseButton onClick={onClose} />
     </Header>, [title, subtitle, onClose]);

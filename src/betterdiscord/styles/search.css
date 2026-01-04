@@ -4,7 +4,7 @@
     outline: none;
     border: 0;
     background-color: var(--background-base-lowest);
-    color: var(--text-muted);
+    color: var(--text-default);
     display: flex;
     align-items: center;
 }
@@ -18,12 +18,12 @@
 }
 
 .bd-search::-webkit-input-placeholder {
-    color: var(--text-muted);
+    color: var(--text-default);
 }
 
 .bd-search-wrapper > svg {
     margin-right: 2px;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
 }
 
 .bd-search-wrapper > .bd-button {
@@ -33,9 +33,9 @@
 }
 
 .bd-search-wrapper > .bd-button > svg .fill {
-    fill: var(--interactive-normal);
+    fill: var(--interactive-text-default);
 }
 
 .bd-search-wrapper > .bd-button:hover > svg .fill {
-    fill: var(--interactive-hover);
+    fill: var(--interactive-text-hover);
 }

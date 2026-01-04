@@ -72,15 +72,18 @@ export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
 
 export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
     return module => {
-        if (!module?.toString || typeof (module?.toString) !== "function") return; // Not stringable
-        let moduleString = "";
-        try {moduleString = module?.toString([]);}
-        catch {moduleString = module?.toString();}
-        if (!moduleString) return false; // Could not create string
-        for (const s of strings) {
-            if (!moduleString.includes(s)) return false;
+        if (typeof module !== "function") return false;
+
+        try {
+            const str = String(module);
+
+            for (const s of strings) {
+                if (!str.includes(s)) return false;
+            }
+
+            return true;
         }
-        return true;
+        catch {return false;}
     };
 }
 
@@ -102,4 +105,10 @@ export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
     return (exports, module, id) => {
         return filters.every(filter => filter(exports, module, id));
     };
+}
+
+export function not(filter: Webpack.ExportedOnlyFilter): Webpack.ExportedOnlyFilter;
+export function not(filter: Webpack.ExportedOnlyFilter | Webpack.Filter): Webpack.Filter;
+export function not(filter: Webpack.Filter): Webpack.Filter {
+    return (exports, module, id) => !filter(exports, module, id);
 }

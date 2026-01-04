@@ -23,7 +23,7 @@
 
 .bd-install-modal-item:hover .bd-install-modal-guild {
     color: var(--white);
-    background-color: var(--bg-brand);
+    background-color: var(--background-brand);
 }
 
 .bd-install-modal-header {
@@ -47,7 +47,7 @@
 }
 
 .bd-install-modal-items > .bd-install-modal-item:not(:last-child) {
-    border-bottom: 1px solid var(--border-faint);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .bd-install-modal-item-leading {
@@ -72,8 +72,8 @@
 }
 
 .bd-install-modal-clickable:hover {
-    color: var(--interactive-hover);
-    background: var(--bg-overlay-hover, var(--background-modifier-hover));
+    color: var(--interactive-text-hover);
+    background: var(--bg-overlay-hover, var(--interactive-background-hover));
 }
 
 .bd-install-modal-author-svg {
