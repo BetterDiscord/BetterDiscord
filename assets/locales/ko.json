@@ -294,7 +294,7 @@
         },
         "tags": "태그",
         "preview": "미리보기",
-        "official": "공식"
+        "official": "공식",
         "isEnabled": "활성화됨",
         "wasLoaded": "{{name}} v{{version}} 가 로드됨."
     },
