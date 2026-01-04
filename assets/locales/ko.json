@@ -361,7 +361,7 @@
         "updateAll": "모두 업데이트",
         "noUpdatesAvailable": "사용 가능한 업데이트가 없습니다.",
         "versionAvailable": "버전 {{version}}을 사용할 수 있습니다!",
-        "upToDateBlankslate": "당신의 {{type}}는 모두 최신버전입니다!",
+        "upToDateBlankslate": "당신의 {{type}}는 모두 최신 버전입니다!",
         "addonUpdated": "{{name}} 이 버전 {{version}} 으로 업데이트 되었습니다!",
         "checking": "업데이트를 확인하고 있습니다!",
         "finishedChecking": "업데이트 확인을 마쳤습니다!",
