@@ -9,6 +9,11 @@ type UseDataArgs<Bounded extends boolean> = [
     key: string
 ];
 
+/**
+ * `Hooks` is a utility class providing access to various React hooks. An instance is available on {@link BdApi}.
+ * @summary {@link Hooks} is a utility class providing access to various React hooks.
+ * @hideconstructor
+ */
 class Hooks<CN extends string | undefined = undefined, Bounded extends IsTruthy<CN> = IsTruthy<CN>> {
     readonly #callerName: CN;
 

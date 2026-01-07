@@ -32,8 +32,7 @@ export default class Tooltip {
     labelElement: HTMLDivElement;
     observer?: MutationObserver;
     /**
-     *
-     * @constructor
+     * Creates a tooltip that shows when hovering over the given node.
      * @param {HTMLElement} node - DOM node to monitor and show the tooltip on
      * @param {string|HTMLElement} tip - string to show in the tooltip
      * @param {object} options - additional options for the tooltip

@@ -8,9 +8,9 @@ import Store from "@stores/base";
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
  * @summary {@link Utils} is a utility class for interacting with React internals.
- * @name Utils
+ * @hideconstructor
  */
-const Utils = {
+class Utils {
     /**
      * Finds a value, subobject, or array from a tree that matches a specific filter. This is a DFS.
      *
@@ -20,7 +20,7 @@ const Utils = {
      * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
     */
-    findInTree: findInTree,
+    static findInTree = findInTree;
 
     /**
      * Loads the module ids within a chunk
@@ -28,7 +28,7 @@ const Utils = {
      * @param {number | string} id module with the chunk id.
      * @returns {Promise<object>} resolved chunk module
      */
-    forceLoad: forceLoad,
+    static forceLoad = forceLoad;
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
@@ -40,7 +40,7 @@ const Utils = {
      * @param {...object} extenders Objects to extend with
      * @returns {object} A reference to `extendee`
      */
-    extend: extend,
+    static extend = extend;
 
     /**
      * Returns a function, that, as long as it continues to be invoked, will not
@@ -53,7 +53,7 @@ const Utils = {
      * @param {number} delay Number of ms to delay calls
      * @return {function} A debounced version of the function
      */
-    debounce: debounce,
+    static debounce = debounce;
 
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
@@ -61,13 +61,13 @@ const Utils = {
      * @param {string} html HTML to be escaped
      * @return {string} Escaped HTML string
      */
-    escapeHTML(html: string): string {
+    static escapeHTML(html: string): string {
         const textNode = document.createTextNode("");
         const spanElement = document.createElement("span");
         spanElement.append(textNode);
         textNode.nodeValue = html;
         return spanElement.innerHTML;
-    },
+    }
 
     /**
      * Builds a classname string from any number of arguments. This includes arrays and objects.
@@ -78,16 +78,16 @@ const Utils = {
      * @param {...any} argument Anything that should be used to add classnames
      * @returns {string} Joined classname
      */
-    className: clsx,
+    static className = clsx;
     /**
      * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
      * Numbers can be used for arrays as well like `key.key2.array.0.id`.
      * @param {object} obj - object to get nested value from
      * @param {string} keyPath - key path to the desired value
      */
-    getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
+    static getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
-    },
+    }
 
     /**
      * This works on semantic versioning e.g. "1.0.0".
@@ -96,10 +96,10 @@ const Utils = {
      * @param {string} newVersion
      * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
-    semverCompare: comparator,
+    static semverCompare = comparator;
 
-    Store
-} as const;
+    static Store = Store;
+};
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
 // type Path<T> = T extends object ? {[K in keyof T]:
@@ -121,5 +121,6 @@ const Utils = {
 //     : never;
 
 Object.freeze(Utils);
+Object.freeze(Utils.prototype);
 
 export default Utils;
