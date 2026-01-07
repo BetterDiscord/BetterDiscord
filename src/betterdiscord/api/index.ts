@@ -17,6 +17,7 @@ import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 import Logger from "./logger";
 import CommandAPI from "./commands";
+import Keybinds from "./keybinds";
 import Hooks from "./hooks";
 
 import ColorInput from "@ui/settings/components/color";
@@ -53,6 +54,7 @@ const ContextMenuAPI = new ContextMenu();
 const CommandsAPI = new CommandAPI<false>();
 const HooksAPI = new Hooks();
 const DefaultLogger = new Logger<false>();
+const KeybindsAPI = new Keybinds<false>();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
@@ -110,6 +112,7 @@ export default class BdApi {
     DOM: DOM<true> = DOMAPI as DOM<true>;
     Logger: Logger<true> = DefaultLogger as Logger<true>;
     Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    Keybinds: Keybinds<true> = KeybindsAPI as Keybinds<true>;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
@@ -119,6 +122,7 @@ export default class BdApi {
     static DOM: DOM<false>;
     static Logger: Logger<false>;
     static Commands: CommandAPI<false>;
+    static Keybinds: Keybinds<false>;
     static Hooks: Hooks;
     static React = React;
     static ReactDOM = ReactDOM;
@@ -148,6 +152,7 @@ export default class BdApi {
         this.DOM = new DOM(pluginName);
         this.Logger = new Logger(pluginName);
         this.Commands = new CommandAPI(pluginName);
+        this.Keybinds = new Keybinds(pluginName);
         this.Hooks = new Hooks(pluginName);
 
         bounded.set(pluginName, this);
@@ -236,6 +241,12 @@ BdApi.Components = Components;
  * @type CommandAPI
  */
 BdApi.Commands = CommandsAPI;
+
+/**
+ * An instance of {@link Keybinds} for managing keybinds.
+ * @type Keybinds
+ */
+BdApi.Keybinds = KeybindsAPI;
 
 /**
  * An instance of {@link Net} for using network related tools.
