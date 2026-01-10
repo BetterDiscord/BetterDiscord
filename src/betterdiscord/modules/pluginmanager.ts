@@ -13,6 +13,7 @@ import {t} from "@common/i18n";
 import Events from "./emitter";
 
 import Modals from "@ui/modals";
+import Commonmodules from "@api/commonmodules.ts";
 
 
 export interface Plugin extends Addon {
@@ -58,6 +59,15 @@ export default new class PluginManager extends AddonManager {
     }
 
     initialize() {
+        try {
+            if (Commonmodules.hasUndefined(Commonmodules.CommonModules)) {
+                Commonmodules.refetch("https://raw.githubusercontent.com/zrodevkaan/BetterDiscord/refs/heads/feat/common-modules/src/betterdiscord/webpack/modules.json");
+            }
+        }
+        catch (e) {
+            Logger.warn("Common modules had some undefined values, but we could not fetch the raw file. Falling back to local modules", e);
+        }
+
         const errors = super.initialize();
         this.setupFunctions();
         return errors;
