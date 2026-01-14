@@ -20,7 +20,7 @@ function dryAbortSignal(signal: AbortSignal): DriedAbortSignal {
                 }
             }
 
-            const listener = () => void onAbort();
+            const listener = () => onAbort();
             signal.addEventListener("abort", listener, {once: true});
             return () => void signal.removeEventListener("abort", listener);
         }

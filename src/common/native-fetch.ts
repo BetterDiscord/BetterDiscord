@@ -48,7 +48,7 @@ export interface DriedResponse {
 }
 
 export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBuffer>>): DryReadableStream {
-    // If type is "bytes" throw error
+    // If type is not "bytes" throw error
     const $stream = new Response(stream).body!;
 
     const reader = $stream.getReader();
@@ -68,8 +68,13 @@ export function hydrateReadableStream(stream: DryReadableStream): ReadableStream
                     done, value
                 } = await stream.read();
 
-                if (done) controller.close();
-                else controller.enqueue(value);
+                if (done) {
+                    controller.close();
+                    break;
+                }
+                else {
+                    controller.enqueue(value);
+                }
             }
         },
         type: "bytes"

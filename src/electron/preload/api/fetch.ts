@@ -35,7 +35,7 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
             url: uri,
             headers: res.headers as Record<string, string>,
             status: status,
-            statusText: res.statusMessage!,
+            statusText: res.statusMessage || "",
             redirected: redirectCount !== 0
         };
     }
