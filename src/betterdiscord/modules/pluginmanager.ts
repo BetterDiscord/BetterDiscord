@@ -60,7 +60,7 @@ export default new class PluginManager extends AddonManager {
 
     initialize() {
         try {
-            if (Commonmodules.hasUndefined(Commonmodules.CommonModules)) {
+            if (Commonmodules.hasUndefined()) {
                 Commonmodules.refetch("https://raw.githubusercontent.com/zrodevkaan/BetterDiscord/refs/heads/feat/common-modules/src/betterdiscord/webpack/modules.json");
             }
         }

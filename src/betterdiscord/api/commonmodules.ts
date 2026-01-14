@@ -1,4 +1,4 @@
-import data from "../webpack/modules.json" with { type: "json" };
+import data from "../webpack/modules.json" with {type: "json"};
 import {Filters, getBulkKeyed} from "@webpack";
 import Store from "@stores/base.ts";
 import request from "@polyfill/request.ts";
@@ -55,103 +55,109 @@ const ModuleStore = new class ModuleStoreClass extends Store {
     }
 }();
 
-function buildQueries(modules: ModuleData): BuiltQueries {
-    const queries: BuiltQueries = {};
-    for (const module of modules) {
-        for (const [key, value] of Object.entries(module)) {
-            queries[key] = {
-                ...value,
-                filter: value.type === "byKeys"
-                    ? Filters.byKeys(value.properties)
-                    : Filters.byStrings(...value.properties),
-                map: value.map && Object.fromEntries(
-                    Object.entries(value.map).map(([k, v]) => [
-                        k,
-                        v.type === "byKeys"
-                            ? Filters.byKeys(v.properties)
-                            : Filters.byStrings(...v.properties)
-                    ])
-                )
+class CommonModules {
+    constructor() {
+        this.build(data as unknown as ModuleData);
+
+        if (config.isCanary) {
+            (window as any).BetterDiscordCommonModules = {
+                Modules: ModuleStore.modules,
+                refetch: this.refetch.bind(this),
+                hasUndefined: this.hasUndefined.bind(this),
+                ModuleStore
             };
         }
     }
-    return queries;
-}
 
-function organize(modules: ModuleData, result: BulkResult): OrganizedModules {
-    const out: OrganizedModules = {};
-    for (const module of modules) {
-        for (const [key, value] of Object.entries(module)) {
-            if (!value.space) continue;
-            out[value.space] ??= {};
-            out[value.space][key] = result[key];
+    private buildQueries(modules: ModuleData): BuiltQueries {
+        const queries: BuiltQueries = {};
+        for (const module of modules) {
+            for (const [key, value] of Object.entries(module)) {
+                queries[key] = {
+                    ...value,
+                    filter: value.type === "byKeys"
+                        ? Filters.byKeys(value.properties)
+                        : Filters.byStrings(...value.properties),
+                    map: value.map && Object.fromEntries(
+                        Object.entries(value.map).map(([k, v]) => [
+                            k,
+                            v.type === "byKeys"
+                                ? Filters.byKeys(v.properties)
+                                : Filters.byStrings(...v.properties)
+                        ])
+                    )
+                };
+            }
         }
+        return queries;
     }
-    return out;
-}
 
-function hasUndefined(value: unknown, seen = new Set<unknown>()): boolean {
-    if (value === undefined) return true;
-    if (value === null || typeof value !== "object") return false;
-    if (seen.has(value)) return false;
-    seen.add(value);
-    if (Array.isArray(value)) return value.some(v => hasUndefined(v, seen));
-    return Object.keys(value as object).some(
-        k => hasUndefined((value as Record<string, unknown>)[k], seen)
-    );
-}
+    private organize(modules: ModuleData, result: BulkResult): OrganizedModules {
+        const out: OrganizedModules = {};
+        for (const module of modules) {
+            for (const [key, value] of Object.entries(module)) {
+                if (!value.space) continue;
+                out[value.space] ??= {};
+                out[value.space][key] = result[key];
+            }
+        }
+        return out;
+    }
 
-function build(modules: ModuleData): OrganizedModules {
-    const result = getBulkKeyed(buildQueries(modules)) as BulkResult;
-    const organized = organize(modules, result);
+    private _hasUndefined(value: unknown, seen: Set<unknown> = new Set<unknown>()): boolean {
+        if (value === undefined) return true;
+        if (value === null || typeof value !== "object") return false;
+        if (seen.has(value)) return false;
+        seen.add(value);
+        if (Array.isArray(value)) return value.some(v => this._hasUndefined(v, seen));
+        return Object.keys(value as object).some(
+            k => this._hasUndefined((value as Record<string, unknown>)[k], seen)
+        );
+    }
 
-    const target = ModuleStore.modules ?? {};
-    for (const key in target) delete target[key];
-    Object.assign(target, organized);
+    hasUndefined(): boolean {
+        return this._hasUndefined(ModuleStore.modules);
+    }
 
-    ModuleStore.modules = target;
-    return target;
-}
+    private build(modules: ModuleData): OrganizedModules {
+        const result = getBulkKeyed(this.buildQueries(modules)) as BulkResult;
+        const organized = this.organize(modules, result);
 
-build(data as unknown as ModuleData);
+        const target = ModuleStore.modules ?? {};
+        for (const key in target) delete target[key];
+        Object.assign(target, organized);
 
-async function refetch(url: string): Promise<boolean> {
-    const res = await new Promise<{ res: any; body: string }>((resolve, reject) => {
-        request(url, {}, (err, res, body) => {
-            if (err) return reject(err);
-            resolve({res, body});
+        ModuleStore.modules = target;
+        return target;
+    }
+
+    async refetch(url: string): Promise<boolean> {
+        const res = await new Promise<{ res: any; body: string }>((resolve, reject) => {
+            request(url, {}, (err, res, body) => {
+                if (err) return reject(err);
+                resolve({res, body});
+            });
         });
-    });
 
-    let etag: string | undefined = res.res.headers.etag;
+        let etag: string | undefined = res.res.headers.etag;
 
-    if (etag?.startsWith("W/")) etag = etag.replace(/^W\//, "");
+        if (etag?.startsWith("W/")) etag = etag.replace(/^W\//, "");
 
-    if (etag && etag === ModuleStore.eTag) return false;
+        if (etag && etag === ModuleStore.eTag) return false;
 
-    const fetched = JSON.parse(res.body) as ModuleData;
-    const next = build(fetched);
+        const fetched = JSON.parse(res.body) as ModuleData;
+        const next = this.build(fetched);
 
-    if (hasUndefined(next)) ModuleStore.modules = next;
+        if (this._hasUndefined(next)) ModuleStore.modules = next;
 
-    if (etag) ModuleStore.eTag = etag;
+        if (etag) ModuleStore.eTag = etag;
 
-    return true;
+        return true;
+    }
+
+    get CommonModules(): OrganizedModules {
+        return ModuleStore.modules as OrganizedModules;
+    }
 }
 
-if (config.isCanary) {
-    (window as any).BetterDiscordCommonModules = {
-        Modules: ModuleStore.modules,
-        refetch,
-        hasUndefined,
-        ModuleStore
-    };
-}
-
-export default {
-    get CommonModules(): OrganizedModules | null {
-        return ModuleStore.modules;
-    },
-    refetch,
-    hasUndefined
-};
+export default new CommonModules();
