@@ -44,7 +44,7 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
     const timeout = ((t) => init.timeout === null && !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
 
     async function execute(uri: string) {
-        const httpModule = url.startsWith("http:") ? http : url.startsWith("https:") ? https : null;
+        const httpModule = uri.startsWith("http:") ? http : uri.startsWith("https:") ? https : null;
         if (!httpModule) {
             reject(new Error(`Unsupported protocol: ${uri.slice(0, uri.indexOf(":"))}:`));
             return;
