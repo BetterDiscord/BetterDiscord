@@ -89,9 +89,9 @@ class DiscordNativePatch {
 
                 const style = global.document.createElement("style");
                 style.textContent = `
-                    #app-mount > div[class*=titleBar_], div[class^="winButtons_"] { display: none !important; }
-                    .platform-osx nav[class^=wrapper_][class*=guilds_] {margin-top: 0;}
-                    .platform-win div[class^=content_] > div[class^=sidebar_] {border-radius: 0;}
+                    #app-mount > div[class*=titleBar_], div[class*="-winButtons"] { display: none !important; }
+                    .platform-osx nav[class*=wrapper_][class*=guilds_] {margin-top: 0;}
+                    .platform-win div[class*=content_] > div[class*=sidebar_] {border-radius: 0;}
                 `;
 
                 global.document.body.append(style);
