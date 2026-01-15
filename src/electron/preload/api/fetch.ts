@@ -53,7 +53,8 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
         const request = httpModule.request(uri, {
             headers: init.headers,
             method: init.method,
-            timeout
+            timeout,
+            rejectUnauthorized: init.rejectUnauthorized
         }, (res) => {
             if (redirectCodes.has(res.statusCode!)) {
                 if (init.redirect === "error") {

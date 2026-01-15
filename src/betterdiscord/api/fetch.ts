@@ -73,7 +73,8 @@ async function fetch(input: string | URL | Request, init?: NativeRequestInit): P
         signal: request.signal ? dryAbortSignal(request.signal) : null,
 
         timeout: init?.timeout ?? DEFAULT_TIMEOUT,
-        maxRedirects: init?.maxRedirects ?? MAX_DEFAULT_REDIRECTS
+        maxRedirects: init?.maxRedirects ?? MAX_DEFAULT_REDIRECTS,
+        rejectUnauthorized: init?.rejectUnauthorized ?? true
     });
 
     return new HydratingResponse(driedResponse);

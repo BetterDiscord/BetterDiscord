@@ -22,6 +22,7 @@ export interface NativeRequestInit {
     // Custom
     timeout?: number;
     maxRedirects?: number;
+    rejectUnauthorized?: boolean;
 }
 
 export interface DriedRequest {
@@ -36,6 +37,7 @@ export interface DriedRequest {
     // Custom
     timeout: number | null | undefined;
     maxRedirects: number;
+    rejectUnauthorized: boolean;
 }
 
 export interface DriedResponse {
