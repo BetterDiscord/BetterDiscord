@@ -191,23 +191,39 @@ export default new class Editor {
                     return Promise.resolve(DiscordNative.clipboard.read());
                 });
             });
-            amdLoader(["vs/editor/browser/controller/textAreaInput"], ({TextAreaWrapper}: {TextAreaWrapper: TextAreaInputControllerType;}) => {
-                Patcher.instead("monaco-editor", TextAreaWrapper.prototype, "setSelectionRange", (that: any, args, original) => {
-                    const domNode = (that as TextAreaInputControllerType["prototype"])._actual;
+            // amdLoader(["vs/editor/browser/controller/textAreaInput"], ({TextAreaWrapper}: {TextAreaWrapper: TextAreaInputControllerType;}) => {
+            //     Patcher.instead("monaco-editor", TextAreaWrapper.prototype, "setSelectionRange", (that: any, args, original) => {
+            //         const domNode = (that as TextAreaInputControllerType["prototype"])._actual;
 
-                    const undo = Patcher.instead("monaco-editor", HTMLElement.prototype, "focus", (node, _args, focus) => {
-                        if (node === domNode) {
-                            return focus.apply(node);
-                        }
-                    });
+            //         const undo = Patcher.instead("monaco-editor", HTMLElement.prototype, "focus", (node, _args, focus) => {
+            //             if (node === domNode) {
+            //                 return focus.apply(node);
+            //             }
+            //         });
 
-                    const ret = original.apply(that, args);
+            //         const ret = original.apply(that, args);
 
-                    undo!();
+            //         undo!();
 
-                    return ret;
-                });
-            });
+            //         return ret;
+            //     });
+            // });
+
+            // this allow list approach works perfectly fine, based on current testing. most importantly, it keeps Monaco internal elements working, such as the currently dysfunctional Ctrl+F find widget. this comment can be removed or edited ofc and my PR is editable as always
+            const originalFocus = HTMLElement.prototype.focus;
+            HTMLElement.prototype.focus = function (this: HTMLElement) {
+                // Let our editor surfaces focus normally
+                if (this.closest(".floating-addon-window, #bd-editor-panel")) {
+                    return originalFocus.call(this);
+                }
+
+                const appMount = document.getElementById("app-mount");
+                if (!appMount?.contains(this)) {
+                    return originalFocus.call(this);
+                }
+
+                return;
+            };
 
             // JS
             monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
