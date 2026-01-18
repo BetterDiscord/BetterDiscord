@@ -217,7 +217,7 @@ class MenuPatcher {
                     MenuPatcher.runPatches(nodeProps.navId ?? nodeProps?.children?.props?.navId, res as any, props, instance);
                 }
                 else {
-                    const layer = nodeProps.children ? nodeProps.children : res;
+                    const layer = nodeProps?.children ? nodeProps.children : res;
 
                     if (layer?.type && typeof layer.type !== "string") {
                         MenuPatcher.patchRecursive(layer, depth);

@@ -66,6 +66,14 @@ export default class NodePatcher {
             }
         }
 
+        for (const element of ["defaultProps", "displayName", "propTypes"]) {
+            const descriptor = Object.getOwnPropertyDescriptor(type, element);
+
+            if (descriptor) {
+                Object.defineProperty(newType, element, descriptor);
+            }
+        }
+
         this.cache.set(type, newType);
         this.cache.set(newType, newType);
 
