@@ -119,7 +119,7 @@ interface MenuConfig {
     onClose?(): void;
 }
 
-interface ConextMenuObject {
+interface ContextMenuObject {
     config: MenuConfig;
     rect: DOMRect;
     render?: React.ComponentType<MenuRenderProps>;
@@ -187,9 +187,9 @@ class MenuPatcher {
     }
 
     static initialize() {
-        if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
+        if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successful, aborting initialization.");
 
-        DiscordModules.Dispatcher.addInterceptor<{type: "CONTEXT_MENU_OPEN", contextMenu: ConextMenuObject;}>((event) => {
+        DiscordModules.Dispatcher.addInterceptor<{type: "CONTEXT_MENU_OPEN", contextMenu: ContextMenuObject;}>((event) => {
             if (event.type === "CONTEXT_MENU_OPEN") {
                 if (event.contextMenu.renderLazy) {
                     const renderLazy = event.contextMenu.renderLazy;
@@ -290,12 +290,19 @@ class MenuPatcher {
 
             if (index !== -1) {
                 this.patches.regex[index].patches.delete(callback);
+
+                if (this.patches.regex[index].patches.size === 0) {
+                    this.patches.regex.splice(index, 1);
+                }
             }
 
             return;
         }
 
         this.patches.named[id]?.delete(callback);
+        if (this.patches.named[id]?.size === 0) {
+            delete this.patches.named[id];
+        }
     }
 }
 
@@ -311,7 +318,7 @@ class ContextMenu {
     /**
      * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.
      *
-     * @param {string} navId Discord's internal `navId` used to identify context menus
+     * @param {string | RegExp} navId Discord's internal `navId` used to identify context menus
      * @param {function} callback Callback function that accepts the React render tree
      * @returns {function} A function that automatically unpatches
      */
@@ -324,7 +331,7 @@ class ContextMenu {
     /**
      * Allows you to remove the patch added to a given context menu.
      *
-     * @param {string} navId The original `navId` from patching
+     * @param {string | RegExp} navId The original `navId` from patching
      * @param {function} callback The original callback from patching
      */
     unpatch(navId: string | RegExp, callback: PatchCallback) {

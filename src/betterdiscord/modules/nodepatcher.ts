@@ -9,13 +9,13 @@ type UnknownPatch<P> = (props: P, res: React.ReactNode, instance?: React.Compone
 // Create a new instance for each or make one patch do both things
 export default class NodePatcher {
     private id = Symbol("NodePatcher");
-    private cache = new Map();
+    private cache = new Map<unknown, React.ComponentType<any>>();
 
     public patch<P, T extends React.ComponentType<P> = React.ComponentType<P>>(node: React.ReactElement<P, T>, callback: UnknownPatch<P>) {
         const type = node.type;
 
         if (this.cache.has(type)) {
-            node.type = this.cache.get(type);
+            node.type = this.cache.get(type) as T;
             return;
         }
 
