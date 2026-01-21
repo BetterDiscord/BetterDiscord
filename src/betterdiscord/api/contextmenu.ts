@@ -487,9 +487,16 @@ class ContextMenu {
      * Closes the current opened context menu immediately.
      */
     close() {ContextMenuActions.closeContextMenu();}
+
+    Separator = MenuComponents.Separator;
+    CheckboxItem = MenuComponents.CheckboxItem;
+    RadioItem = MenuComponents.RadioItem;
+    ControlItem = MenuComponents.ControlItem;
+    Group = MenuComponents.Group;
+    Item = MenuComponents.Item;
+    Menu = MenuComponents.Menu;
 }
 
-Object.assign(ContextMenu.prototype, MenuComponents);
 Object.freeze(ContextMenu);
 Object.freeze(ContextMenu.prototype);
 
