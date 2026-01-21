@@ -292,7 +292,7 @@
         "methodError": "{{method}} could not be fired.",
         "unknownAuthor": "Unknown Author",
         "noDescription": "Description not provided.",
-        "noSettings": "{{name}} does not have a settings.",
+        "noSettings": "{{name}} does not have a settings panel.",
         "isDisabled": "{{name}} is disabled.",
         "alreadyExists": {
             "plugin": "There is already a plugin with name {{name}}",

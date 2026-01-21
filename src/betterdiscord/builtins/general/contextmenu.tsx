@@ -19,6 +19,11 @@ import {useMemo} from "react";
 
 const ContextMenu = new ContextMenuPatcher();
 
+function openCategory(id: string) {
+    ContextMenu.close();
+    settings.openSettingsPage(id);
+}
+
 const BDContextMenu = new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
     get category() {return "general";}
@@ -26,32 +31,19 @@ const BDContextMenu = new class BDContextMenu extends Builtin {
 
     patch?(): void;
 
-    constructor() {
-        super();
-        this.callback = this.callback.bind(this);
-    }
-
     async enabled() {
-        this.patch = ContextMenu.patch("user-settings-cog", this.callback);
+        this.patch = ContextMenu.patch("user-settings-cog", (retVal) => {
+            const bdMenu = useBDContextMenu();
+
+            const target = findInTree(retVal as any, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
+            if (!target) return;
+
+            target.push(bdMenu);
+        });
     }
 
     async disabled() {
         this.patch?.();
-    }
-
-    callback(retVal: any) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const bdMenu = useBDContextMenu();
-
-        const target = findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
-        if (!target) return;
-
-        target.push(bdMenu);
-    }
-
-    async openCategory(id: string) {
-        ContextMenu.close();
-        settings.openSettingsPage(id);
     }
 };
 
@@ -83,9 +75,9 @@ function useCollectionMenu() {
     return (
         <>
             {collections.map((collection) => (
-                <ContextMenu.Item label={collection.name} id={collection.id} action={() => BDContextMenu.openCategory(collection.id)} key={`bd.${collection.id}`}>
+                <ContextMenu.Item label={collection.name} id={collection.id} action={() => openCategory(collection.id)} key={`bd.${collection.id}`}>
                     {collection.settings.map(category => (
-                        <ContextMenu.Item label={category.name} id={category.id} action={() => BDContextMenu.openCategory(collection.id)} key={`bd.${collection.id}.${category.id}`}>
+                        <ContextMenu.Item label={category.name} id={category.id} action={() => openCategory(collection.id)} key={`bd.${collection.id}.${category.id}`}>
                             {category.settings.map(setting => (
                                 <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
                             ))}
@@ -110,28 +102,30 @@ function useAddonMenu(type: "plugin" | "theme", label: string, manager: AddonMan
             action={(e: MouseEvent) => {
                 if (!e.shiftKey) {
                     manager.toggleAddon(name);
+                    return;
+                }
+
+                const addon = manager.getAddon(name);
+                if (!manager.isEnabled(name)) {
+                    toasts.warning(t("Addons.isDisabled", {name}));
+                    return;
+                }
+
+                const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
+                const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
+
+                if (hasSettings) {
+                    Modals.showAddonSettingsModal(name, getSettings());
                 }
                 else {
-                    const addon = manager.getAddon(name);
-                    if (!manager.isEnabled(name)) {
-                        toasts.warning(t("Addons.isDisabled", {name}));
-                        return;
-                    }
-                    const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-                    const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
-                    if (hasSettings) {
-                        Modals.showAddonSettingsModal(name, getSettings());
-                    }
-                    else {
-                        toasts.warning(t("Addons.noSettings", {name}));
-                    }
+                    toasts.warning(t("Addons.noSettings", {name}));
                 }
             }}
         />
     )), [names, enabled, manager]);
 
     return (
-        <ContextMenu.Item label={label} id={type} action={() => BDContextMenu.openCategory(manager.prefix + "s")}>
+        <ContextMenu.Item label={label} id={type} action={() => openCategory(manager.prefix + "s")}>
             <ContextMenu.Group>
                 {toggles}
             </ContextMenu.Group>
@@ -141,7 +135,7 @@ function useAddonMenu(type: "plugin" | "theme", label: string, manager: AddonMan
                         label={t("Addons.openStore", {context: type})}
                         id={`${type}-store`}
                         action={() => {
-                            BDContextMenu.openCategory(manager.prefix + "s");
+                            openCategory(manager.prefix + "s");
                             // If the addon store instantly opens have it just stop basically
                             DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
                         }}
@@ -182,7 +176,7 @@ function useBDContextMenu() {
                 <ContextMenu.Item
                     label={t("Panels.updates")}
                     id="updates"
-                    action={async () => BDContextMenu.openCategory("updates")}
+                    action={async () => openCategory("updates")}
                 />
 
                 {customCSS}
