@@ -14,7 +14,24 @@ export default {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "BetterDiscord now loads up correctly."
+                "Fixed BdApi.Net.fetch not handling relative urls properly.",
+                "BetterDiscord now properly checks for addon updates periodically.",
+                "BetterDiscord now loads up correctly.",
+            ]
+        },
+        {
+            title: "Improvements",
+            type: "improved",
+            items: [
+                "Tweaked styles for InstallCSS.",
+                "BetterDiscord's Dropdown Component was rewrote.",
+            ]
+        },
+        {
+            title: "Additions",
+            type: "added",
+            items: [
+                "Added `data-speaking` attribute to VoiceUser in ThemeAttributes"
             ]
         },
     ]

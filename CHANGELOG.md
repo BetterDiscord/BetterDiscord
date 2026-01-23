@@ -4,8 +4,19 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 
 1.13.5
 
-### Fixed:
-- BetterDiscord now loads up correctly.
+### Added
+- Added `data-speaking` attribute to VoiceUser in ThemeAttributes
+
+### Fixed
+- Fixed BdApi.Net.fetch not handling relative urls properly
+- BetterDiscord now properly checks for addon updates periodically
+- BetterDiscord now loads up correctly
+
+### Improved
+- Tweaked styles for InstallCSS
+- BetterDiscord's Dropdown Component was rewrote
+
+### Removed
 
 1.13.4
 
