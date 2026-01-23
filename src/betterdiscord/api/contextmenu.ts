@@ -502,13 +502,18 @@ Object.freeze(ContextMenu.prototype);
 
 try {
     MenuPatcher.initialize();
+}
+catch (error) {
+    Logger.error("ContextMenu~Patcher", "Fatal error:", error);
+}
+
+try {
     // Remove that annoying console warn spam
     Object.defineProperty(document, "ownerDocument", {
         value: document
     });
 }
-catch (error) {
-    Logger.error("ContextMenu~Patcher", "Fatal error:", error);
-}
+// eslint-disable-next-line no-empty
+catch {}
 
 export default ContextMenu;

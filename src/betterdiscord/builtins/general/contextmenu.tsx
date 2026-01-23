@@ -75,9 +75,19 @@ function useCollectionMenu() {
     return (
         <>
             {collections.map((collection) => (
-                <ContextMenu.Item label={collection.name} id={collection.id} action={() => openCategory(collection.id)} key={`bd.${collection.id}`}>
+                <ContextMenu.Item
+                    label={collection.name}
+                    id={collection.id}
+                    action={() => openCategory(collection.id)}
+                    key={`bd.${collection.id}`}
+                >
                     {collection.settings.map(category => (
-                        <ContextMenu.Item label={category.name} id={category.id} action={() => openCategory(collection.id)} key={`bd.${collection.id}.${category.id}`}>
+                        <ContextMenu.Item
+                            label={category.name}
+                            id={category.id}
+                            action={() => openCategory(collection.id)}
+                            key={`bd.${collection.id}.${category.id}`}
+                        >
                             {category.settings.map(setting => (
                                 <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
                             ))}
@@ -90,22 +100,22 @@ function useCollectionMenu() {
 }
 
 function useAddonMenu(type: "plugin" | "theme", label: string, manager: AddonManager) {
-    const names = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())), [], true);
-    const enabled = useStateFromStores(manager, () => Object.fromEntries(names.map(name => [name, manager.isEnabled(name)])) as Record<string, boolean>, [names], true);
+    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.getAddon(name), manager.isEnabled(name)] as const), [], true);
     const addonStoreIsEnabled = useStateFromStores(SettingsStore, () => SettingsStore.get("settings", "store", "bdAddonStore"), []);
 
-    const toggles = useMemo(() => names.map((name) => (
+    const toggles = useMemo(() => addons.map(([name, addon, enabled]) => (
         <ContextMenu.CheckboxItem
             label={name}
             id={name}
-            checked={enabled[name]}
+            checked={enabled}
+            key={`bd.${type}.${name}`}
+            disabled={addon?.partial}
             action={(e: MouseEvent) => {
                 if (!e.shiftKey) {
                     manager.toggleAddon(name);
                     return;
                 }
 
-                const addon = manager.getAddon(name);
                 if (!manager.isEnabled(name)) {
                     toasts.warning(t("Addons.isDisabled", {name}));
                     return;
@@ -122,15 +132,15 @@ function useAddonMenu(type: "plugin" | "theme", label: string, manager: AddonMan
                 }
             }}
         />
-    )), [names, enabled, manager]);
+    )), [addons, manager, type]);
 
     return (
         <ContextMenu.Item label={label} id={type} action={() => openCategory(manager.prefix + "s")}>
-            <ContextMenu.Group>
+            <ContextMenu.Group key={`bd.${type}.installed`}>
                 {toggles}
             </ContextMenu.Group>
             {addonStoreIsEnabled && (
-                <ContextMenu.Group>
+                <ContextMenu.Group key={`bd.${type}.store`}>
                     <ContextMenu.Item
                         label={t("Addons.openStore", {context: type})}
                         id={`${type}-store`}
@@ -155,7 +165,8 @@ function useCustomCSSMenuItem() {
         <ContextMenu.Item
             label={t("Panels.customcss")}
             id="customcss"
-            action={async () => CustomCSS.open()}
+            action={() => CustomCSS.open()}
+            key="bd.customcss"
         />
     );
 }
