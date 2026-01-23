@@ -25,7 +25,7 @@ const DiscordModules = memoize({
     get InviteActions(): InviteActions | undefined {return getByKeys(["createInvite"]);},
     get SimpleMarkdown(): SimpleMarkdown | undefined {return getByKeys(["parseBlock", "parseInline", "defaultOutput"]);},
     get Strings() {return getByKeys<{Messages: object;}>(["Messages"])?.Messages;},
-    get Dispatcher(): Dispatcher {return getByKeys(["dispatch", "subscribe", "register"]) as Dispatcher;},
+    get Dispatcher(): Dispatcher {return getByKeys(["dispatch", "subscribe", "register"], {searchExports: true}) as Dispatcher;},
     get Tooltip(): React.ComponentType<{color?: string; position?: string; text?: string; children: React.FunctionComponent;}> {
         // Make fallback component just pass children, so it can at least render that.
         const fallback: React.ComponentType<{children: React.FunctionComponent;}> = props => props.children?.({}) ?? null;

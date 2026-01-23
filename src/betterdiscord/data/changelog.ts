@@ -14,8 +14,7 @@ export default {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed styles breaking in certain areas.",
-                "Fixed theme attributes from causing a bunch of lag."
+                "BetterDiscord now loads up correctly."
             ]
         },
     ]

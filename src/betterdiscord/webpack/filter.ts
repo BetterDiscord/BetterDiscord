@@ -1,8 +1,14 @@
 import type {Webpack} from "discord";
 import {webpackRequire} from "./require";
 
+function assign<T extends Webpack.Filter | Webpack.ExportedOnlyFilter>(filter: T, args: any) {
+    return Object.assign(filter, {
+        [Symbol.for("BetterDiscord.Filter")]: args
+    });
+}
+
 export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;
         const component = filter(module);
@@ -11,11 +17,14 @@ export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m =
             if (!(props[p] in component)) return false;
         }
         return true;
-    };
+    }, {
+        props,
+        filter
+    });
 }
 
 export function byPrototypeKeys(fields: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;
         const component = filter(module);
@@ -25,24 +34,30 @@ export function byPrototypeKeys(fields: string[], filter: Webpack.ExportedOnlyFi
             if (!(fields[f] in component.prototype)) return false;
         }
         return true;
-    };
+    }, {
+        fields,
+        filter
+    });
 }
 
 export function byRegex(search: RegExp, filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         const method = filter(module);
         if (!method) return false;
         let methodString = "";
         try {methodString = method.toString([]);}
         catch {methodString = method.toString();}
         return methodString.search(search) !== -1;
-    };
+    }, {
+        search,
+        filter
+    });
 }
 
 export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
     const moduleCache = webpackRequire.m;
 
-    return (_, module) => {
+    return assign((_, module) => {
         const id = module?.id;
         if (!id) return false;
 
@@ -67,11 +82,13 @@ export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
         }
 
         return true;
-    };
+    }, {
+        searches
+    });
 }
 
 export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         if (typeof module !== "function") return false;
 
         try {
@@ -84,31 +101,41 @@ export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
             return true;
         }
         catch {return false;}
-    };
+    }, {
+        strings
+    });
 }
 
 export function byDisplayName(name: string): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         return module && module.displayName === name;
-    };
+    }, {
+        name
+    });
 }
 
 export function byStoreName(name: string): Webpack.ExportedOnlyFilter {
-    return module => {
+    return assign(module => {
         return module?._dispatchToken && module?.getName?.() === name;
-    };
+    }, {
+        name
+    });
 }
 
 export function combine(...filters: Webpack.ExportedOnlyFilter[]): Webpack.ExportedOnlyFilter;
 export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter;
 export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
-    return (exports, module, id) => {
+    return assign((exports, module, id) => {
         return filters.every(filter => filter(exports, module, id));
-    };
+    }, {
+        filters
+    });
 }
 
 export function not(filter: Webpack.ExportedOnlyFilter): Webpack.ExportedOnlyFilter;
 export function not(filter: Webpack.ExportedOnlyFilter | Webpack.Filter): Webpack.Filter;
 export function not(filter: Webpack.Filter): Webpack.Filter {
-    return (exports, module, id) => !filter(exports, module, id);
+    return assign((exports, module, id) => !filter(exports, module, id), {
+        filter
+    });
 }
