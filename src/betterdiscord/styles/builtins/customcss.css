@@ -103,7 +103,7 @@
   white-space: nowrap;
 }
 
-[class*="-errorPage"] [class*="-buttons"] {
+[class*="errorPage_"] [class*="buttons_"] {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +111,7 @@
   padding: 16px;
 }
 
-[class*="-errorPage"] [class*="-buttons"] [class*="-button"] {
+[class*="errorPage_"] [class*="buttons_"] [class*="button_"] {
   width: 100%;
   max-width: 400px;
   margin: 0;
