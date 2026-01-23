@@ -11,7 +11,8 @@ export default new class ThemeAttributes extends Builtin {
     get id() {return "themeAttributes";}
 
     async enabled() {
-        const MessageComponent = await getLazyBySource([".messageListItem"]);
+        const MessageComponent = await getLazyBySource(["Message must not be a thread starter message"]);
+        const VoiceUserComponent = await getLazyBySource(["avatarContainerClass", "userNameClassName"]);
         this.after(MessageComponent?.ZP, "type", (thisObject, [args], returnValue) => {
             const li = findInTree(returnValue, (node) => node?.className?.includes("messageListItem"));
             if (!li) return;
@@ -28,6 +29,11 @@ export default new class ThemeAttributes extends Builtin {
         this.after(UserProfileComponent, "render", (thisObject, [{user}], returnValue) => {
             returnValue.props["data-member-id"] = user.id;
             returnValue.props["data-is-self"] = !!user.email;
+        });
+        this.after(VoiceUserComponent, "Ay", (thisObject, [{speaking}], returnValue) => {
+            const VoiceUser = findInTree(returnValue, (node) => node?.attributes, {walkable: ["ref", "current"]});
+            if (!VoiceUser) return;
+            VoiceUser.dataset.speaking = speaking;
         });
     }
 

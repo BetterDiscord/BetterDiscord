@@ -3,7 +3,7 @@ import Logger from "@common/logger";
 
 const hasThrown = new WeakSet();
 
-export const wrapFilter = (filter: Webpack.Filter): Webpack.Filter => (exports, module, moduleId) => {
+export const wrapFilter = (filter: Webpack.Filter): Webpack.Filter => Object.assign(((exports, module, moduleId) => {
     try {
         if (exports instanceof Window) return false;
         if (exports?.default?.remove && exports?.default?.set && exports?.default?.clear && exports?.default?.get && !exports?.default?.sort) return false;
@@ -17,7 +17,9 @@ export const wrapFilter = (filter: Webpack.Filter): Webpack.Filter => (exports, 
         hasThrown.add(filter);
         return false;
     }
-};
+}) satisfies Webpack.Filter, {
+    __originalFilter: filter
+});
 
 const TypedArray = Object.getPrototypeOf(Uint8Array);
 export function shouldSkipModule(exports: any) {
@@ -35,8 +37,8 @@ export function shouldSkipModule(exports: any) {
 }
 
 export function getDefaultKey(module: Webpack.Module): Webpack.DefaultKey | undefined {
-    if ("Z" in module.exports) return "Z";
-    if ("ZP" in module.exports) return "ZP";
+    if ("A" in module.exports) return "A";
+    if ("Ay" in module.exports) return "Ay";
     if (module.exports.__esModule && "default" in module.exports) return "default";
 }
 

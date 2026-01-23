@@ -157,9 +157,9 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings<{A(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
 
-        Patcher.after("CommandManager", SidebarModule!, "Z", (_, [props]: [{sections: any[];}], res: any) => {
+        Patcher.after("CommandManager", SidebarModule!, "A", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
 
             const child = res.props.children;

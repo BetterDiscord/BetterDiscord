@@ -68,7 +68,7 @@
     height: 1px;
     margin: 0;
     border: none;
-    border-top: thin solid var(--app-border-frame);
+    border-top: thin solid var(--border-subtle);
 }
 
 .bd-version-info {
