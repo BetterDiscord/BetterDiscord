@@ -52,7 +52,7 @@ const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser
 const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"]);
 const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"]);
 const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"]);
-const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value.toString();
+const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value?.toString?.() || "";
 
 function makeButton(title: string, children: ReactNode, action?: () => void, {isControl = false, danger = false, disabled = false} = {}) {
     const ButtonType = isControl ? "button" : "div";
