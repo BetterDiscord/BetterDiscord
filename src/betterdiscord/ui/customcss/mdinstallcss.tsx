@@ -65,7 +65,7 @@ class InstallCSS {
         });
 
         DOMManager.injectStyle("bd-installcss",
-        `.${codeBlockStyles.markup} .${codeBlockStyles.codeContainer}:hover .${codeBlockStyles.codeActions} {
+            `.${codeBlockStyles.markup} .${codeBlockStyles.codeContainer}:hover .${codeBlockStyles.codeActions} {
                 display: flex;
                 flex-direction: row-reverse;
                 gap: 8px;

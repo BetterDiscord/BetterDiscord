@@ -32,7 +32,7 @@
     width: 350px;
 }
 
-.bd-notification [class*="-markdown"] [class*="-paragraph"]:last-child {
+.bd-notification [class*="markdown_"] [class*="paragraph_"]:last-child {
     margin-bottom: 0px !important;
 }
 
