@@ -17,6 +17,9 @@ const AccessibilityContext = getModule<Context<{reducedMotion: {enabled: false;}
  * @property {string} [aria-label]
  */
 
+/**
+ * @enum {string}
+ */
 export const SpinnerType = Spinner.Type = Object.freeze({
     WANDERING_CUBES: "wandering-cubes",
     CHASING_DOTS: "chasing-dots",
@@ -39,7 +42,7 @@ export interface SpinnerProps {
 /**
  * Clone of Discord's builtin spinner, acts 100% the same
  */
-function Spinner(props: SpinnerProps) {
+export default function Spinner(props: SpinnerProps) {
     const {reducedMotion} = React.useContext(AccessibilityContext);
 
     const {animated = true} = props;
@@ -116,5 +119,3 @@ function Spinner(props: SpinnerProps) {
         }
     }
 }
-
-export default Object.freeze(Spinner);

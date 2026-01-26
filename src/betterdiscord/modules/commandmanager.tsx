@@ -8,12 +8,18 @@ import type {Channel, Guild} from "discord/structs";
 
 // TODO: create better types for this file, too many "any"
 
+/**
+ * @enum {number}
+ */
 export const CommandTypes = {
     CHAT_INPUT: 1,
     USER: 2,
     MESSAGE: 3
 };
 
+/**
+ * @enum {number}
+ */
 export const InputTypes = {
     BUILT_IN: 0,
     TEXT: 1,
@@ -22,6 +28,9 @@ export const InputTypes = {
     PLACEHOLDER: 4
 };
 
+/**
+ * @enum {number}
+ */
 export const OptionTypes = {
     SUB_COMMAND: 1,
     SUB_COMMAND_GROUP: 2,
@@ -36,6 +45,9 @@ export const OptionTypes = {
     ATTACHMENT: 11
 };
 
+/**
+ * @enum {string}
+ */
 export const MessageEmbedTypes = {
     IMAGE: "image",
     VIDEO: "video",
@@ -56,6 +68,9 @@ export const MessageEmbedTypes = {
     GAMING_PROFILE: "gaming_profile",
 };
 
+/**
+ * @enum {number}
+ */
 export const enum OptionType {
     STRING = 3,
     INTEGER = 4,

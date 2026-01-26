@@ -111,33 +111,32 @@ const exoticComponents = {
 
 type ElementType<T extends React.FC> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
 
-interface ReactUtils {
-    rootInstance: any;
-    getInternalInstance(node: Element): any | null;
-    getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
-    wrapElement(element: Element | Element[]): React.ComponentType;
-    wrapInHooks<T extends React.FC>(
-        functionComponent: ElementType<T>,
-        customPatches?: Partial<PatchedReactHooks>
-    ): React.FunctionComponent<React.ComponentProps<T>>;
-    // forceUpdateFiber(fiber: Fiber): boolean;
-    getType<T extends React.FC>(elementType: ElementType<T>): T;
-}
+// interface IReactUtils {
+//     rootInstance: any;
+//     getInternalInstance(node: Element): any | null;
+//     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
+//     wrapElement(element: Element | Element[]): React.ComponentType;
+//     wrapInHooks<T extends React.FC>(
+//         functionComponent: ElementType<T>,
+//         customPatches?: Partial<PatchedReactHooks>
+//     ): React.FunctionComponent<React.ComponentProps<T>>;
+//     // forceUpdateFiber(fiber: Fiber): boolean;
+//     getType<T extends React.FC>(elementType: ElementType<T>): T;
+// }
 
 /**
  * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of the UI.
- * @type ReactUtils
  * @summary {@link ReactUtils} is a utility class for interacting with React internals.
- * @name ReactUtils
+ * @hideconstructor
  */
-const ReactUtils: ReactUtils = {
+class ReactUtils {
     /**
      * @deprecated
      */
-    get rootInstance() {
+    static get rootInstance() {
         return (document.getElementById("app-mount") as any)?._reactRootContainer?._internalRoot?.current;
-    },
+    }
 
     /**
      * Gets the internal React data of a specified node.
@@ -145,12 +144,12 @@ const ReactUtils: ReactUtils = {
      * @param {HTMLElement} node Node to get the internal React data from
      * @returns {Fiber|undefined} Either the found data or `undefined`
      */
-    getInternalInstance(node: HTMLElement): Fiber | null {
+    static getInternalInstance(node: HTMLElement): Fiber | null {
         if (node.__reactFiber$) return node.__reactFiber$;
         const key = Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"));
         if (key) return node[key as keyof typeof node] as Fiber;
         return null;
-    },
+    }
 
     /**
      * Attempts to find the "owner" node to the current node. This is generally
@@ -163,7 +162,7 @@ const ReactUtils: ReactUtils = {
      * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
      * @return {object|undefined} The owner instance or `undefined` if not found
      */
-    getOwnerInstance(node: HTMLElement | undefined, {
+    static getOwnerInstance(node: HTMLElement | undefined, {
         include,
         exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"],
         filter = () => true
@@ -193,7 +192,7 @@ const ReactUtils: ReactUtils = {
         }
 
         return null;
-    },
+    }
 
     /**
      * Creates an unrendered React component that wraps HTML elements.
@@ -201,7 +200,7 @@ const ReactUtils: ReactUtils = {
      * @param {HTMLElement} element Element or array of elements to wrap
      * @returns {object} Unrendered React component
      */
-    wrapElement(element: HTMLElement | HTMLElement[]) {
+    static wrapElement(element: HTMLElement | HTMLElement[]) {
         return class ReactWrapper extends React.Component {
             element: HTMLElement | HTMLElement[];
             state: {hasError: boolean;};
@@ -235,9 +234,9 @@ const ReactUtils: ReactUtils = {
                 });
             }
         };
-    },
+    }
 
-    wrapInHooks<T extends React.FC>(
+    static wrapInHooks<T extends React.FC>(
         functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
@@ -260,7 +259,7 @@ const ReactUtils: ReactUtils = {
                 Object.assign(reactDispatcher, originalDispatcher);
             }
         };
-    },
+    }
 
     // forceUpdateFiber(fiber: Fiber): boolean {
     //     fiber.type = ReactUtils.getType(fiber.elementType);
@@ -289,7 +288,7 @@ const ReactUtils: ReactUtils = {
     //     return false;
     // },
 
-    getType<T extends React.FC>(elementType: ElementType<T>): T {
+    static getType<T extends React.FC>(elementType: ElementType<T>): T {
         while (true) {
             switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:
@@ -318,5 +317,6 @@ const ReactUtils: ReactUtils = {
 };
 
 Object.freeze(ReactUtils);
+Object.freeze(ReactUtils.prototype);
 
 export default ReactUtils;

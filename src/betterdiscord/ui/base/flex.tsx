@@ -38,7 +38,7 @@ export function Child(props: {className?: string;[x: string]: any;}) {
     return <Flex {...props} />;
 }
 
-type FlexProps = PropsWithChildren<{
+export type FlexProps = PropsWithChildren<{
     id?: string;
     className?: string;
     style?: CSSProperties;
