@@ -282,9 +282,9 @@ class ContextMenu {
             const [active, doToggle] = React.useState(props.checked || false);
             const originalAction = props.action;
             props.checked = active;
-            props.action = function (ev) {
+            props.action = function (ev: React.MouseEvent) {
                 originalAction(ev);
-                doToggle(!active);
+                if (!ev.defaultPrevented) doToggle(!active);
             };
         }
 
