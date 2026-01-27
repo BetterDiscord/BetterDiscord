@@ -39,6 +39,7 @@ import Spinner from "@ui/spinner";
 import type ReactType from "react";
 import type ReactDOMBaseType from "react-dom";
 import type ReactDOMClientType from "react-dom/client";
+import CommonModules from "@api/commonmodules.ts";
 
 type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
 
@@ -133,6 +134,7 @@ export default class BdApi {
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
     static Net: {fetch: typeof fetch;};
+    static Common: Readonly<Record<string, any>>;
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -162,6 +164,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
+    get Common() {return CommonModules.CommonModules;};
     Net = {fetch};
 }
 
@@ -230,6 +233,12 @@ BdApi.ContextMenu = ContextMenuAPI;
  * @type Components
  */
 BdApi.Components = Components;
+
+/**
+ * A set of common modules used internally by plugins.
+ * @type CommonModules
+ */
+BdApi.Common = CommonModules.CommonModules;
 
 /**
  * An instance of {@link CommandAPI} for adding slash commands.
