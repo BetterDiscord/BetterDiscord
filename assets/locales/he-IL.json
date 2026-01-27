@@ -263,15 +263,21 @@
         "search": {
             "plugin": {
                 "one": "Search one plugin",
+                "two": "Search {{count}} plugins",
+                "many": "Search {{count}} plugins",
                 "other": "Search {{count}} plugins"
             },
             "theme": {
                 "one": "Search one theme",
+                "two": "Search {{count}} themes",
+                "many": "Search {{count}} themes",
                 "other": "Search {{count}} themes"
             }
         },
         "results": {
             "one": "{{count}} Result",
+            "two": "{{count}} Results",
+            "many": "{{count}} Results",
             "other": "{{count}} Results"
         },
         "editAddon": "Edit",
@@ -320,10 +326,14 @@
         "updated": "Updated",
         "downloadCount": {
             "one": "{{count}} Download",
+            "two": "{{count}} Downloads",
+            "many": "{{count}} Downloads",
             "other": "{{count}} Downloads"
         },
         "likeCount": {
             "one": "{{count}} Like",
+            "two": "{{count}} Likes",
+            "many": "{{count}} Likes",
             "other": "{{count}} Likes"
         },
         "tags": "Tags",
@@ -332,10 +342,14 @@
         "manyEnabled": {
             "plugin": {
                 "one": "One plugin has been enabled.",
+                "two": "{{count}} plugins have been enabled.",
+                "many": "{{count}} plugins have been enabled.",
                 "other": "{{count}} plugins have been enabled."
             },
             "theme": {
                 "one": "One theme has been enabled.",
+                "two": "{{count}} themes have been enabled.",
+                "many": "{{count}} themes have been enabled.",
                 "other": "{{count}} themes have been enabled."
             }
         }
@@ -400,10 +414,14 @@
         "addonUpdatesAvailable": {
             "plugin": {
                 "one": "One plugin has an update!",
+                "two": "{{count}} plugins have updates!",
+                "many": "{{count}} plugins have updates!",
                 "other": "{{count}} plugins have updates!"
             },
             "theme": {
                 "one": "One theme has an update!",
+                "two": "{{count}} themes have updates!",
+                "many": "{{count}} themes have updates!",
                 "other": "{{count}} themes have updates!"
             }
         },
