@@ -1,7 +1,8 @@
 import {Filters, getByKeys, getMangled, getModule, webpackRequire} from "@webpack";
-import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
 import React from "@modules/react";
+import DiscordModules from "@modules/discordmodules";
+import NodePatcher from "@modules/nodepatcher";
 
 
 let startupComplete = false;
@@ -104,97 +105,204 @@ const ContextMenuActions = (() => {
     return out;
 })();
 
+interface MenuRenderProps {
+    config: MenuConfig & {context: "APP";},
+    context: "APP",
+    onHeightUpdate: () => void,
+    position: "right" | "left",
+    target: Element,
+    theme: string;
+}
+interface MenuConfig {
+    position?: "right" | "left",
+    align?: "top" | "bottom",
+    onClose?(): void;
+}
+
+interface ContextMenuObject {
+    config: MenuConfig;
+    rect: DOMRect;
+    render?: React.ComponentType<MenuRenderProps>;
+    renderLazy?(): Promise<React.ComponentType<MenuRenderProps>>;
+    target: Element;
+}
+
+type MenuRenderNode = React.ReactElement<MenuRenderProps, React.ComponentType<MenuRenderProps>>;
+
+type PatchCallback = (res: React.ReactElement<React.PropsWithChildren<MenuRenderProps>, React.ComponentType<React.PropsWithChildren<MenuRenderProps>>>, props: MenuRenderProps, instance?: React.Component<MenuRenderProps>) => void;
+
+function globToRegExp(glob: string) {
+    let out = "^";
+
+    for (let i = 0; i < glob.length; i++) {
+        const c = glob[i];
+
+        if (c === "*") {
+            out += ".*";
+            continue;
+        }
+
+        // escape regex metacharacters
+        if ("\\^$+?.()|{}[]".includes(c)) {
+            out += "\\";
+        }
+
+        out += c;
+    }
+
+    out += "$";
+    return new RegExp(out);
+}
+
+const nodePatcher = new NodePatcher();
+
 class MenuPatcher {
     static MAX_PATCH_ITERATIONS = 10;
-    static patches = {};
-    static subPatches = new WeakMap();
+
+    static patches: {
+        named: Record<string, Set<PatchCallback>>,
+        regex: Array<{regex: RegExp, patches: Set<PatchCallback>;}>;
+    } = {
+            named: {},
+            regex: []
+        };
+
+    static handleRender<T extends React.ComponentType<MenuRenderProps>>(Component: T): T {
+        const fNode = {type: Component} as MenuRenderNode;
+
+        nodePatcher.patch(fNode, (props, node, instance) => {
+            if (React.isValidElement(node)) {
+                if ((node.props as any).navId) {
+                    MenuPatcher.runPatches((node.props as any).navId, node as MenuRenderNode, props, instance);
+                }
+                else if (node.type && typeof node.type !== "string") {
+                    MenuPatcher.patchRecursive(node as MenuRenderNode);
+                }
+            }
+
+            return node;
+        });
+
+        return fNode.type as T;
+    }
 
     static initialize() {
-        if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
+        if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successful, aborting initialization.");
 
-        const {module, key} = (() => {
-            const foundModule = getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
-            const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
-
-            return {module: foundModule, key: foundKey};
-        })();
-
-        Patcher.before("ContextMenuPatcher", module, key, (_, methodArguments) => {
-            const promise = methodArguments[1];
-            methodArguments[1] = async function (...args: any[]) {
-                const render = await promise.apply(this, args);
-
-                return props => {
-                    const res = render(props);
-
-                    if (res?.props.navId) {
-                        MenuPatcher.runPatches(res.props.navId, res, props);
-                    }
-                    else if (typeof res?.type === "function") {
-                        MenuPatcher.patchRecursive(res, "type");
-                    }
-
-                    return res;
-                };
-            };
+        DiscordModules.Dispatcher.addInterceptor<{type: "CONTEXT_MENU_OPEN", contextMenu: ContextMenuObject;}>((event) => {
+            if (event.type === "CONTEXT_MENU_OPEN") {
+                if (event.contextMenu.renderLazy) {
+                    const renderLazy = event.contextMenu.renderLazy;
+                    event.contextMenu.renderLazy = async () => {
+                        const render = await renderLazy();
+                        return this.handleRender(render);
+                    };
+                }
+                else {
+                    event.contextMenu.render = this.handleRender(event.contextMenu.render!);
+                }
+            }
         });
     }
 
-    static patchRecursive(target, method, iteration = 0) {
+    static patchRecursive(target: MenuRenderNode, iteration = 0) {
         if (iteration >= this.MAX_PATCH_ITERATIONS) return;
+        const depth = ++iteration;
 
-        const proxyFunction = this.subPatches.get(target[method]) ?? (() => {
-            const originalFunction = target[method];
-            const depth = ++iteration;
-            function patch(...args: any[]) {
-                const res = originalFunction.apply(this, args);
+        nodePatcher.patch(target, (props, res, instance) => {
+            if (React.isValidElement(res)) {
+                const nodeProps = res.props as any;
 
-                if (!res) return res;
-
-                if (res.props?.navId ?? res.props?.children?.props?.navId) {
-                    MenuPatcher.runPatches(res.props.navId ?? res.props?.children?.props?.navId, res, args[0]);
+                if (nodeProps?.navId ?? nodeProps?.children?.props?.navId) {
+                    MenuPatcher.runPatches(nodeProps.navId ?? nodeProps?.children?.props?.navId, res as any, props, instance);
                 }
                 else {
-                    const layer = res.props.children ? res.props.children : res;
+                    const layer = nodeProps?.children ? nodeProps.children : res;
 
-                    if (typeof layer?.type == "function") {
-                        MenuPatcher.patchRecursive(layer, "type", depth);
+                    if (layer?.type && typeof layer.type !== "string") {
+                        MenuPatcher.patchRecursive(layer, depth);
                     }
                 }
-
-                return res;
             }
 
-            patch._originalFunction = originalFunction;
-            Object.assign(patch, originalFunction);
-            this.subPatches.set(originalFunction, patch);
-
-            return patch;
-        })();
-
-        target[method] = proxyFunction;
+            return res;
+        });
     }
 
-    static runPatches(id, res, props) {
-        if (!this.patches[id]) return;
-
-        for (const patch of this.patches[id]) {
-            try {
-                patch(res, props);
+    static runPatches(id: string, res: MenuRenderNode, props: MenuRenderProps, instance?: React.Component<MenuRenderProps>) {
+        if (this.patches.named[id]) {
+            for (const patch of this.patches.named[id]) {
+                try {
+                    patch(res, props, instance);
+                }
+                catch (error) {
+                    Logger.error("ContextMenu~runPatches", `Could not run ${id} patch for`, patch, error);
+                }
             }
-            catch (error) {
-                Logger.error("ContextMenu~runPatches", `Could not run ${id} patch for`, patch, error);
+        }
+
+        for (const element of this.patches.regex) {
+            if (!element.regex.test(id)) continue;
+
+            for (const patch of element.patches) {
+                try {
+                    patch(res, props, instance);
+                }
+                catch (error) {
+                    Logger.error("ContextMenu~runPatches", `Could not run ${id} patch for`, patch, error);
+                }
             }
         }
     }
 
-    static patch(id, callback) {
-        this.patches[id] ??= new Set();
-        this.patches[id].add(callback);
+    static patch(id: string | RegExp, callback: PatchCallback) {
+        if (typeof id === "string" && id.includes("*")) {
+            id = globToRegExp(id);
+        }
+
+        if (typeof id === "object") {
+            const index = this.patches.regex.findIndex(patch => patch.regex.flags === id.flags && patch.regex.source === id.source);
+
+            if (index !== -1) {
+                this.patches.regex[index].patches.add(callback);
+            }
+            else {
+                this.patches.regex.push({
+                    regex: id,
+                    patches: new Set([callback])
+                });
+            }
+
+            return;
+        }
+
+        this.patches.named[id] ??= new Set();
+        this.patches.named[id].add(callback);
     }
 
-    static unpatch(id, callback) {
-        this.patches[id]?.delete(callback);
+    static unpatch(id: string | RegExp, callback: PatchCallback) {
+        if (typeof id === "string" && id.includes("*")) {
+            id = globToRegExp(id);
+        }
+
+        if (typeof id === "object") {
+            const index = this.patches.regex.findIndex(patch => patch.regex.flags === id.flags && patch.regex.source === id.source);
+
+            if (index !== -1) {
+                this.patches.regex[index].patches.delete(callback);
+
+                if (this.patches.regex[index].patches.size === 0) {
+                    this.patches.regex.splice(index, 1);
+                }
+            }
+
+            return;
+        }
+
+        this.patches.named[id]?.delete(callback);
+        if (this.patches.named[id]?.size === 0) {
+            delete this.patches.named[id];
+        }
     }
 }
 
@@ -210,11 +318,11 @@ class ContextMenu {
     /**
      * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.
      *
-     * @param {string} navId Discord's internal `navId` used to identify context menus
+     * @param {string | RegExp} navId Discord's internal `navId` used to identify context menus
      * @param {function} callback Callback function that accepts the React render tree
      * @returns {function} A function that automatically unpatches
      */
-    patch(navId, callback) {
+    patch(navId: string | RegExp, callback: PatchCallback) {
         MenuPatcher.patch(navId, callback);
 
         return () => MenuPatcher.unpatch(navId, callback);
@@ -223,10 +331,10 @@ class ContextMenu {
     /**
      * Allows you to remove the patch added to a given context menu.
      *
-     * @param {string} navId The original `navId` from patching
+     * @param {string | RegExp} navId The original `navId` from patching
      * @param {function} callback The original callback from patching
      */
-    unpatch(navId, callback) {
+    unpatch(navId: string | RegExp, callback: PatchCallback) {
         MenuPatcher.unpatch(navId, callback);
     }
 
@@ -282,9 +390,9 @@ class ContextMenu {
             const [active, doToggle] = React.useState(props.checked || false);
             const originalAction = props.action;
             props.checked = active;
-            props.action = function (ev) {
+            props.action = function (ev: React.MouseEvent) {
                 originalAction(ev);
-                doToggle(!active);
+                if (!ev.defaultPrevented) doToggle(!active);
             };
         }
 
@@ -369,7 +477,7 @@ class ContextMenu {
      * @param {string} [config.align="top"] Default alignment for the menu, options: "bottom", "top"
      * @param {function} [config.onClose] Function to run when the menu is closed
      */
-    open(event, menuComponent, config) {
+    open(event: MouseEvent, menuComponent: React.ComponentType<MenuRenderProps>, config?: MenuConfig) {
         return ContextMenuActions.openContextMenu(event, function (e) {
             return React.createElement(menuComponent, Object.assign({}, e, {onClose: ContextMenuActions.closeContextMenu}));
         }, config);
@@ -379,9 +487,16 @@ class ContextMenu {
      * Closes the current opened context menu immediately.
      */
     close() {ContextMenuActions.closeContextMenu();}
+
+    Separator = MenuComponents.Separator;
+    CheckboxItem = MenuComponents.CheckboxItem;
+    RadioItem = MenuComponents.RadioItem;
+    ControlItem = MenuComponents.ControlItem;
+    Group = MenuComponents.Group;
+    Item = MenuComponents.Item;
+    Menu = MenuComponents.Menu;
 }
 
-Object.assign(ContextMenu.prototype, MenuComponents);
 Object.freeze(ContextMenu);
 Object.freeze(ContextMenu.prototype);
 
@@ -391,5 +506,14 @@ try {
 catch (error) {
     Logger.error("ContextMenu~Patcher", "Fatal error:", error);
 }
+
+try {
+    // Remove that annoying console warn spam
+    Object.defineProperty(document, "ownerDocument", {
+        value: document
+    });
+}
+// eslint-disable-next-line no-empty
+catch {}
 
 export default ContextMenu;

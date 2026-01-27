@@ -2,6 +2,18 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.6
+
+### Fixed
+- Fixed BetterDiscord not appearing in the `Settings Cog` context menu (right click menu)
+- Fixed `Version Info` strings in settings not appearing
+- Native titlebar matches Linux now
+
+### Improvements
+- Allow context menu toggle to be preventDefaulted
+- ContextMenu API Rework
+- Rewrite Native Fetch
+
 1.13.5
 
 ### Added
