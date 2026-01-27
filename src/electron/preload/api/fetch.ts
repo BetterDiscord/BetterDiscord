@@ -1,167 +1,128 @@
-import * as https from "https";
-import * as http from "http";
+import https from "https";
+import http from "http";
+import {hydrateReadableStream, dryReadableStream, type DriedRequest, type DriedResponse} from "@common/native-fetch";
 
-const MAX_DEFAULT_REDIRECTS = 20;
 const redirectCodes = new Set([301, 302, 307, 308]);
+const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
-/**
- * @typedef {Object} FetchOptions
- * @property {"GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"} [method] - Request method.
- * @property {Record<string, string>} [headers] - Request headers.
- * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
- * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
- * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
- * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable.
- * @property {number} [timeout] - Request timeout time.
- */
+export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init}: DriedRequest) {
+    const {promise, resolve, reject} = Promise.withResolvers<DriedResponse>();
 
-interface FetchOptions {
-    method: "GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE";
-    headers: Record<string, string>;
-    redirect: "manual" | "follow";
-    maxRedirects: number;
-    signal: AbortSignal;
-    body: Uint8Array | string;
-    timeout: number;
-}
+    const maxRedirects = init.maxRedirects ?? 20;
 
-interface FetchData {
-    content: Buffer[] | Buffer;
-    headers?: Record<string, any>;
-    statusCode?: number;
-    url: string;
-    statusText?: string;
-    redirected: boolean;
-}
+    const body = dryBody ? hydrateReadableStream(dryBody) : null;
 
-/**
- * @param {string} requestedUrl
- * @param {FetchOptions} fetchOptions
- */
-export function nativeFetch(requestedUrl: string, fetchOptions: Partial<FetchOptions>) {
-    let state = "PENDING";
-    const data: FetchData = {content: [], headers: undefined, statusCode: undefined, url: requestedUrl, statusText: "", redirected: false};
-    const finishListeners = new Set<() => void>();
-    const errorListeners = new Set<(e: Error) => void>();
+    let redirectCount = 0;
 
-    /** * @param {URL} url */
-    const execute = (url: URL, options: https.RequestOptions & Partial<FetchOptions>, redirectCount = 0) => {
-        const Module = url.protocol === "http:" ? http : https;
+    function out(uri: string, res: http.IncomingMessage): DriedResponse {
+        const status = res.statusCode ?? 0;
 
-        const req = Module.request(url.href, {
-            headers: options.headers ?? {},
-            method: options.method ?? "GET",
-            timeout: options.timeout ?? 3000
-        }, res => {
-            if (redirectCodes.has(res.statusCode ?? 0) && res.headers.location && options.redirect !== "manual") {
-                redirectCount++;
+        let stream: ReadableStream | null = null;
 
-                if (redirectCount >= (options.maxRedirects ?? MAX_DEFAULT_REDIRECTS)) {
-                    state = "ABORTED";
-                    const error = new Error(`Maximum amount of redirects reached (${options.maxRedirects ?? MAX_DEFAULT_REDIRECTS})`);
-                    errorListeners.forEach(e => e(error));
-
-                    return;
-                }
-
-                let final;
-                try {
-                    final = new URL(res.headers.location);
-                }
-                catch (error) {
-                    state = "ABORTED";
-                    errorListeners.forEach(e => e(error as Error));
-                    return;
-                }
-
-                for (const [key, value] of new URL(url).searchParams.entries()) {
-                    final.searchParams.set(key, value);
-                }
-
-                return execute(final, options, redirectCount);
-            }
-
-            res.on("data", (chunk: Buffer) => (data.content as Buffer[]).push(chunk));
-            res.on("end", () => {
-                data.content = Buffer.concat(data.content as Buffer[]);
-                data.headers = res.headers;
-                data.statusCode = res.statusCode;
-                data.url = url.toString();
-                data.statusText = res.statusMessage;
-                data.redirected = redirectCount > 0;
-                state = "DONE";
-
-                finishListeners.forEach(listener => listener());
-            });
-            res.on("error", error => {
-                state = "ABORTED";
-                errorListeners.forEach(e => e(error));
-            });
-        });
-
-        req.on("timeout", () => {
-            const error = new Error("Request timed out");
-            req.destroy(error);
-        });
-
-        req.on("error", error => {
-            state = "ABORTED";
-            errorListeners.forEach(e => e(error));
-        });
-
-        if (options.body) {
-            try {req.write(options.body);}
-            catch (error) {
-                state = "ABORTED";
-                errorListeners.forEach(e => e(error as Error));
-            }
-            finally {
-                req.end();
-            }
-        }
-        else {
-            req.end();
-        }
-
-        if (options.signal) {
-            options.signal.addEventListener("abort", () => {
-                req.end();
-                state = "ABORTED";
+        if (!bodylessStatusCodes.has(status)) {
+            stream = new ReadableStream({
+                start(controller) {
+                    res.on("data", (data) => controller.enqueue(data));
+                    res.on("error", (err) => controller.error(err));
+                    res.once("end", () => controller.close());
+                },
+                type: "bytes"
             });
         }
-    };
 
-    /**
-     * Obviously parsing a URL may throw an error, but this is
-     * actually intended here. The caller should handle this
-     * gracefully.
-     *
-     * Reasoning: at this point the caller does not have a
-     * reference to the object below so they have no way of
-     * listening to the error through onError.
-     */
-    const parsed = new URL(requestedUrl, location.href);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-        throw new Error(`Unsupported protocol: ${parsed.protocol}`);
+        return {
+            body: stream ? dryReadableStream(stream) : null,
+            url: uri,
+            headers: res.headers as Record<string, string>,
+            status: status,
+            statusText: res.statusMessage || "",
+            redirected: redirectCount !== 0
+        };
     }
-    execute(parsed, fetchOptions);
 
-    return {
-        onComplete(listener: () => void) {
-            finishListeners.add(listener);
-        },
-        onError(listener: (e: Error) => void) {
-            errorListeners.add(listener);
-        },
-        readData() {
-            switch (state) {
-                case "PENDING":
-                    throw new Error("Cannot read data before request is done!");
-                case "ABORTED":
-                    throw new Error("Request was aborted.");
-                case "DONE":
-                    return data;
+    // If null or infinite no timeout | undefined or finite then timeout
+    const timeout = ((t) => init.timeout === null && !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
+
+    async function execute(uri: string) {
+        const httpModule = uri.startsWith("http:") ? http : uri.startsWith("https:") ? https : null;
+        if (!httpModule) {
+            reject(new Error(`Unsupported protocol: ${uri.slice(0, uri.indexOf(":"))}:`));
+            return;
+        }
+
+        const request = httpModule.request(uri, {
+            headers: init.headers,
+            method: init.method,
+            timeout,
+            rejectUnauthorized: init.rejectUnauthorized
+        }, (res) => {
+            if (redirectCodes.has(res.statusCode!)) {
+                if (init.redirect === "error") {
+                    request.destroy(new Error("Failed to fetch"));
+                    return;
+                }
+                if (init.redirect === "manual") {
+                    resolve(out(uri, res));
+                    return;
+                }
+                if (redirectCount >= maxRedirects) {
+                    reject(new Error(`Maximum amount of redirects reached (${maxRedirects})`));
+                    return;
+                }
+
+                if (res.headers.location) {
+                    let final;
+                    try {
+                        final = new URL(res.headers.location);
+                    }
+                    catch (error) {
+                        reject(error);
+                        return;
+                    }
+
+                    for (const [key, value] of new URL(uri).searchParams) {
+                        final.searchParams.set(key, value);
+                    }
+
+                    redirectCount++;
+
+                    return execute(final.href);
+                }
+            }
+
+            resolve(out(uri, res));
+        });
+
+        request.shouldKeepAlive = init.keepalive;
+
+        if (dryAbortSignal) {
+            const undo = dryAbortSignal.addListener(() => {
+                request.destroy(dryAbortSignal.reason() || new Error("Request was aborted"));
+            });
+
+            request.once("close", () => undo());
+        }
+
+        request.once("timeout", () => request.destroy(new Error("Request timed out")));
+
+        request.once("error", (err) => reject(err));
+
+        if (body) {
+            try {
+                for await (const value of body) {
+                    request.write(value);
+                }
+
+                request.end();
+            }
+            catch (error) {
+                request.destroy(error as Error);
             }
         }
-    };
+        else {request.end();}
+    }
+
+    execute(url);
+
+    return promise;
 }
