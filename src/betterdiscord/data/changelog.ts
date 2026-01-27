@@ -14,25 +14,19 @@ export default {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed BdApi.Net.fetch not handling relative urls properly.",
-                "BetterDiscord now properly checks for addon updates periodically.",
-                "BetterDiscord now loads up correctly.",
+                "Fixed BetterDiscord not appearing in the `Settings Cog` context menu (right click menu)",
+                "Fixed `Version Info` strings in settings not appearing",
+                "Native titlebar matches Linux now",
             ]
         },
         {
             title: "Improvements",
             type: "improved",
             items: [
-                "Tweaked styles for InstallCSS.",
-                "BetterDiscord's Dropdown Component was rewrote.",
+                "Allow context menu toggle to be preventDefaulted",
+                "ContextMenu API Rework",
+                "Rewrite Native Fetch"
             ]
-        },
-        {
-            title: "Additions",
-            type: "added",
-            items: [
-                "Added `data-speaking` attribute to VoiceUser in ThemeAttributes"
-            ]
-        },
+        }
     ]
 } as ChangelogProps;
