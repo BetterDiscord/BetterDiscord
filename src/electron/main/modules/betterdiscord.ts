@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import electron, {BrowserWindow} from "electron";
+import electron, {BrowserWindow, globalShortcut} from "electron";
 import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
@@ -89,6 +89,8 @@ export default class BetterDiscord {
 
         // When DOM is available, pass the renderer over the wall
         browserWindow.webContents.on("dom-ready", () => {
+            globalShortcut.unregisterAll(); // Unregister all global shortcuts to prevent conflicts on crash or reload
+
             // Temporary fix for new canary/ptb changes
             if (!hasCrashed) return setTimeout(() => this.injectRenderer(browserWindow), 1000);
 

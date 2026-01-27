@@ -10,6 +10,7 @@ import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
 import Modals from "@ui/modals";
 import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import keybindsmanager from "@modules/keybindsmanager";
 import NotificationUIInstance from "@ui/notifications";
 import config from "@stores/config";
 import {Logo} from "@ui/logo";
@@ -233,6 +234,10 @@ export default new class Recovery extends Builtin {
                         }] : [])
                     ]
                 });
+            }
+            else {
+                keybindsmanager.unregisterAll();
+                Toasts.show("All keybinds have been unregistered to prevent conflicts on reload.");
             }
 
             buttons.className = clsx(buttons.className, "bd-recovery-buttons");
