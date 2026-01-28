@@ -10,7 +10,7 @@ let startupComplete = false;
 // TODO: actually do the typing
 // https://github.com/doggybootsy/vx/blob/main/packages/mod/src/betterdiscord/context-menu.tsx
 // https://github.com/doggybootsy/vx/blob/main/packages/mod/src/api/menu/components.ts
-const ModulesBundle = getByKeys(["MenuItem", "Menu"]);
+const ModulesBundle = getByKeys(["MenuItem", "Menu"], {cacheId: "core-contextmenu-ModulesBundle"});
 const MenuComponents = {
     Separator: ModulesBundle?.MenuSeparator,
     CheckboxItem: ModulesBundle?.MenuCheckboxItem,
@@ -76,7 +76,11 @@ if (!startupComplete) {
         MenuComponents.Item ??= contextMenuComponents[matchB[matchB[2] === "customitem" ? 1 : 3]];
     }
 
-    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
+    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {
+        searchExports: true,
+        firstId: 397927,
+        cacheId: "core-contextmenu-menu"
+    });
 }
 
 startupComplete = Object.values(MenuComponents).every(v => v);
@@ -88,7 +92,7 @@ const ContextMenuActions = (() => {
         Object.assign(out, getMangled(Filters.bySource("new DOMRect", "CONTEXT_MENU_CLOSE"), {
             closeContextMenu: Filters.byStrings("CONTEXT_MENU_CLOSE"),
             openContextMenu: Filters.byStrings("renderLazy")
-        }, {searchDefault: false}));
+        }, {searchDefault: false, cacheId: "core-contextmenu-Actions"}));
 
         startupComplete &&= typeof (out.closeContextMenu) === "function" && typeof (out.openContextMenu) === "function";
     }

@@ -2,7 +2,7 @@ import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import {Filters, getByKeys, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "discord/modules";
 import type {Channel, Guild} from "discord/structs";
 
@@ -95,8 +95,8 @@ export interface Command {
 }
 
 const iconClasses = {
-    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {firstId: 60090, cacheId: "core-commandmanager-iconClasses"}),
+    builtInSeparator: getModule<any>(x => x.builtInSeparator, {firstId: 681755, cacheId: "core-commandmanager-builtInSeparatorClasses"})?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
@@ -122,10 +122,10 @@ class CommandManager {
         isBD?: boolean;
     }>();
 
-    static User = getByStrings<any>(["hasHadPremium(){"]);
-    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true});
-    static MessagesModule = getModule<any>(x => x.receiveMessage);
-    static IconsModule = getModule<any>(x => x.BOT_AVATARS);
+    static User = getByStrings<any>(["hasHadPremium(){"], {firstId: 427157, cacheId: "core-commandmanager-user"});
+    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true, firstId: 963852, cacheId: "core-commandmanager-createBotMessage"});
+    static MessagesModule = getByKeys<any>(["receiveMessage"], {firstId: 843472, cacheId: "core-commandmanager-messages"});
+    static IconsModule = getByKeys<any>(["BOT_AVATARS"], {firstId: 820883, cacheId: "core-commandmanager-icons"});
     static localBDBot: any;
 
     static initialize() {
@@ -133,12 +133,6 @@ class CommandManager {
     }
 
     static #patchCommandSystem() {
-
-        this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
-        this.MessagesModule = getModule(x => x.receiveMessage);
-        this.IconsModule = getModule(x => x.BOT_AVATARS);
-
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
             id: "676620914632294467",
@@ -187,7 +181,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {firstId: 264322, cacheId: "core-commandmanager-indexstore"});
 
         Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -245,7 +239,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
+            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {firstId: 826298, cacheId: "core-commandmanager-appIcons"})
         });
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
@@ -317,7 +311,10 @@ class CommandManager {
     }
 
     static #patchAuthorizer() {
-        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
+        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {
+            firstId: 972995,
+            cacheId: "core-commandmanager-authorizer"
+        });
 
         Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {
