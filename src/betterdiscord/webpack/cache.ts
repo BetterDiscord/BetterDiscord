@@ -70,7 +70,7 @@ export default class WebpackCache {
 
         // find the earliest plugin to be in the call stack
         for (const match of matches) {
-            if (match[1] != prev) {
+            if (match[1] !== prev) {
                 prev = match[1];
                 plugin = match[1];
             }
