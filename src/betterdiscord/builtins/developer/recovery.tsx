@@ -20,8 +20,10 @@ const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
 // TODO: arven if you get a chance
 async function attemptRecovery() {
-    const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true, cacheId: "core-recovery-transitionTo"});
-    const modalModule = getMangled(`,["contextKey"]),`, {CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")}, {cacheId: "core-recovery-modal"});
+    const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
+    const modalModule = getMangled(`,["contextKey"]),`, {
+        CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")
+    }, {firstId: 192308, cacheId: "core-recovery-modal"});
 
     const recoverySteps = [
         {
@@ -199,7 +201,7 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = getByPrototypes(["_handleSubmitReport"], {cacheId: "core-recovery-ErrorBoundary"});
+        const mod = getByPrototypes(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;

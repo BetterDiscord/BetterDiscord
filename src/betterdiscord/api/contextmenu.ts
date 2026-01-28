@@ -1,4 +1,4 @@
-import {Filters, getByKeys, getMangled, webpackRequire} from "@webpack";
+import {Filters, getByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
@@ -76,7 +76,11 @@ if (!startupComplete) {
         MenuComponents.Item ??= contextMenuComponents[matchB[matchB[2] === "customitem" ? 1 : 3]];
     }
 
-    MenuComponents.Menu ??= DiscordModules.ContextMenuComponent;
+    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {
+        searchExports: true,
+        firstId: 397927,
+        cacheId: "core-contextmenu-menu"
+    });
 }
 
 startupComplete = Object.values(MenuComponents).every(v => v);

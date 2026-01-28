@@ -19,7 +19,7 @@ class InstallCSS {
 
     static initialize() {
         const patch = (getModule(m => m.defaultRules && m.parse) as SimpleMarkdown).defaultRules.codeBlock as Required<Rule>;
-        const codeBlockStyles: any = getByKeys(["codeActions"]);
+        const codeBlockStyles: any = getByKeys(["codeActions"], {firstId: 206314, cacheId: "core-mdinstallcss-codeBlockStyles"});
         if (!patch.react || typeof patch.react !== "function") return;
 
         Patcher.after("InstallCSS", patch, "react", (_, [args]: [{content?: string; lang?: string;}, any, any], child) => {

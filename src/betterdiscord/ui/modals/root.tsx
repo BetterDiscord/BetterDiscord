@@ -2,10 +2,11 @@ import clsx from "clsx";
 import React from "@modules/react";
 import type {PropsWithChildren} from "react";
 import DiscordModules from "@modules/discordmodules";
+import {getByKeys, getModule} from "@webpack";
 
 
 // TODO: rewrite these types properly
-const Anims: any = DiscordModules.Anims;
+const Anims: any = getByKeys(["Easing"], {firstId: 615300, cacheId: "core-modalroot-anims"});
 
 
 export const Sizes = Object.freeze({
@@ -21,7 +22,11 @@ export const Styles = Object.freeze({
 });
 
 
-const FocusLock: any = DiscordModules.FocusLock ?? React.Fragment;
+const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {
+    searchExports: true,
+    firstId: 305866,
+    cacheId: "core-modalroot-focuslock"
+}) ?? React.Fragment;
 
 type RootProps = PropsWithChildren<{
     className?: string;

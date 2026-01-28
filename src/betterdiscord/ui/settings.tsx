@@ -1,7 +1,7 @@
 import React, {ReactDOM} from "@modules/react";
 import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
+import {Filters, getByKeys, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -25,7 +25,7 @@ import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
 
-const UserSettings = DiscordModules.UserSettings;
+const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface Section {
     section: string;

@@ -2,10 +2,9 @@ import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import {Filters, getByKeys, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "discord/modules";
 import type {Channel, Guild} from "discord/structs";
-import DiscordModules from "./discordmodules";
 
 // TODO: create better types for this file, too many "any"
 
@@ -96,8 +95,8 @@ export interface Command {
 }
 
 const iconClasses = {
-    ...DiscordModules.iconClasses,
-    builtInSeparator: DiscordModules.builtInSeperatorClasses?.builtInSeparator
+    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {firstId: 60090, cacheId: "core-commandmanager-iconClasses"}),
+    builtInSeparator: getModule<any>(x => x.builtInSeparator, {firstId: 681755, cacheId: "core-commandmanager-builtInSearatorClasses"})?.builtInSeparator
 };
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
@@ -123,10 +122,10 @@ class CommandManager {
         isBD?: boolean;
     }>();
 
-    static User = DiscordModules.User;
-    static createBotMessage = DiscordModules.createBotMessage;
-    static MessagesModule = DiscordModules.Messages;
-    static IconsModule = DiscordModules.Icons;
+    static User = getByStrings<any>(["hasHadPremium(){"], {firstId: 427157, cacheId: "core-commandmanager-user"});
+    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true, firstId: 963852, cacheId: "core-commandmanager-createBotMessage"});
+    static MessagesModule = getByKeys<any>(["receiveMessage"], {firstId: 843472, cacheId: "core-commandmanager-messages"});
+    static IconsModule = getByKeys<any>(["BOT_AVATARS"], {firstId: 820883, cacheId: "core-commandmanager-icons"});
     static localBDBot: any;
 
     static initialize() {
@@ -182,9 +181,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {
-            target: DiscordModules.IndexStore
-        });
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {firstId: 264322, cacheId: "core-commandmanager-indexstore"});
 
         Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -315,7 +312,8 @@ class CommandManager {
 
     static #patchAuthorizer() {
         const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {
-            target: DiscordModules.Authorizer
+            firstId: 972995,
+            cacheId: "core-commandmanager-authorizer"
         });
 
         Patcher.instead("CommandManager", module, key, (that, args: any, original) => {

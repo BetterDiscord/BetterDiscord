@@ -1,7 +1,9 @@
 import Builtin from "@structs/builtin";
-import {getLazyBySource} from "@webpack";
+import {getByStrings, getLazyBySource, getModule} from "@webpack";
 import {findInTree} from "@common/utils";
-import DiscordModules from "@modules/discordmodules";
+
+const TabBarComponent = getByStrings(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
+const UserProfileComponent = getModule((m) => m.render?.toString?.().includes("pendingThemeColors"), {firstId: 946356, cacheId: "core-themeattributes-UserProfile"});
 
 export default new class ThemeAttributes extends Builtin {
     get name() {return "ThemeAttributes";}
@@ -21,10 +23,10 @@ export default new class ThemeAttributes extends Builtin {
             li["data-author-username"] = author?.username;
             li["data-is-self"] = !!author.email;
         });
-        this.after(DiscordModules.TabBarComponent?.Item?.prototype, "render", (thisObject, args, returnValue) => {
+        this.after(TabBarComponent?.Item?.prototype, "render", (thisObject, args, returnValue) => {
             returnValue.props["data-tab-id"] = thisObject?.props?.id;
         });
-        this.after(DiscordModules.UserProfileComponent, "render", (thisObject, [{user}], returnValue) => {
+        this.after(UserProfileComponent, "render", (thisObject, [{user}], returnValue) => {
             returnValue.props["data-member-id"] = user.id;
             returnValue.props["data-is-self"] = !!user.email;
         });

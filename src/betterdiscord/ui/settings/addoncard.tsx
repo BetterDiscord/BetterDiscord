@@ -16,7 +16,7 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {Addon} from "@modules/addonmanager";
 import type {MouseEvent, ReactNode} from "react";
-import type AddonManager from "@modules/addonmanager";  
+import type AddonManager from "@modules/addonmanager";
 
 const {useCallback, useMemo} = React;
 
@@ -48,10 +48,17 @@ const LayerManager = {
     }
 };
 
-const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser"]);
-const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"]);
-const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"]);
-const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"]);
+const UserStore = getByKeys<{getCurrentUser(): {id: string;};}>(["getCurrentUser"], {firstId: 287809, cacheId: "core-addoncard-UserStore"});
+const ChannelStore = getByKeys<{getDMFromUserId(id: string): string;}>(["getDMFromUserId"], {firstId: 734057, cacheId: "core-addoncard-ChannelStore"});
+const PrivateChannelActions = getByKeys<{openPrivateChannel(me: string, them: string): void;}>(["openPrivateChannel"], {
+    firstId: 308528,
+    cacheId: "core-addoncard-PrivateChannelActions"
+});
+const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["selectPrivateChannel"], {
+    searchExports: true,
+    firstId: 956793,
+    cacheId: "core-addoncard-ChannelActions"
+});
 const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value?.toString?.() || "";
 
 function makeButton(title: string, children: ReactNode, action?: () => void, {isControl = false, danger = false, disabled = false} = {}) {
