@@ -75,6 +75,7 @@ const SyncModules = getBulkKeyed<Modules>({
     },
     Dispatcher: {
         filter: Filters.byKeys(["dispatch", "subscribe", "register"]),
+        searchExports: true,
         firstId: 570140,
         cacheId: "core-Dispatcher"
     },

@@ -495,10 +495,10 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazyByStrings<{Z(): void;}>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
-        if (!versionDisplayModule?.Z) return;
+        const versionDisplayModule = await getLazyByStrings<{A(): void;}>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
+        if (!versionDisplayModule?.A) return;
 
-        Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
+        Patcher.after("SettingsManager", versionDisplayModule, "A", () => {
             return React.createElement(VersionInfo);
         });
     }

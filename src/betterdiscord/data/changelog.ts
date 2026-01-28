@@ -14,9 +14,19 @@ export default {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed styles breaking in certain areas.",
-                "Fixed theme attributes from causing a bunch of lag."
+                "Fixed BetterDiscord not appearing in the `Settings Cog` context menu (right click menu)",
+                "Fixed `Version Info` strings in settings not appearing",
+                "Native titlebar matches Linux now",
             ]
         },
+        {
+            title: "Improvements",
+            type: "improved",
+            items: [
+                "Allow context menu toggle to be preventDefaulted",
+                "ContextMenu API Rework",
+                "Rewrite Native Fetch"
+            ]
+        }
     ]
 } as ChangelogProps;

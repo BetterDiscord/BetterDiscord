@@ -75,7 +75,7 @@ const DefaultSettings = [
         settings: [
             {type: "switch", id: "transparency", value: false},
             {type: "switch", id: "removeMinimumSize", value: false},
-            {type: "switch", id: "frame", value: process.platform === "linux"},
+            {type: "switch", id: "frame", value: false},
             // MacOS exclusive
             {type: "switch", id: "inAppTrafficLights", value: false, disabled: process.env.BETTERDISCORD_NATIVE_FRAME === "true", hidden: process.platform !== "darwin"}
         ]

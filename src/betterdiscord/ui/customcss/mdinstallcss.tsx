@@ -1,23 +1,25 @@
 import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
+import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";
 import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
+import {getModule, getByKeys} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
 import Modals from "@ui/modals.js";
 import {findInTree} from "@common/utils";
-import type {Rule} from "discord/modules";
-import DiscordModules from "@modules/discordmodules";
+import type {Rule, SimpleMarkdown} from "discord/modules";
 
 
 class InstallCSS {
     static activeNotifications = new Map();
 
     static initialize() {
-        const patch = DiscordModules.SimpleMarkdownWrapper.defaultRules.codeBlock as Required<Rule>;
+        const patch = (getModule(m => m.defaultRules && m.parse) as SimpleMarkdown).defaultRules.codeBlock as Required<Rule>;
+        const codeBlockStyles: any = getByKeys(["codeActions"]);
         if (!patch.react || typeof patch.react !== "function") return;
 
         Patcher.after("InstallCSS", patch, "react", (_, [args]: [{content?: string; lang?: string;}, any, any], child) => {
@@ -61,6 +63,14 @@ class InstallCSS {
                 />
             ];
         });
+
+        DOMManager.injectStyle("bd-installcss",
+            `.${codeBlockStyles.markup} .${codeBlockStyles.codeContainer}:hover .${codeBlockStyles.codeActions} {
+                display: flex;
+                flex-direction: row-reverse;
+                gap: 8px;
+            }`
+        );
     }
 
     static handleCSSInstall(cssBlock: string) {

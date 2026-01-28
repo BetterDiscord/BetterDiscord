@@ -2,7 +2,7 @@ import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getModule, getStore, getWithKey, modules} from "@webpack";
+import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "discord/modules";
 import type {Channel, Guild} from "discord/structs";
 import DiscordModules from "./discordmodules";
@@ -152,7 +152,9 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        Patcher.after("CommandManager", DiscordModules.Sidebar, "Z", (_, [props]: [{sections: any[];}], res: any) => {
+        const SidebarModule = getByStrings<{A(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+
+        Patcher.after("CommandManager", SidebarModule!, "A", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
 
             const child = res.props.children;

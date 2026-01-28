@@ -58,11 +58,6 @@
   opacity: 0.5;
 }
 
-.bd-select:hover,
-.bd-select.menu-open {
-  border-color: var(--input-border-default);
-}
-
 .bd-select.bd-select-transparent {
   align-items: flex-start;
   background: none;
@@ -70,47 +65,38 @@
   padding: 0;
 }
 
-.bd-select-transparent .bd-select-value {
-  padding-left: 8px;
-}
-
 .bd-select-arrow {
   margin-left: 10px;
   color: var(--interactive-text-default);
 }
 
-.bd-select .bd-select-options {
-  position: absolute;
+.bd-select-options {
+  position: fixed;
+  inset-block-start: anchor(end);
+  inset-inline-start: anchor(start);
   background: var(--background-surface-higher);
+  font-family: var(--font-primary);
   color: var(--text-default);
   border-radius: var(--radius-sm);
   max-height: 300px;
-  min-width: calc(100% + 2px);
-  overflow-y: auto;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 1px 5px 0;
+  min-width: anchor-size(width);
+  margin-top: 4px;
+  overflow: auto hidden;
   border: 1px solid var(--input-border-default);
-  margin-top: 8px;
-  margin-left: -12px;
-  z-index: 2;
-  top: 100%;
 }
 
-.bd-select-transparent .bd-select-options {
-  margin-left: -6px;
-}
-
-.bd-select .bd-select-option {
+.bd-select-option {
   padding: 8px 12px;
   cursor: pointer;
   white-space: pre;
 }
 
-.bd-select .bd-select-option:hover {
+.bd-select-option:hover {
   background: var(--interactive-background-hover);
   color: var(--interactive-text-hover);
 }
 
-.bd-select .bd-select-option.selected {
+.bd-select-option.selected {
   background: var(--interactive-background-selected);
   color: var(--interactive-text-active);
 }
@@ -196,7 +182,7 @@
 
 .bd-settings-group.collapsible .bd-settings-title::before {
   content: "";
-  background-color: var(--app-border-frame);
+  background-color: var(--app-frame-border);
   height: 2px;
   order: 2;
   flex: 1;

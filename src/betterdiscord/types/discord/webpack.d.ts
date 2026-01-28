@@ -49,5 +49,5 @@ export type ModuleWithoutEffect = [
     Record<PropertyKey, RawModule>
 ];
 
-export type DefaultKey = "default" | "Z" | "ZP";
+export type DefaultKey = "default" | "A" | "Ay";
 // }
