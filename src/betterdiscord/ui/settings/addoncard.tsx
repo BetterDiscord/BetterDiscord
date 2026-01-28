@@ -14,9 +14,8 @@ import Modals from "@ui/modals";
 
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 import {getByKeys} from "@webpack";
-import type {Addon} from "@modules/addonmanager";
 import type {MouseEvent, ReactNode} from "react";
-import type AddonManager from "@modules/addonmanager";
+import type {default as AddonManager, Addon} from "@modules/addonmanager";
 
 const {useCallback, useMemo} = React;
 
