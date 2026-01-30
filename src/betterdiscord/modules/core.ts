@@ -27,7 +27,7 @@ import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
-import {getStore} from "@webpack";
+import {getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
 
 export default new class Core {
@@ -112,7 +112,7 @@ export default new class Core {
 
     waitForConnection() {
         return new Promise<void>(done => {
-            if (DiscordModules.UserStore?.getCurrentUser()) return done();
+            if (Stores.UserStore?.getCurrentUser()) return done();
             DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", done);
         });
     }

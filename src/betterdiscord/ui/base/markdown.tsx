@@ -1,6 +1,5 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import {getModule} from "@webpack";
 import type {Rules, SimpleMarkdown} from "discord/modules";
 import type {ComponentClass, PropsWithChildren} from "react";
 
@@ -8,7 +7,7 @@ import type {ComponentClass, PropsWithChildren} from "react";
 let DiscordMarkdown: ComponentClass<PropsWithChildren<{className: string; parser: ReturnType<SimpleMarkdown["parserFor"]>; output: ReturnType<SimpleMarkdown["reactFor"]>;}>> & {rules: Rules;}, rules: Rules;
 
 function setupMarkdown() {
-    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules)!;
+    DiscordMarkdown = DiscordModules.DiscordMarkdown;
     rules = {} as Rules;
     if (DiscordMarkdown) {
         rules = {

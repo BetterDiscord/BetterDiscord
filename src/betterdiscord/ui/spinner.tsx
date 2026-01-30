@@ -1,10 +1,9 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getModule} from "@webpack";
-import {type Context} from "react";
+import DiscordModules from "@modules/discordmodules";
 
 
-const AccessibilityContext = getModule<Context<{reducedMotion: {enabled: false;};}>>(m => m?._currentValue?.reducedMotion, {searchExports: true}) || React.createContext({
+const AccessibilityContext = DiscordModules.AccessibilityContext || React.createContext({
     reducedMotion: {enabled: false}
 });
 

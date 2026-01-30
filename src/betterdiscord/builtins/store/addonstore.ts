@@ -11,8 +11,9 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getLazy, getLazyBySource, getModule, getWithKey} from "@webpack";
+import {Filters, getLazy, getLazyBySource, getWithKey} from "@webpack";
 import {findInTree} from "@common/utils";
+import DiscordModules from "@modules/discordmodules";
 
 
 let MessageAccessories;
@@ -161,7 +162,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
         let protocols: string[] = [];
 
-        const link = getModule<any>(m => m.html && m.requiredFirstCharacters?.[0] === "[")!;
+        const link = DiscordModules.LinkParser;
 
         const includes = Array.prototype.includes;
         Array.prototype.includes = function (...args) {
