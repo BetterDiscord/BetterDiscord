@@ -3,14 +3,22 @@ import fs from "fs";
 import path from "path";
 import * as IPCEvents from "@common/constants/ipcevents";
 
-// Build info file only exists for non-linux (for current injection)
-let dataPath = "";
-if (process.platform === "win32" || process.platform === "darwin") dataPath = path.join(electron.ipcRenderer.sendSync(IPCEvents.GET_PATH, "userData"), "..");
-else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"); // This will help with snap packages eventually
-dataPath = path.join(dataPath, "BetterDiscord") + "/";
+// Windows and macOS both use the fixed global BetterDiscord folder but
+// Electron gives the postfixed version of userData, so go up a directory
+let userConfig = path.join(electron.ipcRenderer.sendSync(IPCEvents.GET_PATH, "userData"), "..");
+
+// If we're on Linux there are a couple cases to deal with
+if (process.platform !== "win32" && process.platform !== "darwin") {
+    // Use || instead of ?? because a falsey value of "" is invalid per XDG spec
+    userConfig = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME!, ".config");
+
+    // HOST_XDG_CONFIG_HOME is set by flatpak, so use without validation if set
+    if (process.env.HOST_XDG_CONFIG_HOME) userConfig = process.env.HOST_XDG_CONFIG_HOME;
+}
+
+const dataPath = path.join(userConfig, "BetterDiscord") + "/";
 
 const query = new URLSearchParams(location.search);
-
 const type = query.get("type")!;
 const filename = query.get("filename")!;
 
