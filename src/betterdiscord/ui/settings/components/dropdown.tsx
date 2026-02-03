@@ -74,6 +74,7 @@ export default function Select({value: initialValue, options, style, onChange, d
                 popover="auto"
                 role="listbox"
                 className="bd-select-options"
+                className="bd-select-options bd-scroller-thin"
             >
                 {options.map(opt =>
                     <li
