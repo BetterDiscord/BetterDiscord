@@ -1,6 +1,6 @@
 import React from "@modules/react";
-import clsx from "clsx";
 import {none, SettingsContext} from "@ui/contexts";
+import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
 
 const {useState, useCallback, useContext, useEffect, useRef} = React;
@@ -51,7 +51,7 @@ export default function Select({value: initialValue, options, style, onChange, d
         });
         observer.observe(selectButton);
 
-        const onToggle = (event: any) => {
+        const onToggle = (event: ToggleEvent) => {
             if (event.newState === "open") {
                 const selectedOption = optionsPopover.querySelector(".selected");
                 if (selectedOption) selectedOption.scrollIntoView({block: "center"});
