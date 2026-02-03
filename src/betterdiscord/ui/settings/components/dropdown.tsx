@@ -51,8 +51,18 @@ export default function Select({value: initialValue, options, style, onChange, d
         });
         observer.observe(selectButton);
 
+        const onToggle = (event: any) => {
+            if (event.newState === "open") {
+                const selectedOption = optionsPopover.querySelector(".selected");
+                if (selectedOption) selectedOption.scrollIntoView({block: "center"});
+            }
+        };
+
+        optionsPopover.addEventListener("toggle", onToggle);
+
         return () => {
             if (selectButton) observer.unobserve(selectButton);
+            optionsPopover.removeEventListener("toggle", onToggle);
         };
     }, []);
 
@@ -73,7 +83,6 @@ export default function Select({value: initialValue, options, style, onChange, d
                 ref={optionsRef}
                 popover="auto"
                 role="listbox"
-                className="bd-select-options"
                 className="bd-select-options bd-scroller-thin"
             >
                 {options.map(opt =>
