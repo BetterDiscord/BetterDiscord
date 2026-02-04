@@ -2,7 +2,6 @@ import React from "@modules/react";
 import {none, SettingsContext} from "@ui/contexts";
 import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
-import type {ToggleEventHandler} from "react";
 
 const {useState, useCallback, useContext, useEffect, useRef} = React;
 
@@ -23,6 +22,7 @@ export interface SelectProps {
 
 export default function Select({value: initialValue, options, style, onChange, disabled}: SelectProps) {
     const [internalValue, setValue] = useState(initialValue ?? options[0].value);
+    const [isOpen, setIsOpen] = useState(false);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = contextValue !== none ? contextValue : internalValue;
@@ -57,12 +57,14 @@ export default function Select({value: initialValue, options, style, onChange, d
         };
     }, []);
 
-    const scrollToSelected: ToggleEventHandler<HTMLUListElement> = (event) => {
-        if (event.newState === "open") {
+    useEffect(() => {
+        if (isOpen) {
             const selectedOption = optionsRef.current?.querySelector(".selected");
-            if (selectedOption) selectedOption.scrollIntoView({block: "center", behavior: "instant"});
+            if (selectedOption) {
+                selectedOption.scrollIntoView({block: "center", behavior: "instant"});
+            }
         }
-    };
+    }, [isOpen]);
 
     // ?? options[0] provides a double failsafe
     const selected = options.find(o => o.value == value) ?? options[0];
@@ -79,7 +81,7 @@ export default function Select({value: initialValue, options, style, onChange, d
             </button>
             <ul
                 ref={optionsRef}
-                onToggle={scrollToSelected}
+                onToggle={(e) => setIsOpen(e.newState === "open")}
                 popover="auto"
                 role="listbox"
                 className="bd-select-options bd-scroller-thin"
