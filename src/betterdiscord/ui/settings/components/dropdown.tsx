@@ -3,7 +3,7 @@ import {none, SettingsContext} from "@ui/contexts";
 import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
 
-const {useState, useCallback, useContext, useEffect, useRef} = React;
+const {useState, useCallback, useContext, useEffect, useLayoutEffect, useRef} = React;
 
 
 export interface SelectOption {
@@ -29,7 +29,8 @@ export default function Select({value: initialValue, options, style, onChange, d
     const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const selectRef = useRef<HTMLButtonElement>(null);
-    const optionsRef = React.useRef<HTMLUListElement>(null);
+    const optionsRef = useRef<HTMLUListElement>(null);
+    const selectedRef = useRef<HTMLLIElement>(null);
 
     const change = useCallback((val: any) => {
         onChange?.(val);
@@ -57,12 +58,9 @@ export default function Select({value: initialValue, options, style, onChange, d
         };
     }, []);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isOpen) {
-            const selectedOption = optionsRef.current?.querySelector(".selected");
-            if (selectedOption) {
-                selectedOption.scrollIntoView({block: "center", behavior: "instant"});
-            }
+            selectedRef.current?.scrollIntoView({block: "center", behavior: "instant"});
         }
     }, [isOpen]);
 
@@ -88,6 +86,7 @@ export default function Select({value: initialValue, options, style, onChange, d
             >
                 {options.map(opt =>
                     <li
+                        ref={selected.value == opt.value ? selectedRef : null}
                         className={clsx("bd-select-option", selected.value == opt.value && "selected")}
                         role="option"
                         onClick={() => change(opt.value)}
