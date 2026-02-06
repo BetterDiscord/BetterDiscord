@@ -104,7 +104,6 @@ function TagDropdown({type, selected, onChange}) {
                 popover="auto"
                 role="listbox"
                 className="bd-select-options"
-                onClick={(e) => e.stopPropagation()}
             >
                 {tags.map((tag, index) => {
                     const isSelected = selectedTags.includes(tag);
