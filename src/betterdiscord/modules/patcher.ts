@@ -124,7 +124,9 @@ function createHook<
     K extends KeysMatching<M>,
     T extends M[K]
 >(module: M, key: K, forcePatch: boolean): Hook<T> | null {
-    let original: T = module?.[key];
+    if (!module) return null;
+
+    let original: T = module[key];
     if (!original && forcePatch) {
         original = (() => {}) as T;
     }
@@ -183,10 +185,10 @@ function createHook<
                         const nextPatch = insteadPatches[index + 1];
 
                         if (typeof nextPatch === "function") {
-                            return patch.callback(this, args, createReplacer(original, (_target, thisArg, args) => nextPatch.apply(thisArg, args)));
+                            return patch.callback(this, args, createReplacer(original, (_target, that, argsList) => nextPatch.apply(that, argsList)));
                         }
 
-                        return patch.callback(this, args, original);
+                        return patch.callback(this, args, createReplacer(original, (t, that = thisArg, argsList) => t.apply(that, argsList)));
                     }
                     catch (err) {
                         Logger.err("Patcher", `Could not fire instead callback ${patch.options.displayName} for ${patch.callerName}`, err);
