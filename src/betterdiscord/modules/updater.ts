@@ -272,6 +272,7 @@ export class AddonUpdater {
 
     async updateCache() {
         this.cache = {};
+        this.pending.length = 0;
         const addonData = (await getJSON(Web.store[(this.type + "s") as keyof typeof Web.store] as string)) as BdWebAddon[];
         addonData.reduce(reducer, this.cache as Record<string, never>);
     }
