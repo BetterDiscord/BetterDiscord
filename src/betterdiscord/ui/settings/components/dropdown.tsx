@@ -1,9 +1,9 @@
 import React from "@modules/react";
-import clsx from "clsx";
 import {none, SettingsContext} from "@ui/contexts";
+import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
 
-const {useState, useCallback, useContext, useEffect, useRef} = React;
+const {useState, useCallback, useContext, useEffect, useLayoutEffect, useRef} = React;
 
 
 export interface SelectOption {
@@ -22,13 +22,15 @@ export interface SelectProps {
 
 export default function Select({value: initialValue, options, style, onChange, disabled}: SelectProps) {
     const [internalValue, setValue] = useState(initialValue ?? options[0].value);
+    const [isOpen, setIsOpen] = useState(false);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = contextValue !== none ? contextValue : internalValue;
     const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
     const selectRef = useRef<HTMLButtonElement>(null);
-    const optionsRef = React.useRef<HTMLUListElement>(null);
+    const optionsRef = useRef<HTMLUListElement>(null);
+    const selectedRef = useRef<HTMLLIElement>(null);
 
     const change = useCallback((val: any) => {
         onChange?.(val);
@@ -56,6 +58,12 @@ export default function Select({value: initialValue, options, style, onChange, d
         };
     }, []);
 
+    useLayoutEffect(() => {
+        if (isOpen) {
+            selectedRef.current?.scrollIntoView({block: "center", behavior: "instant"});
+        }
+    }, [isOpen]);
+
     // ?? options[0] provides a double failsafe
     const selected = options.find(o => o.value == value) ?? options[0];
     return (
@@ -71,12 +79,14 @@ export default function Select({value: initialValue, options, style, onChange, d
             </button>
             <ul
                 ref={optionsRef}
+                onToggle={(e) => setIsOpen(e.newState === "open")}
                 popover="auto"
                 role="listbox"
-                className="bd-select-options"
+                className="bd-select-options bd-scroller-thin"
             >
                 {options.map(opt =>
                     <li
+                        ref={selected.value == opt.value ? selectedRef : null}
                         className={clsx("bd-select-option", selected.value == opt.value && "selected")}
                         role="option"
                         onClick={() => change(opt.value)}

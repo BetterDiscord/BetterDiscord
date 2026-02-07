@@ -11,21 +11,27 @@ export default {
     blurb: "Hotfix to squash some bugs.",
     changes: [
         {
+            title: "New Features",
+            type: "new",
+            items: [
+                "New Webpack cache system for faster loading times; you will see much faster loading times after the first launch with this update.",
+            ]
+        },
+        {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed BetterDiscord not appearing in the `Settings Cog` context menu (right click menu)",
-                "Fixed `Version Info` strings in settings not appearing",
-                "Native titlebar matches Linux now",
+                "Fixed `tags` button appearing behind other elements in the Addon Store",
+                "Fixed downloading addons via the addon store",
+                "Fixed dropdowns with lots of options not allowing you to scroll through all of the options",
+                "Minor UI fixes",
             ]
         },
         {
             title: "Improvements",
             type: "improved",
             items: [
-                "Allow context menu toggle to be preventDefaulted",
-                "ContextMenu API Rework",
-                "Rewrite Native Fetch"
+                "Dropdowns now automatically scroll to the selected option when opened",
             ]
         }
     ]

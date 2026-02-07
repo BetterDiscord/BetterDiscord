@@ -2,6 +2,19 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.7
+### Added
+- New Webpack cache system for faster loading times; you will see much faster loading times after the first launch with this update.
+
+### Fixed
+- Fixed `tags` button appearing behind other elements in the Addon Store
+- Fixed downloading addons via the addon store
+- Fixed dropdowns with lots of options not allowing you to scroll through all of the options
+- Minor UI fixes
+
+### Improvements
+- Dropdowns now automatically scroll to the selected option when opened
+
 1.13.6
 
 ### Fixed

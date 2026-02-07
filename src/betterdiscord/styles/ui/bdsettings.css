@@ -81,7 +81,7 @@
   max-height: 300px;
   min-width: anchor-size(width);
   margin-top: 4px;
-  overflow: auto hidden;
+  overflow: auto scroll;
   border: 1px solid var(--input-border-default);
 }
 
