@@ -1,9 +1,9 @@
 import React from "@modules/react";
 import {none, SettingsContext} from "@ui/contexts";
+import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
-import type {MouseEvent} from "react";
 
-const {useState, useCallback, useContext} = React;
+const {useState, useCallback, useContext, useEffect, useLayoutEffect, useRef} = React;
 
 
 export interface SelectOption {
@@ -13,7 +13,7 @@ export interface SelectOption {
 }
 
 export interface SelectProps {
-    value: any;
+    value?: any;
     options: SelectOption[];
     style?: "transparent" | "default";
     onChange?(newValue: any): void;
@@ -22,50 +22,79 @@ export interface SelectProps {
 
 export default function Select({value: initialValue, options, style, onChange, disabled}: SelectProps) {
     const [internalValue, setValue] = useState(initialValue ?? options[0].value);
+    const [isOpen, setIsOpen] = useState(false);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
     const value = contextValue !== none ? contextValue : internalValue;
     const isDisabled = contextValue !== none ? contextDisabled : disabled;
+
+    const selectRef = useRef<HTMLButtonElement>(null);
+    const optionsRef = useRef<HTMLUListElement>(null);
+    const selectedRef = useRef<HTMLLIElement>(null);
 
     const change = useCallback((val: any) => {
         onChange?.(val);
         setValue(val);
     }, [onChange]);
 
+    useEffect(() => {
+        const selectButton = selectRef.current;
+        const optionsPopover = optionsRef.current;
 
-    const hideMenu = useCallback(() => {
-        setOpen(false);
-        document.removeEventListener("click", hideMenu);
+        if (!selectButton || !optionsPopover) return;
+
+        selectButton.popoverTargetElement = optionsPopover;
+        selectButton.popoverTargetAction = "toggle";
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) {
+                optionsPopover.togglePopover(false);
+            }
+        });
+        observer.observe(selectButton);
+
+        return () => {
+            if (selectButton) observer.unobserve(selectButton);
+        };
     }, []);
 
-    const [open, setOpen] = useState(false);
-    const showMenu = useCallback((event: MouseEvent) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (isDisabled) return;
-
-        const next = !open;
-        setOpen(next);
-        if (!next) return;
-        document.addEventListener("click", hideMenu);
-    }, [hideMenu, open, isDisabled]);
-
+    useLayoutEffect(() => {
+        if (isOpen) {
+            selectedRef.current?.scrollIntoView({block: "center", behavior: "instant"});
+        }
+    }, [isOpen]);
 
     // ?? options[0] provides a double failsafe
     const selected = options.find(o => o.value == value) ?? options[0];
-    const optionComponents = <div className="bd-select-options">
-        {options.map(opt =>
-            <div className={`bd-select-option${selected.value == opt.value ? " selected" : ""}`} onClick={() => change(opt.value)}>{opt.label}</div>
-        )}
-    </div>;
-
-    const styleClass = style == "transparent" ? " bd-select-transparent" : "";
-    const isOpen = open ? " menu-open" : "";
-    const disabledClass = isDisabled ? " bd-select-disabled" : "";
-    return <div className={`bd-select${styleClass}${isOpen}${disabledClass}`} onClick={showMenu}>
-        <div className="bd-select-value">{selected.label}</div>
-        <ChevronDown size="16px" className="bd-select-arrow" />
-        {open && optionComponents}
-    </div>;
+    return (
+        <>
+            <button
+                ref={selectRef}
+                type="button"
+                className={clsx("bd-select", isDisabled && "bd-select-disabled", style == "transparent" && "bd-select-transparent")}
+                disabled={isDisabled}
+            >
+                <span className="bd-select-value">{selected.label}</span>
+                <ChevronDown size="16px" className="bd-select-arrow" />
+            </button>
+            <ul
+                ref={optionsRef}
+                onToggle={(e) => setIsOpen(e.newState === "open")}
+                popover="auto"
+                role="listbox"
+                className="bd-select-options bd-scroller-thin"
+            >
+                {options.map(opt =>
+                    <li
+                        ref={selected.value == opt.value ? selectedRef : null}
+                        className={clsx("bd-select-option", selected.value == opt.value && "selected")}
+                        role="option"
+                        onClick={() => change(opt.value)}
+                    >
+                        {opt.label}
+                    </li>
+                )}
+            </ul>
+        </>
+    );
 }

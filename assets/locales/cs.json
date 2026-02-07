@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} od {{author}}",
         "byline": "od {{author}}",
-        "openFolder": "Otevřít složku {{type}}",
         "reload": "Znovu načíst",
         "addonSettings": "Nastavení",
         "website": "Web",
@@ -158,7 +157,6 @@
         "version": "Verze",
         "added": "Datum přidání",
         "modified": "Datum upravení",
-        "search": "Hledat {{type}}",
         "editAddon": "Upravit",
         "deleteAddon": "Odstranit",
         "confirmDelete": "Opravdu chceš odstranit {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "Nepodařilo se spustit metodu {{method}}.",
         "unknownAuthor": "Neznámý autor",
         "noDescription": "Bez popisu.",
-        "alreadyExists": "Již existuje {{type}} s názvem {{name}}",
-        "alreadWatching": "Již sledujete doplňky.",
         "metaError": "META být nemohl parsován.",
         "missingNameData": "META chybějící údaje názvu.",
         "metaNotFound": "META nebyl nalezen.",
         "compileError": "Nepodařilo se zkompilovat.",
         "wasUnloaded": "Doplněk {{name}} byl odnačten.",
-        "blankSlateHeader": "Nemáš žádné doplňky typu {{type}}!",
-        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky.",
         "isEnabled": "Povoleno",
         "wasLoaded": "Doplněk {{name}} v{{version}} byl načten."
     },
@@ -211,10 +205,6 @@
         "additionalInfo": "Dodatečné informace",
         "restartPrompt": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
     },
-    "ReactDevTools": {
-        "notFound": "Rozšíření nenalezeno",
-        "notFoundDetails": "Nepodařilo se nalézt rozšíření React Developer Tools na tvém počítači. Nainstaluj si prosím rozšíření na své lokální Chrome instalaci."
-    },
     "Sorting": {
         "sortBy": "Seřadit podle",
         "order": "Pořadí",
@@ -225,15 +215,11 @@
         "enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
         "disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
     },
-    "Notices": {
-        "moreInfo": "Více informací"
-    },
     "Updater": {
         "updateFailed": "Aktualizace selhala!",
         "updateFailedMessage": "Aktualizace BettterDiscordu se nezdařila. Stáhněte si prosím nejnovější verzi instalátoru z našeho webu (https://betterdiscord.app) a přeinstalujte jej.",
         "updateSuccessful": "Aktualizace byla úspěšná!",
         "updateAvailable": "BetterDiscord má novou aktualizaci (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord nalezl aktualizace {{count}} vašich doplňků typu {{type}}!",
         "addonUpdated": "Doplněk {{name}} byl aktualizován na verzi {{version}}!",
         "checking": "Kontrola aktualizací!",
         "finishedChecking": "Kontrola aktualizací dokončena!",
@@ -241,7 +227,6 @@
         "updateAll": "Aktualizovat vše!",
         "noUpdatesAvailable": "Nejsou dostupné žádné aktualizace.",
         "versionAvailable": "Je dostupná verze {{version}}!",
-        "upToDateBlankslate": "Všechny vaše doplňky typu {{type}} jsou aktuální!",
         "updateButton": "Aktualizovat!"
     }
 }

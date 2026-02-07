@@ -5,18 +5,22 @@ import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
 import Settings from "@stores/settings";
+import Toasts from "@stores/toasts";
 import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
+import {getByPrototypes, getByStrings} from "@webpack";
+import NotificationUIInstance from "@ui/notifications";
+import config from "@stores/config";
+import {Logo} from "@ui/logo";
+import clsx from "clsx";
 
 const Dispatcher = DiscordModules.Dispatcher;
+const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
 // TODO: arven if you get a chance
 async function attemptRecovery() {
-    const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true});
-    const modalModule = getMangled(`,["contextKey"]),`, {CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")});
+    const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
 
     const recoverySteps = [
         {
@@ -32,7 +36,7 @@ async function attemptRecovery() {
             errorMessage: "Failed to route to main channel"
         },
         {
-            action: () => modalModule?.CloseAllModals(),
+            action: () => Modals.ModalActions?.closeAllModals?.(),
             errorMessage: "Failed to close all modals"
         }
     ];
@@ -171,7 +175,6 @@ export default new class Recovery extends Builtin {
 
     async enabled() {
         this.patchErrorBoundry();
-        this.parseModule = getByKeys(["defaultRules", "parse"]);
     }
 
     async disabled() {
@@ -195,7 +198,7 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = getByPrototypes(["_handleSubmitReport"]);
+        const mod = getByPrototypes(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
@@ -204,18 +207,33 @@ export default new class Recovery extends Builtin {
             if (!buttons) return;
 
             const errorStack = instance.state;
-            const parsedError = errorStack ? this.parseModule.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
+            const parsedError = errorStack ? DiscordModules.SimpleMarkdownWrapper.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
-            const foundIssue = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/.exec(errorStack.error?.stack);
+            const foundIssue = TEST_PLUGIN_REGEX.exec(errorStack.error?.stack);
             let pluginInfo = null;
 
             if (foundIssue) {
                 const pluginName = `${foundIssue[2]}.plugin.js`;
                 pluginInfo = this.getPluginInfo(pluginName);
                 pluginmanager.disableAddon(foundIssue[2]);
-                Toasts.show(`Plugin ${pluginName} has been disabled to prevent crashes. Please report this issue to the developer.`);
+                NotificationUIInstance.show({
+                    id: "plugin-crash",
+                    title: t("Addons.disabled", {name: pluginName}),
+                    content: t("Modals.addonCrashed"),
+                    duration: Infinity,
+                    type: "info",
+                    icon: () => <Logo size={16} accent />,
+                    actions: [
+                        ...(config.isCanary ? [{
+                            label: "Re-enable",
+                            onClick: () => pluginmanager.enableAddon(foundIssue[2]),
+                            dontClose: true,
+                        }] : [])
+                    ]
+                });
             }
 
+            buttons.className = clsx(buttons.className, "bd-recovery-buttons");
             buttons.children.push(
                 <Button
                     className="bd-button-recovery"
@@ -230,9 +248,15 @@ export default new class Recovery extends Builtin {
                     }}
                 >
                     {t("Collections.settings.developer.recovery.button")}
-                </Button>,
-                parsedError && <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
+                </Button>
             );
+
+            if (parsedError) {
+                retValue.props.action = [
+                    retValue?.props?.action,
+                    <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
+                ];
+            }
         });
     }
 };

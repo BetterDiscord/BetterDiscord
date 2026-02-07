@@ -16,6 +16,7 @@ const {useCallback, useMemo, useState, useEffect, useContext, createContext} = R
 export const TagContext = createContext();
 
 function formatNumberWithSuffix(value) {
+    value = Number(value);
     if (value === 0) return "0";
 
     const suffixes = ["", "k", "M", "B", "T"];
@@ -78,8 +79,8 @@ export default function AddonCard({addon, isEmbed}) {
     }, [addon]);
 
     const {downloads, likes} = useMemo(() => ({
-        downloads: t("Addons.downloadCount", {count: formatNumberWithSuffix(downloadCount)}),
-        likes: t("Addons.likeCount", {count: formatNumberWithSuffix(addon.likes)}),
+        downloads: t("Addons.downloadCount", {count: downloadCount}, {count: formatNumberWithSuffix}),
+        likes: t("Addons.likeCount", {count: addon.likes}, {count: formatNumberWithSuffix}),
     }), [addon, downloadCount]);
 
     return (

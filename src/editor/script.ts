@@ -127,9 +127,9 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
     }
 
     tabSize.textContent = `${options.insertSpaces ? "Spaces" : "Tabs"}: ${options.tabSize}`;
-    window.Editor.settings.subscribe(({options, liveUpdate: newLiveUpdate}) => {
-        editor.updateOptions(options);
-        tabSize.textContent = `${options.insertSpaces ? "Spaces" : "Tabs"}: ${options.tabSize}`;
+    window.Editor.settings.subscribe(({options: newOptions, liveUpdate: newLiveUpdate}) => {
+        editor.updateOptions(newOptions);
+        tabSize.textContent = `${newOptions.insertSpaces ? "Spaces" : "Tabs"}: ${newOptions.tabSize}`;
 
         liveUpdateNode.checked = liveUpdate = newLiveUpdate;
         if (window.Editor.type === "custom-css" && liveUpdate) {

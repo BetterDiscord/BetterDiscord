@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} de {{author}}",
         "byline": "de {{author}}",
-        "openFolder": "Deschide fișierul {{type}}",
         "reload": "Reîmprospatează",
         "addonSettings": "Setări",
         "website": "Site Web",
@@ -121,7 +120,6 @@
         "version": "Versiune",
         "added": "Data adăugării",
         "modified": "Data modificării",
-        "search": "Caută {{type}}",
         "editAddon": "Modifică",
         "deleteAddon": "Șterge",
         "confirmDelete": "Ești sigur că vrei să ștergi {{name}} ?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} nu a putut fi executat.",
         "unknownAuthor": "Autor necunoscut",
         "noDescription": "Fără descriere.",
-        "alreadyExists": "Deja există un {{type}} cu numele {{name}}",
-        "alreadWatching": "Deja te uiti la addon-uri.",
         "metaError": "META nu a putut fi analizat.",
         "missingNameData": "META nu are un nume.",
         "metaNotFound": "META nu a putut fi găsit.",
         "compileError": "Nu s-a putut incărca.",
-        "wasUnloaded": "{{name}} a fost dezactivat.",
-        "blankSlateHeader": "Nu ai nici un {{type}}!",
-        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
+        "wasUnloaded": "{{name}} a fost dezactivat."
     },
     "CustomCSS": {
         "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
@@ -171,10 +165,6 @@
         "restartLater": "Reîncarcă mai târziu",
         "additionalInfo": "Informații adiționale",
         "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensia nu a putut fi găsită",
-        "notFoundDetails": "Nu s-au putut găsi extensia React Developer Tools in calculatorul tău. Te rugăm să instalezi extensia în cadrul Chrome."
     },
     "Sorting": {
         "sortBy": "Sortează După",

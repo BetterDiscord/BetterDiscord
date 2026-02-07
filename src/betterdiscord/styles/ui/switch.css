@@ -19,11 +19,11 @@
 }
 
 .bd-switch input:active + .bd-switch-body {
-    --switch-color: rgba(100, 137, 126);
+    --switch-color: var(--bd-brand);
 }
 
 .bd-switch input:checked + .bd-switch-body {
-    --switch-color: rgb(67, 181, 129);
+    --switch-color: var(--bd-brand);
     --symbol1path: path('M7.89561 14.8538L6.30462 13.2629L14.3099 5.25755L15.9009 6.84854L7.89561 14.8538Z');
     --symbol2path: path('M4.08643 11.0903L5.67742 9.49929L9.4485 13.2704L7.85751 14.8614L4.08643 11.0903Z');
 }
@@ -34,7 +34,7 @@
 }
 
 .bd-switch input:checked:active + .bd-switch-body {
-    --switch-color: rgba(81, 162, 128);
+    --switch-color: var(--bd-brand);
 }
 
 .full-motion .bd-switch input:checked:active + .bd-switch-body {

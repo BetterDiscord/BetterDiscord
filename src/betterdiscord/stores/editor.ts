@@ -51,7 +51,7 @@ export default new class EditorStore extends Store {
             discordTheme: Stores.ThemeStore?.theme || "dark"
         });
 
-        this.emit();
+        this.emitChange();
     }
 
     getEditorOptions() {

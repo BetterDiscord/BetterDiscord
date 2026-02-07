@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} от {{author}}",
         "byline": "от {{author}}",
-        "openFolder": "Открыть папку {{type}}",
         "reload": "Перезагрузить",
         "addonSettings": "Настройки",
         "website": "Сайт",
@@ -158,7 +157,6 @@
         "version": "Версия",
         "added": "Дата добавления",
         "modified": "Дата изменения",
-        "search": "Искать {{type}}",
         "editAddon": "Редактировать",
         "deleteAddon": "Удалить",
         "confirmDelete": "Вы уверены, что хотите удалить {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}} не может быть уволен.",
         "unknownAuthor": "Неизвестный автор",
         "noDescription": "Нету описания.",
-        "alreadyExists": "{{type}} уже существует с именем {{name}}",
-        "alreadWatching": "Уже слежу за дополнениями.",
         "metaError": "Не удалось проанализировать метаданные.",
         "missingNameData": "В метаданных отсутствуют данные об имени.",
         "metaNotFound": "Метаданные не найдены.",
         "compileError": "Не удалось скомпилировать. Посмотрите в консоле для дополнительной информации.",
         "wasUnloaded": "{{name}} был выгружен.",
-        "blankSlateHeader": "У вас нету {{type}}",
-        "blankSlateMessage": "Возьмите что-то с [этого сайта]({{link}}) и добавьте их в свою папку {{type}}.",
         "isEnabled": "Включено",
         "wasLoaded": "{{name}} v{{version}} был загружен."
     },
@@ -211,10 +205,6 @@
         "additionalInfo": "Дополнительная информация",
         "restartPrompt": "Чтобы изменения вступили в силу, необходимо перезапустить Discord. Перезапустить сейчас?"
     },
-    "ReactDevTools": {
-        "notFound": "Расширение не найдено",
-        "notFoundDetails": "Не удалось найти расширение React Developer Tools на вашем ПК. Пожалуйста, установите расширение в локальную установку Chrome."
-    },
     "Sorting": {
         "sortBy": "Сортировать по",
         "order": "Порядок",
@@ -225,15 +215,11 @@
         "enabledInfo": "Для правильной работы этой опции требуется прозрачная тема.  В Windows это может нарушить вашу aero snapping и максимизацию.\n\n\n\nЧтобы изменения вступили в силу, необходимо перезапустить Discord.  Вы хотите перезапустить сейчас?",
         "disabledInfo": "Чтобы изменения вступили в силу, необходимо перезапустить Discord.  Вы хотите перезапустить сейчас?"
     },
-    "Notices": {
-        "moreInfo": "Дополнительная информация"
-    },
     "Updater": {
         "updateFailed": "Ошибка обновления",
         "updateFailedMessage": "Не удалось обновить BetterDiscord. Пожалуйста скачайте последнюю версию загрузчика с нашего сайта (https://betterdiscord.app/) и переустановите программу.",
         "updateSuccessful": "Обновление успешно!",
         "updateAvailable": "BetterDiscord имеет обновление (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord нашел обновления для {{count}} ваших {{type}}!",
         "addonUpdated": "{{name}} был обновлен до версии {{version}}",
         "checking": "Проверить обновления!",
         "finishedChecking": "Проверка обновлений завершена!",
@@ -241,7 +227,6 @@
         "updateAll": "Обновить всё!",
         "noUpdatesAvailable": "Нету доступных обновлений.",
         "versionAvailable": "Версия {{version}} доступна!",
-        "upToDateBlankslate": "Все {{type}} обновлены.",
         "updateButton": "Обновить!"
     }
 }

@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
-        "openFolder": "{{type}} 폴더 열기",
         "reload": "리로드",
         "addonSettings": "설정",
         "website": "웹사이트",
@@ -158,7 +157,6 @@
         "version": "버전",
         "added": "추가된 날짜",
         "modified": "수정된 날짜",
-        "search": "{{type}} 검색",
         "editAddon": "수정",
         "deleteAddon": "삭제",
         "confirmDelete": "{{name}}(을)를 삭제하시겠습니까?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}}(을)를 실행할 수 없습니다",
         "unknownAuthor": "알 수 없는 제작자",
         "noDescription": "설명이 제공되지 않았습니다",
-        "alreadyExists": "{{type}}(은)는 이미 {{name}}으로 존재합니다",
-        "alreadWatching": "이미 애드온을 보는 중입니다",
         "metaError": "META 파싱에 실패했습니다",
         "missingNameData": "META 이름 데이터 찾을 수 없음",
         "metaNotFound": "META 찾을 수 없음",
         "compileError": "컴파일에 실패했습니다",
         "wasUnloaded": "{{name}}가 언로드되었습니다",
-        "blankSlateHeader": "{{type}}가 없습니다",
-        "blankSlateMessage": "[이 웹사이트]({{link}})에서 몇 가지를 {{type}} 폴더에 추가하세요",
         "isEnabled": "활성화됨",
         "wasLoaded": "{{name}} v{{version}} 가 로드됨."
     },
@@ -211,10 +205,6 @@
         "additionalInfo": "추가 정보",
         "restartPrompt": "적용을 위해 디스코드가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
     },
-    "ReactDevTools": {
-        "notFound": "확장 프로그램을 찾을 수 없음",
-        "notFoundDetails": "PC에서 반응 개발자 도구 확장 프로그램을 찾을 수 없습니다. 기본 Chrome 설치 위치에 확장 프로그램을 설치해주세요."
-    },
     "Sorting": {
         "sortBy": "유형: ",
         "order": "순서: ",
@@ -225,15 +215,11 @@
         "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows에서는 에어로 스내핑과 최대화가 고장날 수 있습니다.\n\n적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?",
         "disabledInfo": "적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?"
     },
-    "Notices": {
-        "moreInfo": "더 많은 정보 보기"
-    },
     "Updater": {
         "updateFailed": "업데이트가 실패했습니다!",
         "updateFailedMessage": "BetterDiscord가 업데이트에 실패했습니다. 저희 웹사이트 (https://betterdiscord.app/) 에서 설치기를 받아 재설치하십시오.",
         "updateSuccessful": "업데이트가 성공적으로 완료되었습니다!",
         "updateAvailable": "BetterDiscord에 새로운 업데이트가 있습니다 (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord가 {{.type}}의 업데이트를 {{count}}개 발견했습니다!",
         "addonUpdated": "{{name}} 이 버전 {{version}} 으로 업데이트 되었습니다!",
         "checking": "업데이트를 확인하고 있습니다!",
         "finishedChecking": "업데이트 확인을 마쳤습니다!",
@@ -241,7 +227,6 @@
         "updateAll": "모두 업데이트 되었습니다!",
         "noUpdatesAvailable": "사용 가능한 업데이트가 없습니다.",
         "versionAvailable": "버전 {{version}} 을 사용할 수 있습니다!",
-        "upToDateBlankslate": "당신의 {{type}} 는 모두 최신버전입니다!",
         "updateButton": "업데이트!"
     }
 }

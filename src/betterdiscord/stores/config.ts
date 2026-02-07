@@ -25,7 +25,7 @@ export default new class ConfigStore extends Store {
 
     set(id: keyof typeof this.data, value: string) {
         this.data[id] = value;
-        this.emit();
+        this.emitChange();
     }
 
     get isDevelopment() {return this.data.build !== "production";}

@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} {{author}} által",
         "byline": "{{author}} által",
-        "openFolder": "{{type}} mappa megnyitása",
         "reload": "Újratöltés",
         "addonSettings": "Beállítások",
         "website": "Weboldal",
@@ -158,7 +157,6 @@
         "version": "Verzió",
         "added": "Hozzáadás dátuma",
         "modified": "Módosítás dátuma",
-        "search": "Keresés {{type}}",
         "editAddon": "Szerkesztés",
         "deleteAddon": "Törlés",
         "confirmDelete": "Biztos, hogy törölni akarja ezt: {{name}}?",
@@ -173,15 +171,11 @@
         "methodError": "{{method}} nem kivehető.",
         "unknownAuthor": "Ismeretlen szerző",
         "noDescription": "Leírás nincs megadva.",
-        "alreadyExists": "Már létezik egy {{type}} {{name}} névvel",
-        "alreadWatching": "Jelenleg a kiegészítőket nézed.",
         "metaError": "Nem sikerült elemezni a META-t.",
         "missingNameData": "Hiányzik a névadat a META-ból.",
         "metaNotFound": "META nem található.",
         "compileError": "Sikertelen indítás. Részletekért lásd a konzolt.",
         "wasUnloaded": "{{name}} nem indult el.",
-        "blankSlateHeader": "Még nem rendelkezel egy ilyennel sem: {{type}}!",
-        "blankSlateMessage": "Szerezz néhányat [erről a weboldalról]({{link}}), és add őket a {{type}} mappádhoz.",
         "isEnabled": "Bekapcsolva",
         "wasLoaded": "{{name}} v{{{version}} betöltődött."
     },
@@ -211,10 +205,6 @@
         "additionalInfo": "További információk",
         "restartPrompt": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen a változtatás. Most akarod újraindítani?"
     },
-    "ReactDevTools": {
-        "notFound": "A kifejezés nem található",
-        "notFoundDetails": "Nem található a React Developer Tools bővítmény a számítógépén. Kérjük, telepítse a bővítményt a Chrome helyi telepítésébe."
-    },
     "Sorting": {
         "sortBy": "Rendezés",
         "order": "Rendezés",
@@ -225,15 +215,11 @@
         "enabledInfo": "Ez az opció átlátszó témát igényel a megfelelő működéshez. Windowson ez megszakíthatja az aero snappinget és a maximalizálást.\n\nA Discordot újra kell indítani, hogy érvénybe lépjen. Szeretnéd most újraindítani?",
         "disabledInfo": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen. Szeretnéd most újraindítani?"
     },
-    "Notices": {
-        "moreInfo": "További információ"
-    },
     "Updater": {
         "updateFailed": "A frissítés sikertelen!",
         "updateFailedMessage": "A BetterDiscord frissítése sikertelen. Kérjük, töltse le a telepítő legújabb verzióját erről a weboldalról: (https://betterdiscord.app/), majd telepítse újra.",
         "updateSuccessful": "Frissítés sikeres!",
         "updateAvailable": "Új frissítés erélhető a BetterDiscordhoz: (v{{version}})",
-        "addonUpdatesAvailable": "A BetterDiscord {{count}} frissítést talált ebben a témában: {{type}}!",
         "addonUpdated": "A {{name}} frissült {{version}} verzióra!",
         "checking": "Frissítések keresése!",
         "finishedChecking": "Frissítések ellenőrzése sikeres!",
@@ -241,7 +227,6 @@
         "updateAll": "Az összes frissítése!",
         "noUpdatesAvailable": "Nincsenek elérhető frissítések.",
         "versionAvailable": "Verziófrissítés elérhető: {{version}}!",
-        "upToDateBlankslate": "Minden {{type}} naprakész!",
         "updateButton": "Frissítés!"
     }
 }

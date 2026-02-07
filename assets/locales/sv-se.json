@@ -105,7 +105,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} av {{author}}",
         "byline": "av {{author}}",
-        "openFolder": "Öppna mappen för {{type}}",
         "reload": "Ladda om",
         "addonSettings": "Inställningar",
         "website": "Webbplats",
@@ -118,7 +117,6 @@
         "version": "Version",
         "added": "Tilläggsdatum",
         "modified": "Ändringsdatum",
-        "search": "Sök efter {{type}}",
         "editAddon": "Redigera",
         "deleteAddon": "Ta bort",
         "confirmDelete": "Är du säker på att du vill ta bort {{name}}?",
@@ -175,7 +173,6 @@
         "checkForUpdates": "Sök efter uppdateringar!",
         "updateAll": "Uppdatera alla!",
         "noUpdatesAvailable": "Det finns inga uppdateringar tillgängliga.",
-        "upToDateBlankslate": "Alla dina {{type}} verkar vara uppdaterade!",
         "updateButton": "Uppdatera!"
     }
 }

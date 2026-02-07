@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
         "byline": "autorstwa {{author}}",
-        "openFolder": "Otwórz folder ({{type}})",
         "reload": "Odśwież",
         "addonSettings": "Ustawienia",
         "website": "Strona internetowa",
@@ -174,7 +173,6 @@
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
         "alreadyExists": "Masz już dodatek z nazwą {{name}}",
-        "alreadWatching": "Dodatki są już obserwowane.",
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
         "metaNotFound": "Nie odnaleziono metadanych.",
@@ -211,10 +209,6 @@
         "additionalInfo": "Dodatkowe informacje",
         "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
     },
-    "ReactDevTools": {
-        "notFound": "Nie znaleziono rozszerzenia",
-        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuować, zainstaluj to rozszerzenie w swojej przeglądarce Chrome."
-    },
     "Sorting": {
         "sortBy": "Sortuj wg",
         "order": "Kolejność",
@@ -225,15 +219,11 @@
         "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
     },
-    "Notices": {
-        "moreInfo": "Dowiedz się więcej"
-    },
     "Updater": {
         "updateFailed": "Aktualizacja nie powiodła się!",
         "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
         "updateSuccessful": "Aktualizacja powiodła się!",
         "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
-        "addonUpdatesAvailable": "Są dostępne nowe aktualizacje dla twoich dodatków ({{count}})!",
         "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
         "checking": "Sprawdzanie dostępności aktualizacji!",
         "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",

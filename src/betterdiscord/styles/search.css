@@ -3,8 +3,8 @@
     border-radius: 3px;
     outline: none;
     border: 0;
-    background-color: var(--background-tertiary);
-    color: var(--text-muted);
+    background-color: var(--background-base-lowest);
+    color: var(--text-default);
     display: flex;
     align-items: center;
 }
@@ -13,17 +13,17 @@
     padding: 2px 3px;
     background: none;
     border: 0;
-    color: var(--text-normal);
+    color: var(--text-default);
     flex: 1;
 }
 
 .bd-search::-webkit-input-placeholder {
-    color: var(--text-muted);
+    color: var(--text-default);
 }
 
 .bd-search-wrapper > svg {
     margin-right: 2px;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
 }
 
 .bd-search-wrapper > .bd-button {
@@ -33,9 +33,9 @@
 }
 
 .bd-search-wrapper > .bd-button > svg .fill {
-    fill: var(--interactive-normal);
+    fill: var(--interactive-text-default);
 }
 
 .bd-search-wrapper > .bd-button:hover > svg .fill {
-    fill: var(--interactive-hover);
+    fill: var(--interactive-text-hover);
 }

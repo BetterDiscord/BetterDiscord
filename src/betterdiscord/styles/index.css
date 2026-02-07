@@ -68,11 +68,19 @@
     height: 1px;
     margin: 0;
     border: none;
-    border-top: thin solid var(--background-modifier-accent);
+    border-top: thin solid var(--border-subtle);
 }
 
 .bd-version-info {
-    padding: 8px 10px;
     /* text-transform: capitalize; */
     cursor: pointer;
+}
+
+.bd-settings-title-extend {
+    width: 100%;
+}
+
+.bd-settings-page-title-children {
+    margin-left: auto;
+    margin-right: 12px;
 }

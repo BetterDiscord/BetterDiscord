@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} od {{author}}",
         "byline": "od {{author}}",
-        "openFolder": "Otvoriť {{type}} Zložku",
         "reload": "Znova načítať",
         "addonSettings": "Nastavenia",
         "website": "Stránka",
@@ -121,7 +120,6 @@
         "version": "Verzia",
         "added": "Dátum pridania",
         "modified": "Dátum zmeny",
-        "search": "Hľadať {{type}}",
         "editAddon": "Upraviť",
         "deleteAddon": "Zmazať",
         "confirmDelete": "Ste si istý, že chcete zmazať {{name}}?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} nemohla byť vykonaná.",
         "unknownAuthor": "Neznámy Autor",
         "noDescription": "Bez popisu.",
-        "alreadyExists": "{{type}} s menom {{name}} už existuje",
-        "alreadWatching": "Doplnky sa už sledujú.",
         "metaError": "META sa nepodarila načítať.",
         "missingNameData": "META chýbajúce dáta názvu.",
         "metaNotFound": "META nebola nájedná.",
         "compileError": "Nepodarilo sa zostaviť.",
-        "wasUnloaded": "{{name}} bol odpojený.",
-        "blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
-        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
+        "wasUnloaded": "{{name}} bol odpojený."
     },
     "CustomCSS": {
         "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
@@ -171,10 +165,6 @@
         "restartLater": "Reštartovať Neskôr",
         "additionalInfo": "Ďalšie Info",
         "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
-    },
-    "ReactDevTools": {
-        "notFound": "Rozšírenie sa nenašlo",
-        "notFoundDetails": "Nebolo možné nájsť rozšírenie React Developer Tools na vašom PC. Prosím nainštalujte rozšírenie vo vašom prehliadači Chrome."
     },
     "Sorting": {
         "sortBy": "Triediť podľa",

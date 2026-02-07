@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} por {{author}}",
         "byline": "por {{author}}",
-        "openFolder": "Abrir Carpeta de {{type}}",
         "reload": "Recargar",
         "addonSettings": "Ajustes",
         "website": "Sitio web",
@@ -121,7 +120,6 @@
         "version": "Versión",
         "added": "Fecha de Adición",
         "modified": "Fecha de Modificación",
-        "search": "Buscar {{type}}",
         "editAddon": "Editar",
         "deleteAddon": "Eliminar",
         "confirmDelete": "¿Estás seguro de que quieres borrar {{name}}?",
@@ -136,15 +134,11 @@
         "methodError": "{{method}} no pudo ser lanzado.",
         "unknownAuthor": "Autor Desconocido",
         "noDescription": "Descripción no proporcionada.",
-        "alreadyExists": "Ya existe un {{type}} con nombre {{name}}",
-        "alreadWatching": "Ya está viendo los complementos.",
         "metaError": "El META no pudo ser analizado.",
         "missingNameData": "El META no contiene datos del nombre.",
         "metaNotFound": "El META no ha sido encontrado.",
         "compileError": "No se ha podido compilar.",
-        "wasUnloaded": "{{name}} ha sido descargado.",
-        "blankSlateHeader": "¡No tienes {{type}}s!",
-        "blankSlateMessage": "Consigue alguno en [esta página web]({{link}}) y añadelos a tu carpeta de {{type}}."
+        "wasUnloaded": "{{name}} ha sido descargado."
     },
     "CustomCSS": {
         "confirmationText": "Tienes cambios sin guardar en tu CSS Personalizado. Al cerrar esta ventana se perderán todos los cambios.",
@@ -171,10 +165,6 @@
         "restartLater": "Reiniciar más Tarde",
         "additionalInfo": "Información Adicional",
         "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensión no Encontrada",
-        "notFoundDetails": "No se puede encontrar la extensión React Developer Tools en su PC. Por favor, instale la extensión en su instalación local de Chrome."
     },
     "Sorting": {
         "sortBy": "Ordenar por",

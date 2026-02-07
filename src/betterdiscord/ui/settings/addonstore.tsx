@@ -62,58 +62,72 @@ function StoreContent({content, refToScroller, page, setPage}) {
 }
 
 function TagDropdown({type, selected, onChange}) {
-    const hideMenu = useCallback(() => {
-        setOpen(false);
-        document.removeEventListener("click", hideMenu);
-    }, []);
-
-    const [open, setOpen] = useState(false);
-    const showMenu = useCallback((event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (!open) {
-            setOpen(true);
-            document.addEventListener("click", hideMenu);
-            return;
-        }
-
-        setOpen(event.shiftKey);
-    }, [hideMenu, open]);
+    const selectRef = React.useRef<HTMLButtonElement>(null);
+    const optionsRef = React.useRef<HTMLUListElement>(null);
 
     const tags = useMemo(() => Web.store.tags[type], [type]);
-
     const selectedTags = useMemo(() => Object.entries(selected).filter(([, value]) => value).map(([key]) => key), [selected]);
 
+    React.useEffect(() => {
+        const selectButton = selectRef.current;
+        const optionsPopover = optionsRef.current;
+
+        if (!selectButton || !optionsPopover) return;
+
+        selectButton.popoverTargetElement = optionsPopover;
+        selectButton.popoverTargetAction = "toggle";
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting) {
+                optionsPopover.togglePopover(false);
+            }
+        });
+        observer.observe(selectButton);
+
+        return () => {
+            if (selectButton) observer.unobserve(selectButton);
+        };
+    }, []);
+
     return (
-        <div className={`bd-select bd-select-transparent${open ? " menu-open" : ""}`} onClick={showMenu}>
-            <div className="bd-select-value">{selectedTags.length}/{tags.length}</div>
-            <ChevronDownIcon className="bd-select-arrow" size="16px" />
-            {open && (
-                <div className="bd-select-options">
-                    {tags.map((tag, index) => {
-                        const isSelected = selectedTags.includes(tag);
-                        return (
-                            <div
-                                className={`bd-select-option${isSelected ? " selected" : ""}`}
-                                onClick={() => onChange(tag)}
-                                key={index}
-                            >
-                                <input type="checkbox" checked={isSelected} />
-                                {tag}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
-        </div>
+        <>
+            <button
+                ref={selectRef}
+                type="button"
+                className="bd-select bd-select-transparent"
+            >
+                <span className="bd-select-value">{selectedTags.length}/{tags.length}</span>
+                <ChevronDownIcon className="bd-select-arrow" size="16px" />
+            </button>
+            <ul
+                ref={optionsRef}
+                popover="auto"
+                role="listbox"
+                className="bd-select-options bd-scroller-thin"
+            >
+                {tags.map((tag, index) => {
+                    const isSelected = selectedTags.includes(tag);
+                    return (
+                        <li
+                            className={`bd-select-option${isSelected ? " selected" : ""}`}
+                            role="option"
+                            onClick={() => onChange(tag)}
+                            key={index}
+                        >
+                            <input type="checkbox" checked={isSelected} readOnly />
+                            {tag}
+                        </li>
+                    );
+                })}
+            </ul>
+        </>
     );
 }
 
 /**
  * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0
  */
-export default function AddonStorePage({type, title, refToScroller}) {
+export default function AddonStorePage({type, refToScroller}) {
     const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
@@ -229,12 +243,12 @@ export default function AddonStorePage({type, title, refToScroller}) {
 
     return [
         <AddonHeader key="title" count={filtered.length} searching={query.length !== 0}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {type: `${filtered.length} ${title}`})}...`} />
+            <Search onChange={search} placeholder={`${t("Addons.search", {count: filtered.length, context: type})}...`} />
         </AddonHeader>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
                 {/* {makeBasicButton(t("Addons.website"), <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
-                {makeBasicButton(t("Addons.openFolder", {type: title}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.openFolder", {context: type}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
                 {makeBasicButton(t("Addons.reload"), <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">

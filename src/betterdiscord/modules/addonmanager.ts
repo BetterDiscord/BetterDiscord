@@ -8,13 +8,13 @@ import AddonError from "@structs/addonerror";
 import Settings from "@stores/settings";
 import Events from "./emitter";
 import JsonStore, {type Files} from "@stores/json";
+import Toasts from "@stores/toasts";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
-import Toasts from "@ui/toasts";
 import Store from "@stores/base";
 import type {SystemError} from "bun";
 import RemoteAPI from "@polyfill/remote";
@@ -71,7 +71,7 @@ export default abstract class AddonManager extends Store {
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
-        super.emit();
+        super.emitChange();
 
         // Emit the events as a normal emitter while other parts
         // of the codebase are still converting to stores
@@ -82,10 +82,18 @@ export default abstract class AddonManager extends Store {
     abstract addonList: Addon[];
     state: Record<string, boolean> = {};
     windows = new Set<string>();
+    hasInitialized = false;
+    initialAddonsLoaded = 0;
 
     initialize() {
         Settings.registerAddonPanel(this);
-        return this.loadAllAddons();
+
+        const errors = this.loadAllAddons();
+        if (this.initialAddonsLoaded > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
+        }
+        this.hasInitialized = true;
+        return errors;
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
@@ -238,7 +246,7 @@ export default abstract class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), {}, this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {context: this.prefix, name: addon.name}), {}, this.prefix);
         this.addonList.push(addon as Addon);
         return addon as Addon;
     }
@@ -322,8 +330,10 @@ export default abstract class AddonManager extends Store {
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
         // setTimeout(() => {
-        this.startAddon(addon);
+
+        const err = this.startAddon(addon);
         this.saveState();
+        return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 
@@ -344,8 +354,9 @@ export default abstract class AddonManager extends Store {
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
         // setTimeout(() => {
-        this.stopAddon(addon);
+        const err = this.stopAddon(addon);
         this.saveState();
+        return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 
@@ -407,6 +418,7 @@ export default abstract class AddonManager extends Store {
             }
             const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
+            else if (addon !== false) this.initialAddonsLoaded++;
         }
 
         this.saveState();

@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
+import {forceLoad} from "@webpack";
+import Store from "@stores/base";
 
 
 /**
@@ -19,6 +21,14 @@ const Utils = {
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
     */
     findInTree: findInTree,
+
+    /**
+     * Loads the module ids within a chunk
+     *
+     * @param {number | string} id module with the chunk id.
+     * @returns {Promise<object>} resolved chunk module
+     */
+    forceLoad: forceLoad,
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
@@ -87,6 +97,8 @@ const Utils = {
      * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
     semverCompare: comparator,
+
+    Store
 } as const;
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959

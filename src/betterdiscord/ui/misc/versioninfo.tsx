@@ -5,9 +5,8 @@ import {t} from "@common/i18n";
 import thememanager from "@modules/thememanager";
 import settings from "@stores/settings";
 import Text from "@ui/base/text";
-import {useInternalStore} from "@ui/hooks";
+import {useStateFromStores} from "@ui/hooks";
 import getDebugInfo, {getAddonCounts, getCoreInfo, getDiscordInfo} from "@utils/debug";
-import {shallowEqual} from "fast-equals";
 
 const {useMemo, useState, useCallback} = React;
 
@@ -19,7 +18,7 @@ export default function VersionInfo() {
     const [clicks, setClicked] = useState(0);
 
     const currentUser = useMemo(() => DiscordModules.UserStore?.getCurrentUser()?.id, []);
-    const isCanary = useInternalStore(settings, () => settings.get("developer", "canary"));
+    const isCanary = useStateFromStores(settings, () => settings.get("developer", "canary"));
 
     const discordInfo = useMemo(() => {
         const info = getDiscordInfo(false) as string[];
@@ -40,16 +39,16 @@ export default function VersionInfo() {
         setTimeout(() => setClicked(0), 250);
     }, []);
 
-    const pluginCount = useInternalStore(pluginmanager, () => getAddonCounts(pluginmanager), [], shallowEqual);
-    const themeCount = useInternalStore(thememanager, () => getAddonCounts(thememanager), [], shallowEqual);
+    const pluginCount = useStateFromStores(pluginmanager, () => getAddonCounts(pluginmanager), [], true);
+    const themeCount = useStateFromStores(thememanager, () => getAddonCounts(thememanager), [], true);
 
     const tooltip = useMemo(() => {
         if (clicks === 0) return "Click to copy";
         if (clicks > 0 && clicks < (CLICKS_REQUIRED / 2)) return "Copied";
         if (clicks >= (CLICKS_REQUIRED / 2) && clicks < CLICKS_REQUIRED) return `${CLICKS_REQUIRED - clicks} clicks to go`;
         if (clicks >= CLICKS_REQUIRED) {
-            if (isCanary) return "Switched to BD stable";
-            return "Switched to BD canary";
+            if (isCanary) return "Switched to BD canary";
+            return "Switched to BD stable";
         }
     }, [clicks, isCanary]);
 

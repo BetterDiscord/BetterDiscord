@@ -145,7 +145,6 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
-        "openFolder": "{{type}}フォルダーを開く",
         "reload": "リロード",
         "addonSettings": "設定",
         "website": "ウェブサイト",
@@ -158,7 +157,6 @@
         "version": "バージョン",
         "added": "追加日",
         "modified": "更新日",
-        "search": "{{type}}を検索",
         "editAddon": "編集",
         "deleteAddon": "削除",
         "confirmDelete": "本当に{{name}}を削除しますか？",
@@ -173,15 +171,11 @@
         "methodError": "{{method}}を起動できませんでした。",
         "unknownAuthor": "作者不明",
         "noDescription": "説明はありません。",
-        "alreadyExists": "同じく{{name}}という名前を持つ{{type}}がすでに存在します。",
-        "alreadWatching": "すでにアドオン済み。",
         "metaError": "METAを解析できませんでした。",
         "missingNameData": "METAの名前データがありません。",
         "metaNotFound": "METAが見つかりませんでした。",
         "compileError": "コンパイルできませんでした。詳しくはコンソールをご覧ください。",
         "wasUnloaded": "{{name}}が解除されました。",
-        "blankSlateHeader": "{{type}}がありません。",
-        "blankSlateMessage": "このサイト({{link}})からいくつか入手して、{{type}}フォルダに追加してください。",
         "isEnabled": "有効",
         "wasLoaded": "{{name}}のv{{version}}が読み込まれました。"
     },
@@ -211,10 +205,6 @@
         "additionalInfo": "その他の情報",
         "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
     },
-    "ReactDevTools": {
-        "notFound": "拡張機能が見つかりません",
-        "notFoundDetails": "PCにReact Developer Tools拡張機能が見つかりません。Chromeに拡張機能をインストールしてください。"
-    },
     "Sorting": {
         "sortBy": "並び順",
         "order": "順序",
@@ -225,15 +215,11 @@
         "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
         "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
     },
-    "Notices": {
-        "moreInfo": "詳細"
-    },
     "Updater": {
         "updateFailed": "アップデートに失敗しました！",
         "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https://betterdiscord.app/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
         "updateSuccessful": "アップデートに成功しました！",
         "updateAvailable": "BetterDiscordに新しいアップデート(v{{version}})があります。",
-        "addonUpdatesAvailable": "BetterDiscordは{{.type}}のアップデートを{{count}}個見つけました！",
         "addonUpdated": "{{name}}がバージョン{{version}}にアップデートされました！",
         "checking": "アップデートを確認",
         "finishedChecking": "アップデートの確認が終了しました！",
@@ -241,7 +227,6 @@
         "updateAll": "全てアップデート",
         "noUpdatesAvailable": "アップデートはありません。",
         "versionAvailable": "バージョン{{version}}を公開しました。",
-        "upToDateBlankslate": "{{type}}は全て最新版です。",
         "updateButton": "アップデート"
     }
 }

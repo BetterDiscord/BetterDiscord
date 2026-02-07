@@ -108,7 +108,6 @@
     "Addons": {
         "title": "{{name}} 版本：{{version}} 作者：{{author}}",
         "byline": "作者： {{author}}",
-        "openFolder": "打开{{type}}文件夹",
         "reload": "重新加载",
         "addonSettings": "设置",
         "website": "网站",
@@ -121,7 +120,6 @@
         "version": "版本",
         "added": "安装时间",
         "modified": "最后更新时间",
-        "search": "搜索{{type}}",
         "editAddon": "编辑",
         "deleteAddon": "删除",
         "confirmDelete": "你真的要删除{{name}}吗？",
@@ -136,15 +134,11 @@
         "methodError": "无法调用{{method}}。",
         "unknownAuthor": "未知的作者",
         "noDescription": "作者没有留下任何描述",
-        "alreadyExists": "已经存在相同名称「{{name}}」的{{type}}了",
-        "alreadWatching": "已经在监听插件了",
         "metaError": "无法解析元数据",
         "missingNameData": "元数据缺少名称。",
         "metaNotFound": "无法找到元数据",
         "compileError": "无法编译。",
-        "wasUnloaded": "已卸载{{name}}。",
-        "blankSlateHeader": "你还添加任何{{type}}！",
-        "blankSlateMessage": "你可以在[此网站]({{link}})中获取，并将其添加到你的{{type}}文件夹中。"
+        "wasUnloaded": "已卸载{{name}}。"
     },
     "CustomCSS": {
         "confirmationText": "你还有未保存的更改，关闭此窗口将失去所有对自定义样式所做的更改。",
@@ -171,10 +165,6 @@
         "restartLater": "稍候自行重启",
         "additionalInfo": "额外信息",
         "restartPrompt": "Discord 需要重新启动以应用最新变更。立刻进行重启吗？"
-    },
-    "ReactDevTools": {
-        "notFound": "未找到扩展",
-        "notFoundDetails": "无法在你的电脑上找到 React 开发者工具扩展。请在本地的 Chrome 上安装该扩展。"
     },
     "Sorting": {
         "sortBy": "排序方式",

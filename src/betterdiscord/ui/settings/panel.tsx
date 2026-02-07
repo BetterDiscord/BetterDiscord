@@ -10,6 +10,7 @@ import SettingsGroup from "@ui/settings/group";
 import SettingsTitle from "@ui/settings/title";
 
 import {ListRestartIcon} from "lucide-react";
+import {SettingsTitleContext} from "@ui/settings";
 
 
 function makeResetButton(collectionId: string, refresh?: () => void) {
@@ -51,10 +52,14 @@ export interface SettingsPanelProps {
 }
 
 export default function SettingsPanel({id, title, groups, onChange, onDrawerToggle, getDrawerState}: SettingsPanelProps) {
+    const set = React.useContext(SettingsTitleContext);
+
     return <>
-        <SettingsTitle text={title}>
-            {makeResetButton(id)}
-        </SettingsTitle>
+        {set(
+            <SettingsTitle text={title}>
+                {makeResetButton(id)}
+            </SettingsTitle>
+        )}
         {groups.map(section => {
             const props = Object.assign({}, section, {
                 collection: id,
