@@ -9,7 +9,7 @@ type UnknownPatch<P> = (props: P, res: React.ReactNode, instance?: React.Compone
 // Create a new instance for each or make one patch do both things
 export default class NodePatcher {
     #id = Symbol("BetterDiscord.NodePatcher");
-    #cache = new Map<unknown, React.ComponentType<any>>();
+    #cache = new WeakMap<React.ComponentType<any>, React.ComponentType<any>>();
     #destroyed = false;
 
     public patch<P, T extends React.ComponentType<P> = React.ComponentType<P>>(node: React.ReactElement<P, T>, callback: UnknownPatch<P>) {
