@@ -13,7 +13,8 @@ export default new class ThemeAttributes extends Builtin {
     async enabled() {
         const MessageComponent = await getLazyBySource(["Message must not be a thread starter message"]);
         const VoiceUserComponent = await getLazyBySource(["avatarContainerClass", "userNameClassName"]);
-        this.after(MessageComponent?.ZP, "type", (thisObject, [args], returnValue) => {
+
+        this.after(MessageComponent.Ay, "type", (thisObject, [args], returnValue) => {
             const li = findInTree(returnValue, (node) => node?.className?.includes("messageListItem"));
             if (!li) return;
             const author = findInTree(args, (arg) => arg?.username, {walkable: ["message", "author"]});
