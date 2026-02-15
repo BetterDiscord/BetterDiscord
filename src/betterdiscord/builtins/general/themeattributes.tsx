@@ -1,5 +1,5 @@
 import Builtin from "@structs/builtin";
-import {getLazy, getLazyByStrings} from "@webpack";
+import {getLazy, getLazyByStrings, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React from "react";
 
@@ -30,7 +30,7 @@ export default new class ThemeAttributes extends Builtin {
 
             li["data-author-id"] = authorId;
             li["data-author-username"] = author?.username;
-            li["data-is-self"] = !!author.email;
+            li["data-is-self"] = author.id === Stores.UserStore?.getCurrentUser?.()?.id;
 
             // Deleted accounts have the discrimator 0000 but do not have bot
             li["data-is-webhook"] = author.discriminator === "0000" && author.bot;
@@ -60,7 +60,7 @@ export default new class ThemeAttributes extends Builtin {
             for (let index = 0; index < res.channelStreamMarkup.length; index++) {
                 const element = res.channelStreamMarkup[index];
 
-                if (React.isValidElement(element) && typeof element.props.groupId === "string") {
+                if (React.isValidElement(element) && typeof (element as React.ReactElement<any, any>).props.groupId === "string") {
                     channelStreamMarkup.push([index, element]);
                 }
             }
