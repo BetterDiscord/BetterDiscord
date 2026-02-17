@@ -32,7 +32,7 @@ export default new class ThemeAttributes extends Builtin {
             li["data-author-username"] = author?.username;
             li["data-is-self"] = author.id === Stores.UserStore?.getCurrentUser?.()?.id;
 
-            // Deleted accounts have the discrimator 0000 but do not have bot
+            // Deleted accounts have the discriminator 0000 but do not have bot
             li["data-is-webhook"] = author.discriminator === "0000" && author.bot;
 
             li["data-author-is-deleted"] = author.id === "456226577798135808";
@@ -127,12 +127,12 @@ export default new class ThemeAttributes extends Builtin {
             if (res.props.avatar) {
                 const avatar = findInTree(res.props.avatar, m => typeof m?.props?.children === "function");
 
-                if (avatar.props.__bdPatched) return;
+                if (!avatar || avatar.props.__bdPatched) return;
 
                 const children = avatar.props.children;
 
                 Object.assign(avatar.props, {
-                    children(...args: never) {
+                    children(...args: unknown[]) {
                         const ret = children.apply(this, args);
 
                         const pfp = findInTree(ret, m => m?.type === "img" && m?.props?.className?.includes("avatar") && m.props.ref, {
