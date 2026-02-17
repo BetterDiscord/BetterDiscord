@@ -1,5 +1,5 @@
 import Builtin from "@structs/builtin";
-import {getLazy, getLazyByStrings, Stores} from "@webpack";
+import {getLazy, getLazyByDisplayName, getLazyByStrings, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React from "react";
 
@@ -118,12 +118,72 @@ export default new class ThemeAttributes extends Builtin {
         });
     }
 
+    async patchChatAvatar() {
+        const ChatAvatar = await getLazy(m => String(m.type).includes("showCommunicationDisabledStyles"), {
+            cacheId: "core-themeattributes-ChatAvatar"
+        });
+
+        this.after(ChatAvatar!, "type", (_, __, res) => {
+            if (res.props.avatar) {
+                const avatar = findInTree(res.props.avatar, m => typeof m?.props?.children === "function");
+
+                if (avatar.props.__bdPatched) return;
+
+                const children = avatar.props.children;
+
+                Object.assign(avatar.props, {
+                    children(...args: never) {
+                        const ret = children.apply(this, args);
+
+                        const pfp = findInTree(ret, m => m?.type === "img" && m?.props?.className?.includes("avatar") && m.props.ref, {
+                            walkable: ["props", "children"]
+                        });
+
+                        if (!pfp?.props?.src || pfp.props.src.startsWith("data:")) return ret;
+
+                        pfp.props.style ??= {};
+
+                        for (const size of [128, 256, 512, 1024, 2048, 4096]) {
+                            pfp.props.style[`--avatar-url-${size}`] = `url(${pfp.props.src.replace(/\d+$/, String(size))})`;
+                        }
+
+                        return ret;
+                    },
+                    __bdPatched: true
+                });
+            }
+        });
+    }
+
+    async patchAvatars() {
+        const AvatarImg = await getLazyByDisplayName("AvatarImg", {
+            searchExports: true,
+            cacheId: "core-themeattributes-AvatarImg"
+        })!;
+
+        this.after(AvatarImg!, "render", (_, __, res) => {
+            const pfp = findInTree(res, m => m?.type === "img" && m?.props?.className?.includes("avatar"), {
+                walkable: ["props", "children"]
+            });
+
+            if (!pfp?.props?.src || pfp.props.src.startsWith("data:")) return;
+
+            pfp.props.style ??= {};
+
+            for (const size of [128, 256, 512, 1024, 2048, 4096]) {
+                pfp.props.style[`--avatar-url-${size}`] = `url(${pfp.props.src.replace(/\d+$/, String(size))})`;
+            }
+        });
+    }
+
     async enabled() {
         this.patchMessage();
         this.patchMessageHook();
         this.patchTabBarComponent();
         this.patchUserProfileComponent();
         this.patchVoiceUserComponent();
+        this.patchChatAvatar();
+        this.patchAvatars();
     }
 
     async disabled() {
