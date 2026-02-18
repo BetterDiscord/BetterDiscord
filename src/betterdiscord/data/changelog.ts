@@ -11,27 +11,19 @@ export default {
     blurb: "Hotfix to squash some bugs.",
     changes: [
         {
-            title: "New Features",
-            type: "new",
-            items: [
-                "New Webpack cache system for faster loading times; you will see much faster loading times after the first launch with this update.",
-            ]
-        },
-        {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed `tags` button appearing behind other elements in the Addon Store",
-                "Fixed downloading addons via the addon store",
-                "Fixed dropdowns with lots of options not allowing you to scroll through all of the options",
-                "Minor UI fixes",
+                "BetterDiscord now loads on macOS and Linux."
             ]
         },
         {
-            title: "Improvements",
-            type: "improved",
+            title: "New Features",
+            type: "added",
             items: [
-                "Dropdowns now automatically scroll to the selected option when opened",
+                "Added `--avatar-url-[size]` to avatars for theme attributes.",
+                "Added a bunch of new theme attributes to messages.",
+                "Added an utility for developers to easily patch react elements."
             ]
         }
     ]
