@@ -73,7 +73,9 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
                 if (res.headers.location) {
                     let final;
                     try {
-                        final = new URL(res.headers.location);
+                        // Use `uri` as the base so that relative Location values
+                        // (e.g. "/en-us/feed") are resolved correctly.
+                        final = new URL(res.headers.location, uri);
                     }
                     catch (error) {
                         reject(error);

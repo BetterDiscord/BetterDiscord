@@ -5,6 +5,24 @@ const MAX_DEFAULT_REDIRECTS = 20;
 const DEFAULT_TIMEOUT = 3000;
 const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD", "CONNECT", "TRACE"]);
 
+/**
+ * Converts a HeadersInit value to a plain Record<string, string>.
+ * This is used to bypass the browser's Request constructor which silently
+ * strips "forbidden" headers (User-Agent, Cookie, Connection, etc.) per the
+ * Fetch spec. By extracting headers directly from the caller's init object
+ * before they pass through `new Request()`, we preserve headers that the
+ * browser would otherwise drop.
+ */
+function headersInitToRecord(headers: HeadersInit): Record<string, string> {
+    if (headers instanceof Headers) {
+        return Object.fromEntries(headers.entries());
+    }
+    if (Array.isArray(headers)) {
+        return Object.fromEntries(headers);
+    }
+    return {...(headers as Record<string, string>)};
+}
+
 function dryAbortSignal(signal: AbortSignal): DriedAbortSignal {
     return {
         aborted: () => signal.aborted,
@@ -60,12 +78,31 @@ async function fetch(input: string | URL | Request, init?: NativeRequestInit): P
         request = new Request(input, init);
     }
 
+    // Build headers from the raw init value *before* they are processed by the
+    // browser's Request constructor, which silently strips "forbidden" request
+    // headers such as User-Agent, Cookie, and Connection per the Fetch spec.
+    // Falling back to request.headers when no init headers are supplied covers
+    // the case where the caller passes a pre-built Request object.
+    let headers: Record<string, string>;
+    if (input instanceof Request) {
+        // Start from the Request's own (possibly pre-filtered) headers …
+        headers = Object.fromEntries(input.headers);
+        // … and let any explicit init headers override them.
+        if (init?.headers) {
+            Object.assign(headers, headersInitToRecord(init.headers));
+        }
+    }
+    else {
+        // Use the raw init headers directly, bypassing browser filtering.
+        headers = headersInitToRecord(init?.headers ?? {});
+    }
+
     const driedResponse = await Remote.nativeFetch({
         url: request.url,
 
         body: request.body ? dryReadableStream(request.body) : null,
 
-        headers: Object.fromEntries(request.headers),
+        headers,
 
         keepalive: request.keepalive,
         method: methods.has(request.method) ? request.method as NativeRequestMethod : "GET",
