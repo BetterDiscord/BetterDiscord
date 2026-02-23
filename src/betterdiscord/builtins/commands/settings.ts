@@ -1,4 +1,4 @@
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command, type OptionValue} from "@modules/commandmanager";
 import Settings from "@stores/settings";
 
 
@@ -30,9 +30,10 @@ export default {
             }
         }
     ],
-    execute: async (data) => {
-        const action = data.find(o => o.name === "action").value;
-        const settingData = data.find(o => o.name === "setting").value.split("-");
+    execute: async (data: OptionValue[]) => {
+        const action = data.find(o => o.name === "action")!.value;
+        const settingValue = data.find(o => o.name === "setting")!.value as string;
+        const settingData = settingValue.split("-");
         const catId = settingData[0];
         const id = settingData[1];
         const name = settingData[2];
@@ -52,4 +53,4 @@ export default {
             return {content: `${name} has been disabled!`};
         }
     }
-};
+} satisfies Command;
