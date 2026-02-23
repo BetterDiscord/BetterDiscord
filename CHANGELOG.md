@@ -2,6 +2,15 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.8
+### Fixed
+- BetterDiscord now loads on macOS and Linux.
+
+### Added
+- Added `--avatar-url-[size]` to avatars for theme attributes.
+- Added a bunch of new theme attributes to messages.
+- Added an utility for developers to easily patch react elements.
+
 1.13.7
 ### Added
 - New Webpack cache system for faster loading times; you will see much faster loading times after the first launch with this update.
