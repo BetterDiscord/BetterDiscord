@@ -1,16 +1,14 @@
 import React, {ReactDOM} from "@modules/react";
-import Settings from "@stores/settings";
+import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy, getLazyByPrototypes, getLazyByStrings, getMangled} from "@webpack";
+import {Filters, getByKeys, getLazy, getLazyByStrings, getMangled} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
 
 import AddonPage from "@ui/settings/addonpage";
-import Header from "@ui/settings/sidebarheader";
 
 import type {SettingsCategory} from "@data/settings";
-import type {ComponentType, ReactNode} from "react";
 import VersionInfo from "./misc/versioninfo";
 import {findInTree} from "@common/utils";
 import {useForceUpdate, useStateFromStores} from "./hooks";
@@ -24,129 +22,16 @@ import {HistoryIcon} from "lucide-react";
 import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
+import pluginManager, {type Plugin} from "@modules/pluginmanager";
+import themeManager from "@modules/thememanager";
+import DOMManager from "@modules/dommanager";
+import type AddonManager from "@modules/addonmanager";
+import toasts from "@stores/toasts";
+import ContextMenuPatcher from "@api/contextmenu";
 
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
-
-interface Section {
-    section: string;
-    element?: (ComponentType | (() => ReactNode));
-    label?: string;
-    className?: string;
-    onClick?: (t: any) => void;
-    tabPredicate?: () => boolean;
-}
-// Probably removed as an FYI
-interface PaneLayout {
-    buildLayout(): [];
-    StronglyDiscouragedCustomComponent(): React.ReactNode;
-
-    useTitle?(): React.ReactNode;
-}
-interface PanelLayout {
-    buildLayout(): [] | [pane: PaneLayout];
-    StronglyDiscouragedCustomComponent(): React.ReactNode;
-    useTitle(): React.ReactNode;
-}
-
-type Trailing = ({
-    // ngl idk
-    type: 0,
-} | {
-    type: 1,
-    badgeComponent?: unknown;
-} | {
-    type: 2,
-    useCount(): number;
-} | {
-    type: 3,
-    useDecoration(x: unknown, y: unknown): React.ReactNode;
-}) & {
-    getDismissibleContentTypes?(): unknown[];
-};
-
-interface SidebarItemLayout {
-    icon: DiscordIcon;
-    useTitle(): React.ReactNode;
-    getLegacySearchKey(): string;
-    buildLayout(): [] | [panel: PanelLayout];
-
-    /**
-     * @warning You cannot have page with onClick!
-     */
-    onClick?(): void;
-
-    /** You can use react hooks here! */
-    usePredicate?(): boolean;
-
-    trailing?: Trailing;
-}
-
-interface SectionLayout {
-    useTitle(): React.ReactNode;
-    buildLayout(): SidebarItemLayout[];
-    usePredicate?(): boolean;
-}
-
-interface LayoutBuilder {
-    pane?(key: string, panel: PaneLayout): PaneLayout;
-    panel(key: string, panel: PanelLayout): PanelLayout;
-    sidebarItem(key: string, panel: SidebarItemLayout): SidebarItemLayout;
-    section(key: string, panel: SectionLayout): SectionLayout;
-}
-
-type LayoutConstructor = {
-    title(): React.ReactNode;
-    icon: DiscordIcon;
-
-    predicate?(): boolean;
-} & ({
-    header(): React.ReactNode;
-    render(): React.ReactNode;
-} | {
-    onClick(): void;
-});
-
-/** @description On true clicking open will open not open the page. On false will open the page */
-const useCustomCSSClickable = () => {
-    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
-
-    return ["detached", "external", "system"].includes(state);
-};
-const useCustomCSSViewable = () => !useCustomCSSClickable();
-
-function LayerSettingTitle() {
-    const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();
-
-    return (
-        <>
-            <div
-                className="bd-sidebar-header"
-                ref={(v) => {
-                    setNode(v?.parentElement?.parentElement || v);
-                    return setNode;
-                }}
-            >
-                BetterDiscord
-            </div>
-            {node && ReactDOM.createPortal(
-                <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
-                    {props =>
-                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
-                            <HistoryIcon className="bd-icon" size="16px" />
-                        </Button>
-                    }
-                </DiscordModules.Tooltip>,
-                node
-            )}
-        </>
-    );
-}
-
-export const SettingsTitleContext = React.createContext((v: React.ReactNode) => v);
-
-export default new class SettingsRenderer {
+const SettingsRenderer = new class SettingsRenderer {
     initialize() {
-        this.patchSections();
+        // this.patchSections();
         this.patchModalSettings();
         this.patchVersionInformation();
     }
@@ -191,41 +76,41 @@ export default new class SettingsRenderer {
         };
     }
 
-    async patchSections() {
-        const UserSettingsLayer = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
-        if (!UserSettingsLayer) return;
+    // async patchSections() {
+    //     const UserSettingsLayer = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
+    //     if (!UserSettingsLayer) return;
 
-        Patcher.after("SettingsManager", UserSettingsLayer.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
-            let location = returnValue.findIndex((s: Section) => s.section.toLowerCase() == "changelog") - 1;
-            if (location < 0) return;
-            const insert = (section: Section) => {
-                returnValue.splice(location, 0, section);
-                location++;
-            };
-            insert({section: "DIVIDER"});
-            insert({section: "CUSTOM", element: Header});
-            for (const collection of Settings.collections) {
-                insert({
-                    section: collection.id,
-                    label: collection.name.toString(),
-                    className: `bd-${collection.id}-tab`,
-                    element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))
-                });
-            }
-            for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
-                if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
-                if (!panel.className) panel.className = `bd-${panel.id}-tab`;
-                if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager});
-                insert({
-                    section: panel.id,
-                    label: panel.label.toString(),
-                    className: panel.className,
-                    element: panel.element,
-                    onClick: panel.onClick
-                });
-            }
-        });
-    }
+    //     Patcher.after("SettingsManager", UserSettingsLayer.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
+    //         let location = returnValue.findIndex((s: Section) => s.section.toLowerCase() == "changelog") - 1;
+    //         if (location < 0) return;
+    //         const insert = (section: Section) => {
+    //             returnValue.splice(location, 0, section);
+    //             location++;
+    //         };
+    //         insert({section: "DIVIDER"});
+    //         insert({section: "CUSTOM", element: Header});
+    //         for (const collection of Settings.collections) {
+    //             insert({
+    //                 section: collection.id,
+    //                 label: collection.name.toString(),
+    //                 className: `bd-${collection.id}-tab`,
+    //                 element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))
+    //             });
+    //         }
+    //         for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
+    //             if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
+    //             if (!panel.className) panel.className = `bd-${panel.id}-tab`;
+    //             if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager});
+    //             insert({
+    //                 section: panel.id,
+    //                 label: panel.label.toString(),
+    //                 className: panel.className,
+    //                 element: panel.element,
+    //                 onClick: panel.onClick
+    //             });
+    //         }
+    //     });
+    // }
 
     private layoutBuilder?: LayoutBuilder;
     private getLayoutBuilder() {
@@ -278,21 +163,8 @@ export default new class SettingsRenderer {
                     let layout: [] | [panel: PanelLayout] = [];
 
                     if ("render" in item) {
-                        let panelLayout: [] | [pane: PaneLayout] = [];
-
-                        if (layoutBuilder.pane) {
-                            const pane = layoutBuilder.pane(key, {
-                                buildLayout: () => [],
-                                StronglyDiscouragedCustomComponent: item.render,
-                                useTitle: item.header
-                            });
-
-                            panelLayout = [pane];
-                        }
-
-
                         const panel = layoutBuilder.panel(key, {
-                            buildLayout: () => panelLayout,
+                            buildLayout: () => [],
                             StronglyDiscouragedCustomComponent: item.render,
                             useTitle: item.header
                         });
@@ -312,7 +184,9 @@ export default new class SettingsRenderer {
                         sidebar.usePredicate = () => !!item.predicate!();
                     }
 
-                    (sidebar as any).useSearchable = () => ["test"];
+                    if (typeof item.useMenu === "function") {
+                        sidebar.useMenu = () => item.useMenu!();
+                    }
 
                     if ("onClick" in item) {
                         sidebar.onClick = item.onClick;
@@ -390,10 +264,16 @@ export default new class SettingsRenderer {
                 for (const collection of Settings.collections) {
                     // if (collection.disabled) continue;
 
+
+                    // const collections = useCollectionMenu();
+
+                    // const plugins = useAddonMenu(pluginManager);
+                    // const themes = useAddonMenu(themeManager);
                     insert(collection.id, {
                         ...makeSettingsPanelProvider(this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))),
                         icon: Logo.Discord,
-                        title: () => collection.name
+                        title: () => collection.name,
+                        useMenu: () => useCollectionMenu(collection)
                     });
                 }
 
@@ -426,6 +306,7 @@ export default new class SettingsRenderer {
                         ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                         icon,
                         title: () => panel.label,
+                        useMenu: panel.type === "addon" ? () => useAddonMenu(panel.manager!) : undefined
                     });
                 }
 
@@ -523,3 +404,221 @@ export default new class SettingsRenderer {
         if (stateNode) stateNode.forceUpdate();
     }
 };
+
+const ContextMenu = new ContextMenuPatcher();
+
+const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
+
+interface PanelLayout {
+    buildLayout(): [];
+    StronglyDiscouragedCustomComponent(): React.ReactNode;
+    useTitle(): React.ReactNode;
+}
+
+type Trailing = ({
+    // ngl idk
+    type: 0,
+} | {
+    type: 1,
+    badgeComponent?: unknown;
+} | {
+    type: 2,
+    useCount(): number;
+} | {
+    type: 3,
+    useDecoration(x: unknown, y: unknown): React.ReactNode;
+}) & {
+    getDismissibleContentTypes?(): unknown[];
+};
+
+interface SidebarItemLayout {
+    icon: DiscordIcon;
+    useTitle(): React.ReactNode;
+    getLegacySearchKey(): string;
+    buildLayout(): [] | [panel: PanelLayout];
+
+    /**
+     * @warning You cannot have page with onClick!
+     */
+    onClick?(): void;
+
+    /** You can use react hooks here! */
+    usePredicate?(): boolean;
+
+    trailing?: Trailing;
+
+    useMenu?(): React.ReactNode;
+}
+
+interface SectionLayout {
+    useTitle(): React.ReactNode;
+    buildLayout(): SidebarItemLayout[];
+    usePredicate?(): boolean;
+}
+
+interface LayoutBuilder {
+    panel(key: string, panel: PanelLayout): PanelLayout;
+    sidebarItem(key: string, panel: SidebarItemLayout): SidebarItemLayout;
+    section(key: string, panel: SectionLayout): SectionLayout;
+}
+
+type LayoutConstructor = {
+    title(): React.ReactNode;
+    icon: DiscordIcon;
+
+    predicate?(): boolean;
+    useMenu?(): React.ReactNode;
+} & ({
+    header(): React.ReactNode;
+    render(): React.ReactNode;
+} | {
+    onClick(): void;
+});
+
+/** @description On true clicking open will open not open the page. On false will open the page */
+const useCustomCSSClickable = () => {
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+
+    return ["detached", "external", "system"].includes(state);
+};
+const useCustomCSSViewable = () => !useCustomCSSClickable();
+
+function LayerSettingTitle() {
+    const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();
+
+    return (
+        <>
+            <div
+                className="bd-sidebar-header"
+                ref={(v) => {
+                    let nNode = v as HTMLElement;
+                    if (v?.parentElement?.parentElement) {
+                        // If discord changes the dom layout don't blame me
+                        // if context menu
+                        if (v.parentElement.parentElement.role === "group") {
+                            nNode = v.parentElement as HTMLElement;
+                        }
+                        // if settings modal layer
+                        else {
+                            nNode = v.parentElement.parentElement as HTMLElement;
+                        }
+                    }
+
+                    setNode(nNode);
+                    return setNode;
+                }}
+            >
+                BetterDiscord
+            </div>
+            {node && ReactDOM.createPortal(
+                <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
+                    {props =>
+                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
+                            <HistoryIcon className="bd-icon" size="16px" />
+                        </Button>
+                    }
+                </DiscordModules.Tooltip>,
+                node
+            )}
+        </>
+    );
+}
+
+export const SettingsTitleContext = React.createContext((v: React.ReactNode) => v);
+
+function openCategory(id: string) {
+    ContextMenu.close();
+    SettingsRenderer.openSettingsPage(id);
+}
+
+function useCollectionMenu(collection: SettingsCollection) {
+    const settings = useStateFromStores(Settings, () => {
+        return collection.settings.map(category => ({
+            id: category.id,
+            name: category.name!,
+            settings: category.settings.filter(s => s.type === "switch" && !s.hidden).map(setting => ({
+                id: setting.id,
+                label: setting.name!,
+                disabled: setting.disabled,
+                checked: Settings.get(collection.id, category.id, setting.id),
+                action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
+            }))
+        }));
+    }, []);
+
+    return (
+        <>
+            {settings.map(category => (
+                <ContextMenu.Item
+                    label={category.name}
+                    id={category.id}
+                    action={() => openCategory(collection.id)}
+                    key={`bd.${collection.id}.${category.id}`}
+                >
+                    {category.settings.map(setting => (
+                        <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
+                    ))}
+                </ContextMenu.Item>
+            ))}
+        </>
+    );
+}
+
+function useAddonMenu(manager: AddonManager) {
+    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.getAddon(name), manager.isEnabled(name)] as const), [], true);
+    const addonStoreIsEnabled = useStateFromStores(Settings, () => Settings.get("settings", "store", "bdAddonStore"), []);
+
+    const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
+        <ContextMenu.CheckboxItem
+            label={name}
+            id={name}
+            checked={enabled}
+            key={`bd.${manager.prefix}.${name}`}
+            disabled={addon?.partial}
+            action={(e: MouseEvent) => {
+                if (!e.shiftKey) {
+                    manager.toggleAddon(name);
+                    return;
+                }
+
+                if (!manager.isEnabled(name)) {
+                    toasts.warning(t("Addons.isDisabled", {name}));
+                    return;
+                }
+
+                const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
+                const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
+
+                if (hasSettings) {
+                    Modals.showAddonSettingsModal(name, getSettings());
+                }
+                else {
+                    toasts.warning(t("Addons.noSettings", {name}));
+                }
+            }}
+        />
+    )), [addons, manager]);
+
+    return (
+        <>
+            <ContextMenu.Group key={`bd.${manager.prefix}.installed`}>
+                {toggles}
+            </ContextMenu.Group>
+            {addonStoreIsEnabled && (
+                <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
+                    <ContextMenu.Item
+                        label={t("Addons.openStore", {context: manager.prefix})}
+                        id={`${manager.prefix}-store`}
+                        action={() => {
+                            openCategory(manager.prefix + "s");
+                            // If the addon store instantly opens have it just stop basically
+                            DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
+                        }}
+                    />
+                </ContextMenu.Group>
+            )}
+        </>
+    );
+}
+
+export default SettingsRenderer;

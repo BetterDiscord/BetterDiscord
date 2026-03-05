@@ -50,22 +50,28 @@ class HydratingResponse extends Response {
 
 async function fetch(input: string | URL | Request, init?: NativeRequestInit): Promise<Response> {
     let request: Request;
-    if (input instanceof Request) {
-        request = input;
-    }
-    else if (input instanceof URL) {
+    if (input instanceof URL) {
         request = new Request(input.href, init);
     }
     else {
         request = new Request(input, init);
     }
 
+    let headers = request.headers;
+    if (init?.headers) {
+        headers = new Headers(init.headers);
+    }
+
+    // if (!headers.has("user-agent")) {
+    //     headers.set("user-agent", navigator.userAgent);
+    // }
+
     const driedResponse = await Remote.nativeFetch({
         url: request.url,
 
         body: request.body ? dryReadableStream(request.body) : null,
 
-        headers: Object.fromEntries(request.headers),
+        headers: Object.fromEntries(headers),
 
         keepalive: request.keepalive,
         method: methods.has(request.method) ? request.method as NativeRequestMethod : "GET",

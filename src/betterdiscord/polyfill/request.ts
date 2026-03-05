@@ -1,3 +1,4 @@
+import Logger from "@common/logger";
 import Remote from "./remote";
 import type {RequestOptions} from "node:http";
 
@@ -41,14 +42,28 @@ function validCallback(callback: unknown): callback is ((...a: any[]) => any) {
 
 function fixBuffer(options: RequestOptions & {formData?: Buffer | string;}, callback: (e: Error, h?: Record<string, any>, d?: Buffer | string) => void) {
     return (error: Error, res?: Record<string, any>, body?: Buffer | string) => {
-        if ("Content-Type" in Object(options.headers) && options.headers?.["Content-Type"] !== "text/plain") {
-            body = Buffer.from(body!);
+        try {
+            // idk if this should be fixed
+            // if ("content-type" in Object(options.headers) && String(Object(options.headers)["content-type"]) !== "text/plain") {
+            if ("Content-Type" in Object(options.headers) && options.headers?.["Content-Type"] !== "text/plain") {
+                body = Buffer.from(body!);
+            }
+            else {
+                body = Buffer.from(body!).toString();
+            }
         }
-        else {
-            body = Buffer.from(body!).toString();
+        catch (err) {
+            Logger.debug("BetterDiscordPreload", "Failed to convert response body to buffer", {
+                catchError: err,
+                options,
+                error,
+                res,
+                body
+            });
         }
-
-        callback(error, res, body);
+        finally {
+            callback(error, res, body);
+        }
     };
 }
 
