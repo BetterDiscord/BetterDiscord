@@ -30,7 +30,6 @@ import ContextMenuPatcher from "@api/contextmenu";
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
-        // this.patchSections();
         this.patchModalSettings();
         this.patchVersionInformation();
     }
@@ -74,42 +73,6 @@ const SettingsRenderer = new class SettingsRenderer {
             }, options));
         };
     }
-
-    // async patchSections() {
-    //     const UserSettingsLayer = await getLazyByPrototypes<{prototype: {getPredicateSections(): Section[];};}>(["getPredicateSections"]);
-    //     if (!UserSettingsLayer) return;
-
-    //     Patcher.after("SettingsManager", UserSettingsLayer.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
-    //         let location = returnValue.findIndex((s: Section) => s.section.toLowerCase() == "changelog") - 1;
-    //         if (location < 0) return;
-    //         const insert = (section: Section) => {
-    //             returnValue.splice(location, 0, section);
-    //             location++;
-    //         };
-    //         insert({section: "DIVIDER"});
-    //         insert({section: "CUSTOM", element: Header});
-    //         for (const collection of Settings.collections) {
-    //             insert({
-    //                 section: collection.id,
-    //                 label: collection.name.toString(),
-    //                 className: `bd-${collection.id}-tab`,
-    //                 element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))
-    //             });
-    //         }
-    //         for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
-    //             if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
-    //             if (!panel.className) panel.className = `bd-${panel.id}-tab`;
-    //             if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager});
-    //             insert({
-    //                 section: panel.id,
-    //                 label: panel.label.toString(),
-    //                 className: panel.className,
-    //                 element: panel.element,
-    //                 onClick: panel.onClick
-    //             });
-    //         }
-    //     });
-    // }
 
     private layoutBuilder?: LayoutBuilder;
     private getLayoutBuilder() {
@@ -262,12 +225,6 @@ const SettingsRenderer = new class SettingsRenderer {
 
                 for (const collection of Settings.collections) {
                     // if (collection.disabled) continue;
-
-
-                    // const collections = useCollectionMenu();
-
-                    // const plugins = useAddonMenu(pluginManager);
-                    // const themes = useAddonMenu(themeManager);
                     insert(collection.id, {
                         ...makeSettingsPanelProvider(this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))),
                         icon: Logo.Discord,

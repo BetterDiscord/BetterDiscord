@@ -43,8 +43,12 @@ export default new class Core {
             cacheId: "core-contextmenu-classes"
         });
 
+        // Discord manually sets the fill here, so we are reverting it back to the HTML tag
+        // .colorDefault.focused:not(.checkboxContainer) path {fill: var(--interactive-text-active)}
+        // .colorDanger.focused:not(.checkboxContainer) path {fill: var(--text-feedback-critical)}
+
         DOMManager.injectStyle("bd-lucide-context-menu-fix", `
-            .${menuClasses!.colorDefault}.${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
+            :where(.${menuClasses!.colorDefault}, ${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
                 fill: attr(fill);
             }
         `);
