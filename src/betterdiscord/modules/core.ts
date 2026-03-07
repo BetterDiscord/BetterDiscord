@@ -27,7 +27,7 @@ import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
-import {getLazyByKeys, getStore, Stores} from "@webpack";
+import {getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
 
 export default new class Core {
@@ -37,28 +37,9 @@ export default new class Core {
         Patcher.after("BetterDiscordProtocol", getStore("MaskedLinkStore")!, "isTrustedProtocol", (_, [url]: any, ret) => ret || url.startsWith("betterdiscord://"));
     }
 
-    async contextMenuFixForLucide() {
-        // Hopefully this will be faster than using css class selectors
-        const menuClasses = await getLazyByKeys<Record<string, string>>(["colorDefault", "focused"], {
-            cacheId: "core-contextmenu-classes"
-        });
-
-        // Discord manually sets the fill here, so we are reverting it back to the HTML tag
-        // .colorDefault.focused:not(.checkboxContainer) path {fill: var(--interactive-text-active)}
-        // .colorDanger.focused:not(.checkboxContainer) path {fill: var(--text-feedback-critical)}
-
-        DOMManager.injectStyle("bd-lucide-context-menu-fix", `
-            :where(.${menuClasses!.colorDefault}, ${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
-                fill: attr(fill);
-            }
-        `);
-    }
-
     async startup() {
         if (this.hasStarted) return;
         this.hasStarted = true;
-
-        this.contextMenuFixForLucide();
 
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
