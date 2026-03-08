@@ -21,51 +21,52 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
 
     filter = wrapFilter(filter);
 
-    return new Promise((resolve, reject) => {
-        const cancel = () => void lazyListeners.delete(listener);
+    const {promise, resolve, reject} = Promise.withResolvers<T | undefined>();
+    const cancel = () => void lazyListeners.delete(listener);
 
-        const listener: Webpack.Filter = (_, module) => {
-            if (shouldSkipModule(module.exports)) return;
+    const listener: Webpack.Filter = (_, module) => {
+        if (shouldSkipModule(module.exports)) return;
 
-            if (filter(module.exports, module, module.id)) {
-                resolve(raw ? module : module.exports);
-                cancel();
-                return;
-            }
-
-            if (!searchExports && !searchDefault) return;
-
-            let defaultKey: string | undefined;
-            const searchKeys: string[] = [];
-            if (searchExports) searchKeys.push(...Object.keys(module.exports));
-            else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
-
-            for (let i = 0; i < searchKeys.length; i++) {
-                const key = searchKeys[i];
-                const exported = module.exports[key];
-
-                if (shouldSkipModule(exported)) continue;
-
-                if (filter(exported, module, module.id)) {
-                    if (!defaultExport && defaultKey === key) {
-                        resolve(raw ? module : module.exports);
-                        cancel();
-                        return;
-                    }
-
-                    resolve(raw ? module : exported);
-                    cancel();
-                }
-            }
-        };
-
-        lazyListeners.add(listener);
-        abortSignal?.addEventListener("abort", () => {
+        if (filter(module.exports, module, module.id)) {
+            resolve(raw ? module : module.exports);
             cancel();
-            if (fatal) reject(makeException());
-            else resolve(undefined);
-        });
+            return;
+        }
+
+        if (!searchExports && !searchDefault) return;
+
+        let defaultKey: string | undefined;
+        const searchKeys: string[] = [];
+        if (searchExports) searchKeys.push(...Object.keys(module.exports));
+        else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
+
+        for (let i = 0; i < searchKeys.length; i++) {
+            const key = searchKeys[i];
+            const exported = module.exports[key];
+
+            if (shouldSkipModule(exported)) continue;
+
+            if (filter(exported, module, module.id)) {
+                if (!defaultExport && defaultKey === key) {
+                    resolve(raw ? module : module.exports);
+                    cancel();
+                    return;
+                }
+
+                resolve(raw ? module : exported);
+                cancel();
+            }
+        }
+    };
+
+    lazyListeners.add(listener);
+    abortSignal?.addEventListener("abort", () => {
+        cancel();
+        if (fatal) reject(makeException());
+        else resolve(undefined);
     });
+
+    return promise;
 }
 
 export async function forceLoad(id: string | number): Promise<any[]> {

@@ -23,14 +23,18 @@ import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
  * @returns {Promise<boolean>}
  */
 function showConfirmDelete(addon: import("./addonmanager").Addon) {
-    return new Promise(resolve => {
-        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
+    const {resolve, promise} = Promise.withResolvers();
+    Modals.showConfirmationModal(
+        t("Modals.confirmAction"),
+        t("Addons.confirmDelete", {name: addon.name}),
+        {
             danger: true,
             confirmText: t("Addons.deleteAddon"),
             onConfirm: () => {resolve(true);},
             onCancel: () => {resolve(false);}
-        });
-    });
+        },
+    );
+    return promise;
 }
 
 /** @typedef {Addon} Addon */
@@ -277,7 +281,7 @@ class Addon {
             return;
         }
 
-        const install = (shouldEnable: boolean) => new Promise<void>((resolve, reject) => {
+        const install = (shouldEnable: boolean) => new Promise<void>((resolveInstall, rejectInstall) => {
             request(Web.redirects.github(this.id.toString()), {
                 headers: {
                     "X-Store-Download": this.name,
@@ -319,42 +323,49 @@ class Addon {
                         type: "error"
                     });
 
-                    reject(error);
+                    rejectInstall(error);
                 }
                 finally {
-                    resolve();
+                    resolveInstall();
                 }
             });
         });
 
-        return this._download ??= new Promise((resolve) => {
-            const onFinish = () => {
-                delete this._download;
-                resolve();
-            };
+        if (this._download) return this._download;
 
-            if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => onFinish());
+        const {
+            promise = this._download,
+            resolve,
+        } = Promise.withResolvers<void>();
 
-            let installing = false;
+        const onFinish = () => {
+            delete this._download;
+            resolve();
+        };
 
-            const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
-                ...props,
-                addon: this,
-                install: (shouldEnable: boolean) => {
-                    installing = true;
-                    return install(shouldEnable);
-                }
-            }), {
-                onCloseCallback: onFinish,
-                // Override the on close request to make it only close when not installing
-                onCloseRequest() {
-                    // If installing make it so the modal cannot close until install is finished
-                    if (installing) return;
-                    Modals.ModalActions.closeModal(key);
-                },
-                // backdropStyle: "BLUR"
-            });
+        if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(onFinish);
+
+        let installing = false;
+
+        const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
+            ...props,
+            addon: this,
+            install: (shouldEnable: boolean) => {
+                installing = true;
+                return install(shouldEnable);
+            }
+        }), {
+            onCloseCallback: onFinish,
+            // Override the on close request to make it only close when not installing
+            onCloseRequest() {
+                // If installing make it so the modal cannot close until install is finished
+                if (installing) return;
+                Modals.ModalActions.closeModal(key);
+            },
+            // backdropStyle: "BLUR"
         });
+
+        return this._download = promise;
     }
 
     _download?: Promise<void>;

@@ -111,9 +111,12 @@ export default new class Core {
     }
 
     waitForConnection() {
-        return new Promise<void>(done => {
-            if (Stores.UserStore?.getCurrentUser()) return done();
-            DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", done);
-        });
+        const {promise, resolve} = Promise.withResolvers<void>();
+        if (Stores.UserStore?.getCurrentUser()) {
+            resolve();
+            return promise;
+        }
+        DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", resolve);
+        return promise;
     }
 };

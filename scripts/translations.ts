@@ -17,15 +17,15 @@ const get = (opts, postData) => {
     }
 
     if (!opts.method) opts.method = "GET";
-    return new Promise(resolve => {
-        const req = https.request(opts, res => {
-            let data = "";
-            res.on("data", chunk => data += chunk);
-            res.on("end", () => resolve(data));
-        });
-        if (postData) req.write(postData);
-        req.end();
+    const {promise, resolve} = Promise.withResolvers();
+    const req = https.request(opts, res => {
+        let data = "";
+        res.on("data", chunk => data += chunk);
+        res.on("end", () => resolve(data));
     });
+    if (postData) req.write(postData);
+    req.end();
+    return promise;
 };
 
 const HOST = "api.poeditor.com";

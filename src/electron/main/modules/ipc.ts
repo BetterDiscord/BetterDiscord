@@ -62,15 +62,15 @@ const toggleDevTools = (event: IpcMainEvent) => {
 };
 
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {
-    return new Promise<void>(resolve => {
-        const windowInstance = new BrowserWindow(windowOptions);
-        windowInstance.webContents.on("did-navigate", (__, navUrl) => {
-            if (navUrl != closeOnUrl) return;
-            windowInstance.close();
-            resolve();
-        });
-        windowInstance.loadURL(url);
+    const {promise, resolve} = Promise.withResolvers();
+    const windowInstance = new BrowserWindow(windowOptions);
+    windowInstance.webContents.on("did-navigate", (__, navUrl) => {
+        if (navUrl != closeOnUrl) return;
+        windowInstance.close();
+        resolve();
     });
+    windowInstance.loadURL(url);
+    return promise;
 };
 
 const inspectElement = async (event: IpcMainEvent) => {

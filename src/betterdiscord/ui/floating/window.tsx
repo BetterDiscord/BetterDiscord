@@ -10,14 +10,14 @@ const {useState, useCallback, useEffect, useRef} = React;
 
 
 function confirmClose(confirmationText: string) {
-    return new Promise(resolve => {
-        Modals.showConfirmationModal(t("Modals.confirmAction"), confirmationText, {
-            danger: true,
-            confirmText: t("Modals.close"),
-            onConfirm: () => {resolve(true);},
-            onCancel: () => {resolve(false);}
-        });
+    const {promise, resolve} = Promise.withResolvers();
+    Modals.showConfirmationModal(t("Modals.confirmAction"), confirmationText, {
+        danger: true,
+        confirmText: t("Modals.close"),
+        onConfirm: () => {resolve(true);},
+        onCancel: () => {resolve(false);}
     });
+    return promise;
 }
 
 class Screen {

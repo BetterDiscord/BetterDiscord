@@ -104,14 +104,14 @@ export default class DOMManager {
 
     static linkStyle(id: string, url: string, {documentHead = false} = {}) {
         id = this.escapeID(id);
-        return new Promise(resolve => {
-            const link: HTMLLinkElement = this.getElement(`#${id}`, this.bdStyles) as HTMLLinkElement || this.createElement("link", {id});
-            link.rel = "stylesheet";
-            link.href = url;
-            link.onload = resolve;
-            const target = documentHead ? document.head : this.bdStyles;
-            target.append(link);
-        });
+        const {promise, resolve} = Promise.withResolvers();
+        const link: HTMLLinkElement = this.getElement(`#${id}`, this.bdStyles) as HTMLLinkElement || this.createElement("link", {id});
+        link.rel = "stylesheet";
+        link.href = url;
+        link.onload = resolve;
+        const target = documentHead ? document.head : this.bdStyles;
+        target.append(link);
+        return promise;
     }
 
     static removeTheme(id: string) {
@@ -139,13 +139,13 @@ export default class DOMManager {
 
     static injectScript(id: string, url: string) {
         id = this.escapeID(id);
-        return new Promise((resolve, reject) => {
-            const script: HTMLScriptElement = this.getElement(`#${id}`, this.bdScripts) as HTMLScriptElement || this.createElement("script", {id});
-            script.src = url;
-            script.onload = resolve;
-            script.onerror = reject;
-            this.bdScripts.append(script);
-        });
+        const {promise, resolve, reject} = Promise.withResolvers();
+        const script: HTMLScriptElement = this.getElement(`#${id}`, this.bdScripts) as HTMLScriptElement || this.createElement("script", {id});
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        this.bdScripts.append(script);
+        return promise;
     }
 
     // https://javascript.info/js-animation

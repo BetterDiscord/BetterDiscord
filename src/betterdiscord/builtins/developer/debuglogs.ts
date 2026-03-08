@@ -77,13 +77,19 @@ export default new class DebugLogs extends Builtin {
             const stats = fs.statSync(this.logFile);
             const mb = stats.size / (1024 * 1024);
             if (mb < 100) return; // Under 100MB, all good
-            return new Promise<void>(resolve => Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.debuglog"), {
-                confirmText: t("Modals.okay"),
-                cancelText: t("Modals.cancel"),
-                danger: true,
-                onConfirm: () => fs.rmSync(this.logFile!),
-                onClose: resolve
-            }));
+            const {promise, resolve} = Promise.withResolvers<void>();
+            Modals.showConfirmationModal(
+                t("Modals.additionalInfo"),
+                t("Modals.debuglog"),
+                {
+                    confirmText: t("Modals.okay"),
+                    cancelText: t("Modals.cancel"),
+                    danger: true,
+                    onConfirm: () => fs.rmSync(this.logFile!),
+                    onClose: resolve
+                },
+            );
+            return promise;
         }
         catch (e) {
             this.stacktrace("Could not get debug log filesize", e as Error);

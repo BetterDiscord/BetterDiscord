@@ -66,14 +66,14 @@ function makeControlButton(title: string, children: ReactNode, action: () => voi
 }
 
 function confirmDelete(addon: Addon) {
-    return new Promise(resolve => {
-        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
-            danger: true,
-            confirmText: t("Addons.deleteAddon"),
-            onConfirm: () => {resolve(true);},
-            onCancel: () => {resolve(false);}
-        });
+    const {promise, resolve} = Promise.withResolvers();
+    Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
+        danger: true,
+        confirmText: t("Addons.deleteAddon"),
+        onConfirm: () => {resolve(true);},
+        onCancel: () => {resolve(false);}
     });
+    return promise;
 }
 
 /**

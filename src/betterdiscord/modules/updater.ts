@@ -31,18 +31,18 @@ import {Logo} from "@ui/logo";
 import {RefreshCcwIcon} from "lucide-react";
 
 const getJSON = (url: string) => {
-    return new Promise(resolve => {
-        request({
-            url: url,
-            headers: {
-                "Cache-Control": "no-cache",
-                "Pragma": "no-cache"
-            }
-        }, (error: Error, _: Response, body: string) => {
-            if (error) return resolve([]);
-            resolve(JSON.parse(body));
-        });
+    const {promise, resolve} = Promise.withResolvers();
+    request({
+        url: url,
+        headers: {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+        }
+    }, (error: Error, _: Response, body: string) => {
+        if (error) return resolve([]);
+        resolve(JSON.parse(body));
     });
+    return promise;
 };
 
 const reducer = (acc: Record<string, {name: string; version: string; id: number;}> | Record<string, never>, addon: BdWebAddon) => {
@@ -201,17 +201,22 @@ export class CoreUpdater {
             const asar = this.apiData.assets.find(a => a.name === "betterdiscord.asar");
             if (!asar) return;
 
-            const buff = await new Promise((resolve, reject) =>
-                request(asar.url, {
-                    headers: {
-                        "Content-Type": "application/octet-stream",
-                        "User-Agent": "BetterDiscord Updater",
-                        "Accept": "application/octet-stream"
-                    }
-                }, (err: Error, resp: {statusCode: number; statusMessage: string;}, body: string) => {
-                    if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
-                    return resolve(body);
-                }));
+            const {
+                promise: buff,
+                resolve: resolveBuff,
+                reject: rejectBuff,
+            } = Promise.withResolvers();
+
+            request(asar.url, {
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                    "User-Agent": "BetterDiscord Updater",
+                    "Accept": "application/octet-stream"
+                }
+            }, (err: Error, resp: {statusCode: number; statusMessage: string;}, body: string) => {
+                if (err || resp.statusCode != 200) return rejectBuff(err || `${resp.statusCode} ${resp.statusMessage}`);
+                return resolveBuff(body);
+            });
 
             const asarPath = path.join(Config.get("dataPath"), "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
