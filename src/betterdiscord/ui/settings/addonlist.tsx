@@ -23,6 +23,7 @@ import {type Addon} from "@modules/addonmanager";
 import type AddonManager from "@modules/addonmanager"; // eslint-disable-line no-duplicate-imports
 import type {Plugin} from "@modules/pluginmanager";
 import type {ChangeEvent, MouseEvent, ReactNode} from "react";
+import type {Theme} from "@modules/thememanager";
 
 
 
@@ -98,7 +99,7 @@ function confirmEnable(action: () => void, type: string) {
 
 function StoreCard() {
     // TODO: doggy update context type as needed
-    const {toggleStore, store} = React.useContext(addonContext) as {toggleStore(): void; store: AddonManager;};
+    const {toggleStore, store} = React.useContext(addonContext) as {toggleStore(): void; store: AddonManager<Plugin | Theme>;};
 
     if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
@@ -126,7 +127,7 @@ function StoreCard() {
  * @param {import("@modules/addonmanager").default} props.store
  * @returns
  */
-export default function AddonList({store}: {store: AddonManager;}) {
+export default function AddonList({store}: {store: AddonManager<Plugin | Theme>;}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState<ReturnType<typeof buildSortOptions>[number]["value"]>(getState.bind(null, store.prefix, "sort", "name"));
     const [ascending, setAscending] = useState(getState.bind(null, store.prefix, "ascending", true));
@@ -134,10 +135,10 @@ export default function AddonList({store}: {store: AddonManager;}) {
 
 
     const addonList = useStateFromStores(store, () => store.addonList.concat(), [store], true);
-    const addonState = useStateFromStores(store, () => Object.assign({}, store.state), [store], true);
+    const addonState = useStateFromStores(store, () => Object.assign({}, store.enablement), [store], true);
 
-    const onChange = useCallback((id: string) => {
-        store.toggleAddon(id);
+    const onChange = useCallback((addon: Plugin | Theme) => {
+        store.toggleAddon(addon);
     }, [store]);
 
     const enableAll = useCallback(() => {
@@ -167,12 +168,13 @@ export default function AddonList({store}: {store: AddonManager;}) {
     }, [store.prefix]);
 
     const search = useCallback((e: ChangeEvent<HTMLInputElement>) => setQuery(e.currentTarget.value.toLocaleLowerCase()), []);
-    const triggerEdit = useCallback((id: string) => store.editAddon?.(id), [store]);
-    const triggerDelete = useCallback(async (id: string) => {
-        const addon = addonList.find(a => a.id == id)!;
+    const triggerEdit = useCallback((addon: Plugin | Theme) => {
+        store.editAddon?.(addon);
+    }, [store]);
+    const triggerDelete = useCallback(async (addon: Plugin | Theme) => {
         const shouldDelete = await confirmDelete(addon);
         if (!shouldDelete) return;
-        store?.deleteAddon?.(addon);
+        await store?.deleteAddon?.(addon);
     }, [addonList, store]);
 
     const renderedCards = useMemo(() => {
@@ -204,7 +206,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
             const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance);
             return <ErrorBoundary id={addon.id} name="AddonCard">
-                <AddonCard store={store} disabled={addon.partial} type={store.prefix as "plugin" | "theme"} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} />
+                <AddonCard store={store} disabled={addon.partial} type={store.prefix as "plugin" | "theme"} editAddon={() => triggerEdit(addon)} deleteAddon={() => triggerDelete(addon)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} />
             </ErrorBoundary>;
         });
     }, [store, addonList, addonState, onChange, triggerDelete, triggerEdit, query, ascending, sort]);
@@ -219,7 +221,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
         </AddonHeader>,
         <div className={"bd-controls bd-addon-controls"}>
             <div className="bd-controls-basic">
-                {makeBasicButton(t("Addons.openFolder", {context: store.prefix}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.openFolder", {context: store.prefix}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder()), "folder")}
                 {makeBasicButton(t("Addons.enableAll"), <CheckIcon size="20px" />, confirmEnable(enableAll, store.prefix), "enable-all")}
                 {makeBasicButton(t("Addons.disableAll"), <XIcon size="20px" />, disableAll, "disable-all")}
             </div>
@@ -241,7 +243,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
             </div>
         </div>,
         <StoreCard />,
-        !hasAddonsInstalled && <Blankslate type={store.prefix as "plugin" | "theme"} folder={store.addonFolder} />,
+        !hasAddonsInstalled && <Blankslate type={store.prefix as "plugin" | "theme"} folder={store.addonFolder()} />,
         isSearching && !hasResults && hasAddonsInstalled && <NoResults />,
         hasAddonsInstalled && <div key="addonList" className={"bd-addon-list" + (view == "grid" ? " bd-grid-view" : "")}>{renderedCards}</div>
     ];

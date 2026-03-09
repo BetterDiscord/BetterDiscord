@@ -15,6 +15,9 @@ import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
 import clsx from "clsx";
 import type AddonErrorType from "@structs/addonerror";
 import DiscordModules from "@modules/discordmodules";
+import type {Plugin} from "@modules/pluginmanager";
+import type {AddonState} from "@modules/addonmanager";
+import type {Theme} from "@modules/thememanager";
 
 const Parser = DiscordModules.SimpleMarkdownWrapper.defaultRules;
 const {useState, useCallback, useMemo} = React;
@@ -54,15 +57,24 @@ function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
 }
 
 
-function generateTab(id: string, errors: AddonErrorType[]) {
-    return {id, errors, name: t(`Panels.${id}`)};
+function generateTab(id: string, states: Array<AddonState<Plugin>> | Array<AddonState<Theme>>) {
+    const errors: AddonErrorType[] = [];
+    for (const state of states) {
+        if (!("error" in state)) continue;
+        errors.push(state.error);
+    }
+    return {
+        id,
+        errors,
+        name: t(`Panels.${id}`),
+    };
 }
 
 export interface AddonErrorModalProps {
     transitionState?: number;
     onClose?(): void;
-    pluginErrors: AddonErrorType[];
-    themeErrors: AddonErrorType[];
+    pluginErrors: Array<AddonState<Plugin>>;
+    themeErrors: Array<AddonState<Theme>>;
 }
 
 /**

@@ -8,8 +8,8 @@ import Toasts from "@stores/toasts";
 import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
 import React from "@modules/react";
-import PluginManager from "@modules/pluginmanager";
-import ThemeManager from "@modules/thememanager";
+import PluginManager, {type Plugin} from "@modules/pluginmanager";
+import ThemeManager, {type Theme} from "@modules/thememanager";
 import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import Settings from "@stores/settings";
@@ -33,10 +33,7 @@ function showConfirmDelete(addon: import("./addonmanager").Addon) {
     });
 }
 
-/** @typedef {Addon} Addon */
-/** @typedef {Guild} Guild */
-
-class Guild {
+export class Guild {
 
     name: string;
     id: string;
@@ -100,13 +97,13 @@ class Guild {
     }
 }
 
-class Addon {
+export class Addon {
 
     id: number;
     name: string;
     avatar: string;
     author: string;
-    manager: AddonManager;
+    manager: typeof PluginManager | typeof ThemeManager;
     filename: string;
     type: "theme" | "plugin";
     description: string;
@@ -292,19 +289,20 @@ class Addon {
                     }
 
                     if (shouldEnable) {
-                        // Shouldn't need a try..catch but better safe than sorry
-                        try {
-                            const meta = AddonManager.prototype.extractMeta(text, this.filename);
-                            this.manager.state[meta.name as string || this.name] = true;
+                        const extracted = AddonManager.prototype.extractMeta(text, this.filename);
+                        let name: string;
+                        if (extracted.kind === "not-loaded") {
+                            name = this.name;
                         }
-                        catch {
-                            this.manager.state[this.name] = true;
+                        else {
+                            name = extracted.meta.name as string || this.name;
                         }
+                        this.manager.enablement[name] = true;
 
                         this.manager.saveState();
                     }
 
-                    fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
+                    fs.writeFileSync(path.join(this.manager.addonFolder(), this.filename), text);
 
                     Toasts.show(t("Addons.successfullyDownload", {name: this.name}), {
                         type: "success"
@@ -374,7 +372,7 @@ class Addon {
             if (!shouldDelete) return;
         }
 
-        if (this.manager.deleteAddon) this.manager.deleteAddon(foundAddon);
+        await this.manager.deleteAddon(foundAddon as Plugin & Theme);
     }
 
     /** @public */

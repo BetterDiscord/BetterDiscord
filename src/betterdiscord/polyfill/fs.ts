@@ -165,7 +165,43 @@ export const createWriteStream = (path: string, options: object) => {
 export const unlinkSync = (path: string) => Remote.filesystem.unlinkSync(path);
 export const unlink = (path: string) => Remote.filesystem.unlinkSync(path);
 
+export const promises = {
+    readFile: (path: string, options: object | BufferEncoding = "utf8") =>
+        Remote.filesystem.promises.readFile(path, options),
+
+    writeFile: (path: string, data: string | Uint8Array, options?: WriteOptions) =>
+        Remote.filesystem.promises.writeFile(path, data, options),
+
+    readdir: (path: string, options: object) =>
+        Remote.filesystem.promises.readDirectory(path, options),
+
+    mkdir: (path: string, options: object) =>
+        Remote.filesystem.promises.createDirectory(path, options),
+
+    rmdir: (path: string, options: object) =>
+        Remote.filesystem.promises.deleteDirectory(path, options),
+
+    rm: (path: string) =>
+        Remote.filesystem.promises.rm(path),
+
+    exists: (path: string) =>
+        Remote.filesystem.promises.exists(path),
+
+    stat: (path: string, options: object) =>
+        Remote.filesystem.promises.getStats(path, options),
+
+    lstat: (path: string, options: object) =>
+        Remote.filesystem.promises.getStats(path, options),
+
+    rename: (oldPath: string, newPath: string) =>
+        Remote.filesystem.promises.rename(oldPath, newPath),
+
+    realpath: (path: string, options: object) =>
+        Remote.filesystem.promises.getRealPath(path, options)
+};
+
 export default {
+    promises,
     readFile,
     exists,
     existsSync,

@@ -1,8 +1,8 @@
 import {t} from "@common/i18n";
 import {OptionTypes} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
-import Plugins from "@modules/pluginmanager";
-import Themes from "@modules/thememanager";
+import Plugins, {type Plugin} from "@modules/pluginmanager";
+import Themes, {type Theme} from "@modules/thememanager";
 
 
 export default (type: "plugin" | "theme") => {
@@ -41,15 +41,15 @@ export default (type: "plugin" | "theme") => {
         execute: async (data, {channel}) => {
             const action = data.find(o => o.name === "action").value;
             const addonId = data.find(o => o.name === "name").value;
-            const addon = manager.getAddon(addonId)!;
+            const addon = manager.getAddon(addonId)! as Plugin & Theme;
             const isEnabled = manager.isEnabled(addon.id);
 
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};
 
-                const err = manager.enableAddon(addon.id);
+                const err = await manager.enableAddon(addon);
 
-                if (err) {
+                if (err.kind === "not-started") {
                     return {content: t("Addons.couldNotEnable", {name: addon.id})};
                 }
 
@@ -59,9 +59,9 @@ export default (type: "plugin" | "theme") => {
             if (action === "disable") {
                 if (!isEnabled) return {content: `${addon.name} is already disabled!`};
 
-                const err = manager.disableAddon(addon.id);
+                const err = await manager.disableAddon(addon);
 
-                if (err) {
+                if (err.kind === "not-stopped") {
                     return {content: t("Addons.couldNotDisable", {name: addon.id})};
                 }
 

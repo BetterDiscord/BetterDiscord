@@ -12,6 +12,8 @@ import Toasts from "@stores/toasts";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
+import type {Theme} from "./thememanager";
+import type {Plugin} from "./pluginmanager";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
@@ -58,128 +60,174 @@ export interface Addon {
     website?: string;
 }
 
+export type AddonMeta = Record<string, string | string[]>;
 
-export default abstract class AddonManager extends Store {
+export type AddonMetaLoaded = {
+    kind: "loaded";
+    meta: AddonMeta;
+};
+export type AddonMetaNotLoaded = {
+    kind: "not-loaded";
+    error: AddonError;
+};
+export type AddonMetaLoad = AddonMetaLoaded | AddonMetaNotLoaded;
 
-    get name() {return "";}
-    get extension() {return "";}
-    get duplicatePattern() {return /./;}
-    get addonFolder() {return "";}
-    get language() {return "";}
-    get prefix() {return "";}
-    get order() {return 2;}
+export type AddonStateLoaded = {
+    kind: "loaded";
+    addon: Plugin | Theme;
+};
 
-    trigger(event: string, ...args: any[]) {
-        // Emit the events as a store for react
+export type AddonStateNotLoaded = {
+    kind: "not-loaded";
+    error: AddonError;
+};
+
+export type AddonStateStarted<A extends Plugin | Theme> = {
+    kind: "started";
+    addon: A;
+};
+
+export type AddonStateNotStarted = {
+    kind: "not-started";
+    error: AddonError;
+};
+
+export type AddonStateStopped = {
+    kind: "stopped";
+};
+
+export type AddonStateNotStopped = {
+    kind: "not-stopped";
+    error: AddonError;
+};
+
+export type AddonStateError = AddonStateNotLoaded | AddonStateNotStarted | AddonStateNotStopped;
+export type AddonStateLoad = AddonStateLoaded | AddonStateNotLoaded;
+export type AddonStateStart<A extends Plugin | Theme> = AddonStateStarted<A> | AddonStateNotStarted;
+export type AddonStateStop = AddonStateStopped | AddonStateNotStopped;
+export type AddonState<A extends Plugin | Theme> = AddonStateStart<A> | AddonStateLoad | AddonStateStop;
+
+export default abstract class AddonManager<A extends Plugin | Theme> extends Store {
+
+    protected abstract name: string;
+
+    abstract addonFolder(): string;
+    abstract validateFileBase(base: string): boolean;
+    abstract initializeAddon(addon: A): Promise<AddonStateLoad>;
+    abstract startAddon(addon: A): Promise<AddonStateStart<A>>;
+    abstract stopAddon(addon: A): Promise<AddonStateStop>;
+
+    constructor(
+        public prefix: string,
+        public language: string,
+        public order: number,
+    ) {
+        super();
+        this.pluralPrefix = prefix + "s";
+    }
+
+    /**
+     * Stats for each relative addon file path.
+     *
+     * @example "example.plugin.js"
+     * @todo If you are implementing multi-file addons, it will be "example/index.js" or whatever you are implementing.
+     */
+    protected fileStats: Map<string, fs.Stats> = new Map();
+
+    public enablement: Record<string, boolean> = {};
+
+    readonly pluralPrefix: string;
+
+    trigger(event: string, ...args: any[]): boolean {
         super.emitChange();
-
-        // Emit the events as a normal emitter while other parts
-        // of the codebase are still converting to stores
         return Events.emit(`${this.prefix}-${event}`, ...args);
-    }
+    };
 
-    timeCache: Record<string, number> = {};
-    abstract addonList: Addon[];
-    state: Record<string, boolean> = {};
-    windows = new Set<string>();
-    hasInitialized = false;
-    initialAddonsLoaded = 0;
+    addonList: A[] = [];
 
-    initialize() {
-        Settings.registerAddonPanel(this);
+    async initialize(): Promise<Array<AddonState<A>>> {
+        Settings.registerAddonPanel(this as unknown as AddonManager<Plugin> | AddonManager<Theme>);
 
-        const errors = this.loadAllAddons();
-        if (this.initialAddonsLoaded > 0) {
-            Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
+        const states = await this.loadAllAddons();
+        if (states.length > 0) {
+            Toasts.show(t("Addons.manyEnabled", {count: states.length, context: this.prefix}));
         }
-        this.hasInitialized = true;
-        return errors;
+        return states;
     }
 
-    // Subclasses should overload this and modify the addon object as needed to fully load it
-    abstract initializeAddon(addon: Addon): AddonError | undefined | void;
-
-    abstract startAddon(idOrAddon: string | Addon): AddonError | undefined | void;
-    abstract stopAddon(idOrAddon: string | Addon): AddonError | undefined | void;
-
-    loadState() {
-        const saved = JsonStore.get(`${this.prefix}s` as Files);
+    loadEnablement(): void {
+        const saved = JsonStore.get(this.pluralPrefix as Files);
         if (!saved) return;
-        Object.assign(this.state, saved);
+        Object.assign(this.enablement, saved);
     }
 
-    saveState() {
-        JsonStore.set(`${this.prefix}s` as Files, this.state);
+    saveState(): void {
+        JsonStore.set(this.pluralPrefix as Files, this.enablement);
     }
 
     watcher?: fs.FSWatcher;
-    watchAddons() {
-        if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
+    watchAddons(): void {
+        if (this.watcher) {
+            Logger.err(this.name, `Already watching ${this.prefix} addons.`);
+            return;
+        }
+
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
-        this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
-            // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
-            if (!eventType || !filename) return;
-            // console.log(eventType, filename)
 
-            const absolutePath = path.resolve(this.addonFolder, filename);
-            if (!filename.endsWith(this.extension)) {
-                // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
-                const match = filename.match(this.duplicatePattern);
-                if (!match) return;
-                const ext = match[0];
-                const truncated = filename.replace(ext, "");
-                const newFilename = truncated + this.extension;
+        const addonFolder = this.addonFolder();
 
-                // If this file already exists, give a warning and move on.
-                if (fs.existsSync(newFilename)) {
-                    Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
-                    return;
-                }
+        this.watcher = fs.watch(addonFolder, {persistent: false}, (eventType, filebase) => {
+            if (!eventType || !filebase) return;
 
-                // Rename the file and let it go on
-                try {
-                    fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
-                }
-                catch (error) {
-                    Logger.err(this.name, `Could not rename file: ${filename} ${newFilename}`, error);
-                }
+            if (!this.validateFileBase(filebase)) {
+                return;
             }
-            // console.log("watcher", "before promise");
-            await new Promise(r => setTimeout(r, 100));
+
+            const absolutePath = path.resolve(addonFolder, filebase);
+            const addon = this.addonList.find(a => a.filename === filebase);
+
+            if (!addon) {
+                Logger.err(this.name, `No addon cache found: ${filebase}.`);
+                return;
+            }
+
+            // previously we were waiting 100 ms here
+            let stats: fs.Stats;
             try {
-                const stats = fs.statSync(absolutePath);
-                // console.log("watcher", stats);
-                if (!stats.isFile()) return;
-                if (!stats || !stats.mtimeMs) return;
-                if (typeof (stats.mtimeMs) !== "number") return;
-                if (this.timeCache[filename] == stats.mtimeMs) return;
-                this.timeCache[filename] = stats.mtimeMs;
-                if (eventType == "rename") this.loadAddon(filename, true);
-                if (eventType == "change") this.reloadAddon(filename, true);
+                stats = fs.statSync(absolutePath);
             }
             catch (err) {
-                // window.watcherError = err;
-                // console.log("watcher", err);
-                // console.dir(err);
                 if ((err as SystemError).code !== "ENOENT" && !(err as SystemError)?.message.startsWith("ENOENT")) return;
-                delete this.timeCache[filename];
-                this.unloadAddon(filename, true);
+                this.fileStats.delete(filebase);
+                this.unloadAddon(addon, true);
+                return;
             }
+            if (!stats.isFile()) return;
+            if (this.fileStats.get(filebase)?.mtimeMs === stats.mtimeMs) return;
+            if (this.fileStats.set(filebase, stats)) return;
+
+            if (eventType == "rename") this.loadAddon(filebase, true);
+            if (eventType == "change") this.reloadAddon(addon, true);
         });
     }
 
-    unwatchAddons() {
+    unwatchAddons(): void {
         if (!this.watcher) return Logger.error(this.name, `Was not watching ${this.prefix} addons.`);
         this.watcher.close();
         delete this.watcher;
         Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
     }
 
-    extractMeta(fileContent: string, filename: string) {
+    extractMeta(fileContent: string, filename: string): AddonMetaLoad {
         const firstLine = fileContent.split("\n")[0];
 
         const hasMetaComment = firstLine.includes("/**");
-        if (!hasMetaComment) throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
+        if (!hasMetaComment) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix),
+            };
+        };
         const metaInfo = this.parseJSDoc(fileContent);
 
         /**
@@ -191,12 +239,15 @@ export default abstract class AddonManager extends Store {
         if (!metaInfo.version || typeof (metaInfo.version) !== "string") metaInfo.version = "???";
         if (!metaInfo.description || typeof (metaInfo.description) !== "string") metaInfo.description = t("Addons.noDescription");
 
-        return metaInfo;
+        return {
+            kind: "loaded",
+            meta: metaInfo,
+        };
     }
 
-    parseJSDoc(fileContent: string) {
+    parseJSDoc(fileContent: string): AddonMeta {
         const block = fileContent.split("/**", 2)[1].split("*/", 1)[0];
-        const out: Record<string, string | string[]> = {};
+        const out: AddonMeta = {};
         let field = "";
         let accum = "";
         for (const line of block.split(splitRegex)) {
@@ -229,68 +280,86 @@ export default abstract class AddonManager extends Store {
         return out;
     }
 
-    // Subclasses should overload this and modify the addon using the fileContent as needed to "require()"" the file
-    requireAddon(filename: string): Addon {
-        let fileContent = fs.readFileSync(filename, "utf8");
+    async requireAddon(filerel: string): Promise<AddonStateLoad> {
+        let fileContent = await fs.promises.readFile(filerel, "utf8");
         fileContent = stripBOM(fileContent);
-        const stats = fs.statSync(filename);
-        const addon = this.extractMeta(fileContent, path.basename(filename)) as Partial<Addon>;
+        const stats = fs.statSync(filerel);
+        const base = path.basename(filerel);
+        const extract = this.extractMeta(fileContent, base);
+        if (extract.kind === "not-loaded") {
+            return {
+                kind: "not-loaded",
+                error: extract.error,
+            };
+        }
+        const addon = extract.meta as Partial<Plugin | Theme>;
         if (!addon.author) addon.author = t("Addons.unknownAuthor");
         if (!addon.version) addon.version = "???";
         if (!addon.description) addon.description = t("Addons.noDescription");
         // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
-        addon.id = addon.name || path.basename(filename);
-        addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
-        addon.filename = path.basename(filename);
+        addon.id = addon.name || base;
+        addon.slug = base.replace(/.\w+.\w+$/, "").replace(/ /g, "-");
+        addon.filename = base;
         addon.added = stats.atimeMs;
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name!, filename, t("Addons.alreadyExists", {context: this.prefix, name: addon.name}), {}, this.prefix);
-        this.addonList.push(addon as Addon);
-        return addon as Addon;
+        if (this.addonList.find(c => c.id == addon.id)) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError(addon.name!, filerel, t("Addons.alreadyExists", {context: this.prefix, name: addon.name}), {}, this.prefix)
+            };
+        }
+        this.addonList.push(addon as A);
+        return {
+            kind: "loaded",
+            addon: addon as Plugin | Theme,
+        };
     }
 
-    // Subclasses should use the return (if not AddonError) and push to this.addonList
-    loadAddon(filename: string, shouldToast = false): AddonError | false | undefined | void {
-        if (typeof (filename) === "undefined") return;
-        let addon;
-        try {
-            addon = this.requireAddon(path.resolve(this.addonFolder, filename));
-        }
-        catch (e) {
+    async loadAddon(filename: string, shouldToast = false): Promise<AddonStateLoad | AddonStateStarted<A>> {
+        const required = await this.requireAddon(path.resolve(this.addonFolder(), filename));
+        if (required.kind === "not-loaded") {
             const partialAddon = this.addonList.find(c => c.filename == filename);
             if (partialAddon) {
                 partialAddon.partial = true;
-                this.state[partialAddon.id] = false;
+                this.enablement[partialAddon.id] = false;
                 this.trigger("loaded", partialAddon);
             }
-            return e as AddonError;
+            return required;
         }
 
-
-        const error = this.initializeAddon(addon);
-        if (error) {
-            this.state[addon.id] = false;
+        const {addon} = required;
+        const inited = await this.initializeAddon(addon as A);
+        if (inited.kind === "not-loaded") {
+            this.enablement[addon.id] = false;
             addon.partial = true;
             this.trigger("loaded", addon);
-            return error;
+            return inited;
         }
 
         if (shouldToast) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
         this.trigger("loaded", addon);
 
-        if (!this.state[addon.id]) return this.state[addon.id] = false;
-        return this.startAddon(addon);
+        if (this.enablement[addon.id]) {
+            await this.startAddon(addon as A);
+        }
+        else if (this.enablement[addon.id] === undefined) {
+            this.enablement[addon.id] = false;
+        }
+
+        return {
+            kind: this.enablement[addon.id] ? "started" : "loaded",
+            addon: addon as A,
+        };
     }
 
-    unloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true, isReload = false) {
-        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+    async unloadAddon(addon: A, shouldToast = true, isReload = false): Promise<boolean> {
         // console.log("watcher", "unloadAddon", idOrFileOrAddon, addon);
         if (!addon) return false;
-        if (this.state[addon.id]) {
-            if (isReload) this.stopAddon(addon);
-            else this.disableAddon(addon);
+        if (this.enablement[addon.id]) {
+            if (isReload) await this.stopAddon(addon);
+            else await this.disableAddon(addon);
         }
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
@@ -299,168 +368,175 @@ export default abstract class AddonManager extends Store {
         return true;
     }
 
-    reloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true) {
-        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        if (!addon) return false;
-        const didUnload = this.unloadAddon(addon, shouldToast, true);
-        if (addon && !didUnload) return didUnload;
-        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon as string, shouldToast);
+    async reloadAddon(addon: A, shouldToast = true): Promise<AddonStateLoad | AddonStateStarted<A>> {
+        const didUnload = await this.unloadAddon(addon, shouldToast, true);
+        if (!didUnload) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError(addon.name, addon.filename, "Failed to unload while reloading", {}, this.prefix)
+            };
+        }
+        return this.loadAddon(addon.filename, shouldToast);
     }
 
-    isLoaded(idOrFile: string) {
-        const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
-        if (!addon) return false;
-        return true;
+    isLoaded(idOrFile: string): boolean {
+        return this.getAddon(idOrFile) !== undefined;
     }
 
-    isEnabled(idOrFile: string) {
-        const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
+    isEnabled(idOrFile: string): boolean {
+        const addon = this.getAddon(idOrFile);
         if (!addon) return false;
-        return this.state[addon.id];
+        return this.enablement[addon.id];
     }
 
-    getAddon(idOrFile: string) {
+    getAddon(idOrFile: string): A | undefined {
         return this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
     }
 
-    enableAddon(idOrAddon: string | Addon) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon || addon.partial) return;
-        if (this.state[addon.id]) return;
-        this.state[addon.id] = true;
+    async enableAddon(addon: A): Promise<AddonStateStart<A>> {
+        if (addon.partial) {
+            return {
+                kind: "not-started",
+                error: new AddonError(addon.name, addon.filename, t("Addons.couldNotEnable", {name: addon.id}), {}, this.prefix),
+            };
+        }
+        if (this.enablement[addon.id]) {
+            return {
+                kind: "not-started",
+                error: new AddonError(addon.name, addon.filename, t("Addons.couldNotEnable", {name: addon.id}), {}, this.prefix),
+            };
+        }
+        this.enablement[addon.id] = true;
         this.trigger("enabled", addon);
         // setTimeout(() => {
 
-        const err = this.startAddon(addon);
+        const err = await this.startAddon(addon);
         this.saveState();
         return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 
-    enableAllAddons() {
+    async enableAllAddons(): Promise<Array<AddonStateStart<A>>> {
         const originalSetting = Settings.get("settings", "general", "showToasts");
         Settings.set("settings", "general", "showToasts", false);
+        const results: Array<AddonStateStart<A>> = [];
         for (let a = 0; a < this.addonList.length; a++) {
-            this.enableAddon(this.addonList[a]);
+            const result = await this.enableAddon(this.addonList[a]);
+            results.push(result);
         }
         Settings.set("settings", "general", "showToasts", originalSetting);
         this.trigger("batch");
+        return results;
     }
 
-    disableAddon(idOrAddon: string | Addon) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon || addon.partial) return;
-        if (!this.state[addon.id]) return;
-        this.state[addon.id] = false;
+    async disableAddon(addon: A): Promise<AddonStateStop> {
+        if (addon.partial) {
+            return {
+                kind: "not-stopped",
+                error: new AddonError(addon.name, addon.filename, t("Addons.couldNotDisable", {name: addon.id}), {}, this.prefix),
+            };
+        }
+        if (!this.enablement[addon.id]) {
+            return {
+                kind: "not-stopped",
+                error: new AddonError(addon.name, addon.filename, t("Addons.couldNotDisable", {name: addon.id}), {}, this.prefix),
+            };
+        }
+        this.enablement[addon.id] = false;
         this.trigger("disabled", addon);
         // setTimeout(() => {
-        const err = this.stopAddon(addon);
+        const err = await this.stopAddon(addon);
         this.saveState();
         return err;
         // }, SWITCH_ANIMATION_TIME);
     }
 
-    disableAllAddons() {
+    async disableAllAddons(): Promise<AddonStateStop[]> {
         const originalSetting = Settings.get("settings", "general", "showToasts");
         Settings.set("settings", "general", "showToasts", false);
+        const results: AddonStateStop[] = [];
         for (let a = 0; a < this.addonList.length; a++) {
-            this.disableAddon(this.addonList[a]);
+            const result = await this.disableAddon(this.addonList[a]);
+            results.push(result);
         }
         Settings.set("settings", "general", "showToasts", originalSetting);
         this.trigger("batch");
+        return results;
     }
 
-    toggleAddon(id: string) {
-        if (this.state[id]) this.disableAddon(id);
-        else this.enableAddon(id);
+    toggleAddon(addon: A): Promise<AddonStateStart<A> | AddonStateStop> {
+        if (this.enablement[addon.id]) return this.disableAddon(addon);
+        return this.enableAddon(addon);
     }
 
-    loadNewAddons() {
-        const files = fs.readdirSync(this.addonFolder);
-        const removed = this.addonList.filter(a => !files.includes(a.filename)).map(c => c.id);
-        const added = files.filter(f => !this.addonList.find(a => a.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
+    async loadNewAddons(): Promise<{added: string[]; removed: A[];}> {
+        const addonFolder = this.addonFolder();
+        const files = await fs.promises.readdir(addonFolder);
+        const removed = this.addonList.filter(a => !files.includes(a.filename));
+        const added = files.filter(f => !this.addonList.find(a => a.filename == f) && this.validateFileBase(f) && fs.statSync(path.resolve(addonFolder, f)).isFile());
         return {added, removed};
     }
 
-    updateList() {
-        const results = this.loadNewAddons();
-        for (const filename of results.added) this.loadAddon(filename);
-        for (const name of results.removed) this.unloadAddon(name);
+    async updateList(): Promise<void> {
+        const results = await this.loadNewAddons();
+        for (const filename of results.added) await this.loadAddon(filename);
+        for (const name of results.removed) await this.unloadAddon(name);
     }
 
-    loadAllAddons() {
-        this.loadState();
-        const errors = [];
-        const files = fs.readdirSync(this.addonFolder);
+    async loadAllAddons(): Promise<Array<AddonState<A>>> {
+        this.loadEnablement();
+        const states: Array<AddonState<A>> = [];
+        const addonFolder = this.addonFolder();
+        const files = await fs.promises.readdir(addonFolder);
 
         for (const filename of files) {
-            const absolutePath = path.resolve(this.addonFolder, filename);
-            const stats = fs.statSync(absolutePath);
-            if (!stats || !stats.isFile()) continue;
-            this.timeCache[filename] = stats.mtimeMs;
+            const absolutePath = path.resolve(addonFolder, filename);
+            const stats = await fs.promises.stat(absolutePath);
+            if (!stats.isFile()) continue;
+            this.fileStats.set(filename, stats);
 
-            if (!filename.endsWith(this.extension)) {
-                // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
-                const match = filename.match(this.duplicatePattern);
-                if (!match) continue;
-                const ext = match[0];
-                const truncated = filename.replace(ext, "");
-                const newFilename = truncated + this.extension;
-
-                // If this file already exists, give a warning and move on.
-                if (fs.existsSync(newFilename)) {
-                    Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
-                    continue;
-                }
-
-                // Rename the file and let it go on
-                fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
+            if (!this.validateFileBase(filename)) {
+                continue;
             }
-            const addon = this.loadAddon(filename, false);
-            if (addon instanceof AddonError) errors.push(addon);
-            else if (addon !== false) this.initialAddonsLoaded++;
+            const load = await this.loadAddon(filename, false);
+            states.push(load);
         }
 
         this.saveState();
         this.watchAddons();
-        return errors;
+        return states;
     }
 
-    deleteAddon(idOrFileOrAddon: string | Addon) {
-        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        if (!addon) return;
+    deleteAddon(addon: A): Promise<void> {
         // console.log(path.resolve(this.addonFolder, addon.filename), fs.unlinkSync)
-        return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
+        return fs.promises.unlink(path.resolve(this.addonFolder(), addon.filename));
     }
 
-    saveAddon(idOrFileOrAddon: string | Addon, content: string) {
-        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        if (!addon) return;
-        return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
+    saveAddon(addon: A, content: string): Promise<void> {
+        return fs.promises.writeFile(path.resolve(this.addonFolder(), addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | "external" | boolean) {
-        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        if (!addon) return;
-        const fullPath = path.resolve(this.addonFolder, addon.filename);
+    async editAddon(addon: A, system?: "system" | "detached" | "external" | boolean): Promise<void> {
+        const fullPath = path.resolve(this.addonFolder(), addon.filename);
         if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction");
         if (system === "system") return openItem(`${fullPath}`);
         else if (system === "external") return RemoteAPI.editor.open(this.prefix as "theme", addon.filename);
         return this.openDetached(addon);
     }
 
-    openDetached(addon: Addon) {
-        const fullPath = path.resolve(this.addonFolder, addon.filename);
-        const content = fs.readFileSync(fullPath).toString();
-
+    windows = new Set<string>();
+    async openDetached(addon: A): Promise<void> {
+        const fullPath = path.resolve(this.addonFolder(), addon.filename);
         if (this.windows.has(fullPath)) return;
+
+        const content = fs.promises.readFile(fullPath, "utf8");
         this.windows.add(fullPath);
 
         const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
         const editor = React.createElement(AddonEditor, {
             id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
-            content: content,
+            content: await content,
             save: this.saveAddon.bind(this, addon),
             openNative: this.editAddon.bind(this, addon, true),
             language: this.language

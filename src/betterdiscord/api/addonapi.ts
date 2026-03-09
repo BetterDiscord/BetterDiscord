@@ -1,63 +1,71 @@
-import type AddonManager from "@modules/addonmanager";
+import type {default as AddonManager, AddonStateLoad, AddonStateStart, AddonStateStarted, AddonStateStop} from "@modules/addonmanager";
+import type {default as PluginManager, Plugin} from "@modules/pluginmanager";
+import type {default as ThemeManager, Theme} from "@modules/thememanager";
 
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are accessible through the {@link BdApi}.
  * @name AddonAPI
  */
-class AddonAPI {
-    #manager: AddonManager;
+class AddonAPI<A extends Theme | Plugin> {
+    #manager: AddonManager<A>;
 
-    constructor(manager: AddonManager) {this.#manager = manager;}
+    constructor(manager: typeof PluginManager | typeof ThemeManager) {this.#manager = manager as unknown as AddonManager<A>;}
 
     /**
      * The path to the addon folder.
-     * @type string
+     * @type {string}
      */
-    get folder() {return this.#manager.addonFolder;}
+    get folder(): string {return this.#manager.addonFolder();}
 
     /**
      * Determines if a particular addon is enabled.
      * @param {string} idOrFile Addon ID or filename
      * @returns {boolean}
      */
-    isEnabled(idOrFile: string) {return this.#manager.isEnabled(idOrFile);}
+    isEnabled(idOrFile: string): boolean {return this.#manager.isEnabled(idOrFile);}
 
     /**
      * Enables the given addon.
-     * @param {string} idOrFile Addon ID or filename
+     * @param {A} addon Addon instance
+     * @returns {Promise<AddonStateStart<A>>}
      */
-    enable(idOrAddon: string) {return this.#manager.enableAddon(idOrAddon);}
+    enable(addon: A): Promise<AddonStateStart<A>> {return this.#manager.enableAddon(addon);}
 
     /**
      * Disables the given addon.
-     * @param {string} idOrFile Addon ID or filename
+     * @param {A} addon Addon instance
+     * @return {Promise<AddonStateStop>}
      */
-    disable(idOrAddon: string) {return this.#manager.disableAddon(idOrAddon);}
+    disable(addon: A): Promise<AddonStateStop> {return this.#manager.disableAddon(addon);}
 
     /**
      * Toggles if a particular addon is enabled.
-     * @param {string} idOrFile Addon ID or filename
+     * @param {A} addon Addon instance
+     * @returns {Promise<AddonStateStop | AddonStateStart<A>>}
      */
-    toggle(idOrAddon: string) {return this.#manager.toggleAddon(idOrAddon);}
+    toggle(addon: A): Promise<AddonStateStop | AddonStateStart<A>> {return this.#manager.toggleAddon(addon);}
 
     /**
      * Reloads if a particular addon is enabled.
-     * @param {string} idOrFile Addon ID or filename
+     * @param {A} addon Addon instance
+     * @returns {Promise<AddonStateLoad | AddonStateStarted<A>>}
      */
-    reload(idOrFileOrAddon: string) {return this.#manager.reloadAddon(idOrFileOrAddon);}
+    reload(addon: A): Promise<AddonStateLoad | AddonStateStarted<A>> {
+        return this.#manager.reloadAddon(addon);
+    }
 
     /**
      * Gets a particular addon.
      * @param {string} idOrFile Addon ID or filename
-     * @returns {object} Addon instance
+     * @returns {A} Addon instance
      */
     get(idOrFile: string) {return this.#manager.getAddon(idOrFile);}
 
     /**
      * Gets all addons of this type.
-     * @returns {Array<object>} Array of all addon instances
+     * @returns {A[]} Array of all addon instances
      */
-    getAll() {return this.#manager.addonList.map(a => this.#manager.getAddon(a.id));}
+    getAll(): A[] {return [...this.#manager.addonList];}
 }
 
 Object.freeze(AddonAPI);
