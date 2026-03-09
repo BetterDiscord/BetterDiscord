@@ -333,10 +333,7 @@ class Addon {
 
         if (this._download) return this._download;
 
-        const {
-            promise = this._download,
-            resolve,
-        } = Promise.withResolvers<void>();
+        const {promise, resolve} = Promise.withResolvers<void>();
 
         const onFinish = () => {
             delete this._download;
