@@ -19,15 +19,19 @@ function maybeHasOtherClientMod() {
     return extendsIndex < str.indexOf("{");
 }
 
+export type BrowserWindowType = BrowserWindow;
 class BrowserWindow extends electron.BrowserWindow {
-    private __originalPreload?: string;
+    public __originalPreload?: string;
 
     /**
      * @param {import("electron").BrowserWindowConstructorOptions} options
      * @returns
      */
     constructor(options: BrowserWindowConstructorOptions) {
-        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
+        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) {
+            super(options);
+            return;
+        };
 
         if (maybeHasOtherClientMod() && BetterDiscord.clientModCompatibility.shouldShow()) {
             // Not i18n but the i18n system doesn't exist here
@@ -67,8 +71,8 @@ class BrowserWindow extends electron.BrowserWindow {
 
         const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
 
-        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
-        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
+        process.env.BETTERDISCORD_NATIVE_FRAME = String(options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true));
+        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = String(inAppTrafficLights);
 
         if (inAppTrafficLights) {
             delete options.titleBarStyle;
@@ -94,11 +98,7 @@ class BrowserWindow extends electron.BrowserWindow {
             apply(target, thisArg, argArray) {
                 const handler = argArray[0];
 
-                /**
-                 *
-                 * @type {(details: import("electron").HandlerDetails) => import("electron").WindowOpenHandlerResponse} callback
-                 */
-                argArray[0] = function (details) {
+                argArray[0] = function (details: electron.HandlerDetails): electron.WindowOpenHandlerResponse {
                     // const match = details.url.match(EDITOR_URL_REGEX);
                     // if (match) {
                     //     const isCustomCSS = match[1] === undefined;
@@ -144,7 +144,7 @@ Object.defineProperty(BrowserWindow, "name", {value: "BrowserWindow", configurab
 export default class {
     static patchBrowserWindow() {
         const electronPath = require.resolve("electron");
-        delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
-        require.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
+        delete require.cache[electronPath]!.exports; // If it didn't work, try to delete existing
+        require.cache[electronPath]!.exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }
 }

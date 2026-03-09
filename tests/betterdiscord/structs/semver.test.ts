@@ -98,7 +98,7 @@ describe("Semver", () => {
                 ["1.2.3", "1.2.4", 1], // patch bump
                 ["1.2.0", "1.3.0", 1], // minor bump
                 ["2.0.0", "1.9.9", -1], // major takes precedence
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);
@@ -115,7 +115,7 @@ describe("Semver", () => {
                 ["1.0.0-beta", "1.0.0-alpha", -1], // alphabetical order
                 ["1.0.0-alpha.1", "1.0.0-alpha.beta", 1], // numeric vs non-numeric
                 ["1.0.0-alpha.beta", "1.0.0-beta", 1] // depth comparison
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);
@@ -129,7 +129,7 @@ describe("Semver", () => {
                 ["1.0.0-alpha+build", "1.0.0-alpha", 0], // build metadata doesn't affect precedence
                 ["1.0.0+build.1", "1.0.1+build.1", 1], // version takes precedence over build
                 ["1.0.0-alpha+build", "1.0.0+build", 1] // prerelease takes precedence over build
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);
@@ -144,7 +144,7 @@ describe("Semver", () => {
                 ["", "", 0], // empty strings
                 ["1.0", "1.0.0", 0], // incomplete version
                 ["1", "1.0.0", 0] // incomplete version
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);
@@ -159,7 +159,7 @@ describe("Semver", () => {
                 ["1.2.3", "1.02.003", 0], // mixed leading zeros
                 ["10.0.0", "2.0.0", -1], // proper numeric comparison
                 ["2.0.0", "10.0.0", 1] // proper numeric comparison
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);
@@ -174,7 +174,7 @@ describe("Semver", () => {
                 ["1.0.0-beta.11", "1.0.0-rc.1", 1],
                 ["1.0.0-rc.1", "1.0.0", 1],
                 ["1.0.0-alpha", "1.0.0-alpha.beta", 1]
-            ];
+            ] as const;
 
             for (const [current, remote, expected] of cases) {
                 expect(comparator(current, remote)).toBe(expected);

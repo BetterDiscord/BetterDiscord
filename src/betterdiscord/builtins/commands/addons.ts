@@ -1,12 +1,12 @@
 import {t} from "@common/i18n";
+import type {AddonSome, AddonType} from "@modules/addon";
+import {managerFromType} from "@modules/addonmanagerfrom";
 import {OptionTypes} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
-import Plugins from "@modules/pluginmanager";
-import Themes from "@modules/thememanager";
 
 
-export default (type: "plugin" | "theme") => {
-    const manager = type === "plugin" ? Plugins : Themes;
+export default (type: AddonType) => {
+    const manager = managerFromType(type);
 
     return {
         id: `${type}s`,
@@ -31,25 +31,22 @@ export default (type: "plugin" | "theme") => {
                 description: `Name of the ${type}`,
                 required: true,
                 get choices() {
-                    return manager.addonList.map(p => ({
-                        name: p.name,
-                        value: p.id
-                    }));
+                    return Object.entries(manager.cacheByName).map(([name, {id: value}]) => ({name, value}));
                 }
             }
         ],
-        execute: async (data, {channel}) => {
-            const action = data.find(o => o.name === "action").value;
-            const addonId = data.find(o => o.name === "name").value;
-            const addon = manager.getAddon(addonId)!;
+        execute: async (data: Array<{name: "name", value: string;} | {name: "action", value: "enable";}>, {channel}: {channel: {id: string;};}) => {
+            const action = data.find(o => o.name === "action")!.value;
+            const addonId = data.find(o => o.name === "name")!.value;
+            const addon = manager.getAddon(addonId)! as AddonSome;
             const isEnabled = manager.isEnabled(addon.id);
 
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};
 
-                const err = manager.enableAddon(addon.id);
+                const err = await manager.enableAddon(addon);
 
-                if (err) {
+                if (err.kind === "not-started") {
                     return {content: t("Addons.couldNotEnable", {name: addon.id})};
                 }
 
@@ -59,9 +56,9 @@ export default (type: "plugin" | "theme") => {
             if (action === "disable") {
                 if (!isEnabled) return {content: `${addon.name} is already disabled!`};
 
-                const err = manager.disableAddon(addon.id);
+                const err = await manager.disableAddon(addon);
 
-                if (err) {
+                if (err.kind === "not-stopped") {
                     return {content: t("Addons.couldNotDisable", {name: addon.id})};
                 }
 

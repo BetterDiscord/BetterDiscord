@@ -22,11 +22,11 @@ import {HistoryIcon} from "lucide-react";
 import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
-import {type Plugin} from "@modules/pluginmanager";
 import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
+import type {Plugin} from "@modules/plugin";
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -552,7 +552,15 @@ function useCollectionMenu(collection: SettingsCollection) {
 }
 
 function useAddonMenu(manager: AddonManager) {
-    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.getAddon(name), manager.isEnabled(name)] as const), [], true);
+    const addons = useStateFromStores(manager, () => {
+        return Object.values(manager.cacheByName)
+            .sort((a, b) => {
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+            })
+            .map((a) => {
+                return [a.name, a, manager.enablement[a.id] || false] as const;
+            });
+    }, [], true);
     const addonStoreIsEnabled = useStateFromStores(Settings, () => Settings.get("settings", "store", "bdAddonStore"), []);
 
     const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
@@ -564,7 +572,7 @@ function useAddonMenu(manager: AddonManager) {
             disabled={addon?.partial}
             action={(e: MouseEvent) => {
                 if (!e.shiftKey) {
-                    manager.toggleAddon(name);
+                    manager.toggleAddon(addon);
                     return;
                 }
 

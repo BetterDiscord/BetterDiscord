@@ -68,7 +68,7 @@ function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll
         {!filenames.length && <NoUpdates type={type} />}
         {filenames.map(f => {
             const info = updater.cache[f];
-            const addon = updater.manager.addonList.find(a => a.filename === f)!;
+            const addon = updater.manager.cacheByFilename[f];
 
             if (!info) return null;
 
@@ -82,12 +82,12 @@ function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll
 
 export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}: {coreUpdater: typeof CoreUpdater; pluginUpdater: typeof PluginUpdater; themeUpdater: typeof ThemeUpdater;}) {
     const [hasCoreUpdate, setCoreUpdate] = useState(coreUpdater.hasUpdate);
-    const [updates, setUpdates] = useState({plugins: pluginUpdater.pending.slice(0), themes: themeUpdater.pending.slice(0)});
+    const [updates, setUpdates] = useState({plugins: Array.from(pluginUpdater.pending), themes: Array.from(themeUpdater.pending)});
 
     const checkAddons = useCallback(async (type: "plugins" | "themes") => {
         const updater = type === "plugins" ? pluginUpdater : themeUpdater;
         await updater.checkAll(false);
-        setUpdates({...updates, [type]: updater.pending.slice(0)});
+        setUpdates({...updates, [type]: Array.from(updater.pending)});
     }, [updates, pluginUpdater, themeUpdater]);
 
     const update = useCallback(() => {
@@ -119,8 +119,8 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
         await checkAddons("plugins");
         await checkAddons("themes");
         setUpdates({
-            plugins: pluginUpdater.pending.slice(0),
-            themes: themeUpdater.pending.slice(0)
+            plugins: Array.from(pluginUpdater.pending),
+            themes: Array.from(themeUpdater.pending)
         });
         Toasts.info(t("Updater.finishedChecking"));
     }, [checkAddons, checkCoreUpdate, pluginUpdater, themeUpdater]);

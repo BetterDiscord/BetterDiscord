@@ -1,5 +1,5 @@
-import path from "path";
 import vm from "vm";
+import path from "path";
 
 import Logger from "@common/logger";
 
@@ -8,47 +8,24 @@ import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
 import Modals from "@ui/modals";
+import type {Plugin} from "./plugin";
+import type {AddonStateLoad, AddonStateLoaded, AddonStateStart, AddonStateStop} from "./addonstate";
 
-
-export interface Plugin extends Addon {
-    exports: any;
-    instance: {
-        load?(): void;
-        start(): void;
-        stop(): void;
-        observer?(m: MutationRecord): void;
-        getSettingsPanel?(): any;
-        onSwitch?(): void;
-    };
-}
-
-const normalizeExports = (name: string) => `
-if (module.exports.default) {
-    module.exports = module.exports.default;
-}
-if (typeof(module.exports) !== "function") {
-    module.exports = eval("${name}");
-}`;
-
-export default new class PluginManager extends AddonManager {
-    get name() {return "PluginManager";}
-    get extension() {return ".plugin.js";}
-    get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
-    get addonFolder() {return Config.get("pluginsPath");}
-    get prefix() {return "plugin" as const;}
-    get language() {return "javascript";}
-    get order() {return 3;}
-
-    addonList: Plugin[] = [];
+export default new class PluginManager extends AddonManager<Plugin> {
     observer: MutationObserver;
+    name = "PluginManager";
 
     constructor() {
-        super();
+        super(
+            "plugin",
+            "javascript",
+            3,
+        );
         this.onSwitch = this.onSwitch.bind(this);
         this.observer = new MutationObserver((mutations) => {
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
@@ -57,129 +34,304 @@ export default new class PluginManager extends AddonManager {
         });
     }
 
-    initialize() {
-        const errors = super.initialize();
+    async initialize() {
+        const errors = await super.initialize();
         this.setupFunctions();
         return errors;
     }
 
     /* Aliases */
     updatePluginList() {return this.updateList();}
-    loadAllPlugins() {return this.loadAllAddons();}
 
-    enablePlugin(idOrAddon: string | Plugin) {return this.enableAddon(idOrAddon);}
-    disablePlugin(idOrAddon: string | Plugin) {return this.disableAddon(idOrAddon);}
-    togglePlugin(id: string) {return this.toggleAddon(id);}
+    enablePlugin(plugin: Plugin) {return this.enableAddon(plugin);}
+    disablePlugin(plugin: Plugin) {return this.disableAddon(plugin);}
+    togglePlugin(plugin: Plugin) {return this.toggleAddon(plugin);}
 
-    unloadPlugin(idOrFileOrAddon: string | Plugin) {return this.unloadAddon(idOrFileOrAddon);}
+    unloadPlugin(plugin: Plugin) {return this.unloadAddon(plugin);}
     loadPlugin(filename: string) {return this.loadAddon(filename);}
 
-    loadAddon(filename: string, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
-        if (error && shouldCTE) Modals.showAddonErrors({plugins: [error]});
-        return error;
+    async loadAddon(filename: string, shouldCTE = true) {
+        const load = await super.loadAddon(filename, shouldCTE);
+        if (load.kind === "not-loaded" && shouldCTE) Modals.showAddonErrors({plugins: [load]});
+        return load;
     }
 
-    reloadPlugin(idOrFileOrAddon: string | Plugin) {
-        const error = this.reloadAddon(idOrFileOrAddon);
-        if (error) Modals.showAddonErrors({plugins: [error]});
-        return typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+    async reloadPlugin(plugin: Plugin) {
+        const reload = await this.reloadAddon(plugin);
+        if (reload.kind === "not-loaded") Modals.showAddonErrors({plugins: [reload]});
+        return typeof (plugin) == "string" ? this.getAddon(plugin) : plugin;
     }
 
     /* Overrides */
-    initializeAddon(addon: Plugin) {
-        if (!addon.exports || !addon.name) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin had no exports or @name property", {message: "Plugin had no exports or no @name property. @name property is required for all addons.", stack: ""}, this.prefix);
+    addonFolder(): string {
+        return Config.get("pluginsPath");
+    }
+
+    validateFilename(base: string): boolean {
+        return base.endsWith(".plugin.js") || base.endsWith(".plugin.mjs");
+    }
+
+    async initializeAddon(addon: Plugin): Promise<AddonStateLoad> {
+        if (!addon.exports || !addon.name) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon,
+                    message: "Plugin had no exports or @name property",
+                }),
+            };
+        };
 
         try {
-            const isValid = typeof (addon.exports) === "function";
-            if (!isValid) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin not a valid format.", {message: "Plugins should be either a function or a class", stack: ""}, this.prefix);
+            const isFunc = typeof addon.exports === "function";
+            const isObj = typeof addon.exports === "object";
+            const isValid = isFunc || isObj;
+            if (!isValid) {
+                return {
+                    kind: "not-loaded",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon,
+                        message: "Plugins should be either a function, object or a class"
+                    }),
+                };
+            };
 
             const PluginClass = addon.exports;
             const meta = Object.assign({}, addon);
             delete meta.exports;
-            const thePlugin = PluginClass.prototype ? new PluginClass(meta) : addon.exports(meta);
-            if (!thePlugin.start || !thePlugin.stop) return new AddonError(addon.name || addon.filename, addon.filename, "Missing start or stop function.", {message: "Plugins must have both a start and stop function.", stack: ""}, this.prefix);
+            const thePlugin = isObj ? addon.exports : PluginClass.prototype ? new PluginClass(meta) : addon.exports(meta);
+            if (!thePlugin.start || !thePlugin.stop) {
+                return {
+                    kind: "not-loaded",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon,
+                        message: "Plugins must have both a start and stop function."
+                    }),
+                };
+            };
 
             addon.instance = thePlugin;
             addon.name = thePlugin.getName ? thePlugin.getName() : addon.name;
             addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author;
             addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description;
             addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version;
-            if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin is missing name, author, description, or version", {message: "Plugin must provide name, author, description, and version.", stack: ""}, this.prefix);
+            if (!addon.name || !addon.author || !addon.description || !addon.version) {
+                return {
+                    kind: "not-loaded",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon,
+                        message: "Plugin must provide name, author, description, and version.",
+                    }),
+                };
+            };
             try {
-                if (typeof (addon.instance.load) == "function") addon.instance.load();
+                if (typeof (addon.instance.load) == "function") await addon.instance.load();
             }
             catch (error) {
-                this.state[addon.id] = false;
-                return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "load()"}), {message: (error as Error).message, stack: (error as Error).stack}, this.prefix);
+                this.enablement[addon.id] = false;
+                return {
+                    kind: "not-loaded",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon,
+                        message: t("Addons.methodError", {method: "load()"}),
+                        cause: error as Error,
+                    }),
+                };
             }
         }
         catch (error) {
-            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "Plugin constructor()"}), {message: (error as Error).message, stack: (error as Error).stack}, this.prefix);
+            return {
+                kind: "not-loaded",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon,
+                    message: t("Addons.methodError", {method: "constructor()"}),
+                    cause: error as Error,
+                }),
+            };
+        }
+        return {
+            kind: "loaded",
+            addon,
+        };
+    }
+
+    private async runIIFE(addon: Plugin): Promise<void> {
+        const module = {filename: addon.filename, exports: {} as any};
+        const extension = `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
+        addon.fileContent += extension;
+        vm.compileFunction(addon.fileContent!, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(addon.filename)});
+        const wrappedPlugin = new Function("require", "module", "exports", "__filename", "__dirname", addon.fileContent!); // eslint-disable-line no-new-func
+        await wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder());
+
+        if (module.exports.default) {
+            module.exports = module.exports.default;
+        }
+        if (typeof module.exports !== "function" && typeof module.exports !== "object") {
+            module.exports = null;
+        }
+        addon.exports = module.exports;
+        delete addon.fileContent;
+    }
+
+    private async requireIIFEAddon(loaded: AddonStateLoaded): Promise<AddonStateLoad> {
+        const addon = loaded.addon as Plugin;
+        try {
+            await this.runIIFE(addon);
+            return {
+                kind: "loaded",
+                addon,
+            };
+        }
+        catch (err) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon,
+                    message: t("Addons.compileError"),
+                    cause: err as Error,
+                }),
+            };
         }
     }
 
-    requireAddon(filename: string) {
-        const addon = super.requireAddon(filename) as Plugin;
+    private async requireESMAddon(loaded: AddonStateLoaded): Promise<AddonStateLoad> {
+        const addon = loaded.addon as Plugin;
+
         try {
-            const module = {filename, exports: {}};
-            // Test if the code is valid gracefully
-            vm.compileFunction(addon.fileContent!, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(filename)});
-            addon.fileContent += normalizeExports(addon.exports || addon.name);
-            addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
-            const wrappedPlugin = new Function("require", "module", "exports", "__filename", "__dirname", addon.fileContent!); // eslint-disable-line no-new-func
-            wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
-            addon.exports = module.exports;
-            delete addon.fileContent;
-            return addon;
+            addon.exports = await import("bd:addons/plugins/" + addon.filename + "?t=" + Date.now());
+            if (addon.exports.default) {
+                addon.exports = addon.exports.default;
+            }
+
+            return {
+                kind: "loaded",
+                addon,
+            };
         }
         catch (err) {
-            throw new AddonError(addon.name || addon.filename, filename, t("Addons.compileError"), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
+            return {
+                kind: "not-loaded",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon,
+                    message: t("Addons.compileError"),
+                    cause: err as Error,
+                }),
+            };
         }
     }
 
-    startAddon(idOrAddon: string | Plugin) {return this.startPlugin(idOrAddon);}
-    stopAddon(idOrAddon: string | Plugin) {return this.stopPlugin(idOrAddon);}
-    getAddon(id: string) {return this.getPlugin(id);}
-
-    startPlugin(idOrAddon: string | Plugin) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        const plugin = addon.instance;
-        try {
-            plugin.start();
+    async requireAddon(filename: string): Promise<AddonStateLoad> {
+        const requireResult = await super.requireAddon(path.resolve(this.addonFolder(), filename));
+        if (requireResult.kind === "not-loaded") return requireResult;
+        const plugin = requireResult.addon as Plugin;
+        const usesESM = plugin.use && plugin.use.includes("esm");
+        if (filename.endsWith(".plugin.mjs") || usesESM) {
+            return this.requireESMAddon(requireResult);
         }
-        catch (err) {
-            this.state[addon.id] = false;
-            this.trigger("disabled", addon);
-            Toasts.warning(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
-            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
-        }
-        this.trigger("started", addon.id);
-
-        if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        return this.requireIIFEAddon(requireResult);
     }
 
-    stopPlugin(idOrAddon: string | Plugin) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        const plugin = addon.instance;
+    startAddon(plugin: Plugin) {return this.startPlugin(plugin);}
+    stopAddon(plugin: Plugin) {return this.stopPlugin(plugin);}
+    getAddon(idOrFile: string) {return this.getPlugin(idOrFile);}
+
+    async startPlugin(plugin: Plugin): Promise<AddonStateStart<Plugin>> {
+        if (typeof plugin === "string") {
+            const err = "'BdApi.Plugins.start(string)' is deprecated, use 'BdApi.Plugins.start(BdApi.Plugins.get(id))'.";
+            Logger.warn(this.name, err);
+            plugin = this.getPlugin(plugin) as Plugin;
+            if (!plugin) {
+                return {
+                    kind: "not-started",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon: {filename: String(plugin)},
+                        message: t("Addons.methodError", {method: "start(string)"}),
+                        cause: new Error(err),
+                    }),
+                };
+            }
+        }
+        const instance = plugin.instance;
         try {
-            plugin.stop();
+            instance.start();
         }
         catch (err) {
-            this.state[addon.id] = false;
-            Toasts.warning(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err as Error);
-            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
+            this.enablement[plugin.id] = false;
+            this.trigger("disabled", plugin);
+            Toasts.warning(t("Addons.couldNotStart", {name: plugin.name, version: plugin.version}));
+            Logger.stacktrace(this.name, `${plugin.name} v${plugin.version} could not be started.`, err as Error);
+            return {
+                kind: "not-started",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon: plugin,
+                    message: t("Addons.methodError", {method: "start(name)"}),
+                    cause: err as Error,
+                }),
+            };
         }
-        this.trigger("stopped", addon.id);
-        Toasts.error(t("Addons.disabled", {name: addon.name, version: addon.version}));
+        this.trigger("started", plugin.id);
+
+        Toasts.success(t("Addons.enabled", {name: plugin.name, version: plugin.version}));
+        return {
+            kind: "started",
+            addon: plugin,
+        };
+    }
+
+    async stopPlugin(plugin: Plugin): Promise<AddonStateStop> {
+        if (typeof plugin === "string") {
+            const err = "'BdApi.Plugins.stop(string)' is deprecated, use 'BdApi.Plugins.stop(BdApi.Plugins.get(id))'.";
+            Logger.warn(this.name, err);
+            plugin = this.getPlugin(plugin) as Plugin;
+            if (!plugin) {
+                return {
+                    kind: "not-stopped",
+                    error: new AddonError({
+                        addonType: this.prefix,
+                        addon: {filename: String(plugin)},
+                        message: t("Addons.methodError", {method: "stop(string)"}),
+                        cause: new Error(err),
+                    }),
+                };
+            }
+        }
+        const instance = plugin.instance;
+        try {
+            instance.stop();
+        }
+        catch (err) {
+            this.enablement[plugin.id] = false;
+            Toasts.warning(t("Addons.couldNotStop", {name: plugin.name, version: plugin.version}));
+            Logger.stacktrace(this.name, `${plugin.name} v${plugin.version} could not be started.`, err as Error);
+            return {
+                kind: "not-stopped",
+                error: new AddonError({
+                    addonType: this.prefix,
+                    addon: plugin,
+                    message: t("Addons.enabled", {method: "stop()"}),
+                    cause: err as Error,
+                }),
+            };
+        }
+        this.trigger("stopped", plugin.id);
+        Toasts.error(t("Addons.disabled", {name: plugin.name, version: plugin.version}));
+        return {
+            kind: "stopped",
+        };
     }
 
     getPlugin(idOrFile: string) {
-        const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
+        const addon = super.getAddon(idOrFile);
         if (!addon) return;
         return addon;
     }
@@ -193,28 +345,39 @@ export default new class PluginManager extends AddonManager {
     }
 
     onSwitch() {
-        for (let i = 0; i < this.addonList.length; i++) {
-            if (!this.state[this.addonList[i].id]) continue;
-            const plugin = this.addonList[i].instance;
+        for (const id in this.enablement) {
+            const plugin = this.getAddon(id);
+            if (!plugin) {
+                continue;
+            }
+            const {instance} = plugin;
+            const {onSwitch} = instance;
             try {
-                if (typeof plugin?.onSwitch === "function") {
-                    plugin.onSwitch();
+                if (typeof onSwitch === "function") {
+                    onSwitch();
                 }
             }
-            catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${plugin.name} v${plugin.version}`, err as Error);}
         }
     }
 
     onMutation(mutation: MutationRecord) {
-        for (let i = 0; i < this.addonList.length; i++) {
-            if (!this.state[this.addonList[i].id]) continue;
-            const plugin = this.addonList[i].instance;
+        for (const id in this.enablement) {
+            const plugin = this.getAddon(id);
+            if (!plugin) {
+                continue;
+            }
+            const {instance} = plugin;
+            if (!instance) {
+                continue;
+            }
+            const {observer} = instance;
             try {
-                if (typeof plugin?.observer === "function") {
-                    plugin.observer(mutation);
+                if (typeof observer === "function") {
+                    observer(mutation);
                 }
             }
-            catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
+            catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${plugin.name} v${plugin.version}`, err as Error);}
         }
     }
 };

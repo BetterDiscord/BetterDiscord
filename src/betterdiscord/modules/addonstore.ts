@@ -16,13 +16,14 @@ import Settings from "@stores/settings";
 import Web from "@data/web";
 import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
+import type {AddonAny, AddonSome} from "./addon";
 
 
 /**
- * @param {Addon} addon
+ * @param {AddonAny} addon
  * @returns {Promise<boolean>}
  */
-function showConfirmDelete(addon: import("./addonmanager").Addon) {
+function showConfirmDelete(addon: AddonAny) {
     return new Promise(resolve => {
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
@@ -33,10 +34,7 @@ function showConfirmDelete(addon: import("./addonmanager").Addon) {
     });
 }
 
-/** @typedef {Addon} Addon */
-/** @typedef {Guild} Guild */
-
-class Guild {
+export class Guild {
 
     name: string;
     id: string;
@@ -100,13 +98,13 @@ class Guild {
     }
 }
 
-class Addon {
+export class Addon {
 
     id: number;
     name: string;
     avatar: string;
     author: string;
-    manager: AddonManager;
+    manager: typeof PluginManager | typeof ThemeManager;
     filename: string;
     type: "theme" | "plugin";
     description: string;
@@ -292,19 +290,20 @@ class Addon {
                     }
 
                     if (shouldEnable) {
-                        // Shouldn't need a try..catch but better safe than sorry
-                        try {
-                            const meta = AddonManager.prototype.extractMeta(text, this.filename);
-                            this.manager.state[meta.name as string || this.name] = true;
+                        const extracted = AddonManager.prototype.extractMeta(text, this.filename);
+                        let name: string;
+                        if (extracted.kind === "not-loaded") {
+                            name = this.name;
                         }
-                        catch {
-                            this.manager.state[this.name] = true;
+                        else {
+                            name = extracted.meta.name as string || this.name;
                         }
+                        this.manager.enablement[name] = true;
 
                         this.manager.saveState();
                     }
 
-                    fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
+                    fs.writeFileSync(path.join(this.manager.addonFolder(), this.filename), text);
 
                     Toasts.show(t("Addons.successfullyDownload", {name: this.name}), {
                         type: "success"
@@ -364,8 +363,8 @@ class Addon {
      * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      */
-    async delete(shouldSkipConfirm = false) {
-        const foundAddon = this.manager.addonList.find(a => a.filename == this.filename);
+    async delete(shouldSkipConfirm = false): Promise<void> {
+        const foundAddon = this.manager.cacheByFilename[this.filename];
 
         if (!foundAddon) return;
 
@@ -374,7 +373,7 @@ class Addon {
             if (!shouldDelete) return;
         }
 
-        if (this.manager.deleteAddon) this.manager.deleteAddon(foundAddon);
+        await this.manager.deleteAddon(foundAddon as AddonSome);
     }
 
     /** @public */

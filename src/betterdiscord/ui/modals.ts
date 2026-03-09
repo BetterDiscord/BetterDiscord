@@ -26,7 +26,9 @@ import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
 import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
-import type AddonError from "@structs/addonerror";
+import type {Plugin} from "@modules/pluginmanager.js";
+import type {AddonState} from "@modules/addonmanager.js";
+import type {Theme} from "@modules/thememanager.js";
 
 
 const queue: Array<() => void> = [];
@@ -209,13 +211,13 @@ export default class Modals {
         return modalKey;
     }
 
-    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins?: AddonError[]; themes?: AddonError[];}) {
-        if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
+    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins?: Array<AddonState<Plugin>>; themes?: Array<AddonState<Theme>>;}) {
         if (!pluginErrors.length && !themeErrors.length) return;
+        if (!this.shouldShowAddonErrors) return;
 
         const options = {
-            pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
-            themeErrors: Array.isArray(themeErrors) ? themeErrors : []
+            pluginErrors: pluginErrors,
+            themeErrors: themeErrors,
         };
         this.openModal(props => {
             return React.createElement(ErrorBoundary, {id: "showAddonErrors", name: "Modals"}, React.createElement(AddonErrorModal, Object.assign(options, props)));

@@ -41,7 +41,7 @@ export default function AddonEmbed({id, original}: {id: string; original: ReactN
                 (tag, state) => setTags(($tags) => ({...$tags, [tag]: state ?? !$tags[tag]}))
             ]}
         >
-            <AddonCard addon={addon} isEmbed />
+            <AddonCard addonStore={addon} isEmbed />
         </TagContext.Provider>
     );
 }

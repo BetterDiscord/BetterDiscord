@@ -5,6 +5,8 @@ import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
 import BetterDiscord from "./betterdiscord";
 
+import type {AddonType} from "@modules/addon";
+
 const getPath = (event: IpcMainEvent, pathReq: string) => {
     let returnPath;
     switch (pathReq) {
@@ -162,7 +164,7 @@ const openDialog = (event: IpcMainInvokeEvent, options: Partial<DialogOptions> =
 const registerPreload = (_: IpcMainEvent, path: string) => {
     app.commandLine.appendSwitch("preload", path);
 };
-const openEditor = (_: IpcMainInvokeEvent, type: "plugin" | "theme", filename: string) => {
+const openEditor = (_: IpcMainInvokeEvent, type: AddonType, filename: string) => {
     Editor.open(type, filename);
 };
 

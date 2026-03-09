@@ -13,19 +13,41 @@ import ModalRoot from "./root";
 import Footer from "./footer";
 import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
 import clsx from "clsx";
-import type AddonErrorType from "@structs/addonerror";
+import AddonErrorType from "@structs/addonerror";
 import DiscordModules from "@modules/discordmodules";
+import Logger from "@common/logger";
+import type {AddonState} from "@modules/addonstate";
+import type {Plugin} from "@modules/plugin";
+import type {Theme} from "@modules/theme";
 
 const Parser = DiscordModules.SimpleMarkdownWrapper.defaultRules;
 const {useState, useCallback, useMemo} = React;
 
+function getFullStack(err: Error): string {
+    if (err instanceof AddonErrorType && err.cause instanceof SyntaxError && "loc" in err.cause) {
+        // const loc = err.cause.loc as Record<"line" | "column", number>;
+        return err.cause.message;
+    }
+    let stack = err.stack || `${err.name}: ${err.message}`;
+
+    if (err.cause instanceof Error) {
+        stack += `\n\nCaused by: ${getFullStack(err.cause)}`;
+    }
+
+    return stack;
+}
 
 function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
     const [expanded, setExpanded] = useState(false);
     const toggle = useCallback(() => setExpanded(!expanded), [expanded]);
 
+    const stack = useMemo(() => {
+        const fullStack = getFullStack(err);
+        Logger.error("AddonError", err);
+        return fullStack;
+    }, [err]);
+
     function renderErrorBody() {
-        const stack = err?.error?.stack ?? err.stack;
         if (!expanded || !stack) return null;
         return <div className="bd-addon-error-body">
             <Divider />
@@ -35,13 +57,13 @@ function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
         </div>;
     }
 
-    return <details key={`${err.type}-${index}`} className={clsx("bd-addon-error", (expanded) ? "expanded" : "collapsed")}>
+    return <details key={`${err.addonType}-${index}`} className={clsx("bd-addon-error", (expanded) ? "expanded" : "collapsed")}>
         <summary className="bd-addon-error-header" onClick={toggle} >
             <div className="bd-addon-error-icon">
-                {err.type == "plugin" ? <PlugIcon /> : <PaletteIcon />}
+                {err.addonType == "plugin" ? <PlugIcon /> : <PaletteIcon />}
             </div>
             <div className="bd-addon-error-header-inner">
-                <Text tag="h3" size={Text.Sizes.SIZE_16} color={Text.Colors.HEADER_PRIMARY} strong={true}>{err.name}</Text>
+                <Text tag="h3" size={Text.Sizes.SIZE_16} color={Text.Colors.HEADER_PRIMARY} strong={true}>{err.addon.name}</Text>
                 <div className="bd-addon-error-details">
                     <InfoIcon className="bd-addon-error-details-icon" size="16px" />
                     <Text color={Text.Colors.HEADER_SECONDARY} size={Text.Sizes.SIZE_12}>{err.message}</Text>
@@ -54,23 +76,33 @@ function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
 }
 
 
-function generateTab(id: string, errors: AddonErrorType[]) {
-    return {id, errors, name: t(`Panels.${id}`)};
+function generateTab(id: "plugins" | "themes", states: Array<AddonState<Plugin>> | Array<AddonState<Theme>>
+): {id: "plugins" | "themes"; errors: Array<AddonErrorType<Error>>; name: string;} {
+    const errors: AddonErrorType[] = [];
+    for (const state of states) {
+        if (!("error" in state)) continue;
+        errors.push(state.error);
+    }
+    return {
+        id,
+        errors,
+        name: t(`Panels.${id}`),
+    };
 }
 
 export interface AddonErrorModalProps {
     transitionState?: number;
     onClose?(): void;
-    pluginErrors: AddonErrorType[];
-    themeErrors: AddonErrorType[];
+    pluginErrors: Array<AddonState<Plugin>>;
+    themeErrors: Array<AddonState<Theme>>;
 }
 
 /**
- *
- * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
- * @returns
+ * Provides addon errors and their details.
+ * @param {AddonErrorModalProps} param0
+ * @returns {React.JSX.Element}
  */
-export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}: AddonErrorModalProps) {
+export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}: AddonErrorModalProps): React.JSX.Element {
     const tabs = useMemo<Array<ReturnType<typeof generateTab>>>(() => {
         return [
             pluginErrors.length && generateTab("plugins", pluginErrors),
@@ -79,7 +111,7 @@ export default function AddonErrorModal({transitionState, onClose, pluginErrors,
     }, [pluginErrors, themeErrors]);
 
     const [tabId, setTab] = useState(tabs[0].id);
-    const switchToTab = useCallback((id: string) => setTab(id), []);
+    const switchToTab = useCallback((id: "plugins" | "themes") => setTab(id), []);
     const selectedTab = tabs.find(e => e.id === tabId)!;
 
     return <ModalRoot transitionState={transitionState} className="bd-error-modal" size={ModalRoot.Sizes.MEDIUM}>

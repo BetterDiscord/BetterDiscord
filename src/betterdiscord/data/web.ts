@@ -1,3 +1,5 @@
+import type {AddonType} from "@modules/addonmanager";
+
 const HOSTNAME = "betterdiscord.app";
 /**
  * The current API version to use
@@ -55,15 +57,15 @@ export default class Web {
     /**
      * This will allow preloading of the addon channels
      * @param {string} channelId
-     * @returns {"plugin" | "theme" | undefined}
+     * @returns {AddonType | undefined}
      */
-    static getReleaseChannelType(channelId: string) {
+    static getReleaseChannelType(channelId: string): AddonType | undefined {
         if (releaseChannels.plugin.includes(channelId)) return "plugin";
         if (releaseChannels.theme.includes(channelId)) return "theme";
     }
 
     /** @param {string} rawGitURL  */
-    static convertToPreviewURL(rawGitURL: string) {
+    static convertToPreviewURL(rawGitURL: string): string {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
@@ -83,7 +85,7 @@ export default class Web {
      * https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
      * @param {string} rawGitURL
      */
-    static convertRawToGitHubURL(rawGitURL: string) {
+    static convertRawToGitHubURL(rawGitURL: string): string {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {

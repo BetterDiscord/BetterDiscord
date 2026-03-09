@@ -34,7 +34,7 @@ export default class Logger {
      * @param {any} error - Error object to log with the message.
      */
     static stacktrace(module: string, message: any, error: Error) {
-        console.error(`%c[${module}]%c ${message}\n\n%c`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);
+        console.error(`%c[${module}]%c ${message}\n\n%c\n%o`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);
     }
 
     /**

@@ -8,7 +8,9 @@ if (window.Editor.type === "custom-css") {
 }
 document.title = `${title} - BetterDiscord Editor`;
 
-document.getElementById("language")!.textContent = window.Editor.type === "plugin" ? " JavaScript" : " CSS";
+document.getElementById("language")!.textContent = window.Editor.type === "plugin" ? (
+    window.Editor.filename ? " TypeScript" : " JavaScript"
+) : " CSS";
 
 document.getElementById("open-editor")!.addEventListener("click", () => window.Editor.open());
 
@@ -109,7 +111,9 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
     const editor = monaco.editor.create(document.getElementById("editor")!, {
         ...options,
         value: lastSavedValue,
-        language: window.Editor.type === "plugin" ? "javascript" : "css"
+        language: window.Editor.type === "plugin" ? (
+            window.Editor.filename.endsWith("ts") ? "typescript" : "javascript"
+        ) : "css"
     });
 
     const liveUpdateNode = document.getElementById("live-update")! as HTMLInputElement;

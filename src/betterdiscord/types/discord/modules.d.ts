@@ -172,11 +172,11 @@ export interface InviteActions {
 export type RuleTypes = "heading" | "nptable" | "lheading" | "hr" | "codeBlock" | "fence" | "blockQuote" | "list" | "def" | "table" | "newline" | "paragraph" | "escape" | "tableSeparator" | "autolink" | "mailto" | "url" | "link" | "image" | "reflink" | "refimage" | "em" | "strong" | "u" | "del" | "inlineCode" | "br" | "text";
 
 export type Rule = {
-    html?: (e: {content: string;}, t: (s: string, o: object) => string, n: object) => string;
+    html?: (e: {content: string;}, t: ((s: string, o: object) => string), n: object) => string;
     match: ((s: string, o: {inline: boolean;}) => RegExpExecArray) & {regex: RegExp;};
     order: number;
-    parse: (e: RegExpExecArray, t: (s: string, o: object) => string, n: object) => {content: string;};
-    react?: (e: Record<string, any>, t: (s: string, o: object) => string, n: object) => ReactElement;
+    parse: (e: RegExpExecArray, t: ((s: string, o: object) => string), n: object) => {content: string;};
+    react?: (e: Record<string, any>, t: null | ((s: string, o: object) => string), n: object) => ReactElement;
     requiredFirstCharacters?: string[];
 };
 

@@ -24,11 +24,12 @@ import Notifications from "@ui/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
-import type AddonManager from "./addonmanager";
 import type {Release} from "github";
 import type {BdWebAddon} from "betterdiscordweb";
 import {Logo} from "@ui/logo";
 import {RefreshCcwIcon} from "lucide-react";
+import {managerFromType} from "./addonmanagerfrom";
+import type {AddonType} from "./addon";
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -243,52 +244,48 @@ export class CoreUpdater {
 
 
 export class AddonUpdater {
-    manager: AddonManager;
-    type: "plugin" | "theme";
+    manager: typeof PluginManager | typeof ThemeManager;
+    addonType: AddonType;
     cache: Record<string, {name: string; version: string; id: number;}> | Record<string, never>;
-    pending: string[];
+    readonly pending = new Set<string>();
 
-    constructor(type: "plugin" | "theme") {
-        this.manager = type === "plugin" ? PluginManager : ThemeManager;
-        this.type = type;
+    constructor(addonType: AddonType) {
+        this.manager = managerFromType(addonType);
+        this.addonType = addonType;
         this.cache = {};
-        this.pending = [];
     }
 
     async initialize() {
         await this.updateCache();
         if (SettingsStore.get("addons", "checkForUpdates")) this.checkAll();
 
-        Events.on(`${this.type}-loaded`, addon => {
+        Events.on(`${this.addonType}-loaded`, addon => {
             if (!SettingsStore.get("addons", "checkForUpdates")) return;
             this.checkForUpdate(addon.filename, addon.version);
         });
 
-        Events.on(`${this.type}-unloaded`, addon => {
-            const index = this.pending.indexOf(addon.filename);
-            if (index >= 0) this.pending.splice(index, 1);
+        Events.on(`${this.addonType}-unloaded`, addon => {
+            this.pending.delete(addon.filename);
         });
     }
 
     async updateCache() {
         this.cache = {};
-        this.pending.length = 0;
-        const addonData = (await getJSON(Web.store[(this.type + "s") as keyof typeof Web.store] as string)) as BdWebAddon[];
+        this.pending.clear();
+        const addonData = (await getJSON(Web.store[(this.addonType + "s") as keyof typeof Web.store] as string)) as BdWebAddon[];
         addonData.reduce(reducer, this.cache as Record<string, never>);
-    }
-
-    clearPending() {
-        this.pending.splice(0, this.pending.length);
     }
 
     async checkAll(showNotice = true) {
         await this.updateCache();
-        for (const addon of this.manager.addonList) this.checkForUpdate(addon.filename, addon.version);
+        for (const filename in this.manager.cacheByFilename) {
+            this.checkForUpdate(filename, this.manager.cacheByFilename[filename].version);
+        }
         if (showNotice) this.showUpdateNotice();
     }
 
     checkForUpdate(filename: string, currentVersion: string) {
-        if (this.pending.includes(filename)) return;
+        if (this.pending.has(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
         let hasUpdate = info.version > currentVersion;
@@ -296,7 +293,7 @@ export class AddonUpdater {
             hasUpdate = semverComparator(currentVersion, info.version) > 0;
         }
         if (!hasUpdate) return;
-        this.pending.push(filename);
+        this.pending.add(filename);
     }
 
     async updateAddon(filename: string) {
@@ -314,18 +311,18 @@ export class AddonUpdater {
                 return;
             }
 
-            const file = path.join(path.resolve(this.manager.addonFolder), filename);
+            const file = path.join(path.resolve(this.manager.addonFolder()), filename);
             fileSystem.writeFile(file, body.toString(), () => {
                 Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
-                this.pending.splice(this.pending.indexOf(filename), 1);
+                this.pending.delete(filename);
             });
         });
     }
 
     showUpdateNotice() {
-        if (!this.pending.length) return;
+        if (!this.pending.size) return;
 
-        const addonDetails = this.pending.map(filename => {
+        const addonDetails = Array.from(this.pending).map(filename => {
             const info = this.cache[path.basename(filename)];
             return {
                 name: info ? info.name : filename,
@@ -334,10 +331,10 @@ export class AddonUpdater {
         });
 
         Notifications.show({
-            id: `addon-updates-${this.type}`,
+            id: `addon-updates-${this.addonType}`,
             title: t("Updater.addonUpdaterNotificationTitle"),
             content: [
-                t("Updater.addonUpdatesAvailable", {count: this.pending.length, context: this.type}),
+                t("Updater.addonUpdatesAvailable", {count: this.pending.size, context: this.addonType}),
                 React.createElement("ul", {className: "bd-notification-updates-list"},
                     addonDetails.map(addon =>
                         React.createElement("li", {}, [

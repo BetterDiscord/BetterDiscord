@@ -8,7 +8,7 @@ import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Store from "./base";
 import type {ComponentType} from "react";
-import type AddonManager from "@modules/addonmanager";
+import type {default as AddonManager} from "@modules/addonmanager";
 import {PaletteIcon, PlugIcon, type LucideIcon} from "lucide-react";
 
 export interface SettingsCollection {
@@ -81,15 +81,15 @@ export default new class SettingsManager extends Store {
     }
 
     registerAddonPanel(manager: AddonManager) {
-        const plural = manager.prefix + "s";
-        const title = t(`Panels.${plural as "plugins" | "themes"}`)!;
+        const plural = manager.pluralPrefix as "plugins" | "themes";
+        const title = t(`Panels.${plural}`)!;
 
         this.registerPanel(plural, title, {
             order: manager.order,
             type: "addon",
             manager: manager,
             icon: manager.prefix === "plugin" ? PlugIcon : PaletteIcon,
-            searchable: () => manager.addonList.flatMap((addon) => [addon.name, addon.filename])
+            searchable: () => Array.from(new Set([...Object.keys(manager.cacheByName), ...Object.keys(manager.cacheByFilename)]))
         });
     }
 
