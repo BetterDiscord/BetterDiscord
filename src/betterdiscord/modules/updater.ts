@@ -205,7 +205,7 @@ export class CoreUpdater {
                 promise: buff,
                 resolve: resolveBuff,
                 reject: rejectBuff,
-            } = Promise.withResolvers();
+            } = Promise.withResolvers<string>();
 
             request(asar.url, {
                 headers: {
@@ -220,8 +220,8 @@ export class CoreUpdater {
 
             const asarPath = path.join(Config.get("dataPath"), "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const fs = require("original-fs");
-            fs.writeFileSync(asarPath, buff);
+            const fs = require("original-fs") as typeof fileSystem;
+            fs.writeFileSync(asarPath, await buff);
 
             this.hasUpdate = false;
 
