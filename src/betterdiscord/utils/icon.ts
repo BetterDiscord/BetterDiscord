@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import type {LucideIcon, LucideProps} from "lucide-react";
 
 export type DiscordProps = {
@@ -32,7 +32,7 @@ type LucideToDiscord = (lucide: LucideIcon, middleWare?: LucideMiddleware) => Di
 type DiscordToLucide = (lucide: DiscordIcon, middleWare?: DiscordMiddleware) => LucideIcon;
 
 // TODO: Extend for all discord icon prop types
-export const lucideToDiscordIcon: LucideToDiscord = (lucide, middleWare = v => v) => (
+export const lucideToDiscordIcon: LucideToDiscord = (lucide, middleWare = v => v) => memo(
     (props) => React.createElement(lucide, middleWare({
         size: sizes[props.size || "md"],
         className: props.className,
@@ -40,7 +40,7 @@ export const lucideToDiscordIcon: LucideToDiscord = (lucide, middleWare = v => v
     }, props))
 );
 
-export const discordIconToLucide: DiscordToLucide = (discord, middleWare = v => v) => (
+export const discordIconToLucide: DiscordToLucide = (discord, middleWare = v => v) => memo(
     (props) => React.createElement(discord, middleWare({
         size: "custom",
         width: props.size,

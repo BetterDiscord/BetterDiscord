@@ -6,7 +6,7 @@ export default {
     title: "BetterDiscord",
     subtitle: `v${config.get("version")}`,
     // https://youtu.be/BZq1eb9d0HI?si=67V2eArlF4atnGnz
-    video: "https://www.youtube.com/embed/BZq1eb9d0HI?si=67V2eArlF4atnGnz&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
+    // video: "https://www.youtube.com/embed/BZq1eb9d0HI?si=67V2eArlF4atnGnz&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
     blurb: "Hotfix to squash some bugs.",
     changes: [
@@ -14,16 +14,9 @@ export default {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "BetterDiscord now loads on macOS and Linux."
-            ]
-        },
-        {
-            title: "New Features",
-            type: "added",
-            items: [
-                "Added `--avatar-url-[size]` to avatars for theme attributes.",
-                "Added a bunch of new theme attributes to messages.",
-                "Added an utility for developers to easily patch react elements."
+                "Fixes BD's items in the settings cog context-menu:\n- The changelog button was at the bottom of the bd section\n- Hovering over a bd section would cause the to get filled instead of changing the color",
+                "Fixes `Net.fetch` from removing forbidden headers like `User-Agent` because of `new Request`",
+                "Possible fix for addon store indefinitely loading - please report if you still have this issue",
             ]
         }
     ]
