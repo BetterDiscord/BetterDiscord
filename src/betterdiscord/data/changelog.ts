@@ -11,12 +11,10 @@ export default {
     blurb: "Hotfix to squash some bugs.",
     changes: [
         {
-            title: "Bugs Squashed",
+            title: "Hot Fix",
             type: "fixed",
             items: [
-                "Fixes BD's items in the settings cog context-menu:\n- The changelog button was at the bottom of the bd section\n- Hovering over a bd section would cause the to get filled instead of changing the color",
-                "Fixes `Net.fetch` from removing forbidden headers like `User-Agent` because of `new Request`",
-                "Possible fix for addon store indefinitely loading - please report if you still have this issue",
+                "Fixed crashing when trying to view BetterDiscord's custom setting tabs"
             ]
         }
     ]
