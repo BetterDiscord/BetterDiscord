@@ -4,9 +4,7 @@ import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByKeys, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 import type {FluxStore} from "discord/modules";
-import type {Channel, Guild} from "discord/structs";
-
-// TODO: create better types for this file, too many "any"
+import type {Channel, Guild, User} from "discord/structs";
 
 export const CommandTypes = {
     CHAT_INPUT: 1,
@@ -89,15 +87,109 @@ export interface Command {
     name: string,
     description?: string,
     id: string,
+    inputType?: number,
     options?: Option[],
-    execute(options: any[], {channel, guild}: {channel: Channel, guild?: Guild;}): void,
+    execute(options: OptionValue[], context: {channel: Channel; guild?: Guild}): CommandResult | void | Promise<CommandResult | void>;
     predicate?(): boolean;
 }
 
+export interface OptionValue {
+    name: string;
+    value: string | number | boolean;
+    focused?: boolean;
+}
+
+export interface EmbedField {
+    name: string;
+    value: string;
+    inline?: boolean;
+}
+
+export interface EmbedFooter {
+    text: string;
+    icon_url?: string;
+}
+
+export interface EmbedImage {
+    url: string;
+}
+
+export interface EmbedData {
+    type?: string;
+    title?: string;
+    description?: string;
+    color?: number;
+    fields?: EmbedField[];
+    footer?: EmbedFooter;
+    timestamp?: string;
+    image?: EmbedImage;
+    thumbnail?: EmbedImage;
+}
+
+export interface CommandResult {
+    content?: string;
+    embeds?: EmbedData | EmbedData[];
+}
+
+interface Section {
+    id: string;
+    name: string;
+    type: 1;
+    key: string;
+    icon?: string | null;
+    isBD?: boolean;
+}
+
+interface IconClassesModule {
+    wrapper: string;
+    icon: string;
+    selected: string;
+    selectable: string;
+}
+
+interface UserConstructor {
+    new(data: {avatar: string; id: string; bot: boolean; username: string; system: boolean}): User;
+}
+
+interface BotMessage {
+    channelId: string;
+    content: string | undefined;
+    type: number;
+    embeds: EmbedData[];
+    author: User;
+}
+
+interface BotMessageCreator {
+    (options: {channelId: string; content: string | undefined; loggingName: undefined; type: number}): BotMessage;
+}
+
+interface ReceiveMessagesModule {
+    receiveMessage(channelId: string, message: BotMessage, notify: boolean): void;
+}
+
+interface IconsModuleType {
+    BOT_AVATARS: Record<string, string>;
+}
+
+interface LogoProps {
+    width: number;
+    height: number;
+    padding?: number;
+    className?: string;
+    isSelected?: boolean;
+    selectable?: boolean;
+}
+
+interface CommandIndexResult {
+    sectionedCommands: Array<{section: Section; data: Command[]}>;
+    descriptors: Section[];
+    commands: Command[];
+}
+
 const iconClasses = {
-    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {firstId: 60090, cacheId: "core-commandmanager-iconClasses"}),
-    builtInSeparator: getModule<any>(x => x.builtInSeparator, {firstId: 681755, cacheId: "core-commandmanager-builtInSeparatorClasses"})?.builtInSeparator
-};
+    ...(getModule<IconClassesModule>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {firstId: 60090, cacheId: "core-commandmanager-iconClasses"}) ?? {} as IconClassesModule),
+    builtInSeparator: getModule<{builtInSeparator: string}>(x => x.builtInSeparator, {firstId: 681755, cacheId: "core-commandmanager-builtInSeparatorClasses"})?.builtInSeparator
+} as IconClassesModule & {builtInSeparator?: string};
 
 const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
 
@@ -113,20 +205,13 @@ const isValidImageUrl = (url: string) => {
 
 class CommandManager {
     static #commands = new Map<string, Map<string, Command>>();
-    static #sections = new Map<string, {
-        id: string,
-        name: string,
-        type: 1,
-        key: string,
-        icon?: string | null,
-        isBD?: boolean;
-    }>();
+    static #sections = new Map<string, Section>();
 
-    static User = getByStrings<any>(["hasHadPremium(){"], {firstId: 427157, cacheId: "core-commandmanager-user"});
-    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true, firstId: 963852, cacheId: "core-commandmanager-createBotMessage"});
-    static MessagesModule = getByKeys<any>(["receiveMessage"], {firstId: 843472, cacheId: "core-commandmanager-messages"});
-    static IconsModule = getByKeys<any>(["BOT_AVATARS"], {firstId: 820883, cacheId: "core-commandmanager-icons"});
-    static localBDBot: any;
+    static User = getByStrings<UserConstructor>(["hasHadPremium(){"], {firstId: 427157, cacheId: "core-commandmanager-user"})!;
+    static createBotMessage = getByStrings<BotMessageCreator>(["username:\"Clyde\""], {searchExports: true, firstId: 963852, cacheId: "core-commandmanager-createBotMessage"})!;
+    static MessagesModule = getByKeys<ReceiveMessagesModule>(["receiveMessage"], {firstId: 843472, cacheId: "core-commandmanager-messages"})!;
+    static IconsModule = getByKeys<IconsModuleType>(["BOT_AVATARS"], {firstId: 820883, cacheId: "core-commandmanager-icons"})!;
+    static localBDBot!: User;
 
     static initialize() {
         this.#patchCommandSystem();
@@ -151,9 +236,9 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings<{A(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings<{A(p: {sections: Section[];}): React.ReactElement;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
 
-        Patcher.after("CommandManager", SidebarModule!, "A", (_, [props]: [{sections: any[];}], res: any) => {
+        Patcher.after("CommandManager", SidebarModule!, "A", (_, [props]: [{sections: Section[];}], res: any) => {
             if (!this.#sections.size) return;
 
             const child = res.props.children;
@@ -161,7 +246,7 @@ class CommandManager {
             if (child.props?.__bdPatched) return;
 
             res.props.children = React.cloneElement(child, {
-                renderCategoryListItem: (...args: any[]) => {
+                renderCategoryListItem: (...args: [unknown, number, ...unknown[]]) => {
                     const ret = child.props.renderCategoryListItem(...args);
 
                     if (!props.sections[args[1] - 1]?.isBD && props.sections[args[1]].isBD) {
@@ -183,16 +268,16 @@ class CommandManager {
     static #patchIndexStore() {
         const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {firstId: 264322, cacheId: "core-commandmanager-indexstore"});
 
-        Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
+        Patcher.after("CommandManager", mod, key, (_, args: [unknown, unknown, {commandTypes: number[]}], res: CommandIndexResult) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             for (const sectionedCommand of res.sectionedCommands) {
                 if (sectionedCommand.section.id !== "-1") continue;
-                sectionedCommand.data = sectionedCommand.data.filter((m: any) => !m.isBD);
+                sectionedCommand.data = sectionedCommand.data.filter((m: Command & {isBD?: boolean}) => !m.isBD);
             }
 
-            let descriptorsIndex = res.descriptors.findIndex((value: any) => value.id === "-1");
-            let sectionedCommandsIndex = res.sectionedCommands.findIndex((value: any) => value.section.id === "-1");
+            let descriptorsIndex = res.descriptors.findIndex((value: Section) => value.id === "-1");
+            let sectionedCommandsIndex = res.sectionedCommands.findIndex((value: {section: Section}) => value.section.id === "-1");
 
             for (const section of this.#sections.values()) {
                 const commands = this.getCommandsByCaller(section.id);
@@ -210,20 +295,20 @@ class CommandManager {
     }
 
     static #patchQuery() {
-        const ApplicationCommandIndexStore = getStore("ApplicationCommandIndexStore")! as FluxStore & {query: (a: any, p: {text: string; commandTypes: any;}) => any;};
+        const ApplicationCommandIndexStore = getStore("ApplicationCommandIndexStore")! as FluxStore & {query: (a: unknown, p: {text: string; commandTypes: number[]}) => CommandIndexResult;};
 
-        Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (_, args: [any, {text: string; commandTypes: any;}], res: any) => {
+        Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (_, args: [unknown, {text: string; commandTypes: number[]}], res: CommandIndexResult) => {
             if (!args[1].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             const text = args[1].text || "";
 
             for (const sectionedCommand of res.sectionedCommands) {
                 if (sectionedCommand.section.id !== "-1") continue;
-                sectionedCommand.data = sectionedCommand.data.filter((m: any) => !m.isBD);
+                sectionedCommand.data = sectionedCommand.data.filter((m: Command & {isBD?: boolean}) => !m.isBD);
             }
 
             for (const section of this.#sections.values()) {
-                const commands = this.getCommandsByCaller(section.id).filter((cmd: any) => cmd.name.includes(text) || cmd.description.includes(text));
+                const commands = this.getCommandsByCaller(section.id).filter(cmd => cmd.name.includes(text) || (cmd.description ?? "").includes(text));
 
                 if (commands.length > 0) {
                     res.sectionedCommands.push({
@@ -253,7 +338,7 @@ class CommandManager {
             const iconUrl = getIconUrl();
             const acronym = getAcronym(id);
 
-            const Logo = ({width, height, padding = 0, className, isSelected, selectable}: any) => {
+            const Logo = ({width, height, padding = 0, className, isSelected, selectable}: LogoProps) => {
                 const wrapperClasses = [
                     selectable && iconClasses.selectable,
                     isSelected && iconClasses.selected,
@@ -316,7 +401,7 @@ class CommandManager {
             cacheId: "core-commandmanager-authorizer"
         });
 
-        Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
+        Patcher.instead("CommandManager", module, key, (that, args: [{applicationId?: string}, ...unknown[]], original) => {
             if (this.#sections.has(args[0]?.applicationId)) {
                 return Promise.resolve({
                     isAuthorized: true
@@ -349,9 +434,6 @@ class CommandManager {
     }
 
     static #formatCommand(caller: string, command: Command, commandId: string) {
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const self: any = this;
-
         return {
             integrationType: 0,
             integrationTitle: caller,
@@ -366,7 +448,7 @@ class CommandManager {
             get displayDescription() {return command.description || "";},
             get options() {return CommandManager.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command),
-            get section() {self.#ensureSection(caller); return self.#sections.get(caller);},
+            get section() {CommandManager.#ensureSection(caller); return CommandManager.#sections.get(caller);},
             isBD: true,
             __proto__: command
         };
@@ -380,14 +462,14 @@ class CommandManager {
             return this.optionsMap.get(options)!;
         }
 
-        const opts = options.map((option: any) => ({
+        const opts = options.map((option: Option) => ({
             get name() {return option.name;},
             get description() {return option.description;},
             get displayDescription() {return option.description;},
             type: option.type,
             get required() {return option.required || false;},
             get choices() {
-                return option.choices?.map((choice: any) => ({
+                return option.choices?.map((choice: Choice) => ({
                     ...choice,
                     get name() {return choice.name;},
                     get displayName() {return choice.name;}
@@ -416,7 +498,7 @@ class CommandManager {
     }
 
     static #patchExecuteFunction(command: Command) {
-        return (data: any, {channel, guild}: any) => {
+        return (data: OptionValue[], {channel, guild}: {channel: Channel; guild?: Guild}) => {
             try {
                 const result = command.execute(data, {channel, guild});
 
@@ -432,31 +514,32 @@ class CommandManager {
         };
     }
 
-    static async sendBotMessage(result: any, {channel}: any) {
+    static async sendBotMessage(result: CommandResult | void | Promise<CommandResult | void>, {channel}: {channel: Channel}) {
+        let resolvedResult: CommandResult | void;
         try {
-            result = await result;
+            resolvedResult = await result;
         }
         catch (error) {
             return Logger.stacktrace("CommandManager", "Failed to get result of execute()", error as Error);
         }
 
-        if (!(result !== null && typeof result === "object" && !Array.isArray(result))) {
+        if (!(resolvedResult !== null && typeof resolvedResult === "object" && !Array.isArray(resolvedResult))) {
             return;
         }
 
         const loadingMessage = this.createBotMessage({
             channelId: channel.id,
-            content: typeof result.content === "string" ? result.content : undefined,
+            content: typeof resolvedResult.content === "string" ? resolvedResult.content : undefined,
             loggingName: undefined,
             type: 20
         });
 
-        if (typeof result.embeds === "object" && result.embeds !== null) {
-            loadingMessage.embeds = Array.isArray(result.embeds)
-                ? result.embeds
-                : [result.embeds];
+        if (typeof resolvedResult.embeds === "object" && resolvedResult.embeds !== null) {
+            loadingMessage.embeds = Array.isArray(resolvedResult.embeds)
+                ? resolvedResult.embeds
+                : [resolvedResult.embeds];
 
-            loadingMessage.embeds = loadingMessage.embeds.map((embed: any) => ({
+            loadingMessage.embeds = loadingMessage.embeds.map((embed: EmbedData) => ({
                 ...embed,
                 type: embed.type || "rich"
             }));

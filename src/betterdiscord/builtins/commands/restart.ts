@@ -1,4 +1,4 @@
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command, type OptionValue} from "@modules/commandmanager";
 import ipc from "@modules/ipc";
 
 
@@ -14,8 +14,8 @@ export default {
             required: true,
         },
     ],
-    execute: async (data) => {
-        const vanilla = data.find(o => o.name === "vanilla").value;
+    execute: async (data: OptionValue[]) => {
+        const vanilla = data.find(o => o.name === "vanilla")!.value;
         ipc.relaunch(vanilla ? ["--vanilla"] : []);
     }
-};
+} satisfies Command;

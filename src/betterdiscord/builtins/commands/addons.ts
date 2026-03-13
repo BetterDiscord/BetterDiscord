@@ -1,5 +1,5 @@
 import {t} from "@common/i18n";
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command, type OptionValue} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
 import Themes from "@modules/thememanager";
@@ -38,9 +38,9 @@ export default (type: "plugin" | "theme") => {
                 }
             }
         ],
-        execute: async (data, {channel}) => {
-            const action = data.find(o => o.name === "action").value;
-            const addonId = data.find(o => o.name === "name").value;
+        execute: async (data: OptionValue[], {channel}) => {
+            const action = data.find(o => o.name === "action")!.value;
+            const addonId = data.find(o => o.name === "name")!.value as string;
             const addon = manager.getAddon(addonId)!;
             const isEnabled = manager.isEnabled(addon.id);
 
@@ -98,5 +98,5 @@ export default (type: "plugin" | "theme") => {
                 DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${encodeURIComponent(addon.name)}>`}, undefined, {});
             }
         }
-    };
+    } satisfies Command;
 };

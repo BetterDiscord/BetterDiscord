@@ -5,6 +5,7 @@ import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import CommandManager from "@modules/commandmanager";
+import type {Command} from "@modules/commandmanager";
 
 
 export default class BuiltinModule {
@@ -108,8 +109,7 @@ export default class BuiltinModule {
         return Patcher.unpatchAll(this.name);
     }
 
-    // TODO: fix type when commands are properly TS
-    addCommands(...commands: object[]) {
+    addCommands(...commands: Command[]) {
         for (const command of commands) {
             const unregister = CommandManager.registerCommand("BetterDiscord", command);
             this.#commands.add(unregister);
