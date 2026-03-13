@@ -1,8 +1,9 @@
-import {Filters, getByKeys, getMangled, getModule, webpackRequire} from "@webpack";
+import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
+import DOMManager from "@modules/dommanager";
 
 
 let startupComplete = false;
@@ -161,6 +162,23 @@ function globToRegExp(glob: string) {
 const nodePatcher = new NodePatcher();
 
 class MenuPatcher {
+    private static async contextMenuFixForLucide() {
+        // Hopefully this will be faster than using css class selectors
+        const menuClasses = await getLazyByKeys<Record<string, string>>(["colorDefault", "focused"], {
+            cacheId: "core-contextmenu-classes"
+        });
+
+        // Discord manually sets the fill here, so we are reverting it back to the HTML tag
+        // .colorDefault.focused:not(.checkboxContainer) path {fill: var(--interactive-text-active)}
+        // .colorDanger.focused:not(.checkboxContainer) path {fill: var(--text-feedback-critical)}
+
+        DOMManager.injectStyle("bd-lucide-context-menu-fix", `
+            :where(.${menuClasses!.colorDefault}, ${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
+                fill: revert;
+            }
+        `);
+    }
+
     static MAX_PATCH_ITERATIONS = 10;
 
     static patches: {
@@ -192,6 +210,8 @@ class MenuPatcher {
 
     static initialize() {
         if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successful, aborting initialization.");
+
+        this.contextMenuFixForLucide();
 
         DiscordModules.Dispatcher.addInterceptor<{type: "CONTEXT_MENU_OPEN", contextMenu: ContextMenuObject;}>((event) => {
             if (event.type === "CONTEXT_MENU_OPEN") {
