@@ -262,16 +262,13 @@
         },
         "search": {
             "plugin": {
-                "one": "Search one plugin",
                 "other": "Search {{count}} plugins"
             },
             "theme": {
-                "one": "Search one theme",
                 "other": "Search {{count}} themes"
             }
         },
         "results": {
-            "one": "{{count}} Result",
             "other": "{{count}} Results"
         },
         "editAddon": "Edit",
@@ -319,11 +316,9 @@
         "new": "New",
         "updated": "Updated",
         "downloadCount": {
-            "one": "{{count}} Download",
             "other": "{{count}} Downloads"
         },
         "likeCount": {
-            "one": "{{count}} Like",
             "other": "{{count}} Likes"
         },
         "tags": "Tags",
@@ -331,11 +326,9 @@
         "official": "Official",
         "manyEnabled": {
             "plugin": {
-                "one": "One plugin has been enabled.",
                 "other": "{{count}} plugins have been enabled."
             },
             "theme": {
-                "one": "One theme has been enabled.",
                 "other": "{{count}} themes have been enabled."
             }
         }
@@ -399,11 +392,9 @@
         "addonUpdaterNotificationTitle": "Addon Updater",
         "addonUpdatesAvailable": {
             "plugin": {
-                "one": "One plugin has an update!",
                 "other": "{{count}} plugins have updates!"
             },
             "theme": {
-                "one": "One theme has an update!",
                 "other": "{{count}} themes have updates!"
             }
         },
