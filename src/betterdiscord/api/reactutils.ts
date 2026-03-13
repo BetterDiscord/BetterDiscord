@@ -1,4 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
+import NodePatcher from "@modules/nodepatcher";
 import React from "@modules/react";
 import type {RefObject} from "react";
 import type {Fiber} from "react-reconciler";
@@ -122,6 +123,7 @@ interface ReactUtils {
     ): React.FunctionComponent<React.ComponentProps<T>>;
     // forceUpdateFiber(fiber: Fiber): boolean;
     getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T;
+    createNodePatcher(): NodePatcher;
 }
 
 /**
@@ -314,6 +316,9 @@ const ReactUtils: ReactUtils = {
                     return elementType as T;
             }
         }
+    },
+    createNodePatcher() {
+        return new NodePatcher();
     }
 };
 

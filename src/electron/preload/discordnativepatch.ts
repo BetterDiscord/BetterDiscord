@@ -104,7 +104,12 @@ class DiscordNativePatch {
     static patch() {
         const electronPath = require.resolve("electron");
         delete require.cache[electronPath]!.exports; // If it didn't work, try to delete existing
-        require.cache[electronPath]!.exports = {...electron, contextBridge}; // Try to assign again after deleting
+        require.cache[electronPath]!.exports = new Proxy(electron, {
+            get(target, p, receiver) {
+                if (p === "contextBridge") return contextBridge;
+                return Reflect.get(target, p, receiver);
+            },
+        }); // Try to assign again after deleting
     }
 
     static init() {

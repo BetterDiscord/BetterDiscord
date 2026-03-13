@@ -7,6 +7,7 @@ import settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {useStateFromStores} from "@ui/hooks";
 import getDebugInfo, {getAddonCounts, getCoreInfo, getDiscordInfo} from "@utils/debug";
+import {Stores} from "@webpack";
 
 const {useMemo, useState, useCallback} = React;
 
@@ -17,7 +18,7 @@ const ALLOWED_IDS = new Set(["247863095647535104", "343423092670070786", "660431
 export default function VersionInfo() {
     const [clicks, setClicked] = useState(0);
 
-    const currentUser = useMemo(() => DiscordModules.UserStore?.getCurrentUser()?.id, []);
+    const currentUser = useMemo(() => Stores.UserStore?.getCurrentUser()?.id, []);
     const isCanary = useStateFromStores(settings, () => settings.get("developer", "canary"));
 
     const discordInfo = useMemo(() => {

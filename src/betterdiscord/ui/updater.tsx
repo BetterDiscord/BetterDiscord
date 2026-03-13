@@ -60,8 +60,7 @@ function NoUpdates({type}: {type: "plugins" | "themes";}) {
     </div>;
 }
 
-function AddonUpdaterPanel({pending, type, updater, update, updateAll}: {pending: string[]; type: "plugins" | "themes"; updater: AddonUpdater; update: (at: "plugins" | "themes", f: string) => Promise<void>; updateAll: (at: "plugins" | "themes") => Promise<void>;}) {
-    const filenames = pending;
+function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll}: {pending: string[]; type: "plugins" | "themes"; updater: AddonUpdater; update: (at: "plugins" | "themes", f: string) => Promise<void>; updateAll: (at: "plugins" | "themes") => Promise<void>;}) {
     return <Drawer
         name={t(`Panels.${type}`)}
         collapsible={true}
@@ -70,7 +69,10 @@ function AddonUpdaterPanel({pending, type, updater, update, updateAll}: {pending
         {filenames.map(f => {
             const info = updater.cache[f];
             const addon = updater.manager.addonList.find(a => a.filename === f)!;
-            return <SettingItem name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
+
+            if (!info) return null;
+
+            return <SettingItem key={addon.filename} name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
                 {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, f))}
                 {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{t("Updater.updateButton")}</Button> */}
             </SettingItem>;
