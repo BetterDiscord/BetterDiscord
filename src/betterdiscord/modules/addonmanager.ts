@@ -518,7 +518,7 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
 
     async loadAllAddons(): Promise<Array<AddonState<A>>> {
         this.loadEnablement();
-        const states: Array<AddonState<A>> = [];
+        let states: Array<AddonState<A>> = [];
         const addonFolder = this.addonFolder();
         const files = await fs.promises.readdir(addonFolder);
 
@@ -547,14 +547,16 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
             resolved.push({filename, absolute, content, stats, meta});
         }
 
-        const concurrency: Array<Promise<void>> = [];
-        for (const {filename} of resolved) {
-            concurrency.push((async (): Promise<void> => {
-                const load = await this.loadAddon(filename, false);
-                states.push(load);
-            })());
+        const concurrency: Array<Promise<AddonStateLoad | AddonStateStarted<A>>> = [];
+        for (const {filename, meta} of resolved) {
+            if (meta.source?.startsWith("https://github.com/mwittrien/BetterDiscordAddons/tree/master")) {
+                // BDFDB only
+                states.push(await this.loadAddon(filename, false));
+                continue;
+            }
+            concurrency.push(this.loadAddon(filename, false));
         }
-        await Promise.all(concurrency);
+        states = states.concat(await Promise.all(concurrency));
 
         this.saveState();
         this.watchAddons();
