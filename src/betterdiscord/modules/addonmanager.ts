@@ -548,8 +548,8 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
         }
 
         const concurrency: Array<Promise<AddonStateLoad | AddonStateStarted<A>>> = [];
-        for (const {filename, meta} of resolved) {
-            if (meta.source?.startsWith("https://github.com/mwittrien/BetterDiscordAddons/tree/master")) {
+        for (const {filename} of resolved) {
+            if (filename === "0BDFDB.plugin.js") {
                 // BDFDB only
                 states.push(await this.loadAddon(filename, false));
                 continue;
