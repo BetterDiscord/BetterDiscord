@@ -125,6 +125,9 @@ export const promises = {
         }
     },
 
+    unlink: (path: string) =>
+        fs.promises.unlink(path),
+
     getRealPath: (path: string, options?: object) =>
         fs.promises.realpath(path, options as any),
 

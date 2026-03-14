@@ -37,30 +37,63 @@ const stripBOM = function (fileContent: string) {
 };
 
 // This is a temporary type, no one should rely on this externally
-export interface Addon {
+export interface Addon extends AddonMeta {
     added: number;
-    author: string;
-    authorId?: string;
-    authorLink?: string;
-    description: string;
     donate?: string;
     fileContent?: string;
     filename: string;
     format: string;
     id: string;
-    invite?: string;
     modified: number;
-    name: string;
     partial?: boolean;
     patreon?: string;
     size: number;
     slug: string;
-    source?: string;
-    version: string;
-    website?: string;
 }
 
-export type AddonMeta = Record<string, string | string[]>;
+export interface AddonMeta {
+    /**
+     * The name of the addon. It typically does not contain spaces, but it is allowed.
+     */
+    name: string;
+    author: string;
+    /**
+     * A basic description of what the addon does.
+     */
+    description: string;
+    /**
+     * Version representing the current update level. Semantic versioning recommended.
+     */
+    version: string;
+    /**
+     * A Discord invite code, useful for directing users to a support server.
+     */
+    invite?: string;
+    /**
+     * Discord snowflake ID of the developer. This allows users to get in touch.
+     */
+    authorId?: string;
+    /**
+     * Link to use for the author's name on the addon pages.
+     */
+    authorLink?: string;
+    /**
+     * Link to donate to the developer.
+     */
+    donate?: string;
+    /**
+     * Link to the Patreon of the developer.
+     */
+    patreon?: string;
+    /**
+     * Developer's (or addon's) website link.
+     */
+    website?: string;
+    /**
+     * Link to the source on GitHub of the addon.
+     */
+    source?: string;
+};
 
 export type AddonMetaLoaded = {
     kind: "loaded";
@@ -247,7 +280,7 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
 
     parseJSDoc(fileContent: string): AddonMeta {
         const block = fileContent.split("/**", 2)[1].split("*/", 1)[0];
-        const out: AddonMeta = {};
+        const out: Record<string, string | string[]> = {};
         let field = "";
         let accum = "";
         for (const line of block.split(splitRegex)) {
@@ -277,7 +310,7 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
         }
         delete out[""];
         out.format = "jsdoc";
-        return out;
+        return out as unknown as AddonMeta;
     }
 
     async requireAddon(filerel: string): Promise<AddonStateLoad> {

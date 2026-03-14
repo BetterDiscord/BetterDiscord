@@ -362,7 +362,7 @@ export class Addon {
      * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      */
-    async delete(shouldSkipConfirm = false) {
+    async delete(shouldSkipConfirm = false): Promise<void> {
         const foundAddon = this.manager.addonList.find(a => a.filename == this.filename);
 
         if (!foundAddon) return;

@@ -37,7 +37,17 @@ export default function AddonCard({addonStore, isEmbed}: {addonStore: AddonStore
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback((event) => addonStore.delete(event.shiftKey), [addonStore]);
+    const triggerDelete = useCallback(async (event) => {
+        setDisabled(true);
+        try {
+            await addonStore.delete(event.shiftKey);
+            // Manually sync state after delete completes
+            setInstalled(addonStore.isInstalled());
+        }
+        finally {
+            setDisabled(false);
+        }
+    }, [addonStore]);
 
     const installAddon = useCallback(async (event) => {
         setDisabled(true);

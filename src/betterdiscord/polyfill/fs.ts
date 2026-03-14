@@ -197,7 +197,10 @@ export const promises = {
         Remote.filesystem.promises.rename(oldPath, newPath),
 
     realpath: (path: string, options: object) =>
-        Remote.filesystem.promises.getRealPath(path, options)
+        Remote.filesystem.promises.getRealPath(path, options),
+
+    unlink: (path: string) =>
+        Remote.filesystem.promises.unlink(path)
 };
 
 export default {
