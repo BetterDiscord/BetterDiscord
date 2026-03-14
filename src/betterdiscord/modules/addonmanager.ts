@@ -522,18 +522,39 @@ export default abstract class AddonManager<A extends Plugin | Theme> extends Sto
         const addonFolder = this.addonFolder();
         const files = await fs.promises.readdir(addonFolder);
 
-        for (const filename of files) {
-            const absolutePath = path.resolve(addonFolder, filename);
-            const stats = await fs.promises.stat(absolutePath);
-            if (!stats.isFile()) continue;
-            this.fileStats.set(filename, stats);
+        type Resolved = {
+            filename: string;
+            absolute: string;
+            content: string;
+            stats: fs.Stats;
+            meta: AddonMeta;
+        };
 
-            if (!this.validateFileBase(filename)) {
+        const resolved: Resolved[] = [];
+
+        for (const filename of files) {
+            if (!this.validateFileBase(filename)) continue;
+            const absolute = path.resolve(addonFolder, filename);
+            const stats = await fs.promises.stat(absolute);
+            const content = await fs.promises.readFile(absolute, "utf8");
+            const extracted = await this.extractMeta(content, filename);
+            if (extracted.kind === "not-loaded") {
+                states.push(extracted);
                 continue;
             }
-            const load = await this.loadAddon(filename, false);
-            states.push(load);
+            const meta = extracted.meta;
+            this.fileStats.set(filename, stats);
+            resolved.push({filename, absolute, content, stats, meta});
         }
+
+        const concurrency: Array<Promise<void>> = [];
+        for (const {filename} of resolved) {
+            concurrency.push((async (): Promise<void> => {
+                const load = await this.loadAddon(filename, false);
+                states.push(load);
+            })());
+        }
+        await Promise.all(concurrency);
 
         this.saveState();
         this.watchAddons();

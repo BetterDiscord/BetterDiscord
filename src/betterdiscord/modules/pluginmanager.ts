@@ -1,5 +1,4 @@
 import vm from "vm";
-import fs from "fs";
 import * as sucrase from "sucrase";
 import path from "path";
 
@@ -10,7 +9,7 @@ import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
-import AddonManager, {type Addon, type AddonMeta, type AddonState, type AddonStateLoad, type AddonStateLoaded, type AddonStateStart, type AddonStateStop} from "./addonmanager";
+import AddonManager, {type Addon, type AddonMeta, type AddonStateLoad, type AddonStateLoaded, type AddonStateStart, type AddonStateStop} from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
@@ -57,57 +56,6 @@ export default new class PluginManager extends AddonManager<Plugin> {
 
     /* Aliases */
     updatePluginList() {return this.updateList();}
-    async loadAllPlugins(): Promise<Array<AddonState<Plugin>>> {
-        this.loadEnablement();
-        const states: Array<AddonState<Plugin>> = [];
-        const addonFolder = this.addonFolder();
-        const files = (await fs.promises.readdir(addonFolder))
-            .filter(file => this.validateFileBase(file));
-
-        const pluginGroups = Object.groupBy<"esm" | "iife" | "skip", string>(files, (filename) => {
-            if (filename.endsWith(".plugin.mjs")) return "esm";
-            if (filename.endsWith(".plugin.ts")) return "esm";
-            if (filename.endsWith(".plugin.mts")) return "esm";
-
-            if (filename.endsWith(".plugin.js")) return "iife";
-            return "skip";
-        });
-
-        pluginGroups.iife ??= [];
-        pluginGroups.esm ??= [];
-
-        for (const group of pluginGroups.iife) {
-            for (const filename of group) {
-                const absolutePath = path.resolve(addonFolder, filename);
-                const stats = await fs.promises.stat(absolutePath);
-                if (!stats.isFile()) continue;
-                this.fileStats.set(filename, stats);
-                const load = await this.loadAddon(filename, false);
-                states.push(load);
-            }
-        }
-
-        {
-            const concurrency: Array<Promise<void>> = [];
-            for (const group of pluginGroups.esm) {
-                for (const filename of group) {
-                    concurrency.push((async (): Promise<void> => {
-                        const absolutePath = path.resolve(addonFolder, filename);
-                        const stats = await fs.promises.stat(absolutePath);
-                        if (!stats.isFile()) return;
-                        this.fileStats.set(filename, stats);
-                        const load = await this.loadAddon(filename, false);
-                        states.push(load);
-                    })());
-                }
-            }
-            await Promise.all(concurrency);
-        }
-
-        this.saveState();
-        this.watchAddons();
-        return states;
-    }
 
     enablePlugin(plugin: Plugin) {return this.enableAddon(plugin);}
     disablePlugin(plugin: Plugin) {return this.disableAddon(plugin);}
@@ -134,7 +82,7 @@ export default new class PluginManager extends AddonManager<Plugin> {
     }
 
     validateFileBase(base: string): boolean {
-        return base.endsWith(".plugin.js") || base.endsWith(".plugin.mjs");
+        return base.endsWith(".plugin.js") || base.endsWith(".plugin.mjs") || base.endsWith(".plugin.ts") || base.endsWith(".plugin.mts");
     }
 
     async initializeAddon(addon: Plugin): Promise<AddonStateLoad> {
