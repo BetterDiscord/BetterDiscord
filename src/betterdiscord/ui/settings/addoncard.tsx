@@ -16,6 +16,8 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {MouseEvent, ReactNode} from "react";
 import type {default as AddonManager, Addon} from "@modules/addonmanager";
+import type {Theme} from "@modules/thememanager";
+import type {Plugin} from "@modules/pluginmanager";
 
 const {useCallback, useMemo} = React;
 
@@ -89,18 +91,18 @@ export interface AddonCardProps {
     enabled: boolean;
     type: "plugin" | "theme";
     disabled?: boolean;
-    onChange(id: string): void;
+    onChange(addon: Plugin | Theme): void;
     hasSettings: boolean;
     editAddon(): void;
     deleteAddon(): void;
     getSettingsPanel?(): HTMLElement | ReactNode;
-    store: AddonManager;
+    store: AddonManager<Plugin | Theme>;
 }
 
 export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}: AddonCardProps) {
 
     const onChange = useCallback(() => {
-        if (parentChange) parentChange(addon.id);
+        if (parentChange) parentChange(addon as Plugin | Theme);
     }, [addon.id, parentChange]);
 
     const showSettings = useCallback(() => {

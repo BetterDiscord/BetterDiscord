@@ -147,7 +147,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                     <Button
                         className="bd-error-safe-mode"
                         onClick={async () => {
-                            pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
+                            await pluginmanager.disableAllAddons();
                             await IPC.relaunch();
                         }}
                         color={Colors.RED}
@@ -181,9 +181,10 @@ export default new class Recovery extends Builtin {
         this.unpatchAll();
     }
 
-    getPluginInfo(pluginName) {
+    getPluginInfo(pluginName: string) {
         try {
             const plugin = pluginmanager.getPlugin(pluginName);
+            if (!plugin) return null;
             return {
                 name: plugin.name || pluginName,
                 githubUrl: plugin.source || plugin.github,
@@ -215,22 +216,25 @@ export default new class Recovery extends Builtin {
             if (foundIssue) {
                 const pluginName = `${foundIssue[2]}.plugin.js`;
                 pluginInfo = this.getPluginInfo(pluginName);
-                pluginmanager.disableAddon(foundIssue[2]);
-                NotificationUIInstance.show({
-                    id: "plugin-crash",
-                    title: t("Addons.disabled", {name: pluginName}),
-                    content: t("Modals.addonCrashed"),
-                    duration: Infinity,
-                    type: "info",
-                    icon: () => <Logo size={16} accent />,
-                    actions: [
-                        ...(config.isCanary ? [{
-                            label: "Re-enable",
-                            onClick: () => pluginmanager.enableAddon(foundIssue[2]),
-                            dontClose: true,
-                        }] : [])
-                    ]
-                });
+                const plugin = pluginmanager.getPlugin(foundIssue[2]);
+                if (plugin) {
+                    pluginmanager.disableAddon(plugin);
+                    NotificationUIInstance.show({
+                        id: "plugin-crash",
+                        title: t("Addons.disabled", {name: pluginName}),
+                        content: t("Modals.addonCrashed"),
+                        duration: Infinity,
+                        type: "info",
+                        icon: () => <Logo size={16} accent />,
+                        actions: [
+                            ...(config.isCanary ? [{
+                                label: "Re-enable",
+                                onClick: () => pluginmanager.enableAddon(plugin),
+                                dontClose: true,
+                            }] : [])
+                        ]
+                    });
+                }
             }
 
             buttons.className = clsx(buttons.className, "bd-recovery-buttons");

@@ -232,7 +232,7 @@ export default function AddonStorePage({type, refToScroller}) {
         });
 
         const cards = $addons.map((addon) => (
-            <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
+            <ErrorBoundary key={addon.id}><AddonCard addonStore={addon} /></ErrorBoundary>
         ));
 
         return <StoreContent content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
@@ -248,7 +248,7 @@ export default function AddonStorePage({type, refToScroller}) {
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
                 {/* {makeBasicButton(t("Addons.website"), <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
-                {makeBasicButton(t("Addons.openFolder", {context: type}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.openFolder", {context: type}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder()), "folder")}
                 {makeBasicButton(t("Addons.reload"), <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">

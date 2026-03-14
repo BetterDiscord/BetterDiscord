@@ -24,7 +24,6 @@ import Notifications from "@ui/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
-import type AddonManager from "./addonmanager";
 import type {Release} from "github";
 import type {BdWebAddon} from "betterdiscordweb";
 import {Logo} from "@ui/logo";
@@ -243,7 +242,7 @@ export class CoreUpdater {
 
 
 export class AddonUpdater {
-    manager: AddonManager;
+    manager: typeof PluginManager | typeof ThemeManager;
     type: "plugin" | "theme";
     cache: Record<string, {name: string; version: string; id: number;}> | Record<string, never>;
     pending: string[];
@@ -314,7 +313,7 @@ export class AddonUpdater {
                 return;
             }
 
-            const file = path.join(path.resolve(this.manager.addonFolder), filename);
+            const file = path.join(path.resolve(this.manager.addonFolder()), filename);
             fileSystem.writeFile(file, body.toString(), () => {
                 Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
                 this.pending.splice(this.pending.indexOf(filename), 1);

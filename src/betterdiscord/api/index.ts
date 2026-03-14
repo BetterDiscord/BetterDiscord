@@ -1,7 +1,8 @@
 import BDLogger from "@common/logger";
 
-import PluginManager from "@modules/pluginmanager";
-import ThemeManager from "@modules/thememanager";
+import PluginManager, {type Plugin} from "@modules/pluginmanager";
+import ThemeManager, {type Theme} from "@modules/thememanager";
+
 import DiscordModules from "@modules/discordmodules";
 import Config from "@stores/config";
 
@@ -125,8 +126,8 @@ export default class BdApi {
     static ReactDOM = ReactDOM;
     static version = version;
 
-    static Plugins: AddonAPI;
-    static Themes: AddonAPI;
+    static Plugins: AddonAPI<Plugin>;
+    static Themes: AddonAPI<Theme>;
     static Webpack: typeof Webpack;
     static UI: typeof UI;
     static ReactUtils: typeof ReactUtils;

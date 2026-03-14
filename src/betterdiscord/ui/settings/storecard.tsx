@@ -9,6 +9,7 @@ import Events from "@modules/emitter";
 import Button from "@ui/base/button";
 import {FlowerStar} from "./addonshared";
 import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
+import type {AddonStore} from "@modules/addonstore";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -29,59 +30,66 @@ function formatNumberWithSuffix(value) {
     return `${formattedValue}${suffixes[index]}`;
 }
 
-/**
- * @param {{ addon: import("@modules/addonstore").Addon, isEmbed?: boolean }} props
- */
-export default function AddonCard({addon, isEmbed}) {
-    const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
+export default function AddonCard({addonStore, isEmbed}: {addonStore: AddonStore, isEmbed: boolean;}) {
+    const [isInstalled, setInstalled] = useState(() => addonStore.isInstalled());
     const [disabled, setDisabled] = useState(false);
-    const [downloadCount, setDownloads] = useState(addon.downloads);
+    const [downloadCount, setDownloads] = useState(addonStore.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
+    const triggerDelete = useCallback(async (event) => {
+        setDisabled(true);
+        try {
+            await addonStore.delete(event.shiftKey);
+            // Manually sync state after delete completes
+            setInstalled(addonStore.isInstalled());
+        }
+        finally {
+            setDisabled(false);
+        }
+    }, [addonStore]);
 
     const installAddon = useCallback(async (event) => {
         setDisabled(true);
 
-        await addon.download(event.shiftKey);
+        await addonStore.download(event.shiftKey);
 
-        setDownloads(addon.downloads);
+        setDownloads(addonStore.downloads);
 
         setDisabled(false);
-    }, [addon]);
+    }, [addonStore]);
 
-    const acceptInvite = useCallback(() => addon.guild.join(), [addon]);
-    const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
-    const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
-    const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);
-    const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
+    const acceptInvite = useCallback(() => addonStore.guild.join(), [addonStore]);
+    const openSourceCode = useCallback(() => addonStore.openSourceCode(), [addonStore]);
+    const openAddonPage = useCallback(() => addonStore.openAddonPage(), [addonStore]);
+    const openAddonPreview = useCallback(() => addonStore.openPreview(), [addonStore]);
+    const openAuthorPage = useCallback(() => addonStore.openAuthorPage(), [addonStore]);
 
     useEffect(() => {
         const listener = () => {
-            setInstalled(addon.isInstalled());
+            setInstalled(addonStore.isInstalled());
         };
 
         listener();
 
-        Events.on(`${addon.manager.prefix}-loaded`, listener);
-        Events.on(`${addon.manager.prefix}-unloaded`, listener);
+        Events.on(`${addonStore.manager.prefix}-loaded`, listener);
+        Events.on(`${addonStore.manager.prefix}-unloaded`, listener);
 
         return () => {
-            Events.off(`${addon.manager.prefix}-loaded`, listener);
-            Events.off(`${addon.manager.prefix}-unloaded`, listener);
+            Events.off(`${addonStore.manager.prefix}-loaded`, listener);
+            Events.off(`${addonStore.manager.prefix}-unloaded`, listener);
         };
-    }, [addon]);
+    }, [addonStore]);
 
     const badge = useMemo(() => {
-        if (addon.isUnknown()) return t("Addons.new");
-        if (addon.recentlyUpdated()) return t("Addons.updated");
-    }, [addon]);
+        if (addonStore.isUnknown()) return t("Addons.new");
+        if (addonStore.recentlyUpdated()) return t("Addons.updated");
+    }, [addonStore]);
 
     const {downloads, likes} = useMemo(() => ({
         downloads: t("Addons.downloadCount", {count: downloadCount}, {count: formatNumberWithSuffix}),
-        likes: t("Addons.likeCount", {count: addon.likes}, {count: formatNumberWithSuffix}),
-    }), [addon, downloadCount]);
+        likes: t("Addons.likeCount", {count: addonStore.likes}, {count: formatNumberWithSuffix}),
+    }), [addonStore, downloadCount]);
 
     return (
         <div
@@ -90,20 +98,20 @@ export default function AddonCard({addon, isEmbed}) {
                 "bd-addon-store-card-embed": isEmbed
             })}
             onMouseEnter={() => {
-                addon.markAsKnown();
+                addonStore.markAsKnown();
             }}
         >
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img
-                        src={addon.thumbnail}
+                        src={addonStore.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();
                         }}
                         loading="lazy"
                         className="bd-addon-store-card-preview-img"
-                        alt={`Thumbnail ${addon.name}`}
+                        alt={`Thumbnail ${addonStore.name}`}
                     />
                 </div>
                 <div className="bd-addon-store-card-author">
@@ -136,12 +144,12 @@ export default function AddonCard({addon, isEmbed}) {
                                         overflow="visible"
                                         mask="url(#svg-mask-squircle)"
                                     >
-                                        <DiscordModules.Tooltip text={addon.author}>
+                                        <DiscordModules.Tooltip text={addonStore.author}>
                                             {(props) => (
                                                 <img
                                                     loading="lazy"
                                                     className="bd-addon-store-card-author-img"
-                                                    src={addon.avatar}
+                                                    src={addonStore.avatar}
                                                     {...props}
                                                     onClick={openAuthorPage}
                                                 />
@@ -160,11 +168,11 @@ export default function AddonCard({addon, isEmbed}) {
             <div className="bd-addon-store-card-body">
                 <div className="bd-addon-store-card-name">
                     <FlowerStar />
-                    <span>{addon.name}</span>
+                    <span>{addonStore.name}</span>
                 </div>
-                <div className="bd-addon-store-card-description">{addon.description}</div>
+                <div className="bd-addon-store-card-description">{addonStore.description}</div>
                 <div className="bd-addon-store-card-tags">
-                    {addon.tags.map((tag) => (
+                    {addonStore.tags.map((tag) => (
                         <span
                             className={clsx({"bd-addon-store-card-tag": true, "bd-addon-store-card-tag-selected": isTagEnabled(tag)})}
                             onClick={() => toggleTag(tag)}
@@ -209,7 +217,7 @@ export default function AddonCard({addon, isEmbed}) {
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
-                    {addon.type === "theme" && (
+                    {addonStore.type === "theme" && (
                         <DiscordModules.Tooltip text={t("Addons.preview")}>
                             {(props) => (
                                 <Button
@@ -223,7 +231,7 @@ export default function AddonCard({addon, isEmbed}) {
                             )}
                         </DiscordModules.Tooltip>
                     )}
-                    {addon.guild && (
+                    {addonStore.guild && (
                         <DiscordModules.Tooltip text={t("Addons.invite")}>
                             {(props) => (
                                 <Button

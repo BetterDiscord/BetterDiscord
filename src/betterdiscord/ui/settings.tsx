@@ -27,6 +27,7 @@ import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
+import type {Theme} from "@modules/thememanager";
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -551,8 +552,16 @@ function useCollectionMenu(collection: SettingsCollection) {
     );
 }
 
-function useAddonMenu(manager: AddonManager) {
-    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.getAddon(name), manager.isEnabled(name)] as const), [], true);
+function useAddonMenu(manager: AddonManager<Plugin | Theme>) {
+    const addons = useStateFromStores(manager, () => {
+        return manager.addonList
+            .map((a) => {
+                return [a.name, a, manager.isEnabled(a.name)] as const;
+            })
+            .sort(([a], [b]) => {
+                return a.toLowerCase().localeCompare(b.toLowerCase());
+            });
+    }, [], true);
     const addonStoreIsEnabled = useStateFromStores(Settings, () => Settings.get("settings", "store", "bdAddonStore"), []);
 
     const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
@@ -564,7 +573,7 @@ function useAddonMenu(manager: AddonManager) {
             disabled={addon?.partial}
             action={(e: MouseEvent) => {
                 if (!e.shiftKey) {
-                    manager.toggleAddon(name);
+                    manager.toggleAddon(addon);
                     return;
                 }
 

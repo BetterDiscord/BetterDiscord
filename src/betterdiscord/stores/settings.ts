@@ -8,7 +8,9 @@ import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Store from "./base";
 import type {ComponentType} from "react";
-import type AddonManager from "@modules/addonmanager";
+import type {default as AddonManager} from "@modules/addonmanager";
+import type {Theme} from "@modules/thememanager";
+import type {Plugin} from "@modules/pluginmanager";
 import {PaletteIcon, PlugIcon, type LucideIcon} from "lucide-react";
 
 export interface SettingsCollection {
@@ -29,7 +31,7 @@ export interface SettingsPanel {
     element?: ComponentType;
     icon?: LucideIcon;
     type?: "addon" | "settings";
-    manager?: AddonManager;
+    manager?: AddonManager<Plugin> | AddonManager<Theme>;
     searchable?(): string[];
 }
 
@@ -62,7 +64,7 @@ export default new class SettingsManager extends Store {
         this.collections.splice(location, 1);
     }
 
-    registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager; icon?: LucideIcon; searchable?(): string[];}) {
+    registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager<Plugin> | AddonManager<Theme>; icon?: LucideIcon; searchable?(): string[];}) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1, type = "settings"} = options;
         const section: SettingsPanel = {
@@ -80,9 +82,9 @@ export default new class SettingsManager extends Store {
         this.panels.push(section);
     }
 
-    registerAddonPanel(manager: AddonManager) {
-        const plural = manager.prefix + "s";
-        const title = t(`Panels.${plural as "plugins" | "themes"}`)!;
+    registerAddonPanel(manager: AddonManager<Plugin> | AddonManager<Theme>) {
+        const plural = manager.pluralPrefix as "plugins" | "themes";
+        const title = t(`Panels.${plural}`)!;
 
         this.registerPanel(plural, title, {
             order: manager.order,

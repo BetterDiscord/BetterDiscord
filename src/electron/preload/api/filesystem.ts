@@ -92,3 +92,58 @@ export function getStats(path: string, options?: object) {
         isSymbolicLink: stats.isSymbolicLink.bind(stats)
     };
 }
+
+export const promises = {
+    readFile: (path: string, options: object | BufferEncoding = "utf8") =>
+        fs.promises.readFile(path, options),
+
+    writeFile: (path: string, content: string | Uint8Array, options?: fs.WriteFileOptions & {originalFs: boolean;}) => {
+        const data = content instanceof Uint8Array ? Buffer.from(content) : content;
+        if (options?.originalFs) {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            return require("original-fs").promises.writeFile(path, data, options);
+        }
+        return fs.promises.writeFile(path, data, options);
+    },
+
+    readDirectory: (path: string, options?: object) =>
+        fs.promises.readdir(path, options),
+
+    createDirectory: (path: string, options: fs.MakeDirectoryOptions) =>
+        fs.promises.mkdir(path, options),
+
+    deleteDirectory: (path: string, options: fs.RmDirOptions) =>
+        fs.promises.rmdir(path, options),
+
+    exists: async (path: string) => {
+        try {
+            await fs.promises.access(path);
+            return true;
+        }
+        catch {
+            return false;
+        }
+    },
+
+    unlink: (path: string) =>
+        fs.promises.unlink(path),
+
+    getRealPath: (path: string, options?: object) =>
+        fs.promises.realpath(path, options as any),
+
+    rename: (oldPath: string, newPath: string) =>
+        fs.promises.rename(oldPath, newPath),
+
+    rm: (pathToFile: string, options?: fs.RmOptions) =>
+        fs.promises.rm(pathToFile, options),
+
+    getStats: async (path: string, options?: fs.StatOptions) => {
+        const stats = await fs.promises.stat(path, options);
+        return {
+            ...stats,
+            isFile: stats.isFile.bind(stats),
+            isDirectory: stats.isDirectory.bind(stats),
+            isSymbolicLink: stats.isSymbolicLink.bind(stats)
+        };
+    }
+};

@@ -1,9 +1,7 @@
 import config from "@stores/config";
-import type AddonManager from "@modules/addonmanager";
 import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
-
 
 export function getDiscordClientInfo() {
     const clientInfo = DiscordModules.GetClientInfo?.();
@@ -48,14 +46,14 @@ export function getDiscordInfo(string = true) {
     return info;
 }
 
-export function getAddonCounts(manager: AddonManager) {
+export function getAddonCounts(manager: typeof PluginManager | typeof ThemeManager) {
     return {
         total: manager.addonList.length,
         enabled: manager.addonList.filter(a => manager.isEnabled(a.id)).length
     };
 }
 
-export function getAddonList(manager: AddonManager) {
+export function getAddonList(manager: typeof PluginManager | typeof ThemeManager) {
     return manager.addonList.map(a => `- ${a.name}${manager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n");
 }
 

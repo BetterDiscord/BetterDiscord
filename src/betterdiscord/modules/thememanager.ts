@@ -3,7 +3,7 @@ import Toasts from "@stores/toasts";
 
 import AddonError from "@structs/addonerror";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager, {type Addon, type AddonStateLoad, type AddonStateStart, type AddonStateStop} from "./addonmanager";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 
@@ -32,65 +32,89 @@ function parseProperty(raw: string) {
     return out;
 }
 
-export default new class ThemeManager extends AddonManager {
-    get name() {return "ThemeManager";}
-    get extension() {return ".theme.css";}
-    get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
-    get addonFolder() {return Config.get("themesPath");}
-    get prefix() {return "theme" as const;}
-    get language() {return "css";}
-    get order() {return 4;}
+export default new class ThemeManager extends AddonManager<Theme> {
+    name = "ThemeManager";
 
-    addonList: Theme[] = [];
+    constructor() {
+        super(
+            "theme",
+            "css",
+            4,
+        );
+    }
+
+    validateFileBase(base: string): boolean {
+        return base.endsWith(".theme.css");
+    }
+
+    addonFolder(): string {
+        return Config.get("themesPath");
+    }
 
     /* Aliases */
     updateThemeList() {return this.updateList();}
     loadAllThemes() {return this.loadAllAddons();}
 
-    enableTheme(idOrAddon: string | Theme) {return this.enableAddon(idOrAddon);}
-    disableTheme(idOrAddon: string | Theme) {return this.disableAddon(idOrAddon);}
-    toggleTheme(id: string) {return this.toggleAddon(id);}
+    enableTheme(theme: Theme) {return this.enableAddon(theme);}
+    disableTheme(theme: Theme) {return this.disableAddon(theme);}
+    toggleTheme(theme: Theme) {return this.toggleAddon(theme);}
 
-    unloadTheme(idOrFileOrAddon: string | Theme) {return this.unloadAddon(idOrFileOrAddon);}
+    unloadTheme(theme: Theme) {return this.unloadAddon(theme);}
     loadTheme(filename: string) {return this.loadAddon(filename);}
-    reloadTheme(idOrFileOrAddon: string | Theme) {return this.reloadAddon(idOrFileOrAddon);}
+    reloadTheme(theme: Theme) {return this.reloadAddon(theme);}
 
-    loadAddon(filename: string, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
-        if (error && shouldCTE) Modals.showAddonErrors({themes: [error]});
-        return error;
+    async loadAddon(filename: string, shouldCTE = true) {
+        const load = await super.loadAddon(filename, shouldCTE);
+        if (load.kind === "not-loaded" && shouldCTE) Modals.showAddonErrors({themes: [load]});
+        return load;
     }
 
     /* Overrides */
-    initializeAddon(addon: Theme) {
-        if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+    async initializeAddon(addon: Theme): Promise<AddonStateLoad> {
+        if (!addon.name || !addon.author || !addon.description || !addon.version) {
+            return {
+                kind: "not-loaded",
+                error: new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix),
+            };
+        }
+        return {
+            kind: "loaded",
+            addon,
+        };
     }
 
-    requireAddon(filename: string) {
-        const addon = super.requireAddon(filename) as Theme;
+    async requireAddon(filename: string) {
+        const require = await super.requireAddon(filename);
+        if (require.kind === "not-loaded") {
+            return require;
+        }
+        const addon = require.addon as Theme;
         addon.css = addon.fileContent!;
         delete addon.fileContent;
         const properties = this.extractCustomProperties(addon.css);
         addon.properties = properties;
-        return addon;
+        return require;
     }
 
-    startAddon(idOrAddon: string | Theme) {return this.addTheme(idOrAddon);}
-    stopAddon(idOrAddon: string | Theme) {return this.removeTheme(idOrAddon);}
+    startAddon(theme: Theme) {return this.addTheme(theme);}
+    stopAddon(theme: Theme) {return this.removeTheme(theme);}
 
-    addTheme(idOrAddon: string | Theme) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
+    async addTheme(theme: Theme): Promise<AddonStateStart<Theme>> {
+        DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
 
-        if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: addon.name, version: addon.version}));
+        Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
+        return {
+            kind: "started",
+            addon: theme,
+        };
     }
 
-    removeTheme(idOrAddon: string | Theme) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
+    async removeTheme(addon: Theme): Promise<AddonStateStop> {
         DOMManager.removeTheme(addon.slug + "-theme-container");
         Toasts.error(t("Addons.disabled", {name: addon.name, version: addon.version}));
+        return {
+            kind: "stopped",
+        };
     }
 
     extractCustomProperties(css: string) {
