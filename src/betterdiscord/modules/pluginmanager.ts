@@ -17,19 +17,8 @@ import Events from "./emitter";
 import Modals from "@ui/modals";
 
 
-export interface PluginMeta extends AddonMeta {
-    /**
-     * Use this field to wait for specific plugins to load.
-     * This field accepts an array of IDs.
-     */
-    needs?: string | string[];
-}
+export type PluginMeta = AddonMeta;
 export interface Plugin extends Addon, PluginMeta {
-    /**
-     * Use this field to wait for specific plugins to load.
-     * This field accepts an array of IDs.
-     */
-    needs?: string | string[];
     exports: any;
     instance: {
         load?(): void;
@@ -87,8 +76,6 @@ export default new class PluginManager extends AddonManager<Plugin> {
         pluginGroups.iife ??= [];
         pluginGroups.esm ??= [];
 
-        const loadedIds = new Set<string>();
-
         for (const group of pluginGroups.iife) {
             for (const filename of group) {
                 const absolutePath = path.resolve(addonFolder, filename);
@@ -97,83 +84,24 @@ export default new class PluginManager extends AddonManager<Plugin> {
                 this.fileStats.set(filename, stats);
                 const load = await this.loadAddon(filename, false);
                 states.push(load);
-                // Record the name/ID so ESM doesn't load it again
-                if (load.kind !== "not-loaded") {
-                    const id = (load.addon as Plugin).name || filename;
-                    loadedIds.add(id);
-                }
             }
         }
 
         {
-            // 1. First, collect all plugin metadata into a map for easy access
-            const pluginMap = new Map<string, {meta: PluginMeta, needs: string[], filename: string;}>();
-            const sortedFiles: string[] = [];
-
+            const concurrency: Array<Promise<void>> = [];
             for (const group of pluginGroups.esm) {
                 for (const filename of group) {
-                    const absolutePath = path.resolve(addonFolder, filename);
-                    const stats = await fs.promises.stat(absolutePath);
-                    if (!stats.isFile()) continue;
-
-                    const fileContent = await fs.promises.readFile(absolutePath, "utf8");
-                    const extracted = this.extractMeta(fileContent, filename);
-
-                    if (extracted.kind === "not-loaded") {
-                        continue;
-                    }
-                    const meta = extracted.meta as PluginMeta;
-                    const id = meta.name || filename;
-                    const needs = Array.isArray(meta.needs)
-                        ? meta.needs
-                        : (meta.needs ? [meta.needs] : []);
-
-                    // SKIP if already loaded in the IIFE loop
-                    if (loadedIds.has(id)) continue;
-
-                    pluginMap.set(id, {meta, needs, filename});
+                    concurrency.push((async (): Promise<void> => {
+                        const absolutePath = path.resolve(addonFolder, filename);
+                        const stats = await fs.promises.stat(absolutePath);
+                        if (!stats.isFile()) return;
+                        this.fileStats.set(filename, stats);
+                        const load = await this.loadAddon(filename, false);
+                        states.push(load);
+                    })());
                 }
             }
-
-            // 2. Define the Topological Sort (DFS)
-            const visit = (id: string, visiting: Set<string>) => {
-                if (loadedIds.has(id)) return;
-                if (visiting.has(id)) {
-                    const plugin = pluginMap.get(id)!;
-                    states.push({
-                        kind: "not-loaded",
-                        error: new AddonError(plugin.meta.name, plugin.filename, `Circular dependency detected involving: ${id}`, {}, this.prefix)
-                    });
-                }
-
-                const plugin = pluginMap.get(id);
-                if (!plugin) return; // Or handle missing optional dependencies
-
-                visiting.add(id);
-                for (const dependencyId of plugin.needs) {
-                    visit(dependencyId, visiting);
-                }
-                visiting.delete(id);
-
-                loadedIds.add(id);
-                sortedFiles.push(plugin.filename);
-            };
-
-            // Execute the sort
-            for (const id of pluginMap.keys()) {
-                visit(id, new Set());
-            }
-
-            // Load in the specific order
-            for (const filename of sortedFiles) {
-                const stats = await fs.promises.stat(path.resolve(addonFolder, filename));
-                this.fileStats.set(filename, stats);
-
-                if (this.validateFileBase(filename)) {
-                    const load = this.loadAddon(filename, false);
-                    load.then(state => states.push(state));
-                }
-            }
+            await Promise.all(concurrency);
         }
 
         this.saveState();
@@ -340,21 +268,6 @@ export default new class PluginManager extends AddonManager<Plugin> {
     async requireAddon(filename: string): Promise<AddonStateLoad> {
         const requireResult = await super.requireAddon(path.resolve(this.addonFolder(), filename));
         if (requireResult.kind === "not-loaded") return requireResult;
-        const addon = requireResult.addon as Plugin;
-        if (addon.needs) {
-            if (typeof addon.needs === "string") addon.needs = [addon.needs];
-            const results = await Promise.all(addon.needs
-                .filter(id => !this.enablement[id])
-                .map(id => this.loadAddon(id))
-            );
-            const anyFailed = results.find(r => r.kind === "not-loaded");
-            if (anyFailed) {
-                return {
-                    kind: "not-loaded",
-                    error: new AddonError(addon.name, addon.filename, "Failed to require " + anyFailed.error.name, anyFailed.error.error, this.prefix),
-                };
-            }
-        }
         if (filename.endsWith(".plugin.mjs")) {
             return this.requireESMAddon(requireResult, false);
         }
