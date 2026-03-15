@@ -125,9 +125,16 @@ const SettingsRenderer = new class SettingsRenderer {
                     let layout: [] | [panel: PanelLayout] = [];
 
                     if ("render" in item) {
+                        const custom = layoutBuilder.custom(key, {
+                            Component: () => <item.render />
+                        });
+
+                        const category = layoutBuilder.category(key, {
+                            buildLayout: () => [custom]
+                        });
+
                         const panel = layoutBuilder.panel(key, {
-                            buildLayout: () => [],
-                            StronglyDiscouragedCustomComponent: item.render,
+                            buildLayout: () => [category],
                             useTitle: item.header
                         });
 
@@ -138,8 +145,11 @@ const SettingsRenderer = new class SettingsRenderer {
                         buildLayout: () => layout,
                         useTitle: item.title,
                         icon: item.icon,
-                        getLegacySearchKey: () => `BETTERDISCORD_${key}`,
-                        usePredicate: () => true
+                        usePredicate: () => true,
+                        useSearchTerms: () => [
+                            "betterdiscord", "bd",
+                            ...item.useSearchTerms()
+                        ]
                     });
 
                     if (typeof item.predicate === "function") {
@@ -225,11 +235,17 @@ const SettingsRenderer = new class SettingsRenderer {
 
                 for (const collection of Settings.collections) {
                     // if (collection.disabled) continue;
+                    const items = collection.settings.map(m => [m.name, m.settings.map(setting => setting.name)]).flat(2) as string[];
+
                     insert(collection.id, {
                         ...makeSettingsPanelProvider(this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))),
                         icon: Logo.Discord,
                         title: () => collection.name,
-                        useMenu: () => useCollectionMenu(collection)
+                        useMenu: () => useCollectionMenu(collection),
+                        useSearchTerms: () => [
+                            collection.name,
+                            ...items
+                        ]
                     });
                 }
 
@@ -245,14 +261,15 @@ const SettingsRenderer = new class SettingsRenderer {
                             ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSViewable
-
+                            predicate: useCustomCSSViewable,
+                            useSearchTerms: () => [panel.label]
                         });
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
                             predicate: useCustomCSSClickable,
-                            onClick: () => CustomCSS.open()
+                            onClick: () => CustomCSS.open(),
+                            useSearchTerms: () => [panel.label]
                         });
 
                         continue;
@@ -262,7 +279,11 @@ const SettingsRenderer = new class SettingsRenderer {
                         ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                         icon,
                         title: () => panel.label,
-                        useMenu: panel.type === "addon" ? () => useAddonMenu(panel.manager!) : undefined
+                        useMenu: panel.type === "addon" ? () => useAddonMenu(panel.manager!) : undefined,
+                        useSearchTerms: () => [
+                            panel.label,
+                            typeof panel.searchable === "function" ? panel.searchable().filter(m => typeof m === "string") : []
+                        ].flat()
                     });
                 }
 
@@ -366,8 +387,7 @@ const ContextMenu = new ContextMenuPatcher();
 const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface PanelLayout {
-    buildLayout(): [];
-    StronglyDiscouragedCustomComponent(): React.ReactNode;
+    buildLayout(): [category: CategoryLayout];
     useTitle(): React.ReactNode;
 }
 
@@ -390,8 +410,8 @@ type Trailing = ({
 interface SidebarItemLayout {
     icon: DiscordIcon;
     useTitle(): React.ReactNode;
-    getLegacySearchKey(): string;
     buildLayout(): [] | [panel: PanelLayout];
+    useSearchTerms(): string[];
 
     /**
      * @warning You cannot have page with onClick!
@@ -412,7 +432,17 @@ interface SectionLayout {
     usePredicate?(): boolean;
 }
 
+interface CustomLayout {
+    Component: React.ComponentType;
+}
+
+interface CategoryLayout {
+    buildLayout(): CustomLayout[];
+}
+
 interface LayoutBuilder {
+    custom(key: string, custom: CustomLayout): CustomLayout;
+    category(key: string, custom: CategoryLayout): CategoryLayout;
     panel(key: string, panel: PanelLayout): PanelLayout;
     sidebarItem(key: string, panel: SidebarItemLayout): SidebarItemLayout;
     section(key: string, panel: SectionLayout): SectionLayout;
@@ -424,6 +454,7 @@ type LayoutConstructor = {
 
     predicate?(): boolean;
     useMenu?(): React.ReactNode;
+    useSearchTerms(): string[];
 } & ({
     header(): React.ReactNode;
     render(): React.ReactNode;

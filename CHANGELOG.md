@@ -2,6 +2,18 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.10
+### Fixed
+- Fixed crashing when trying to view BetterDiscord's custom setting tabs
+
+1.13.9
+### Fixed
+- Fixes BD's items in the settings cog context-menu
+- The changelog button was at the bottom of the bd section
+- Hovering over a bd section would cause the to get filled instead of changing the color
+- Fixes Net.fetch from removing forbidden headers like User-Agent because of `new Request
+- Possible fix for addon store indefinitely loading - please report if you still have this issue
+
 1.13.8
 ### Fixed
 - BetterDiscord now loads on macOS and Linux.

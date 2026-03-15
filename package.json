@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.13.8",
+    "version": "1.13.10",
     "description": "Enhances Discord by adding functionality and themes.",
     "type": "module",
     "scripts": {
