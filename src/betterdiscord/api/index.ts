@@ -236,7 +236,7 @@ BdApi.Components = Components;
 
 /**
  * A set of common modules used internally by plugins.
- * @type CommonModules
+ * @type {Readonly<Record<string, any>>}
  */
 BdApi.Common = CommonModules;
 
@@ -268,3 +268,4 @@ Object.freeze(BdApi);
 Object.freeze(BdApi.Net);
 Object.freeze(BdApi.prototype);
 Object.freeze(BdApi.Components);
+Object.freeze(BdApi.Common);
