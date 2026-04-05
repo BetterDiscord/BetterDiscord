@@ -34,7 +34,7 @@ export function saveState(type: string, control: string, value: any) {
 }
 
 interface AddonContext {
-    title: String;
+    title: string;
     toggleStore(): void;
     showingStore: boolean;
     store: AddonManager;

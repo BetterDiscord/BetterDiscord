@@ -147,7 +147,7 @@ export default class {
     static patchBrowserWindow() {
         const electronPath = require.resolve("electron");
 
-        if(!require.cache[electronPath]) return;
+        if (!require.cache[electronPath]) return;
         delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
         require.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }

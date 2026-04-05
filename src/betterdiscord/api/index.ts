@@ -137,12 +137,12 @@ export default class BdApi {
     static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
-        // @ts-expect-error return the normal BdApi when called without a plugin name
+        // @ts-expect-error return the normal BdApi when called without a plugin name for backwards compatibility
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof (pluginName) !== "string") {
             BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
-            // @ts-expect-error
+            // @ts-expect-error same as above
             return BdApi;
         }
 
