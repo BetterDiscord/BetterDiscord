@@ -46,7 +46,7 @@ export default function CheckBox(props: CheckboxProps) {
                 <CheckIcon size="18px" />
             </div>
             {props.label && (
-                <div className="bd-checkbox-label">{props.label}</div>
+                <div className={clsx("bd-checkbox-label", props.labelClassName)}>{props.label}</div>
             )}
         </Flex>
     );

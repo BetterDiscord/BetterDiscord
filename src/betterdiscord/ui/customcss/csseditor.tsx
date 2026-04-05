@@ -17,7 +17,6 @@ interface CssEditorProps {
     save: (css: string) => void;
     onChange: (css: string) => void;
     openDetached?: (css: string) => void;
-    readOnly?: boolean;
     id?: string;
 }
 
