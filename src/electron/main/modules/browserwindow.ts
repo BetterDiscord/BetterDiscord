@@ -1,4 +1,4 @@
-import electron, {type BrowserWindowConstructorOptions} from "electron";
+import electron, {type BrowserWindowConstructorOptions, type HandlerDetails} from "electron";
 import path from "path";
 
 import BetterDiscord from "./betterdiscord";
@@ -27,6 +27,7 @@ class BrowserWindow extends electron.BrowserWindow {
      * @returns
      */
     constructor(options: BrowserWindowConstructorOptions) {
+        // @ts-expect-error super's type returns undefined for some reason
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
 
         if (maybeHasOtherClientMod() && BetterDiscord.clientModCompatibility.shouldShow()) {
@@ -66,9 +67,10 @@ class BrowserWindow extends electron.BrowserWindow {
         }
 
         const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
+        options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
 
-        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
-        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
+        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame.toString();
+        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights.toString();
 
         if (inAppTrafficLights) {
             delete options.titleBarStyle;
@@ -98,7 +100,7 @@ class BrowserWindow extends electron.BrowserWindow {
                  *
                  * @type {(details: import("electron").HandlerDetails) => import("electron").WindowOpenHandlerResponse} callback
                  */
-                argArray[0] = function (details) {
+                argArray[0] = function (details: HandlerDetails) {
                     // const match = details.url.match(EDITOR_URL_REGEX);
                     // if (match) {
                     //     const isCustomCSS = match[1] === undefined;
@@ -144,6 +146,8 @@ Object.defineProperty(BrowserWindow, "name", {value: "BrowserWindow", configurab
 export default class {
     static patchBrowserWindow() {
         const electronPath = require.resolve("electron");
+
+        if(!require.cache[electronPath]) return;
         delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
         require.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }

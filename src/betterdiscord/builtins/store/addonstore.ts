@@ -30,17 +30,22 @@ const ADDON_REGEX = new RegExp([
 
 const CODEBLOCK_REGEX = /(`+)([\s\S]*?[^`])\1(?!`)/g;
 
+interface Match {
+    id: string;
+    match: string;
+    index: number;
+}
+
 /**
  * Extract all bd addon links
  * @param {string} text
  * @param {number} max
  * @return {{ id: string, match: string, index: number }[]}
  */
-function extractAddonLinks(text, max = Infinity) {
+function extractAddonLinks(text: string, max = Infinity) {
     ADDON_REGEX.lastIndex = 0;
 
-    const matches = [];
-
+    const matches: Match[] = [];
     if (max <= 0) return matches;
 
     /**

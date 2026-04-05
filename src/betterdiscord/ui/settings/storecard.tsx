@@ -9,13 +9,18 @@ import Events from "@modules/emitter";
 import Button from "@ui/base/button";
 import {FlowerStar} from "./addonshared";
 import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
+import type {Addon} from "@modules/addonstore";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
-// TODO: let doggy fix these
-export const TagContext = createContext();
+type TagContext = [
+    (tag: string) => boolean,
+    (tag: string, state?: boolean) => void
+]
 
-function formatNumberWithSuffix(value) {
+export const TagContext = createContext<TagContext>([() => false, () => {}]);
+
+function formatNumberWithSuffix(value: number | string) {
     value = Number(value);
     if (value === 0) return "0";
 
@@ -29,19 +34,24 @@ function formatNumberWithSuffix(value) {
     return `${formattedValue}${suffixes[index]}`;
 }
 
+interface AddonCardProps {
+    addon: Addon;
+    isEmbed?: boolean;
+}
+
 /**
  * @param {{ addon: import("@modules/addonstore").Addon, isEmbed?: boolean }} props
  */
-export default function AddonCard({addon, isEmbed}) {
+export default function AddonCard({addon, isEmbed}: AddonCardProps) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);
     const [downloadCount, setDownloads] = useState(addon.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
+    const triggerDelete = useCallback((event: React.MouseEvent) => addon.delete(event.shiftKey), [addon]);
 
-    const installAddon = useCallback(async (event) => {
+    const installAddon = useCallback(async (event: React.MouseEvent) => {
         setDisabled(true);
 
         await addon.download(event.shiftKey);
@@ -51,7 +61,7 @@ export default function AddonCard({addon, isEmbed}) {
         setDisabled(false);
     }, [addon]);
 
-    const acceptInvite = useCallback(() => addon.guild.join(), [addon]);
+    const acceptInvite = useCallback(() => addon.guild?.join(), [addon]);
     const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
     const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
     const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);
@@ -96,7 +106,7 @@ export default function AddonCard({addon, isEmbed}) {
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img
-                        src={addon.thumbnail}
+                        src={addon.thumbnail ?? undefined}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();

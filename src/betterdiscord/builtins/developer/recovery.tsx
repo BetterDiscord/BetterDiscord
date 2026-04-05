@@ -57,7 +57,7 @@ async function attemptRecovery() {
     return allActionsCompleted;
 }
 
-const parseGithubUrl = (url) => {
+const parseGithubUrl = (url: string) => {
     try {
         const urlObj = new URL(url?.replace(/^(http:\/\/|git:\/\/|git\+https:\/\/|git@)/, "https://"));
         if (!urlObj.hostname.includes("github")) return null;
@@ -69,7 +69,21 @@ const parseGithubUrl = (url) => {
     }
 };
 
-const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
+interface PluginInfo {
+    name: string;
+    githubUrl: string | null;
+    invite: string | null;
+    version: string;
+}
+
+interface ErrorDetailsProps {
+    componentStack: any;
+    pluginInfo: PluginInfo | null;
+    stack: string;
+    instance: any;
+}
+
+const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetailsProps) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [height, setHeight] = React.useState(0);
     const contentRef = React.useRef(null);
@@ -181,12 +195,14 @@ export default new class Recovery extends Builtin {
         this.unpatchAll();
     }
 
-    getPluginInfo(pluginName) {
+    getPluginInfo(pluginName: string): PluginInfo | null {
         try {
             const plugin = pluginmanager.getPlugin(pluginName);
+            if(!plugin) return null;
+
             return {
                 name: plugin.name || pluginName,
-                githubUrl: plugin.source || plugin.github,
+                githubUrl: plugin.source || null,
                 invite: plugin.invite || null,
                 version: plugin.version || `0.0.0`
             };
@@ -200,7 +216,7 @@ export default new class Recovery extends Builtin {
     patchErrorBoundry() {
         const mod = getByPrototypes(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
-        this.after(mod?.prototype, "render", (instance, args, retValue) => {
+        this.after(mod?.prototype, "render", (instance, _, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
             const buttons = retValue?.props?.action?.props;
 

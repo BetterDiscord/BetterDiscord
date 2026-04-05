@@ -6,11 +6,12 @@ import DiscordModules from "@modules/discordmodules";
 import Button from "@ui/base/button";
 import Modals from "@ui/modals";
 
-import SettingsGroup from "@ui/settings/group";
+import SettingsGroup, {type GroupOnChange} from "@ui/settings/group";
 import SettingsTitle from "@ui/settings/title";
 
 import {ListRestartIcon} from "lucide-react";
 import {SettingsTitleContext} from "@ui/settings";
+import type {SettingsCategory} from "@data/settings";
 
 
 function makeResetButton(collectionId: string, refresh?: () => void) {
@@ -45,8 +46,8 @@ function confirmReset(action: () => void) {
 export interface SettingsPanelProps {
     id: string;
     title: string;
-    groups: Array<Parameters<typeof SettingsGroup>[0]>;
-    onChange?(): void;
+    groups: SettingsCategory[];
+    onChange: GroupOnChange;
     onDrawerToggle(id: string, subid: string, state: boolean): void;
     getDrawerState(id: string, subid: string, byDefault?: boolean): boolean;
 }

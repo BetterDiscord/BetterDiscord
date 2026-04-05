@@ -33,8 +33,14 @@ const buildSortOptions = () => [
 
 const MAX_AMOUNT_OF_CARDS = 30;
 
-// TODO: let doggy do these types
-function StoreContent({content, refToScroller, page, setPage}) {
+interface StoreContentProps {
+    content: React.JSX.Element[];
+    refToScroller: any;
+    page: number;
+    setPage(page: number): void;
+}
+
+function StoreContent({content, refToScroller, page, setPage}: StoreContentProps) {
     const cards = useMemo(() => content.slice(page * MAX_AMOUNT_OF_CARDS, (page + 1) * MAX_AMOUNT_OF_CARDS), [content, page]);
 
     return (
@@ -61,7 +67,13 @@ function StoreContent({content, refToScroller, page, setPage}) {
     );
 }
 
-function TagDropdown({type, selected, onChange}) {
+interface TagDropdownProps {
+    type: "plugin" | "theme";
+    selected: Record<string, boolean>;
+    onChange(tag: string, value?: boolean): void;
+}
+
+function TagDropdown({type, selected, onChange}: TagDropdownProps) {
     const selectRef = React.useRef<HTMLButtonElement>(null);
     const optionsRef = React.useRef<HTMLUListElement>(null);
 
@@ -124,19 +136,24 @@ function TagDropdown({type, selected, onChange}) {
     );
 }
 
+interface AddonStorePageProps {
+    type: "plugin" | "theme";
+    refToScroller: any;
+}
+
 /**
  * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0
  */
-export default function AddonStorePage({type, refToScroller}) {
+export default function AddonStorePage({type, refToScroller}: AddonStorePageProps) {
     const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
 
     /** @type {[ tags: Record<string, boolean>, setTags: (value: ((tags: Record<string, boolean>) => Record<string, boolean>) | Record<string, boolean>) => void ]} */
-    const [tags, setTags] = useState({});
+    const [tags, setTags] = useState<Record<string, boolean>>({});
 
     /** @type {(tag: string, value?: boolean) => void} */
-    const toggleTag = useCallback((tag, value) => {
+    const toggleTag = useCallback((tag: string, value?: boolean) => {
         setPage(0);
 
         setTags(($tags) => ({
@@ -147,20 +164,20 @@ export default function AddonStorePage({type, refToScroller}) {
 
     const [query, setQuery] = useState("");
 
-    const search = useCallback((event) => {
-        setQuery(event.target.value.toLocaleLowerCase());
+    const search = useCallback((event: React.ChangeEvent) => {
+        setQuery((event.target as HTMLInputElement).value.toLocaleLowerCase());
         setPage(0);
     }, []);
 
-    const [sort, setSort] = useState(() => getState(`${type}-store`, "sort", "downloads"));
-    const [ascending, setAscending] = useState(() => getState(`${type}-store`, "ascending", true));
+    const [sort, setSort] = useState<string>(() => getState(`${type}-store`, "sort", "downloads"));
+    const [ascending, setAscending] = useState<boolean>(() => getState(`${type}-store`, "ascending", true));
 
-    const changeDirection = useCallback((value) => {
+    const changeDirection = useCallback((value: boolean) => {
         saveState(`${type}-store`, "ascending", value);
         setAscending(value);
     }, [type]);
 
-    const changeSort = useCallback((value) => {
+    const changeSort = useCallback((value: string) => {
         saveState(`${type}-store`, "sort", value);
         setSort(value);
     }, [type]);
@@ -211,10 +228,10 @@ export default function AddonStorePage({type, refToScroller}) {
                     comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
                     break;
                 case "modified":
-                    comparison = b.lastModified - a.lastModified;
+                    comparison = b.lastModified.getTime() - a.lastModified.getTime();
                     break;
                 case "releaseDate":
-                    comparison = b.releaseDate - a.releaseDate;
+                    comparison = b.releaseDate.getTime() - a.releaseDate.getTime();
                     break;
                 case "name":
                     break;

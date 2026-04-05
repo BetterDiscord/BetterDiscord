@@ -36,7 +36,7 @@ function showConfirmDelete(addon: import("./addonmanager").Addon) {
 /** @typedef {Addon} Addon */
 /** @typedef {Guild} Guild */
 
-class Guild {
+export class Guild {
 
     name: string;
     id: string;
@@ -100,7 +100,7 @@ class Guild {
     }
 }
 
-class Addon {
+export class Addon {
 
     id: number;
     name: string;

@@ -224,13 +224,9 @@ Object.defineProperty(global, "appSettings", {
             setting.set("MIN_HEIGHT", 500);
         }
 
-        delete global.appSettings;
-        global.appSettings = setting;
+        delete (global as any).appSettings;
+        (global as any).appSettings = setting;
     },
     configurable: true,
     enumerable: false
 });
-
-declare global {
-    let appSettings: any;
-}

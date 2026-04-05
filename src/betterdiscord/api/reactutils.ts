@@ -117,7 +117,7 @@ interface ReactUtils {
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
-    wrapInHooks<T extends React.FC>(
+    wrapInHooks<T extends React.FC<any>>(
         functionComponent: ElementType<T, React.ComponentProps<T>>,
         customPatches?: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
@@ -239,11 +239,11 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    wrapInHooks<T extends React.FC>(
+    wrapInHooks<T extends React.FC<P>, P>(
         functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
-        const FC = ReactUtils.getType(functionComponent);
+        const FC = ReactUtils.getType<T, P>(functionComponent);
 
         return function wrappedComponent(props: React.ComponentProps<T>) {
             const reactDispatcher = (React as any).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE.H;
@@ -291,7 +291,7 @@ const ReactUtils: ReactUtils = {
     //     return false;
     // },
 
-    getType<T extends React.FC>(elementType: ElementType<T>): T {
+    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T {
         while (true) {
             switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:

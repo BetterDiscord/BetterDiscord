@@ -1,4 +1,4 @@
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import Settings from "@stores/settings";
 
 
@@ -52,4 +52,4 @@ export default {
             return {content: `${name} has been disabled!`};
         }
     }
-};
+} as Command;

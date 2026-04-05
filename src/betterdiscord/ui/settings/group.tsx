@@ -39,6 +39,10 @@ function SettingsProvider({collection, category, id, children}: PropsWithChildre
     return <SettingsContext.Provider value={context}>{children}</SettingsContext.Provider>;
 }
 
+export type GroupOnChange =
+    & ((id: string, cid: string, value: any) => void)
+    & ((id: string, value: any) => void);
+
 export type GroupProps = PropsWithChildren<{
     id: string;
     name?: string;
@@ -47,8 +51,7 @@ export type GroupProps = PropsWithChildren<{
     showDivider?: boolean;
     collapsible?: boolean;
     onDrawerToggle?(state?: boolean): void;
-    onChange?(id: string, cid: string, value: any): void;
-    onChange?(id: string, value: any): void;
+    onChange: GroupOnChange;
     settings: any;
     collection: any;
 }>;

@@ -27,6 +27,7 @@ import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
+import type {GroupOnChange} from "./settings/group";
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -48,21 +49,28 @@ const SettingsRenderer = new class SettingsRenderer {
         return drawerStates[collection][group];
     }
 
-    onChange(onChange: (c: string, s: string, v: unknown) => void) {
-        return (categoryId: string, settingId: string, value: unknown) => {
-            onChange(categoryId, settingId, value);
+    onChange(onChange: GroupOnChange): GroupOnChange {
+        return (...args: Parameters<GroupOnChange>) => {
+            onChange(...args);
 
             // Delay until after switch animation
             // customcss is here to let the tab show/hide
             // since that component is out of our control/scope
-            if (settingId === "customcss") {
+            if (args.length >= 2 && args[1] === "customcss") {
                 setTimeout(this.forceUpdate.bind(this), 250);
             }
         };
     }
 
-    buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: (c: string, s: string, v: unknown) => void) {
-        return React.createElement(SettingsPanel, {id, title, groups, onChange: this.onChange(onChange).bind(this), onDrawerToggle: this.onDrawerToggle.bind(this), getDrawerState: this.getDrawerState.bind(this)});
+    buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: GroupOnChange) {
+        return React.createElement(SettingsPanel, {
+            id,
+            title,
+            groups,
+            onChange: this.onChange(onChange).bind(this),
+            onDrawerToggle: this.onDrawerToggle.bind(this),
+            getDrawerState: this.getDrawerState.bind(this)
+        });
     }
 
     getAddonPanel(title: string, options = {}) {
@@ -238,7 +246,14 @@ const SettingsRenderer = new class SettingsRenderer {
                     const items = collection.settings.map(m => [m.name, m.settings.map(setting => setting.name)]).flat(2) as string[];
 
                     insert(collection.id, {
-                        ...makeSettingsPanelProvider(this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))),
+                        ...makeSettingsPanelProvider(
+                            this.buildSettingsPanel(
+                                collection.id,
+                                collection.name,
+                                collection.settings,
+                                Settings.onSettingChange.bind(Settings, collection.id) as GroupOnChange
+                            )
+                        ),
                         icon: Logo.Discord,
                         title: () => collection.name,
                         useMenu: () => useCollectionMenu(collection),
@@ -292,7 +307,7 @@ const SettingsRenderer = new class SettingsRenderer {
             useTitle: () => Object.assign(<LayerSettingTitle />, {toString: () => "BetterDiscord"}),
         });
 
-        Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {
+        Patcher.after("SettingsManager", rootLayout, "buildLayout", (_, __, res) => {
             let index = res.findIndex((layout) => (layout as any).key === "activity_section") + 1;
             if (index === -1) index = res.length;
 
@@ -307,7 +322,7 @@ const SettingsRenderer = new class SettingsRenderer {
             search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
         }, {cacheId: "core-settings-search"});
 
-        Patcher.after("SettingsManager", search, "search", (that, args, res) => {
+        Patcher.after("SettingsManager", search, "search", (_, __, res) => {
             res = {...res}; // Discord freezes the object
 
             function insert(key: string, item: {

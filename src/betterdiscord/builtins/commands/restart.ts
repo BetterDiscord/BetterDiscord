@@ -1,4 +1,4 @@
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import ipc from "@modules/ipc";
 
 
@@ -18,4 +18,4 @@ export default {
         const vanilla = data.find(o => o.name === "vanilla").value;
         ipc.relaunch(vanilla ? ["--vanilla"] : []);
     }
-};
+} as Command;

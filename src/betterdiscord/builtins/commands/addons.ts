@@ -1,11 +1,11 @@
 import {t} from "@common/i18n";
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
 import Themes from "@modules/thememanager";
 
 
-export default (type: "plugin" | "theme") => {
+export default (type: "plugin" | "theme"): Command => {
     const manager = type === "plugin" ? Plugins : Themes;
 
     return {

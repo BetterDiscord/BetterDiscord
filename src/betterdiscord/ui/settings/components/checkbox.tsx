@@ -11,7 +11,7 @@ export interface CheckboxProps {
     inputClassName?: string,
     iconClassName?: string,
     id?: string,
-    label?: string,
+    label?: React.ReactNode,
     labelClassName?: string,
     disabled?: boolean,
     reverse?: boolean;
@@ -46,7 +46,7 @@ export default function CheckBox(props: CheckboxProps) {
                 <CheckIcon size="18px" />
             </div>
             {props.label && (
-                <div className={clsx("bd-checkbox-label", props.label)}>{props.label}</div>
+                <div className="bd-checkbox-label">{props.label}</div>
             )}
         </Flex>
     );

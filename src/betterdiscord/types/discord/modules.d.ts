@@ -176,7 +176,7 @@ export type Rule = {
     match: ((s: string, o: {inline: boolean;}) => RegExpExecArray) & {regex: RegExp;};
     order: number;
     parse: (e: RegExpExecArray, t: (s: string, o: object) => string, n: object) => {content: string;};
-    react?: (e: Record<string, any>, t: (s: string, o: object) => string, n: object) => ReactElement;
+    react?: (e: Record<string, any>, t: ((s: string, o: object) => string) | null, n: object) => ReactElement;
     requiredFirstCharacters?: string[];
 };
 

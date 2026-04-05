@@ -40,7 +40,6 @@ const UI = {
             content: "",
             type: "info" as const,
             duration: 5000,
-            icon: null,
             actions: []
         };
 

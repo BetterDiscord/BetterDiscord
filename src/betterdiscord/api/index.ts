@@ -111,6 +111,7 @@ export default class BdApi {
     DOM: DOM<true> = DOMAPI as DOM<true>;
     Logger: Logger<true> = DefaultLogger as Logger<true>;
     Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    Hooks: Hooks<any, true> = HooksAPI as unknown as Hooks<any, true>;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
@@ -136,10 +137,12 @@ export default class BdApi {
     static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
+        // @ts-expect-error return the normal BdApi when called without a plugin name
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof (pluginName) !== "string") {
             BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
+            // @ts-expect-error
             return BdApi;
         }
 

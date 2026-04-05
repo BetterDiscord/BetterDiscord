@@ -13,7 +13,6 @@ import ErrorBoundary from "@ui/errorboundary.tsx";
 
 const spring = DiscordModules.ReactSpring;
 
-// TODO: let arven fix this
 export type NotificationType = "warning" | "error" | "info" | "success";
 
 interface ButtonActions extends ButtonProps {
@@ -29,12 +28,12 @@ export interface Notification {
     type?: NotificationType;
     duration?: number;
     actions?: ButtonActions[];
+    icon?: React.ComponentType<any>;
 
     onClose?(): void;
-
     onClick?(): void;
 
-    icon?: React.ComponentType<any>;
+    [key: symbol]: boolean;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -85,7 +84,7 @@ class NotificationUI {
             this.upsertNotification(notificationData!);
         }
 
-        const kSelf = Reflect.ownKeys(notificationData!).at(-1);
+        const kSelf = Reflect.ownKeys(notificationData!).at(-1) as symbol;
 
         return {
             id: notificationData!.id,
@@ -210,14 +209,14 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
                     {actions.map((action, index) => {
-                        const color = Colors[action?.color?.toUpperCase()] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
-                        const look = Looks[action?.look?.toUpperCase()] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
+                        const color = Colors[action?.color?.toUpperCase() as keyof typeof Colors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
+                        const look = Looks[action?.look?.toUpperCase() as keyof typeof Looks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
 
                         return <Button
                             {...action}
                             key={index}
-                            color={color}
-                            look={look}
+                            color={color as typeof Colors[keyof typeof Colors]}
+                            look={look as typeof Looks[keyof typeof Looks]}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 action.onClick?.(e);

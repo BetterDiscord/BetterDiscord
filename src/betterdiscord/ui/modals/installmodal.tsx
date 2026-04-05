@@ -16,6 +16,7 @@ import Spinner from "@ui/spinner";
 import {FlowerStar} from "@ui/settings/addonshared";
 import {CircleHelpIcon, ClockIcon, GithubIcon, InfoIcon, TagIcon, UserIcon} from "lucide-react";
 import type {MouseEvent, ReactNode} from "react";
+import type {Addon, Guild} from "@modules/addonstore";
 
 
 const {useLayoutEffect, useCallback, useState, useRef} = React;
@@ -31,14 +32,12 @@ function ModalItem({leading, content, trailing, action}: {leading?: ReactNode, c
 }
 
 
-// TODO: let doggy do these types
 /**
  * @param {{guild: import("@modules/addonstore").Guild}} props
  */
-function GuildIcon({guild}) {
+function GuildIcon({ guild }: { guild: Guild }) {
     const [state, setState] = useState(() => guild.hash?.trim() ? 0 : 2);
-    /** @type {{ current: HTMLDivElement | null }} */
-    const ref = useRef();
+    const ref = useRef<HTMLDivElement>(null);
 
     // Lazy image effect
     useLayoutEffect(() => {
@@ -48,7 +47,7 @@ function GuildIcon({guild}) {
 
         const onLoad = () => {
             try {
-                ref.current.append(img);
+                ref.current?.append(img);
                 setState(1);
             }
             finally {
@@ -59,7 +58,7 @@ function GuildIcon({guild}) {
             setState(2);
             removeListeners();
             // Allow garbage collecting
-            img = null;
+            (img as HTMLImageElement | null) = null;
         };
 
         const removeListeners = () => {
@@ -84,6 +83,13 @@ function GuildIcon({guild}) {
     );
 }
 
+interface InstallModalProps {
+    addon: Addon;
+    transitionState: number;
+    onClose(): void;
+    install(shouldEnable: boolean): Promise<void>;
+}
+
 /**
  * @param {{
  *    addon: import("@modules/addonstore").Addon,
@@ -92,11 +98,11 @@ function GuildIcon({guild}) {
  *    install(shouldEnable: boolean): Promise<void>
  * }} props
  */
-export default function InstallModal({addon, transitionState, install, onClose}) {
-    const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "store", "alwaysEnable"));
+export default function InstallModal({addon, transitionState, install, onClose}: InstallModalProps) {
+    const [shouldEnable, setShouldEnable] = useState(() => Settings.get<boolean>("settings", "store", "alwaysEnable"));
 
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
-    const attemptJoinGuild = useCallback(() => addon.guild.join(), [addon]);
+    const attemptJoinGuild = useCallback(() => addon.guild?.join(), [addon]);
     const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
 
     const [isInstalling, setInstalling] = useState(false);
@@ -114,7 +120,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
         };
 
         Events.on(`${addon.type}-loaded`, listener);
-        return () => Events.off(`${addon.type}-loaded`, listener);
+        return () => void Events.off(`${addon.type}-loaded`, listener);
     }, [addon, onClose]);
 
     return (
@@ -122,7 +128,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
             <div className="bd-install-modal-splash">
                 <div className="bd-install-modal-preview">
                     <img
-                        src={addon.thumbnail}
+                        src={addon.thumbnail ?? undefined}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();

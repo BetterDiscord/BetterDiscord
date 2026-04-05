@@ -44,8 +44,7 @@ function openFolder(folder: string) {
 }
 
 function Blankslate({type, folder}: {type: "plugin" | "theme"; folder: string;}) {
-    // TODO: doggy update context type as needed
-    const {toggleStore} = React.useContext(addonContext) as {title: string; toggleStore(): void;};
+    const {toggleStore} = React.useContext(addonContext);
     const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
     const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], context: type}).toString();
     const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
@@ -97,8 +96,7 @@ function confirmEnable(action: () => void, type: string) {
 }
 
 function StoreCard() {
-    // TODO: doggy update context type as needed
-    const {toggleStore, store} = React.useContext(addonContext) as {toggleStore(): void; store: AddonManager;};
+    const {toggleStore, store} = React.useContext(addonContext);
 
     if (!Settings.get("settings", "store", "bdAddonStore")) return;
 

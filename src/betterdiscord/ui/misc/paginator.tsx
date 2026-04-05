@@ -8,7 +8,7 @@ const {useMemo} = React;
 
 
 export interface PaginatorProps {
-    className: string;
+    className?: string;
     currentPage: number;
     length: number;
     pageSize: number;

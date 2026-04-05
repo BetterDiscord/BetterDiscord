@@ -62,7 +62,7 @@ export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBuffer>
     };
 }
 
-export function hydrateReadableStream(stream: DryReadableStream): ReadableStream<Uint8Array<ArrayBuffer>> {
+export function hydrateReadableStream(stream: DryReadableStream) {
     return new ReadableStream({
         async start(controller) {
             while (true) {
@@ -80,5 +80,5 @@ export function hydrateReadableStream(stream: DryReadableStream): ReadableStream
             }
         },
         type: "bytes"
-    });
+    }) as ReadableStream<Uint8Array<ArrayBuffer>>;
 }

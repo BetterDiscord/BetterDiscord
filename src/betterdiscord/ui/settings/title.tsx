@@ -14,7 +14,7 @@ export type SettingsTitleProps = PropsWithChildren<{
     className?: string;
     button?: {title: string; onClick(e: MouseEvent): void;};
     onClick?(): void;
-    text?: string;
+    text?: React.ReactNode;
 }>;
 
 export default function SettingsTitle({isGroup = false, className = "", button = undefined, onClick = undefined, text, children = []}: SettingsTitleProps) {
