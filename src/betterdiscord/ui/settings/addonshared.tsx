@@ -48,11 +48,7 @@ interface AddonHeaderProps {
     searching: boolean;
 }
 
-/**
- * @param {{ children: any, count: number, searching: boolean}} param0
- */
 export function AddonHeader({children, count, searching}: AddonHeaderProps) {
-    /** @type {{ title: any, toggleStore(): void, showingStore: boolean }} */
     const {title, toggleStore, showingStore} = React.useContext(addonContext);
 
     const exitStore = React.useCallback(() => {

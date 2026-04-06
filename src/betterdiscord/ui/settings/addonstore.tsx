@@ -56,7 +56,6 @@ function StoreContent({content, refToScroller, page, setPage}: StoreContentProps
                 onPageChange={($page) => {
                     setPage($page);
 
-                    /** @type {HTMLDivElement} */
                     const node = refToScroller?.current?.getScrollerNode();
                     if (!node) return;
 
@@ -142,17 +141,15 @@ interface AddonStorePageProps {
 }
 
 /**
- * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0
+ * @param} param0
  */
 export default function AddonStorePage({type, refToScroller}: AddonStorePageProps) {
     const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
 
-    /** @type {[ tags: Record<string, boolean>, setTags: (value: ((tags: Record<string, boolean>) => Record<string, boolean>) | Record<string, boolean>) => void ]} */
     const [tags, setTags] = useState<Record<string, boolean>>({});
 
-    /** @type {(tag: string, value?: boolean) => void} */
     const toggleTag = useCallback((tag: string, value?: boolean) => {
         setPage(0);
 
@@ -182,9 +179,6 @@ export default function AddonStorePage({type, refToScroller}: AddonStorePageProp
         setSort(value);
     }, [type]);
 
-    /**
-     * @type {import("@modules/addonstore").Addon[]}
-     */
     const filtered = useMemo(() => {
         const $query = query.toLowerCase();
 
@@ -255,7 +249,6 @@ export default function AddonStorePage({type, refToScroller}: AddonStorePageProp
         return <StoreContent content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
     }, [filtered, ascending, sort, setPage, page, refToScroller, loading]);
 
-    /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
 
     return [

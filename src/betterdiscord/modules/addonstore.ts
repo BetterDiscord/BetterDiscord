@@ -18,12 +18,8 @@ import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
 
 
-/**
- * @param {Addon} addon
- * @returns {Promise<boolean>}
- */
 function showConfirmDelete(addon: import("./addonmanager").Addon) {
-    return new Promise(resolve => {
+    return new Promise<boolean>(resolve => {
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
             confirmText: t("Addons.deleteAddon"),
@@ -32,9 +28,6 @@ function showConfirmDelete(addon: import("./addonmanager").Addon) {
         });
     });
 }
-
-/** @typedef {Addon} Addon */
-/** @typedef {Guild} Guild */
 
 export class Guild {
 
@@ -45,14 +38,11 @@ export class Guild {
 
     /**
      * @private
-     * @type {Record<string, Guild>}
      */
     static cache: Record<string, Guild> = {};
 
     /**
      * @public
-     * @param {BdWebGuild} guild
-     * @returns {Guild}
      */
     static from(guild: BdWebGuild) {
         if (typeof this.cache[guild.snowflake] === "object") {
@@ -70,7 +60,7 @@ export class Guild {
 
     /**
      * @private
-     * @param {BdWebGuild} guild
+     * @param guild
      */
     constructor(guild: BdWebGuild) {
         this.name = guild.name;
@@ -125,15 +115,12 @@ export class Addon {
 
     /**
      * @private
-     * @type {Record<string, Addon>}
      */
     static cache: Record<string, Addon> = {};
 
     /**
      * Update pre-existing addon class without create a new one
      * @public
-     * @param {BdWebAddon} addon
-     * @returns {Addon}
      */
     static from(addon: BdWebAddon) {
         // Dont create a new one if addon already exists
@@ -145,7 +132,6 @@ export class Addon {
             cached.likes = Math.max(cached.likes, addon.likes);
 
             const guild = addon.guild || addon.author.guild;
-            /** @type {Guild | null} */
             cached.guild = guild ? Guild.from(guild) : null;
 
             cached.latestSourceUrl = addon.latest_source_url;
@@ -165,7 +151,7 @@ export class Addon {
     /**
      * Do not directly call
      * @private
-     * @param {BdWebAddon} addon
+     * @param addon
      */
     constructor(addon: BdWebAddon) {
         this.id = addon.id;
@@ -181,7 +167,6 @@ export class Addon {
         this.author = addon.author.display_name;
 
         const guild = addon.guild || addon.author.guild;
-        /** @type {Guild | null} */
         this.guild = guild ? Guild.from(guild) : null;
 
         this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
@@ -208,7 +193,7 @@ export class Addon {
     /**
      * To prompt new addons
      * @public
-     * @returns {boolean}
+     * @returns
      */
     isUnknown() {
         return addonStore.isUnknown(this.filename);
@@ -265,8 +250,8 @@ export class Addon {
      * If the addon is installed or gets installed (before the modal closes),
      * it will close the modal and resolve
      * @public
-     * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
-     * @returns {Promise<void>}
+     * @param shouldSkipConfirm Should skip the confirm to delete the addon
+     * @returns
      */
     async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) {
@@ -362,7 +347,7 @@ export class Addon {
     /**
      * Attempt to delete the local addon
      * @public
-     * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
+     * @param shouldSkipConfirm Should skip the confirm to delete the addon
      */
     async delete(shouldSkipConfirm = false) {
         const foundAddon = this.manager.addonList.find(a => a.filename == this.filename);
@@ -411,13 +396,6 @@ const addonStore = new class AddonStore {
     }
 
     // Caching stuff
-    /**
-     * @type {{
-     *      addons: Record<string, BdWebAddon>,
-     *      known: string[],
-     *      version: string
-     * }}
-     */
     _cache: {addons: Record<string, BdWebAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
     /** @private */
     _useCache() {
@@ -441,8 +419,8 @@ const addonStore = new class AddonStore {
     /**
      * Request a singular addon at a time
      * @public
-     * @param {number|string} idOrName
-     * @returns {Promise<Addon>}
+     * @param idOrName
+     * @returns
      */
     requestAddon(idOrName: string) {
         const cache = this.getAddon(idOrName);
@@ -493,8 +471,8 @@ const addonStore = new class AddonStore {
     /**
      * Gets a addon via id or name
      * @public
-     * @param {number|string} id
-     * @returns {Addon | null}
+     * @param id
+     * @returns
      */
     getAddon(id: string) {
         const decoded = decodeURIComponent(id.toString()).toLowerCase();
@@ -512,8 +490,8 @@ const addonStore = new class AddonStore {
      * Determines whether an addon is official
      * Disabled currently
      * @public
-     * @param {string} filename
-     * @returns {boolean}
+     * @param filename
+     * @returns
      */
     isOfficial(/* filename */) {
         return false;
@@ -521,15 +499,15 @@ const addonStore = new class AddonStore {
     }
     /**
      * @public
-     * @param {string} filename
-     * @returns {boolean}
+     * @param filename
+     * @returns
      */
     isUnknown(filename: string) {
         return filename.toLowerCase() in this._cache.addons && !this._cache.known.includes(filename);
     }
     /**
      * @public
-     * @param {string} filename
+     * @param filename
      */
     markAsKnown(filename: string) {
         if (this.isUnknown(filename)) {
@@ -540,7 +518,6 @@ const addonStore = new class AddonStore {
     }
 
     /**
-     * @type {Addon[]}
      * @readonly
      * @private
      */
@@ -548,7 +525,6 @@ const addonStore = new class AddonStore {
     /** @public */
     getAddons() {return this.addons.concat();}
 
-    /** @type {Error | null} */
     error: Error | null = null;
     loading = false;
 
@@ -562,7 +538,7 @@ const addonStore = new class AddonStore {
     };
 
     /**
-     * @param {? boolean} firstRun
+     * @param firstRun
      */
     async requestAddons(firstRun = false) {
         Logger.debug("AddonStore", "Requesting all addons");
@@ -631,7 +607,6 @@ const addonStore = new class AddonStore {
 
                 const isFirstRun = this._cache.known.length === 0 && Object.keys(this._cache.addons).length === 0;
 
-                /** @type {typeof this._cache} */
                 const data: {addons: Record<string, BdWebAddon>, version: string, known: string[];} = {
                     known: this._cache.known || {},
                     addons: {},
@@ -716,7 +691,7 @@ const addonStore = new class AddonStore {
     /**
      * A react hook for {@link getState}
      * @public
-     * @returns {ReturnType<typeof this["getState"]>}
+     * @returns
      */
     useState() {
         // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -738,8 +713,8 @@ const addonStore = new class AddonStore {
     /**
      * Add a listener to subscribe when the store changes
      * @public
-     * @param {() => void} listener
-     * @returns {() => void}
+     * @param listener
+     * @returns
      */
     addChangeListener(listener: () => void) {
         this._subscribers.add(listener);

@@ -33,9 +33,9 @@ function ModalItem({leading, content, trailing, action}: {leading?: ReactNode, c
 
 
 /**
- * @param {{guild: import("@modules/addonstore").Guild}} props
+ * @param} props
  */
-function GuildIcon({guild}: { guild: Guild }) {
+function GuildIcon({guild}: {guild: Guild;}) {
     const [state, setState] = useState(() => guild.hash?.trim() ? 0 : 2);
     const ref = useRef<HTMLDivElement>(null);
 

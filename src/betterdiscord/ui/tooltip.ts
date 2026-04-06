@@ -34,13 +34,13 @@ export default class Tooltip {
     /**
      *
      * @constructor
-     * @param {HTMLElement} node - DOM node to monitor and show the tooltip on
-     * @param {string|HTMLElement} tip - string to show in the tooltip
-     * @param {object} options - additional options for the tooltip
-     * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] - correlates to the discord styling/colors
-     * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] - can be any of top, right, bottom, left
-     * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
-     * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
+     * @param node - DOM node to monitor and show the tooltip on
+     * @param tip - string to show in the tooltip
+     * @param options - additional options for the tooltip
+     * @param [options.style="primary"] - correlates to the discord styling/colors
+     * @param [options.side="top"] - can be any of top, right, bottom, left
+     * @param [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
+     * @param [options.disabled=false] - whether the tooltip should be disabled from showing on hover
      */
     constructor(node: HTMLElement, text: string | HTMLElement, options: TooltipOptions = {}) {
         const {style = "primary", side = "top", preventFlip = false, disabled = false} = options;

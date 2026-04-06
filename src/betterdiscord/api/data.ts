@@ -21,7 +21,6 @@ type SaveArgs<Bounded extends boolean, T> = [
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
- * @type Data
  * @summary {@link Data} is a simple utility class for the management of plugin data.
  * @name Data
  */
@@ -36,9 +35,9 @@ class Data<Bounded extends boolean> {
     /**
      * Saves JSON-serializable data.
      *
-     * @param {string} pluginName Name of the plugin saving data
-     * @param {string} key Which piece of data to store
-     * @param {any} data The data to be saved
+     * @param pluginName Name of the plugin saving data
+     * @param key Which piece of data to store
+     * @param data The data to be saved
      */
     public save<T>(...args: SaveArgs<Bounded, T>) {
         if (this.#pluginName) {
@@ -51,9 +50,9 @@ class Data<Bounded extends boolean> {
     /**
      * Loads previously stored data.
      *
-     * @param {string} pluginName Name of the plugin loading data
-     * @param {string} key Which piece of data to load
-     * @returns {any} The stored data
+     * @param pluginName Name of the plugin loading data
+     * @param key Which piece of data to load
+     * @returns The stored data
      */
     public load<T>(...args: BaseArgs<Bounded>): T {
         if (this.#pluginName) {
@@ -66,8 +65,8 @@ class Data<Bounded extends boolean> {
     /**
      * Recaches JSON-serializable save file.
      *
-     * @param {string} pluginName Name of the plugin saving data
-     * @return {boolean} success Did the data recache
+     * @param pluginName Name of the plugin saving data
+     * @returns success Did the data recache
      *
      * @warning ⚠️ **Use of the recaching is discouraged!**
      *
@@ -82,8 +81,8 @@ class Data<Bounded extends boolean> {
     /**
      * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
      *
-     * @param {string} pluginName Name of the plugin deleting data
-     * @param {string} key Which piece of data to delete.
+     * @param pluginName Name of the plugin deleting data
+     * @param key Which piece of data to delete.
      */
     public delete(...args: BaseArgs<Bounded>) {
         if (this.#pluginName) {

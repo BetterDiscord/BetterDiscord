@@ -28,7 +28,6 @@ type LogArgs<Bounded extends boolean> = [
 
 /**
  * `Logger` is a helper class to log data in a nice and consistent way. An instance is available on {@link BdApi}.
- * @type Logger
  * @summary {@link Logger} is a simple utility for logging information.
  * @name Logger
  */
@@ -39,9 +38,9 @@ class Logger<Bounded extends boolean> {
     #messageStyle = "";
 
     /**
-     * @param {string} pluginName - Name of the plugin
-     * @param {string} nameStyle - CSS to style the plugin name
-     * @param {string} messageStyle - CSS to style the main message
+     * @param pluginName - Name of the plugin
+     * @param nameStyle - CSS to style the plugin name
+     * @param messageStyle - CSS to style the main message
      * @returns
      */
     constructor(pluginName?: string, nameStyle?: string, messageStyle?: string) {
@@ -54,9 +53,9 @@ class Logger<Bounded extends boolean> {
     /**
      * Logs an error using a collapsed error group with stacktrace.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {string} message - Message or error to have logged.
-     * @param {Error} error - Error object to log with the message.
+     * @param pluginName - Name of the calling module.
+     * @param message - Message or error to have logged.
+     * @param error - Error object to log with the message.
      */
     stacktrace(pluginName: string, message: any, error: Error) {
         if (this.#pluginName) {
@@ -70,7 +69,7 @@ class Logger<Bounded extends boolean> {
     /**
      * Logs an error message.
      *
-     * @param {string} pluginName Name of the calling module
+     * @param pluginName Name of the calling module
      * @param  {...any} message Messages to have logged.
      */
     error(...messages: LogArgs<Bounded>) {this.#_log(messages, "error");}
@@ -78,41 +77,41 @@ class Logger<Bounded extends boolean> {
     /**
      * Logs a warning message.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName - Name of the calling module.
+     * @param message - Messages to have logged.
      */
     warn(...messages: LogArgs<Bounded>) {this.#_log(messages, "warn");}
 
     /**
      * Logs an informational message.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName - Name of the calling module.
+     * @param message - Messages to have logged.
      */
     info(...messages: LogArgs<Bounded>) {this.#_log(messages, "info");}
 
     /**
      * Logs used for debugging purposes.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName - Name of the calling module.
+     * @param message - Messages to have logged.
      */
     debug(...args: LogArgs<Bounded>) {this.#_log(args, "debug");}
 
     /**
      * Logs used for basic loggin.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName - Name of the calling module.
+     * @param message - Messages to have logged.
      */
     log(...messages: LogArgs<Bounded>) {this.#_log(messages);}
 
     /**
      * Logs strings using different console levels and a module label.
      *
-     * @param {string} module - Name of the calling module.
-     * @param {any|Array<any>} message - Messages to have logged.
-     * @param {module:Logger.LogTypes} type - Type of log to use in console.
+     * @param module - Name of the calling module.
+     * @param message - Messages to have logged.
+     * @param type - Type of log to use in console.
      */
     #_log(messages: LogArgs<Bounded>, type: keyof typeof LogTypes = "log") {
         type = parseType(type);

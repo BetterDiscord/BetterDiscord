@@ -67,7 +67,7 @@ export interface AddonErrorModalProps {
 
 /**
  *
- * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
+ * @param} param0
  * @returns
  */
 export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}: AddonErrorModalProps) {

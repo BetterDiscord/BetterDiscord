@@ -43,12 +43,12 @@ export default class Notices {
 
     /**
      * Show a notice above discord's chat layer.
-     * @param {string} content Content of the notice
-     * @param {object} options Options for the notice.
-     * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
-     * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
-     * @param {number} [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0;
-     * @returns {(immediately?: boolean = false) => void}
+     * @param content Content of the notice
+     * @param options Options for the notice.
+     * @param [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
+     * @param>} [options.buttons] Buttons that should be added next to the notice text.
+     * @param [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0;
+     * @returns
      */
     static show(content: string, options: NoticeOptions = {}) {
         const {type, buttons = [], timeout = 0, onClose = () => {}} = options;

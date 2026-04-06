@@ -82,21 +82,18 @@ const Components = {
 
 /**
  * The React module being used inside Discord.
- * @type React
  * @memberof BdApi
  */
 const React: typeof ReactType = DiscordModules.React;
 
 /**
  * The ReactDOM module being used inside Discord.
- * @type ReactDOM
  * @memberof BdApi
  */
 const ReactDOM: ReactDOMType = ReactDOMImport;
 
 /**
  * A reference string for BD's version.
- * @type string
  * @memberof BdApi
  */
 const version: string = Config.get("version");
@@ -171,91 +168,76 @@ export default class BdApi {
 
 /**
  * An instance of {@link AddonAPI} to access plugins.
- * @type AddonAPI
  */
 BdApi.Plugins = PluginAPI;
 
 /**
  * An instance of {@link AddonAPI} to access themes.
- * @type AddonAPI
  */
 BdApi.Themes = ThemeAPI;
 
 /**
  * An instance of {@link Patcher} to monkey patch functions.
- * @type Patcher
  */
 BdApi.Patcher = PatcherAPI;
 
 /**
  * An instance of {@link Webpack} to search for modules.
- * @type Webpack
  */
 BdApi.Webpack = Webpack;
 
 /**
  * An instance of {@link Data} to manage data.
- * @type Data
  */
 BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.
- * @type UI
  */
 BdApi.UI = UI;
 
 /**
  * An instance of {@link ReactUtils} to work with React.
- * @type ReactUtils
  */
 BdApi.ReactUtils = ReactUtils;
 
 /**
  * An instance of {@link Utils} for general utility functions.
- * @type Utils
  */
 BdApi.Utils = Utils;
 
 /**
  * An instance of {@link DOM} to interact with the DOM.
- * @type DOM
  */
 BdApi.DOM = DOMAPI;
 
 /**
  * An instance of {@link ContextMenu} for interacting with context menus.
- * @type ContextMenu
  */
 BdApi.ContextMenu = ContextMenuAPI;
 
 /**
  * An set of react components plugins can make use of.
- * @type Components
  */
 BdApi.Components = Components;
 
 /**
  * An instance of {@link CommandAPI} for adding slash commands.
- * @type CommandAPI
  */
 BdApi.Commands = CommandsAPI;
 
 /**
  * An instance of {@link Net} for using network related tools.
- * @type Net
  */
 BdApi.Net = {fetch};
 
 /**
  * An instance of {@link Logger} for logging information.
- * @type Logger
  */
 BdApi.Logger = DefaultLogger;
 
 /**
  * An instance of {@link Hooks} for react hooks.
- * @type Hooks
  */
 BdApi.Hooks = HooksAPI;
 

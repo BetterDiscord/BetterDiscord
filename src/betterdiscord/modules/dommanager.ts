@@ -172,8 +172,8 @@ export default class DOMManager {
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
      * The callback is given the matching element.
-     * @param {string} selector - node to wait for
-     * @param {callable} callback - function to be performed on event
+     * @param selector - node to wait for
+     * @param callback - function to be performed on event
      */
     static onAdded(selector: string, callback: (e: Element) => void) {
         if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector)!);
@@ -201,8 +201,8 @@ export default class DOMManager {
     /**
      * Adds a listener for when the node is removed from the document body.
      * The listener is automatically removed upon firing.
-     * @param {HTMLElement} node - node to wait for
-     * @param {callable} callback - function to be performed on event
+     * @param node - node to wait for
+     * @param callback - function to be performed on event
      */
     static onRemoved(node: Node, callback: () => void) {
         const observer = new MutationObserver((mutations) => {

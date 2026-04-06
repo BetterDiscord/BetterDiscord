@@ -38,9 +38,9 @@ interface Match {
 
 /**
  * Extract all bd addon links
- * @param {string} text
- * @param {number} max
- * @return {{ id: string, match: string, index: number }[]}
+ * @param text
+ * @param max
+ * @returns[]}
  */
 function extractAddonLinks(text: string, max = Infinity) {
     ADDON_REGEX.lastIndex = 0;
@@ -48,15 +48,11 @@ function extractAddonLinks(text: string, max = Infinity) {
     const matches: Match[] = [];
     if (max <= 0) return matches;
 
-    /**
-     * @type {[ start: number, stop: number ]}
-     */
     const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [
         match.index, match.index + match[0].length
     ]);
 
-    /** @type {RegExpExecArray} */
-    let exec;
+    let exec: RegExpExecArray | null;
     while ((exec = ADDON_REGEX.exec(text))) {
         // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
         // if <betterdiscord://addon/id> not betterdiscord://addon/id

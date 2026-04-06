@@ -23,7 +23,7 @@ class BrowserWindow extends electron.BrowserWindow {
     private __originalPreload?: string;
 
     /**
-     * @param {import("electron").BrowserWindowConstructorOptions} options
+     * @param options
      * @returns
      */
     constructor(options: BrowserWindowConstructorOptions) {
@@ -96,10 +96,6 @@ class BrowserWindow extends electron.BrowserWindow {
             apply(target, thisArg, argArray) {
                 const handler = argArray[0];
 
-                /**
-                 *
-                 * @type {(details: import("electron").HandlerDetails) => import("electron").WindowOpenHandlerResponse} callback
-                 */
                 argArray[0] = function (details: HandlerDetails) {
                     // const match = details.url.match(EDITOR_URL_REGEX);
                     // if (match) {

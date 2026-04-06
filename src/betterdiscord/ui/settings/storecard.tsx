@@ -16,7 +16,7 @@ const {useCallback, useMemo, useState, useEffect, useContext, createContext} = R
 type TagContext = [
     (tag: string) => boolean,
     (tag: string, state?: boolean) => void
-]
+];
 
 export const TagContext = createContext<TagContext>([() => false, () => {}]);
 
@@ -40,7 +40,7 @@ interface AddonCardProps {
 }
 
 /**
- * @param {{ addon: import("@modules/addonstore").Addon, isEmbed?: boolean }} props
+ * @param} props
  */
 export default function AddonCard({addon, isEmbed}: AddonCardProps) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());

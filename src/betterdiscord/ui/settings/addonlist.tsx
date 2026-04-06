@@ -76,13 +76,13 @@ function confirmDelete(addon: Addon) {
 }
 
 /**
- * @param {function} action
- * @param {string} type
+ * @param action
+ * @param type
  * @returns
  */
 function confirmEnable(action: () => void, type: string) {
     /**
-     * @param {MouseEvent} event
+     * @param event
      */
     return function (event: MouseEvent) {
         if (event.shiftKey) return action();
@@ -120,8 +120,8 @@ function StoreCard() {
 }
 
 /**
- * @param {object} props
- * @param {import("@modules/addonmanager").default} props.store
+ * @param props
+ * @param props.store
  * @returns
  */
 export default function AddonList({store}: {store: AddonManager;}) {

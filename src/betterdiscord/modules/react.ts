@@ -1,7 +1,6 @@
 import DiscordModules from "./discordmodules";
 import DOM from "./reactdom";
 
-/** @type {import("react")} */
 const React = DiscordModules.React;
 export default React;
 export const ReactDOM = DOM;

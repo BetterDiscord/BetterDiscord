@@ -129,7 +129,6 @@ interface ReactUtils {
 /**
  * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of the UI.
- * @type ReactUtils
  * @summary {@link ReactUtils} is a utility class for interacting with React internals.
  * @name ReactUtils
  */
@@ -144,8 +143,8 @@ const ReactUtils: ReactUtils = {
     /**
      * Gets the internal React data of a specified node.
      *
-     * @param {HTMLElement} node Node to get the internal React data from
-     * @returns {Fiber|undefined} Either the found data or `undefined`
+     * @param node Node to get the internal React data from
+     * @returns Either the found data or `undefined`
      */
     getInternalInstance(node: HTMLElement): Fiber | null {
         if (node.__reactFiber$) return node.__reactFiber$;
@@ -158,12 +157,12 @@ const ReactUtils: ReactUtils = {
      * Attempts to find the "owner" node to the current node. This is generally
      * a node with a `stateNode` - a class component.
      *
-     * @param {HTMLElement} node Node to obtain React instance of
-     * @param {object} options Options for the search
-     * @param {array} [options.include] List of items to include in the search
-     * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
-     * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
-     * @return {object|undefined} The owner instance or `undefined` if not found
+     * @param node Node to obtain React instance of
+     * @param options Options for the search
+     * @param [options.include] List of items to include in the search
+     * @param [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
+     * @param [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
+     * @returns The owner instance or `undefined` if not found
      */
     getOwnerInstance(node: HTMLElement | undefined, {
         include,
@@ -200,8 +199,8 @@ const ReactUtils: ReactUtils = {
     /**
      * Creates an unrendered React component that wraps HTML elements.
      *
-     * @param {HTMLElement} element Element or array of elements to wrap
-     * @returns {object} Unrendered React component
+     * @param element Element or array of elements to wrap
+     * @returns Unrendered React component
      */
     wrapElement(element: HTMLElement | HTMLElement[]) {
         return class ReactWrapper extends React.Component {

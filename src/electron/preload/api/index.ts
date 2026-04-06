@@ -22,7 +22,7 @@ import DiscordNativePatch from "../discordnativepatch";
 const {BETTERDISCORD_PROTOCOL} = process.env;
 delete process.env.BETTERDISCORD_PROTOCOL;
 
-/** @param {(url: string) => void} callback  */
+/** @param callback  */
 export function addProtocolListener(callback: (a: string) => void) {
     if (BETTERDISCORD_PROTOCOL) {
         process.nextTick(() => callback(BETTERDISCORD_PROTOCOL));
@@ -31,7 +31,7 @@ export function addProtocolListener(callback: (a: string) => void) {
     electron.ipcRenderer.on(IPCEvents.HANDLE_PROTOCOL, (_, url) => callback(url));
 }
 
-/** @param {boolean} value  */
+/** @param value  */
 export function setDevToolsWarningState(value: boolean) {
     DiscordNativePatch.setDevToolsWarningState(value);
 }

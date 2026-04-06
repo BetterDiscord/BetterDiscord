@@ -29,7 +29,7 @@ function makeResetButton(collectionId: string, refresh?: () => void) {
 }
 
 /**
- * @param {function} action
+ * @param action
  * @returns
  */
 function confirmReset(action: () => void) {
