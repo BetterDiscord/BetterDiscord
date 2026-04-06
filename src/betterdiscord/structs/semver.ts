@@ -56,8 +56,6 @@ function preCompare(a: string, b: string) {
 /**
  * This works on semantic versioning e.g. "1.0.0".
  *
- * @param currentVersion
- * @param remoteVersion
  * @returns 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
  */
 export function comparator(currentVersion: string, remoteVersion: string) {

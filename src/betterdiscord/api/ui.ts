@@ -16,7 +16,6 @@ import type {ChangelogProps} from "@ui/modals/changelog";
 /**
  * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.
  * @summary {@link UI} is a utility class for creating user interfaces.
- * @name UI
  */
 
 // TODO: merge types after converting ui folder
@@ -143,7 +142,7 @@ const UI = {
      * @param content Content of the notice
      * @param options Options for the notice
      * @param [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
-     * @param>} [options.buttons] Buttons that should be added next to the notice text
+     * @param [options.buttons] Buttons that should be added next to the notice text
      * @param [options.timeout=10000] Timeout until the notice is closed. Will not fire when set to `0`.
      * @returns A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
      */

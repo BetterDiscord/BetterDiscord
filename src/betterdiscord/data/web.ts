@@ -4,33 +4,20 @@ const HOSTNAME = "betterdiscord.app";
  */
 const API_VERSION: `v${bigint}` | "latest" = "v3";
 
-/**
- * @param  {string[]} paths
- */
 const join = (...paths: string[]) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)?.[1]).filter(Boolean).join("/");
 
     return `https://${HOSTNAME}/${path}`;
 };
 
-/**
- * @param  {string[]} paths
- */
 const apiJoin = (...paths: string[]) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)?.[1]).filter(Boolean).join("/");
 
     return `https://api.${HOSTNAME}/${API_VERSION}/${path}`;
 };
-/**
- * @param type
- * @returns
- */
+
 const makePage = (type: string) => (name: string) => join(`${type}/${encodeURIComponent(name)}`);
 
-/**
- * @param type
- * @returns
- */
 const makeRedirects = (type: string) => (id: string) => join(`${type}?id=${id}`);
 
 // First id is betterdiscord and second is betterdiscord 2
@@ -53,15 +40,12 @@ const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\
 export default class Web {
     /**
      * This will allow preloading of the addon channels
-     * @param channelId
-     * @returns
      */
     static getReleaseChannelType(channelId: string) {
         if (releaseChannels.plugin.includes(channelId)) return "plugin";
         if (releaseChannels.theme.includes(channelId)) return "theme";
     }
 
-    /** @param rawGitURL  */
     static convertToPreviewURL(rawGitURL: string) {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
@@ -80,7 +64,6 @@ export default class Web {
      * @example
      * https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
      * https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
-     * @param rawGitURL
      */
     static convertRawToGitHubURL(rawGitURL: string) {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
@@ -114,7 +97,6 @@ export default class Web {
     };
     static resources = {
         EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
-        /** @param thumbnail */
         thumbnail: (thumbnail?: string) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
     };
 

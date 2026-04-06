@@ -31,10 +31,6 @@ function ModalItem({leading, content, trailing, action}: {leading?: ReactNode, c
     );
 }
 
-
-/**
- * @param} props
- */
 function GuildIcon({guild}: {guild: Guild;}) {
     const [state, setState] = useState(() => guild.hash?.trim() ? 0 : 2);
     const ref = useRef<HTMLDivElement>(null);
@@ -90,14 +86,6 @@ interface InstallModalProps {
     install(shouldEnable: boolean): Promise<void>;
 }
 
-/**
- * @param {{
- *    addon: import("@modules/addonstore").Addon,
- *    transitionState: number,
- *    onClose(): void,
- *    install(shouldEnable: boolean): Promise<void>
- * }} props
- */
 export default function InstallModal({addon, transitionState, install, onClose}: InstallModalProps) {
     const [shouldEnable, setShouldEnable] = useState(() => Settings.get<boolean>("settings", "store", "alwaysEnable"));
 

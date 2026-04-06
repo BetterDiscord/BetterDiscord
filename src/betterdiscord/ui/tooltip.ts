@@ -32,8 +32,6 @@ export default class Tooltip {
     labelElement: HTMLDivElement;
     observer?: MutationObserver;
     /**
-     *
-     * @constructor
      * @param node - DOM node to monitor and show the tooltip on
      * @param tip - string to show in the tooltip
      * @param options - additional options for the tooltip

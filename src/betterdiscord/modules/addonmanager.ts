@@ -182,7 +182,7 @@ export default abstract class AddonManager extends Store {
         if (!hasMetaComment) throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
         const metaInfo = this.parseJSDoc(fileContent);
 
-        /**
+        /*
          * Okay we have a meta JSDoc, let's validate it
          * and do some extra parsing for advanced options
          */

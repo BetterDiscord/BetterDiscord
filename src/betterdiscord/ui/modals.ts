@@ -232,7 +232,6 @@ export default class Modals {
 
     /**
      * Shows the guild join modal, to join invites
-     * @param code
      */
     static async showGuildJoinModal(code: string) {
         const tester = /\.gg\/(.*)$/;

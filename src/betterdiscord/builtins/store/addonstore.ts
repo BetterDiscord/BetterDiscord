@@ -38,9 +38,6 @@ interface Match {
 
 /**
  * Extract all bd addon links
- * @param text
- * @param max
- * @returns[]}
  */
 function extractAddonLinks(text: string, max = Infinity) {
     ADDON_REGEX.lastIndex = 0;

@@ -20,12 +20,8 @@ function maybeHasOtherClientMod() {
 }
 
 class BrowserWindow extends electron.BrowserWindow {
-    private __originalPreload?: string;
+    public __originalPreload?: string;
 
-    /**
-     * @param options
-     * @returns
-     */
     constructor(options: BrowserWindowConstructorOptions) {
         // @ts-expect-error super's type returns undefined for some reason
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);

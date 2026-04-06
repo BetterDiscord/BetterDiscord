@@ -28,10 +28,6 @@ function makeResetButton(collectionId: string, refresh?: () => void) {
     </DiscordModules.Tooltip>;
 }
 
-/**
- * @param action
- * @returns
- */
 function confirmReset(action: () => void) {
     return () => {
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Settings.resetSettingsWarning"), {

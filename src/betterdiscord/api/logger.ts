@@ -29,7 +29,6 @@ type LogArgs<Bounded extends boolean> = [
 /**
  * `Logger` is a helper class to log data in a nice and consistent way. An instance is available on {@link BdApi}.
  * @summary {@link Logger} is a simple utility for logging information.
- * @name Logger
  */
 class Logger<Bounded extends boolean> {
 
@@ -41,7 +40,6 @@ class Logger<Bounded extends boolean> {
      * @param pluginName - Name of the plugin
      * @param nameStyle - CSS to style the plugin name
      * @param messageStyle - CSS to style the main message
-     * @returns
      */
     constructor(pluginName?: string, nameStyle?: string, messageStyle?: string) {
         if (!pluginName) return;

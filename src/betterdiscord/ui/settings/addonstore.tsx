@@ -140,9 +140,6 @@ interface AddonStorePageProps {
     refToScroller: any;
 }
 
-/**
- * @param} param0
- */
 export default function AddonStorePage({type, refToScroller}: AddonStorePageProps) {
     const {error, addons, loading} = AddonStore.useState();
 

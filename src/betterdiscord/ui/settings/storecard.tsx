@@ -39,9 +39,6 @@ interface AddonCardProps {
     isEmbed?: boolean;
 }
 
-/**
- * @param} props
- */
 export default function AddonCard({addon, isEmbed}: AddonCardProps) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);

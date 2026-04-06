@@ -36,15 +36,9 @@ export class Guild {
     invite: string;
     hash?: string;
 
-    /**
-     * @private
-     */
-    static cache: Record<string, Guild> = {};
+    private static cache: Record<string, Guild> = {};
 
-    /**
-     * @public
-     */
-    static from(guild: BdWebGuild) {
+    public static from(guild: BdWebGuild) {
         if (typeof this.cache[guild.snowflake] === "object") {
             const cached = this.cache[guild.snowflake];
 
@@ -58,11 +52,7 @@ export class Guild {
         return new this(guild);
     }
 
-    /**
-     * @private
-     * @param guild
-     */
-    constructor(guild: BdWebGuild) {
+    private constructor(guild: BdWebGuild) {
         this.name = guild.name;
         this.id = guild.snowflake;
 
@@ -71,21 +61,19 @@ export class Guild {
         this.hash = guild.avatar_hash?.trim?.();
     }
 
-    /** @public */
-    get url() {
+    public get url() {
         let filename = `${this.hash}.webp`;
         if (filename.startsWith("a_")) filename = `${this.hash}.gif`;
 
         return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=256`;
     }
-    /** @public */
-    get acronym() {return this.name.replace(/'s /g, " ").replace(/\w+/g, str => str[0]).replace(/\s/g, "");}
+
+    public get acronym() {return this.name.replace(/'s /g, " ").replace(/\w+/g, str => str[0]).replace(/\s/g, "");}
 
     /**
-     * SHows the guild join modal (if the addon has a guild)
-     * @public
+     * Shows the guild join modal (if the addon has a guild)
      */
-    join() {
+    public join() {
         Modals.showGuildJoinModal(this.invite);
     }
 }
@@ -110,19 +98,15 @@ export class Addon {
     version: string;
     latestSourceUrl: string;
 
-    // @ts-expect-error unused but good for debug
-    private _addon: BdWebAddon;
+    // unused but good for debug
+    public _addon: BdWebAddon;
 
-    /**
-     * @private
-     */
-    static cache: Record<string, Addon> = {};
+    public static cache: Record<string, Addon> = {};
 
     /**
      * Update pre-existing addon class without create a new one
-     * @public
      */
-    static from(addon: BdWebAddon) {
+    public static from(addon: BdWebAddon) {
         // Dont create a new one if addon already exists
         // Just sync data
         if (typeof this.cache[addon.id] === "object") {
@@ -150,10 +134,8 @@ export class Addon {
 
     /**
      * Do not directly call
-     * @private
-     * @param addon
      */
-    constructor(addon: BdWebAddon) {
+    private constructor(addon: BdWebAddon) {
         this.id = addon.id;
         this.name = addon.name;
 
@@ -184,7 +166,6 @@ export class Addon {
 
         this.latestSourceUrl = addon.latest_source_url;
 
-        /** @private */
         this._addon = addon;
 
         Addon.cache[addon.id] = this;
@@ -192,26 +173,22 @@ export class Addon {
 
     /**
      * To prompt new addons
-     * @public
-     * @returns
      */
-    isUnknown() {
+    public isUnknown() {
         return addonStore.isUnknown(this.filename);
     }
 
     /**
      * To hide the badge
-     * @public
      */
-    markAsKnown() {
+    public markAsKnown() {
         addonStore.markAsKnown(this.filename);
     }
 
     /**
      * Opens the Theme preview site
-     * @public
      */
-    openPreview() {
+    public openPreview() {
         if (this.type === "plugin") {
             throw new Error("Addon is a plugin!");
         }
@@ -221,25 +198,22 @@ export class Addon {
 
     /**
      * Opens the bd's site page for the addon
-     * @public
      */
-    openAddonPage() {
+    public openAddonPage() {
         window.open(Web.redirects[this.type](this.id.toString()), "_blank", "noopener,noreferrer");
     }
 
     /**
      * Opens the addons github page
-     * @public
      */
-    openSourceCode() {
+    public openSourceCode() {
         window.open(Web.convertRawToGitHubURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
     /**
      * Opens the raw code page
-     * @public
      */
-    openAuthorPage() {
+    public openAuthorPage() {
         window.open(Web.pages.developer(this.author), "_blank", "noopener,noreferrer");
     }
 
@@ -249,11 +223,9 @@ export class Addon {
      *
      * If the addon is installed or gets installed (before the modal closes),
      * it will close the modal and resolve
-     * @public
      * @param shouldSkipConfirm Should skip the confirm to delete the addon
-     * @returns
      */
-    async download(shouldSkipConfirm = false) {
+    public async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) {
             Toasts.show(t("Addons.alreadyInstalled", {name: this.name}), {
                 type: "info"
@@ -346,10 +318,9 @@ export class Addon {
 
     /**
      * Attempt to delete the local addon
-     * @public
      * @param shouldSkipConfirm Should skip the confirm to delete the addon
      */
-    async delete(shouldSkipConfirm = false) {
+    public async delete(shouldSkipConfirm = false) {
         const foundAddon = this.manager.addonList.find(a => a.filename == this.filename);
 
         if (!foundAddon) return;
@@ -362,13 +333,11 @@ export class Addon {
         if (this.manager.deleteAddon) this.manager.deleteAddon(foundAddon);
     }
 
-    /** @public */
-    isInstalled() {
+    public isInstalled() {
         return this.manager.isLoaded(this.filename);
     }
 
-    /** @public */
-    recentlyUpdated() {
+    public recentlyUpdated() {
         const now = new Date();
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(now.getDate() - 7);
@@ -397,32 +366,27 @@ const addonStore = new class AddonStore {
 
     // Caching stuff
     _cache: {addons: Record<string, BdWebAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
-    /** @private */
-    _useCache() {
+    private _useCache() {
         for (const key in this._cache.addons) {
             if (Object.prototype.hasOwnProperty.call(this._cache.addons, key)) {
                 this.addons.push(
-                    new Addon(this._cache.addons[key])
+                    Addon.from(this._cache.addons[key])
                 );
             }
         }
     }
-    /** @private */
-    _writeCache(cache = this._cache) {
+
+    private _writeCache(cache = this._cache) {
         this._cache = cache;
 
         JsonStore.set("addon-store", this._cache);
     }
 
-    /** @private */
-    _singleAddonCache: Record<string, Promise<Addon>> = {};
+    private _singleAddonCache: Record<string, Promise<Addon>> = {};
     /**
      * Request a singular addon at a time
-     * @public
-     * @param idOrName
-     * @returns
      */
-    requestAddon(idOrName: string) {
+    public requestAddon(idOrName: string) {
         const cache = this.getAddon(idOrName);
         if (typeof cache === "object") return Promise.resolve(cache);
 
@@ -470,11 +434,8 @@ const addonStore = new class AddonStore {
 
     /**
      * Gets a addon via id or name
-     * @public
-     * @param id
-     * @returns
      */
-    getAddon(id: string) {
+    public getAddon(id: string) {
         const decoded = decodeURIComponent(id.toString()).toLowerCase();
 
         for (const key in Addon.cache) {
@@ -489,27 +450,17 @@ const addonStore = new class AddonStore {
     /**
      * Determines whether an addon is official
      * Disabled currently
-     * @public
-     * @param filename
-     * @returns
      */
-    isOfficial(/* filename */) {
+    public isOfficial(/* filename */) {
         return false;
         // return filename.toLowerCase() in this._cache.addons;
     }
-    /**
-     * @public
-     * @param filename
-     * @returns
-     */
-    isUnknown(filename: string) {
+
+    public isUnknown(filename: string) {
         return filename.toLowerCase() in this._cache.addons && !this._cache.known.includes(filename);
     }
-    /**
-     * @public
-     * @param filename
-     */
-    markAsKnown(filename: string) {
+
+    public markAsKnown(filename: string) {
         if (this.isUnknown(filename)) {
             this._cache.known.push(filename);
 
@@ -517,12 +468,7 @@ const addonStore = new class AddonStore {
         }
     }
 
-    /**
-     * @readonly
-     * @private
-     */
-    addons: Addon[] = [];
-    /** @public */
+    private readonly addons: Addon[] = [];
     getAddons() {return this.addons.concat();}
 
     error: Error | null = null;
@@ -530,16 +476,12 @@ const addonStore = new class AddonStore {
 
     /**
      * Listener for when the user is offline and tries to fetch the addons
-     * @private
      */
-    _onLineListener = () => {
+    private _onLineListener = () => {
         window.removeEventListener("online", this._onLineListener);
         this.requestAddons();
     };
 
-    /**
-     * @param firstRun
-     */
     async requestAddons(firstRun = false) {
         Logger.debug("AddonStore", "Requesting all addons");
 
@@ -664,14 +606,11 @@ const addonStore = new class AddonStore {
     }
 
 
-    /** @private */
     private _setTimeout: number | null = null;
 
     // Listener stuff
-    /** @private */
-    _subscribers = new Set<() => void>();
-    /** @private */
-    _emitChange() {
+    private _subscribers = new Set<() => void>();
+    private _emitChange() {
         for (const subscriber of this._subscribers) {
             subscriber();
         }
@@ -679,9 +618,8 @@ const addonStore = new class AddonStore {
 
     /**
      * get important data from the store to use in the ui
-     * @private Not need anywhere except for react
      */
-    getState() {
+    private getState() {
         return {
             error: this.error,
             addons: this.getAddons(),
@@ -690,10 +628,8 @@ const addonStore = new class AddonStore {
     }
     /**
      * A react hook for {@link getState}
-     * @public
-     * @returns
      */
-    useState() {
+    public useState() {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [state, setState] = React.useState(() => this.getState());
 
@@ -712,11 +648,8 @@ const addonStore = new class AddonStore {
 
     /**
      * Add a listener to subscribe when the store changes
-     * @public
-     * @param listener
-     * @returns
      */
-    addChangeListener(listener: () => void) {
+    public addChangeListener(listener: () => void) {
         this._subscribers.add(listener);
         return () => void this._subscribers.delete(listener);
     }

@@ -29,7 +29,6 @@ function isModuleInvalid(moduleToPatch: any): boolean {
  * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for modifying the internals of Discord by adjusting return value or React renders, or arguments of internal functions.
  * @summary {@link Patcher} is a utility class for modifying existing functions.
- * @name Patcher
  */
 class Patcher<Bounded extends boolean> {
     #callerName = "";

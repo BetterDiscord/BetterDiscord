@@ -75,15 +75,7 @@ function confirmDelete(addon: Addon) {
     });
 }
 
-/**
- * @param action
- * @param type
- * @returns
- */
 function confirmEnable(action: () => void, type: string) {
-    /**
-     * @param event
-     */
     return function (event: MouseEvent) {
         if (event.shiftKey) return action();
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.enableAllWarning", {context: type.toLocaleLowerCase()}), {
@@ -119,11 +111,6 @@ function StoreCard() {
     );
 }
 
-/**
- * @param props
- * @param props.store
- * @returns
- */
 export default function AddonList({store}: {store: AddonManager;}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState<ReturnType<typeof buildSortOptions>[number]["value"]>(getState.bind(null, store.prefix, "sort", "name"));

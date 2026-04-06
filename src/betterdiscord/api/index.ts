@@ -58,7 +58,6 @@ const DefaultLogger = new Logger<false>();
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
  * @summary {@link Components} a namespace holding a series of React components
- * @name Components
  */
 const Components = {
     get Tooltip() {return DiscordModules.Tooltip;},
@@ -100,7 +99,6 @@ const version: string = Config.get("version");
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
- * @name BdApi
  */
 export default class BdApi {
     Patcher: Patcher<true> = PatcherAPI as Patcher<true>;

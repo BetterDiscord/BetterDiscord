@@ -24,7 +24,6 @@ interface WebpackOptions extends Options {
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of Discord.
  * @summary {@link Webpack} is a utility class for getting internal webpack modules.
- * @name Webpack
  */
 const Webpack = {
     /**

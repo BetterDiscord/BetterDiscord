@@ -48,7 +48,7 @@ export default class Logger {
     /**
      * Alias for "err"
      * @param module NAme of the calling module
-     * @param  {...any} message Messages to have logged.
+     * @param message Messages to have logged.
      */
     static error(module: string, ...message: any[]) {Logger._log(module, message, "error");}
 

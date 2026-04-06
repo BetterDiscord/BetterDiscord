@@ -65,11 +65,6 @@ export interface AddonErrorModalProps {
     themeErrors: AddonErrorType[];
 }
 
-/**
- *
- * @param} param0
- * @returns
- */
 export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}: AddonErrorModalProps) {
     const tabs = useMemo<Array<ReturnType<typeof generateTab>>>(() => {
         return [

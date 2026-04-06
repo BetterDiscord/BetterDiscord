@@ -81,7 +81,7 @@ export default function Slider({value: initialValue, min, max, step, onChange, d
 
 
 
-/**
+/*
  * label offset left:
  *
  * value - min

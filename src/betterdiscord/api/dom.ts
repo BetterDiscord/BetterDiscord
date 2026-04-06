@@ -6,7 +6,6 @@ type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: str
 /**
  * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
  * @summary {@link DOM} is a simple utility class for dom manipulation.
- * @name DOM
  */
 class DOM<Bound extends boolean> {
 

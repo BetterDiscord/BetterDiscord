@@ -167,7 +167,7 @@ export class CoreUpdater {
         const isOnCanary = Config.isCanary;
         const isCanaryEnabled = SettingsStore.get("developer", "canary");
 
-        /**
+        /*
          * If canary is enabled, then check for canary update.
          * But if the user is not already on canary, then pass
          * a flag to ignore the remote version.
