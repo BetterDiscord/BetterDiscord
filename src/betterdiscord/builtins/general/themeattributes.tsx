@@ -2,6 +2,7 @@ import Builtin from "@structs/builtin";
 import {getLazy, getLazyByDisplayName, getLazyByStrings, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React from "react";
+import type {TabBarComponentType} from "discord/modules";
 
 const MessageGroupingContext = React.createContext({
     first: false,
@@ -102,10 +103,10 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchTabBarComponent() {
-        const TabBarComponent = await getLazyByStrings(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
+        const TabBarComponent = await getLazyByStrings<{Item: typeof React.PureComponent;}>(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
 
         this.after(TabBarComponent?.Item?.prototype, "render", (thisObject, _, returnValue) => {
-            returnValue.props["data-tab-id"] = thisObject?.props?.id;
+            returnValue.props["data-tab-id"] = (thisObject as TabBarComponentType)?.props?.id;
         });
     }
 

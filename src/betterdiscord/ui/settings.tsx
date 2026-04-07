@@ -542,7 +542,7 @@ function useCollectionMenu(collection: SettingsCollection) {
                 id: setting.id,
                 label: setting.name!,
                 disabled: setting.disabled,
-                checked: Settings.get(collection.id, category.id, setting.id),
+                checked: Settings.get<boolean>(collection.id, category.id, setting.id),
                 action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
             }))
         }));
@@ -577,7 +577,7 @@ function useAddonMenu(manager: AddonManager) {
             checked={enabled}
             key={`bd.${manager.prefix}.${name}`}
             disabled={addon?.partial}
-            action={(e: MouseEvent) => {
+            action={(e: React.MouseEvent) => {
                 if (!e.shiftKey) {
                     manager.toggleAddon(name);
                     return;

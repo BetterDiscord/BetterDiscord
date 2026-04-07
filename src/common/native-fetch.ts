@@ -49,7 +49,7 @@ export interface DriedResponse {
     redirected: boolean;
 }
 
-export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBuffer>>): DryReadableStream {
+export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBufferLike>>): DryReadableStream {
     // If type is not "bytes" throw error
     const $stream = new Response(stream).body!;
 

@@ -99,7 +99,8 @@ export default class BuiltinModule {
         return Patcher.instead(this.name, object, func as keyof typeof object, callback);
     }
 
-    after(object: object, func: string, callback: (t: object, a: any[], r: any) => void) {
+    after(object: object | undefined, func: string, callback: (t: object, a: any[], r: any) => void) {
+        if (!object) return;
         return Patcher.after(this.name, object, func as keyof typeof object, callback);
     }
 

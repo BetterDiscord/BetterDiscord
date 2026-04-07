@@ -150,6 +150,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
 
     const [isPaused, setIsPaused] = React.useState(false);
 
+    // @ts-expect-error Discord may use a different version of react-spring
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
@@ -160,7 +161,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                 handleClose();
             }
         },
-    });
+    }) as { width: string };
 
     const handleClose = () => {
         NotificationUIInstance.hide(id);

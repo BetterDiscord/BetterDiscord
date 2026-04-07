@@ -95,7 +95,7 @@ export default (type: "plugin" | "theme"): Command => {
             }
 
             if (action === "share") {
-                DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${encodeURIComponent(addon.name)}>`}, undefined, {});
+                DiscordModules.MessageUtils?.sendMessage(channel.id, {content: `<betterdiscord://store/${encodeURIComponent(addon.name)}>`}, undefined, {});
             }
         }
     };

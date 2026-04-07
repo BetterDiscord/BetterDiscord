@@ -1,5 +1,6 @@
 import type {ForwardRefExoticComponent, MemoExoticComponent, JSX} from "react";
 import * as ReactSpring from "@react-spring/web";
+import type {Channel} from "./structs";
 
 
 
@@ -191,3 +192,57 @@ export interface SimpleMarkdown {
     ruleOutput: (r: Rules, t: string) => object;
     reactFor: (o: object) => (o2: object) => ReactElement;
 }
+
+interface BaseTooltipProps {
+    allowOverflow?: boolean;
+    color?: string;
+    forceOpen?: boolean;
+    hideOnClick?: boolean;
+    overflowOnly?: boolean;
+    position?: "top" | "bottom" | "left" | "right";
+    shouldShow?: boolean;
+    spacing?: number;
+    "aria-label"?: string;
+}
+
+interface TooltipStatic {
+    Colors: Record<string, string>;
+    defaultProps: Required<BaseTooltipProps>;
+}
+
+interface TooltipProps extends BaseTooltipProps {
+    text?: string;
+    children: React.FunctionComponent;
+}
+
+export type DiscordTooltip = React.ComponentType<TooltipProps> & TooltipStatic;
+
+interface TransitionToOptions {
+    key?: string;
+    state?: Record<string, any>;
+}
+
+export type TransitionTo = (path: string, options?: TransitionToOptions) => void;
+
+export type ErrorBoundary = React.PureComponent<undefined, {error: Error | null, info: any;}>;
+
+export type PromptToUpload = (files: File[] | FileList, channel: Channel, draftType: number) => Promise<void>;
+
+interface MessageContent {
+    content: string;
+    invalidEmojis?: any[];
+    tts?: boolean;
+    validNonShortcutEmojis?: any[];
+}
+
+interface MessageOptions {
+    alsoForwardToChannelId?: string;
+    location?: string;
+}
+
+export interface MessageUtils {
+    // ...and many more
+    sendMessage(channelId: string, content: MessageContent, unknown: any, options: MessageOptions): Promise<void>;
+}
+
+export type TabBarComponentType = React.PureComponent<{id: string;}>;
