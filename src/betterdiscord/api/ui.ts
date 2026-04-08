@@ -11,6 +11,7 @@ import Settings from "@stores/settings";
 import NotificationUI, {type Notification} from "@ui/notifications";
 import type {ReactElement} from "react";
 import type {ChangelogProps} from "@ui/modals/changelog";
+import type {DialogOptions} from "@common/types/ipc";
 
 
 /**
@@ -169,8 +170,7 @@ const UI = {
      * @param [options.modal=false] Whether the dialog should act as a modal to the main window
      * @returns Result of the dialog
      */
-    // TODO: merge types with other 2 processes
-    async openDialog(options: any) {
+    async openDialog(options: Partial<DialogOptions>) {
         const data = await ipc.openDialog(options);
         if (data.error) throw new Error(data.error);
 

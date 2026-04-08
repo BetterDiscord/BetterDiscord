@@ -4,6 +4,7 @@ import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, ty
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
 import BetterDiscord from "./betterdiscord";
+import type {DialogOptions} from "@common/types/ipc";
 
 const getPath = (event: IpcMainEvent, pathReq: string) => {
     let returnPath;
@@ -100,22 +101,6 @@ const getAccentColor = () => {
 
 const stopDevtoolsWarning = (event: IpcMainEvent) => event.sender.removeAllListeners("devtools-opened");
 
-
-// TODO: make type usable across processes
-interface DialogOptions {
-    mode: "open" | "save";
-    defaultPath: string;
-    filters: Array<Record<string, string[]>>;
-    title: string;
-    message: string;
-    showOverwriteConfirmation: boolean;
-    showHiddenFiles: boolean;
-    promptToCreate: boolean;
-    openDirectory: boolean;
-    openFile: boolean;
-    multiSelections: boolean;
-    modal: boolean;
-}
 
 const openDialog = (event: IpcMainInvokeEvent, options: Partial<DialogOptions> = {}) => {
     const {
