@@ -4,7 +4,7 @@ import Modals from "@ui/modals";
 import Toasts, {type ToastOptions} from "@stores/toasts";
 import Notices, {type NoticeOptions} from "@ui/notices";
 import Tooltip, {type TooltipOptions} from "@ui/tooltip";
-import Group, {buildSetting} from "@ui/settings/group";
+import Group, {buildSetting, type GroupOnChange} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
@@ -12,7 +12,14 @@ import NotificationUI, {type Notification} from "@ui/notifications";
 import type {ReactElement} from "react";
 import type {ChangelogProps} from "@ui/modals/changelog";
 import type {DialogOptions} from "@common/types/ipc";
+import type {Setting, SettingsCategory} from "@data/settings";
 
+export interface SettingsPanelProps {
+    getDrawerState?: (categoryId: string, defaultShown: boolean) => boolean;
+    onChange?: (categoryId: string | null, settingId: string, value: any) => void;
+    onDrawerToggle?: (categoryId: string, shown: boolean) => void;
+    settings: Array<Setting | SettingsCategory>;
+}
 
 /**
  * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.
@@ -221,14 +228,13 @@ const UI = {
      * @param [props.getDrawerState] Optionially used to recall drawer states
      * @returns React element usable for a settings panel
      */
-    // TODO: remove any
-    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}: any) {
+    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}: SettingsPanelProps) {
         if (!settings?.length) throw new Error("No settings provided!");
 
         return React.createElement(ErrorBoundary, {
             id: "buildSettingsPanel",
             name: "BdApi.UI"
-        }, settings.map((setting: any) => {
+        }, settings.map((setting) => {
             if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
 
             if (setting.type === "category") {
@@ -236,7 +242,7 @@ const UI = {
 
                 return React.createElement(Group, {
                     ...setting,
-                    onChange: onChange,
+                    onChange: onChange as GroupOnChange,
                     onDrawerToggle: (state: any) => onDrawerToggle?.(setting.id, state),
                     shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
                 });
@@ -245,13 +251,13 @@ const UI = {
             return buildSetting({
                 ...setting,
                 onChange: (value: any) => {
+                    // @ts-expect-error onChange is (value: never) => void without narrowing, not sure if this can be avoided
                     setting?.onChange?.(value);
-                    onChange(null, setting.id, value);
+                    onChange?.(null, setting.id, value);
                 }
             });
         }));
     }
-
 };
 
 Object.freeze(UI);

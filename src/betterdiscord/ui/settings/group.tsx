@@ -53,7 +53,7 @@ export type GroupProps = PropsWithChildren<{
     onDrawerToggle?(state?: boolean): void;
     onChange: GroupOnChange;
     settings: any;
-    collection: any;
+    collection?: any;
 }>;
 
 export default function Group({onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}: GroupProps) {

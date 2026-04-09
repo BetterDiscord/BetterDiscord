@@ -165,7 +165,6 @@ export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch"
 export interface SettingItem {
     type: SettingType;
     id: string;
-    value: unknown;
     name?: string;
     note?: string;
     disabled?: boolean;
@@ -176,21 +175,23 @@ export interface SettingItem {
     hidden?: boolean;
 }
 
-export interface SwitchSetting extends SettingItem {
-    type: "switch";
-    value: boolean;
+export interface ValueSettingItem<T> extends SettingItem {
+    value: T;
+    onChange?(value: T): void;
 }
 
-export interface DropdownSetting<T> extends SettingItem {
+export interface SwitchSetting extends ValueSettingItem<boolean> {
+    type: "switch";
+}
+
+export interface DropdownSetting<T> extends ValueSettingItem<T> {
     type: "dropdown";
-    value: T;
     options: Array<{id?: string; label: string; value: T;}>;
     style?: "transparent" | "default";
 }
 
-export interface SliderSetting extends SettingItem {
+export interface SliderSetting extends ValueSettingItem<number> {
     type: "slider";
-    value: number;
     min: number;
     max: number;
     step?: number;
@@ -198,55 +199,73 @@ export interface SliderSetting extends SettingItem {
     markers: Array<(number | {label: string; value: number;})>;
 }
 
-export interface TextSetting extends SettingItem {
+export interface TextSetting extends ValueSettingItem<string> {
     type: "text";
-    value: string;
     placeholder?: string;
     maxLength?: number;
 }
 
-export interface RadioSetting<T> extends SettingItem {
-    type: "radio";
+export interface RadioOption<T> {
+    name: string;
     value: T;
+    description?: string;
+    color?: string;
+    /** @deprecated */
+    desc?: string;
+}
+
+export interface RadioSetting<T> extends ValueSettingItem<T> {
+    type: "radio";
     options: Array<{name: string, value: T, description: string;}>;
 }
 
-export interface KeybindSetting extends SettingItem {
+export interface KeybindSetting extends ValueSettingItem<string[]> {
     type: "keybind";
-    value: string[];
     clearable?: boolean;
     max?: number;
 }
 
-type HexString = `#${string}`;
-type Color = HexString | number;
-export interface ColorSetting extends SettingItem {
+export type HexString = `#${string}`;
+export type Color = HexString | number;
+export interface ColorSetting extends ValueSettingItem<Color> {
     type: "color";
-    value: Color;
     defaultValue?: Color;
     colors?: Color[];
 }
 
-export interface PositionSetting extends SettingItem {
+export type Position = "top-right" | "bottom-right" | "bottom-left" | "top-left";
+export interface PositionSetting extends ValueSettingItem<Position> {
     type: "position";
-    value: "top-right" | "bottom-right" | "bottom-left" | "top-left";
 }
 
-export interface NumberSetting extends SettingItem {
+export interface NumberSetting extends ValueSettingItem<number> {
     type: "number";
-    value: number;
     min: number;
     max: number;
     step?: number;
 }
 
-export interface FileSetting extends SettingItem {
+export interface SingleFileSetting extends ValueSettingItem<string> {
     type: "file";
-    value: string;
+    multiple?: false;
     clearable?: boolean;
     accept?: string;
-    multiple?: boolean;
+    actions?: {
+        clear?(): void;
+    };
 }
+
+export interface MultipleFileSetting extends ValueSettingItem<string[]> {
+    type: "file";
+    multiple: true;
+    clearable?: boolean;
+    accept?: string;
+    actions?: {
+        clear?(): void;
+    };
+}
+
+export type FileSetting = SingleFileSetting | MultipleFileSetting;
 
 export type Setting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
 
@@ -256,5 +275,5 @@ export interface SettingsCategory {
     name?: string;
     collapsible: boolean;
     shown: boolean;
-    settings: SettingItem[];
+    settings: Setting[];
 }
