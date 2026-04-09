@@ -251,7 +251,6 @@ const UI = {
             return buildSetting({
                 ...setting,
                 onChange: (value: any) => {
-                    // @ts-expect-error onChange is (value: never) => void without narrowing, not sure if this can be avoided
                     setting?.onChange?.(value);
                     onChange?.(null, setting.id, value);
                 }

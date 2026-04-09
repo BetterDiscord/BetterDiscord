@@ -6,10 +6,10 @@ export function getKeys<T extends Record<string | number, unknown>>(object: T) {
     return keys;
 }
 
-export function wrapFunction<T extends (...args: any[]) => any>(func: T) {
-    return function (...args: Parameters<T>): ReturnType<T> {
+export function wrapFunction<T extends (...args: any[]) => any>(func: T): T {
+    return function (...args) {
         return func(...args);
-    };
+    } as T;
 }
 
 export function cloneObject<T extends Record<string | number, unknown>>(target: T, newObject: Partial<T> = {}, keys?: Array<keyof T>) {

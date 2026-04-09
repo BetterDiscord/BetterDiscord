@@ -17,10 +17,10 @@ function wrapFunctionWithCallback<
             const result = func(...params);
             callback(null, result);
         }
-        catch(error) {
+        catch (error) {
             callback(error as Error, null);
         }
-    }
+    };
 }
 
 export const readFileSync = wrapFunction(Remote.filesystem.readFile);
