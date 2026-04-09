@@ -1,29 +1,69 @@
-import type {WriteFileOptions} from "node:fs";
+import type * as fs from "node:fs";
 import Remote from "./remote";
+import {wrapFunction} from "@common/utils/clone";
 
 
-type WriteOptions = WriteFileOptions & {originalFs: boolean;};
-type WriteCallback = (err: Error | null) => void;
+type WriteOptions = fs.WriteFileOptions & {originalFs: boolean;};
+type ErrorOnlyCallback = (err: Error | null) => void;
 
-
-export const readFileSync = function (path: string, options: object | BufferEncoding = "utf8") {
-    return Remote.filesystem.readFile(path, options);
-};
-
-export const readFile = function (path: string, options: object | BufferEncoding = "utf8", callback: (err: Error | null, contents: string | Buffer<ArrayBufferLike> | null) => void) {
-    try {
-        const contents = Remote.filesystem.readFile(path, options);
-        callback(null, contents);
+function wrapFunctionWithCallback<
+    T extends (...args: any[]) => any,
+    C extends (err: Error | null, data: any) => void
+>(func: T) {
+    return function (...args: [...Parameters<T>, C]) {
+        const params = args.slice(0, -1) as Parameters<T>;
+        const callback = args[args.length - 1] as C;
+        try {
+            const result = func(...params);
+            callback(null, result);
+        }
+        catch(error) {
+            callback(error as Error, null);
+        }
     }
-    catch (error) {
-        callback(error as Error, null);
-    }
-};
+}
 
-export const writeFile = function (path: string, data: string | Uint8Array, options?: WriteOptions | WriteCallback, callback?: WriteCallback) {
+export const readFileSync = wrapFunction(Remote.filesystem.readFile);
+export const writeFileSync = wrapFunction(Remote.filesystem.writeFile);
+export const readdirSync = wrapFunction(Remote.filesystem.readDirectory);
+export const mkdirSync = wrapFunction(Remote.filesystem.createDirectory);
+export const rmdirSync = wrapFunction(Remote.filesystem.deleteDirectory);
+export const existsSync = wrapFunction(Remote.filesystem.exists);
+export const statSync = wrapFunction(Remote.filesystem.getStats);
+export const renameSync = wrapFunction(Remote.filesystem.renameSync);
+export const rmSync = wrapFunction(Remote.filesystem.rmSync);
+export const realpathSync = wrapFunction(Remote.filesystem.getRealPath);
+export const unlinkSync = wrapFunction(Remote.filesystem.unlinkSync);
+export const watch = wrapFunction(Remote.filesystem.watch);
+export const createWriteStream = wrapFunction(Remote.filesystem.createWriteStream);
+
+export const rmdir = wrapFunctionWithCallback<typeof Remote.filesystem.deleteDirectory, ErrorOnlyCallback>(Remote.filesystem.deleteDirectory);
+export const rm = wrapFunctionWithCallback<typeof Remote.filesystem.rmSync, ErrorOnlyCallback>(Remote.filesystem.rmSync);
+export const rename = wrapFunctionWithCallback<typeof Remote.filesystem.renameSync, ErrorOnlyCallback>(Remote.filesystem.renameSync);
+export const unlink = wrapFunctionWithCallback<typeof Remote.filesystem.unlinkSync, ErrorOnlyCallback>(Remote.filesystem.unlinkSync);
+
+type ReadFileCallback = (err: Error | null, contents: string | Buffer<ArrayBufferLike> | null) => void;
+export const readFile = wrapFunctionWithCallback<typeof Remote.filesystem.readFile, ReadFileCallback>(Remote.filesystem.readFile);
+
+type ReaddirCallback = (err: Error | null, result: string[] | Array<Buffer<ArrayBufferLike>> | null) => void;
+export const readdir = wrapFunctionWithCallback<typeof Remote.filesystem.readDirectory, ReaddirCallback>(Remote.filesystem.readDirectory);
+
+type MkdirCallback = (err: Error | null, path?: string | null) => void;
+export const mkdir = wrapFunctionWithCallback<typeof Remote.filesystem.createDirectory, MkdirCallback>(Remote.filesystem.createDirectory);
+
+type ExistsCallback = (err: Error | null, exists: boolean | null) => void;
+export const exists = wrapFunctionWithCallback<typeof Remote.filesystem.exists, ExistsCallback>(Remote.filesystem.exists);
+
+type StatCallback = (err: Error | null, stats: fs.Stats | null) => void;
+export const stat = wrapFunctionWithCallback<typeof Remote.filesystem.getStats, StatCallback>(Remote.filesystem.getStats);
+
+type RealpathCallback = (err: Error | null, resolvedPath: string | null) => void;
+export const realpath = wrapFunctionWithCallback<typeof Remote.filesystem.getRealPath, RealpathCallback>(Remote.filesystem.getRealPath);
+
+export const writeFile = function (path: fs.PathOrFileDescriptor, data: string | Uint8Array, options?: WriteOptions | ErrorOnlyCallback, callback?: ErrorOnlyCallback) {
     if (typeof (options) === "function") {
         callback = options;
-        if (!["object", "string"].includes(typeof (options))) options = undefined;
+        options = undefined;
     }
 
     try {
@@ -35,135 +75,8 @@ export const writeFile = function (path: string, data: string | Uint8Array, opti
     }
 };
 
-export const writeFileSync = function (path: string, data: string | Uint8Array, options?: WriteFileOptions & {originalFs: boolean;}) {
-    Remote.filesystem.writeFile(path, data, options);
-};
-
-export const readdir = function (path: string, options: object, callback: (err: Error | null, result: string[] | Array<Buffer<ArrayBufferLike>> | null) => void) {
-    try {
-        const result = Remote.filesystem.readDirectory(path, options);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error as Error, null);
-    }
-};
-
-export const readdirSync = function (path: string, options: object) {
-    return Remote.filesystem.readDirectory(path, options);
-};
-
-export const mkdir = function (path: string, options: object, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.createDirectory(path, options);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const mkdirSync = function (path: string, options: object) {
-    Remote.filesystem.createDirectory(path, options);
-};
-
-export const rmdir = function (path: string, options: object, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.deleteDirectory(path, options);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const rmdirSync = function (path: string, options: object) {
-    Remote.filesystem.deleteDirectory(path, options);
-};
-
-export const rm = function (path: string, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.rm(path);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const rmSync = function (path: string) {
-    Remote.filesystem.rmSync(path);
-};
-
-export const exists = function (path: string, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.exists(path);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const existsSync = function (path: string) {
-    return Remote.filesystem.exists(path);
-};
-
-export const stat = function (path: string, options: object, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.getStats(path, options);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error);
-    }
-};
-
-export const statSync = function (path: string, options: object) {
-    return Remote.filesystem.getStats(path, options);
-};
-
 export const lstat = stat;
 export const lstatSync = statSync;
-
-export const rename = function (oldPath: string, newPath: string, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.rename(oldPath, newPath);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const renameSync = function (oldPath: string, newPath: string) {
-    return Remote.filesystem.renameSync(oldPath, newPath);
-};
-
-export const realpath = function (path: string, options: object, callback: (...a: any[]) => void) {
-    try {
-        const result = Remote.filesystem.getStats(path, options);
-        callback(null, result);
-    }
-    catch (error) {
-        callback(error, null);
-    }
-};
-
-export const realpathSync = function (path: string, options?: object) {
-    return Remote.filesystem.getRealPath(path, options);
-};
-
-export const watch = (path: string, options: object, callback: (...a: any[]) => void) => {
-    return Remote.filesystem.watch(path, options, callback);
-};
-
-export const createWriteStream = (path: string, options: object) => {
-    return Remote.filesystem.createWriteStream(path, options);
-};
-
-export const unlinkSync = (path: string) => Remote.filesystem.unlinkSync(path);
-export const unlink = (path: string) => Remote.filesystem.unlinkSync(path);
 
 export default {
     readFile,

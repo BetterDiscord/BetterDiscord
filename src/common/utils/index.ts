@@ -1,4 +1,4 @@
-export {default as clone, getKeys} from "./clone";
+export {cloneObject as clone, getKeys} from "./clone";
 export {default as debounce} from "./debounce";
 export {default as extend} from "./extend";
 export {default as findInTree} from "./findintree";

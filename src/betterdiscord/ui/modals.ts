@@ -222,7 +222,6 @@ export default class Modals {
         });
     }
 
-    // TODO: move typing to changelog after converting
     static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
             return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
