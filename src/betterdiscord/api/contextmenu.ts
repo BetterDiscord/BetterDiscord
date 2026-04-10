@@ -124,7 +124,7 @@ interface ContextMenuComponents {
     MenuControlItem: React.FC<React.PropsWithChildren<MenuControlItemProps>>;
     MenuGroup: React.FC<React.PropsWithChildren>;
     MenuItem: React.FC<React.PropsWithChildren<BaseMenuItemProps>>;
-    Menu: React.FC<React.PropsWithChildren>;
+    Menu: React.FC<React.PropsWithChildren<MenuRenderProps>>;
 }
 
 const ModulesBundle = getByKeys<ContextMenuComponents>(["MenuItem", "Menu"], {cacheId: "core-contextmenu-ModulesBundle"})!;
@@ -608,7 +608,7 @@ class ContextMenu {
      * @returns The unique context menu component
      */
     buildMenu(setup: Array<MenuItem | MenuItemGroup>) {
-        return (props: MenuRenderProps) => {return React.createElement(MenuComponents.Menu!, props as React.Attributes, this.buildMenuChildren(setup));};
+        return (props: MenuRenderProps) => {return React.createElement(MenuComponents.Menu!, props, this.buildMenuChildren(setup));};
     }
 
     /**
