@@ -5,7 +5,7 @@ import {webFrame} from "electron";
 export default function () {
     const patcher = function () {
         const chunkName = "webpackChunkdiscord_app";
-        const predefine = function (target: object, prop: keyof typeof target, effect: (v: any) => void) {
+        const predefine = function<T extends object, K extends keyof T>(target: T, prop: K, effect: (v: T[K]) => void) {
             const value = target[prop];
             Object.defineProperty(target, prop, {
                 get() {return value;},
@@ -33,7 +33,6 @@ export default function () {
         };
 
         if (!Reflect.has(window, chunkName)) {
-            // @ts-expect-error cba
             predefine(window, chunkName, instance => {
                 instance.push([[Symbol()], {}, (require: any) => {
                     if (!require.b) return;
