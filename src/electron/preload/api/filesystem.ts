@@ -3,7 +3,6 @@ import {clone} from "@common/utils";
 import Logger from "@common/logger";
 import {wrapFunction} from "@common/utils/clone";
 
-export const readFile = wrapFunction(fs.readFileSync);
 export const readDirectory = wrapFunction(fs.readdirSync);
 export const createDirectory = wrapFunction(fs.mkdirSync);
 export const deleteDirectory = wrapFunction(fs.rmdirSync);
@@ -12,6 +11,10 @@ export const getRealPath = wrapFunction(fs.realpathSync);
 export const renameSync = wrapFunction(fs.renameSync);
 export const rmSync = wrapFunction(fs.rmSync);
 export const unlinkSync = wrapFunction(fs.unlinkSync);
+
+export function readFile(path: fs.PathOrFileDescriptor, options: Parameters<typeof fs.readFileSync>[1] = "utf-8") {
+    return fs.readFileSync(path, options);
+}
 
 export function writeFile(path: fs.PathOrFileDescriptor, content: string | Uint8Array, options?: fs.WriteFileOptions & {originalFs: boolean;}) {
     if (content instanceof Uint8Array) {
