@@ -137,7 +137,7 @@ function TagDropdown({type, selected, onChange}: TagDropdownProps) {
 
 interface AddonStorePageProps {
     type: "plugin" | "theme";
-    refToScroller: any;
+    refToScroller?: any;
 }
 
 export default function AddonStorePage({type, refToScroller}: AddonStorePageProps) {

@@ -4,7 +4,7 @@ import Modals from "@ui/modals";
 import Toasts, {type ToastOptions} from "@stores/toasts";
 import Notices, {type NoticeOptions} from "@ui/notices";
 import Tooltip, {type TooltipOptions} from "@ui/tooltip";
-import Group, {buildSetting, type GroupOnChange} from "@ui/settings/group";
+import Group, {buildSetting, type ButtonSetting, type CustomSetting, type GroupOnChange} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
@@ -200,7 +200,7 @@ const UI = {
      * @param [setting.inline=true] Whether the input should render inline with the name (this is false by default for radio type)
      * @returns A SettingItem with a an input as the child
      */
-    buildSettingItem(setting: any) {
+    buildSettingItem(setting: Setting | CustomSetting | ButtonSetting) {
         return buildSetting(setting);
     },
 

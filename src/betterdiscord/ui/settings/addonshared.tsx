@@ -33,7 +33,7 @@ export function saveState(type: string, control: string, value: any) {
     JsonStore.set("misc", "addonlistControls", addonlistControls);
 }
 
-interface AddonContext {
+export interface AddonContext {
     title: string;
     toggleStore(): void;
     showingStore: boolean;

@@ -77,12 +77,12 @@ export default function Group({onChange, id, name = "", shown, onDrawerToggle, s
 }
 
 
-interface CustomSetting extends SettingItem {
+export interface CustomSetting extends SettingItem {
     type: "custom";
     children: ReactNode;
 }
 
-interface ButtonSetting extends ButtonProps, SettingItem {
+export interface ButtonSetting extends ButtonProps, SettingItem {
     type: "button";
 }
 

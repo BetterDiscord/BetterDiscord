@@ -73,7 +73,7 @@ const SettingsRenderer = new class SettingsRenderer {
         });
     }
 
-    getAddonPanel(title: string, options = {}) {
+    getAddonPanel(title: string, options: {store: AddonManager}) {
         return (props: any) => {
             return React.createElement(AddonPage, Object.assign({}, {
                 title: title,
@@ -267,7 +267,7 @@ const SettingsRenderer = new class SettingsRenderer {
                 for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
                     // if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
                     // if (!panel.className) panel.className = `bd-${panel.id}-tab`;
-                    if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager});
+                    if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager!});
 
                     const icon = panel.icon ? lucideToDiscordIcon(panel.icon) : () => panel.id;
 

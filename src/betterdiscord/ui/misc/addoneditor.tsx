@@ -31,7 +31,7 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
 
     const popoutNative = useCallback(() => openNative?.(), [openNative]);
     const onChange = useCallback(() => setUnsaved(true), []);
-    const saveAddon = useCallback((_: any, newCSS: string) => {
+    const saveAddon = useCallback((_: React.MouseEvent, newCSS: string) => {
         save?.(newCSS);
         setUnsaved(false);
     }, [save]);
