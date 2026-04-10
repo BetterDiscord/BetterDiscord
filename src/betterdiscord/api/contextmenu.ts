@@ -608,7 +608,7 @@ class ContextMenu {
      * @returns The unique context menu component
      */
     buildMenu(setup: Array<MenuItem | MenuItemGroup>) {
-        return (props: MenuItem) => {return React.createElement(MenuComponents.Menu!, props as React.Attributes, this.buildMenuChildren(setup));};
+        return (props: MenuRenderProps) => {return React.createElement(MenuComponents.Menu!, props as React.Attributes, this.buildMenuChildren(setup));};
     }
 
     /**

@@ -87,9 +87,9 @@ function fixBuffer(options: RequestOptions & {formData?: Buffer | string;}, call
 function request(this: any, ...args: any[]) {
     const {url, options = {}, callback} = parseArguments.apply(this, args);
 
-    if (!validUrl(url) || !validCallback(callback) || !options.method) return null;
+    if (!validUrl(url) || !validCallback(callback)) return null;
 
-    if ("method" in options && methods.indexOf(options.method.toLowerCase()) >= 0) {
+    if (options.method && methods.indexOf(options.method.toLowerCase()) >= 0) {
         const methodName = options.method as keyof typeof Remote.https;
         return Remote.https[methodName](url, options, fixBuffer(options, callback));
     }
@@ -101,7 +101,7 @@ Object.assign(request, Object.fromEntries(
     methods.concat(Object.keys(aliases)).map(method => [method, function (this: any, ...args: any[]) {
         const {url, options = {}, callback} = parseArguments.apply(this, args);
 
-        if (!validUrl(url) || !validCallback(callback) || !options.method) return null;
+        if (!validUrl(url) || !validCallback(callback)) return null;
 
         const methodName = (aliases[method] || method) as keyof typeof Remote.https;
         return Remote.https[methodName](url, options, fixBuffer(options, callback));
