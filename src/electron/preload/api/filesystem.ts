@@ -46,7 +46,7 @@ export function watch(path: string, options: fs.WatchOptions | BufferEncoding | 
     };
 }
 
-export function getStats(path: string, options?: fs.StatSyncOptions & { bigint?: false; }) {
+export function getStats(path: string, options?: fs.StatSyncOptions & {bigint?: false;}) {
     const stats = fs.statSync(path, options);
 
     return {
