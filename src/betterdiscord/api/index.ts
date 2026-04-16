@@ -155,7 +155,7 @@ export default class BdApi {
     // Non-bound namespaces
     get Plugins() {return PluginAPI;}
     get Themes() {return ThemeAPI;}
-    get Webpack() {return Webpack;}
+    get Webpack(): typeof Webpack {return Webpack;}
     get Utils() {return Utils;}
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}

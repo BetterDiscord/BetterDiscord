@@ -32,7 +32,7 @@ export const Wrap = Object.freeze({
 });
 
 
-export function Child(props: {className?: string;[x: string]: any;}) {
+export function FlexChild(props: {className?: string;[x: string]: any;}) {
     if (!props.className) props.className = "";
     props.className = clsx(props.className, "bd-flex-child");
     return <Flex {...props} />;
@@ -85,7 +85,7 @@ export default function Flex({
     </div>;
 }
 
-Flex.Child = Child;
+Flex.Child = FlexChild;
 Flex.Direction = Direction;
 Flex.Align = Align;
 Flex.Justify = Justify;

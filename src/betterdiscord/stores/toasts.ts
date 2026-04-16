@@ -10,7 +10,7 @@ export interface ToastOptions {
     forceShow?: boolean;
 }
 
-export default new class Toasts extends Store {
+class Toasts extends Store {
     private _toasts: ToastProps[] = [];
     private toastKey: number = 0;
 
@@ -90,3 +90,5 @@ export default new class Toasts extends Store {
         return this.show(content, {...options, type: "error"});
     }
 };
+
+export default new Toasts();

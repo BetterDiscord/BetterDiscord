@@ -58,9 +58,10 @@ export interface Addon {
     website?: string;
 }
 
+// Not on the AddonManager in order to bypass issues with types from "fs" being included in bundle
+const watchers = new Map<string, fs.FSWatcher>();
 
 export default abstract class AddonManager extends Store {
-
     get name() {return "";}
     get extension() {return "";}
     get duplicatePattern() {return /./;}
@@ -112,11 +113,11 @@ export default abstract class AddonManager extends Store {
         JsonStore.set(`${this.prefix}s` as Files, this.state);
     }
 
-    watcher?: fs.FSWatcher;
     watchAddons() {
-        if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
+        if (watchers.has(this.name)) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
-        this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
+
+        const watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
             // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
             if (!eventType || !filename) return;
             // console.log(eventType, filename)
@@ -166,12 +167,14 @@ export default abstract class AddonManager extends Store {
                 this.unloadAddon(filename, true);
             }
         });
+
+        watchers.set(this.name, watcher);
     }
 
     unwatchAddons() {
-        if (!this.watcher) return Logger.error(this.name, `Was not watching ${this.prefix} addons.`);
-        this.watcher.close();
-        delete this.watcher;
+        if (!watchers.has(this.name)) return Logger.error(this.name, `Was not watching ${this.prefix} addons.`);
+        watchers.get(this.name)?.close();
+        watchers.delete(this.name);
         Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
     }
 

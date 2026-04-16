@@ -4,7 +4,7 @@ import {t} from "@common/i18n";
 import {CheckIcon, PipetteIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
 import type {ChangeEvent} from "react";
-import type {Color, HexString} from "@data/settings";
+import type {Color as ColorType, HexString} from "@data/settings";
 
 const {useState, useCallback, useContext} = React;
 
@@ -12,9 +12,9 @@ const {useState, useCallback, useContext} = React;
 const defaultColors = [1752220, 3066993, 3447003, 10181046, 15277667, 15844367, 15105570, 15158332, 9807270, 6323595, 1146986, 2067276, 2123412, 7419530, 11342935, 12745742, 11027200, 10038562, 9936031, 5533306];
 
 // TODO: consider creating a color util
-function resolveColor(color: Color, hex: false): number;
-function resolveColor(color: Color, hex?: true): HexString;
-function resolveColor(color: Color, hex = true): HexString | number {
+function resolveColor(color: ColorType, hex: false): number;
+function resolveColor(color: ColorType, hex?: true): HexString;
+function resolveColor(color: ColorType, hex = true): HexString | number {
     switch (typeof color) {
         case (hex && "number"): return `#${color.toString(16)}`;
         case (!hex && "string"): return Number.parseInt((color as HexString).replace("#", ""), 16);
@@ -49,10 +49,10 @@ const getContrastColor = (color: HexString | number[]) => {
 };
 
 export interface ColorpickerProps {
-    value: Color;
+    value: ColorType;
     onChange?(newValue: HexString): void;
-    colors?: Color[];
-    defaultValue?: Color;
+    colors?: ColorType[];
+    defaultValue?: ColorType;
     disabled?: boolean;
 }
 
@@ -60,12 +60,12 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
-    const value = (contextValue !== none ? contextValue : internalValue) as Color;
+    const value = (contextValue !== none ? contextValue : internalValue) as ColorType;
     const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
-    const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: Color;};}) => {
+    const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: ColorType;};}) => {
         if (isDisabled) return;
-        const color = resolveColor(e.target.value as Color);
+        const color = resolveColor(e.target.value as ColorType);
         onChange?.(color);
         setValue(color);
     }, [onChange, isDisabled]);
