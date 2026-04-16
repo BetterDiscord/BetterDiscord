@@ -56,7 +56,7 @@ const SettingsRenderer = new class SettingsRenderer {
             // Delay until after switch animation
             // customcss is here to let the tab show/hide
             // since that component is out of our control/scope
-            if (args.length >= 2 && args[1] === "customcss") {
+            if (args.length >= 3 && args[1] === "customcss") {
                 setTimeout(this.forceUpdate.bind(this), 250);
             }
         };
