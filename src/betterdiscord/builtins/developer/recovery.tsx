@@ -14,7 +14,7 @@ import NotificationUIInstance from "@ui/notifications";
 import config from "@stores/config";
 import {Logo} from "@ui/logo";
 import clsx from "clsx";
-import type {ErrorBoundary, TransitionTo} from "discord/modules";
+import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
 
 const Dispatcher = DiscordModules.Dispatcher;
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;

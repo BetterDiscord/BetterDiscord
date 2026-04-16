@@ -1,7 +1,6 @@
-import type {ForwardRefExoticComponent, MemoExoticComponent, JSX} from "react";
-import * as ReactSpring from "@react-spring/web";
+import type {ForwardRefExoticComponent, MemoExoticComponent, JSX, ReactElement} from "react";
+import * as ReactSpringModule from "@react-spring/web";
 import type {Channel} from "./structs";
-
 
 
 export interface RemoteModule {
@@ -92,7 +91,7 @@ export interface Dispatcher {
 export type Memo = MemoExoticComponent<ForwardRefExoticComponent<null> & JSX.ElementClass>;
 
 
-export type ReactSpring = typeof ReactSpring;
+export type ReactSpring = typeof ReactSpringModule;
 
 
 export interface DiscordPermissions {

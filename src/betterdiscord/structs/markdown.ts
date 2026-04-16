@@ -1,7 +1,7 @@
 import DiscordModules from "@modules/discordmodules";
 import {extend} from "@common/utils";
 import type {ReactElement} from "react";
-import type {Rules, SimpleMarkdown} from "discord/modules";
+import type {Rules, SimpleMarkdown} from "@typed/discord/modules";
 
 
 export default class SimpleMarkdownExt {

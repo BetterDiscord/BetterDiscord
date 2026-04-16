@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import Logger from "@common/logger";
 
 const hasThrown = new WeakSet();

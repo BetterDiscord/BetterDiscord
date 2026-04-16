@@ -1,6 +1,6 @@
 import type {Fiber} from "react-reconciler";
-import {DiscordNativeAPI} from "./discord/native";
-import * as PreloadAPI from "../../electron/preload/api/index";
+import {DiscordNativeAPI} from "../discord/native";
+import * as PreloadAPI from "../../../electron/preload/api/index";
 
 interface DiscordWindow {
     webpackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;

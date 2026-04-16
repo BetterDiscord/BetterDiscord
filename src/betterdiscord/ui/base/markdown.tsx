@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import type {Rules, SimpleMarkdown} from "discord/modules";
+import type {Rules, SimpleMarkdown} from "@typed/discord/modules";
 import type {ComponentClass, PropsWithChildren} from "react";
 
 

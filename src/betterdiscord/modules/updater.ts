@@ -25,8 +25,8 @@ import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
 import type AddonManager from "./addonmanager";
-import type {Release} from "github";
-import type {BdWebAddon} from "betterdiscordweb";
+import type {Release} from "@typed/github";
+import type {BdWebAddon} from "@typed/betterdiscordweb";
 import {Logo} from "@ui/logo";
 import {RefreshCcwIcon} from "lucide-react";
 

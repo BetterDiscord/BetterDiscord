@@ -6,7 +6,7 @@
  */
 
 import {memoize} from "@common/utils";
-import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring, MessageUtils, PromptToUpload, DiscordTooltip} from "discord/modules";
+import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring, MessageUtils, PromptToUpload, DiscordTooltip} from "@typed/discord/modules";
 import {Filters, getBulkKeyed, getByKeys, getBySource, getByStrings, getModule} from "@webpack";
 import type React from "react";
 

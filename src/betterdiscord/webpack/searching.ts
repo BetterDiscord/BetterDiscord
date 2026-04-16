@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";
 import {webpackRequire} from "./require";
 import WebpackCache from "./cache";

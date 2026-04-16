@@ -8,7 +8,7 @@ type TreeFilter = (o: any) => boolean | any;
 * @param options.walkable Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable
 * @param options.ignore Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
 */
-export default function findInTree(tree: Record<string|number, unknown> | null, searchFilter: TreeFilter | string, {walkable = null, ignore = []}: {walkable?: string[] | null, ignore?: string[]} = {}): any | undefined {
+export default function findInTree(tree: any, searchFilter: TreeFilter | string, {walkable = null, ignore = []}: {walkable?: string[] | null, ignore?: string[]} = {}): any | undefined {
    if (typeof searchFilter === "string") {
        if (tree?.hasOwnProperty(searchFilter)) return tree[searchFilter];
    }
@@ -29,7 +29,7 @@ export default function findInTree(tree: Record<string|number, unknown> | null, 
        const toWalk = walkable == null ? Object.keys(tree) : walkable;
        for (const key of toWalk) {
            if (typeof (tree[key]) == "undefined" || ignore.includes(key)) continue;
-           tempReturn = findInTree(tree[key] as Record<string|number, unknown>, searchFilter, {walkable, ignore});
+           tempReturn = findInTree(tree[key], searchFilter, {walkable, ignore});
            if (typeof tempReturn != "undefined") return tempReturn;
        }
    }

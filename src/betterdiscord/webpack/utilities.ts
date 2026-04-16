@@ -1,6 +1,6 @@
 /* eslint-disable no-labels */
 
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {bySource} from "./filter";
 import {getModule} from "./searching";
 import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";

@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {webpackRequire} from "./require";
 
 function assign<T extends Webpack.Filter | Webpack.ExportedOnlyFilter>(filter: T, args: any) {

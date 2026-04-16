@@ -2,7 +2,7 @@ import {useInsertionEffect, useReducer, useRef} from "@modules/react";
 import type Store from "../stores/base";
 import type React from "react";
 import {shallowEqual} from "fast-equals";
-import type {FluxStore} from "discord/modules";
+import type {FluxStore} from "@typed/discord/modules";
 
 type StoreType = Store | FluxStore;
 

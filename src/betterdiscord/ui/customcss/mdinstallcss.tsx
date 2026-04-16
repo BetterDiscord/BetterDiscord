@@ -11,7 +11,7 @@ import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
 import Modals from "@ui/modals.js";
 import {findInTree} from "@common/utils";
-import type {Rule, SimpleMarkdown} from "discord/modules";
+import type {Rule, SimpleMarkdown} from "@typed/discord/modules";
 
 
 class InstallCSS {

@@ -2,7 +2,7 @@ import Builtin from "@structs/builtin";
 import {getLazy, getLazyByDisplayName, getLazyByStrings, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React from "react";
-import type {TabBarComponentType} from "discord/modules";
+import type {TabBarComponentType} from "@typed/discord/modules";
 
 const MessageGroupingContext = React.createContext({
     first: false,

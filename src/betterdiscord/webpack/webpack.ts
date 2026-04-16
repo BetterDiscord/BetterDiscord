@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import * as Filters from "./filter";
 import {getAllModules, getModule} from "./searching";
 import {getLazy} from "./lazy";
