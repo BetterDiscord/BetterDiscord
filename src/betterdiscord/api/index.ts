@@ -215,7 +215,7 @@ BdApi.DOM = DOMAPI;
 BdApi.ContextMenu = ContextMenuAPI;
 
 /**
- * An set of react components plugins can make use of.
+ * A set of react components plugins can make use of.
  */
 BdApi.Components = Components;
 

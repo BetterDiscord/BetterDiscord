@@ -31,7 +31,6 @@ export interface Notification {
     icon?: React.ComponentType<any>;
 
     onClose?(): void;
-    onClick?(): void;
 
     [key: symbol]: boolean;
 }

@@ -27,7 +27,7 @@ export interface SpinnerProps {
 }
 
 /**
- * Clone of Discord's builtin spinner, acts 100% the same
+ * Clone of Discord's builtin spinner, acts 100% the same.
  */
 function Spinner(props: SpinnerProps) {
     const {reducedMotion} = React.useContext(AccessibilityContext);

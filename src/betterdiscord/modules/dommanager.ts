@@ -52,7 +52,7 @@ export default class DOMManager {
     /**
      * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
-    */
+     */
     static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<DeepArray<Node | string>>) {
         const element = document.createElement(type);
 
@@ -172,8 +172,8 @@ export default class DOMManager {
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
      * The callback is given the matching element.
-     * @param selector - node to wait for
-     * @param callback - function to be performed on event
+     * @param selector Node to wait for
+     * @param callback Function to be performed on event
      */
     static onAdded(selector: string, callback: (e: Element) => void) {
         if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector)!);
@@ -201,8 +201,8 @@ export default class DOMManager {
     /**
      * Adds a listener for when the node is removed from the document body.
      * The listener is automatically removed upon firing.
-     * @param node - node to wait for
-     * @param callback - function to be performed on event
+     * @param node Node to wait for
+     * @param callback Function to be performed on event
      */
     static onRemoved(node: Node, callback: () => void) {
         const observer = new MutationObserver((mutations) => {

@@ -16,12 +16,12 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, {
     /**
      * Creates an error boundary with optional fallbacks and debug info.
      * @param props
-     * @param [props.children] - An optional id for debugging purposes
-     * @param [props.id="Unknown"] - An optional id for debugging purposes
-     * @param [props.name="Unknown"] - An optional name for debugging purposes
-     * @param [props.hideError=false] - Whether to hide the default error message in the ui (never shown if there is a fallback)
-     * @param [props.fallback] - A fallback to show on error
-     * @param [props.onError] - A callback called with the error when it happens
+     * @param [props.children] An optional id for debugging purposes
+     * @param [props.id="Unknown"] An optional id for debugging purposes
+     * @param [props.name="Unknown"] An optional name for debugging purposes
+     * @param [props.hideError=false] Whether to hide the default error message in the ui (never shown if there is a fallback)
+     * @param [props.fallback] A fallback to show on error
+     * @param [props.onError] A callback called with the error when it happens
      */
     constructor(props: ErrorBoundaryProps) {
         super(props);

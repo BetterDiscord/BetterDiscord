@@ -197,7 +197,7 @@ export class Addon {
     }
 
     /**
-     * Opens the bd's site page for the addon
+     * Opens the BD site's page for the addon
      */
     public openAddonPage() {
         window.open(Web.redirects[this.type](this.id.toString()), "_blank", "noopener,noreferrer");
@@ -626,6 +626,7 @@ const addonStore = new class AddonStore {
             loading: this.loading
         };
     }
+    
     /**
      * A react hook for {@link getState}
      */

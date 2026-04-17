@@ -1,10 +1,3 @@
-/**
- * A large list of known and useful webpack modules internal to Discord.
- *
- * @module DiscordModules
- * @version 0.0.3
- */
-
 import {memoize} from "@common/utils";
 import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring, MessageUtils, PromptToUpload, DiscordTooltip} from "@typed/discord/modules";
 import {Filters, getBulkKeyed, getByKeys, getBySource, getByStrings, getModule} from "@webpack";

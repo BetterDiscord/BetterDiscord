@@ -18,14 +18,14 @@ const Utils = {
      * @param options Additional options to customize the search
      * @param [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
      * @param [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
-    */
+     */
     findInTree: findInTree,
 
     /**
      * Loads the module ids within a chunk
      *
-     * @param id module with the chunk id.
-     * @returns resolved chunk module
+     * @param id Module with the chunk id.
+     * @returns Resolved chunk module
      */
     forceLoad: forceLoad,
 
@@ -78,11 +78,12 @@ const Utils = {
      * @returns Joined classname
      */
     className: clsx,
+
     /**
      * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
      * Numbers can be used for arrays as well like `key.key2.array.0.id`.
-     * @param obj - object to get nested value from
-     * @param keyPath - key path to the desired value
+     * @param obj Object to get nested value from
+     * @param keyPath Key path to the desired value
      */
     getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
@@ -97,27 +98,12 @@ const Utils = {
      */
     semverCompare: comparator,
 
+    /**
+     * A store which can have listeners attached to it. When the store emits a change, all listeners will be called.
+     * This is most useful with `Hooks.useStateFromStores` to create reactive values.
+     */
     Store
 } as const;
-
-// https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
-// type Path<T> = T extends object ? {[K in keyof T]:
-//     `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`
-// }[keyof T] : never;
-
-// https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts
-// type PathValue<
-//     T,
-//     P extends Path<T>,
-// > = P extends `${infer Key}.${infer Rest}`
-//     ? Key extends keyof T
-//     ? Rest extends Path<T[Key]>
-//     ? PathValue<T[Key], Rest>
-//     : never
-//     : never
-//     : P extends keyof T
-//     ? T[P]
-//     : never;
 
 Object.freeze(Utils);
 

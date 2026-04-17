@@ -65,9 +65,9 @@ class Data<Bounded extends boolean> {
      * Recaches JSON-serializable save file.
      *
      * @param pluginName Name of the plugin saving data
-     * @returns success Did the data recache
+     * @returns Whether the data successfully recached
      *
-     * @warning ⚠️ **Use of the recaching is discouraged!**
+     * @warning ⚠️ **Use of recaching is discouraged!**
      *
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.

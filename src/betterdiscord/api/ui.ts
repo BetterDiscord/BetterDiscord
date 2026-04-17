@@ -38,7 +38,21 @@ const UI = {
         Modals.alert(title, content);
     },
 
-    showNotification(notificationObj: Notification) {
+    /**
+     * Shows a customizable notification to the user.
+     *
+     * @param options
+     * @param options.id A unique id for the notification, will not be shown if another notification with the same id is already being shown
+     * @param [options.title] The title of the notification
+     * @param [options.content] The content of the notification
+     * @param [options.type] The type of the notification which changes the color and icon. Can be one of: "warning", "error", "info", "success".
+     * @param [options.duration] How long the notification should be shown in milliseconds
+     * @param [options.actions] An array of button actions to add to the notification
+     * @param [options.icon] A React component to use as a custom icon for the notification
+     * @param [options.onClose] A callback which is run when the notification is closed manually or automatically
+     * @returns An object with `isVisible` and `close` methods
+     */
+    showNotification(options: Notification) {
         if (!Settings.get("settings", "general", "notificationEnabled")) return;
 
         const defaultObj = {
@@ -49,7 +63,7 @@ const UI = {
             actions: []
         };
 
-        const finalNotification = {...defaultObj, ...notificationObj};
+        const finalNotification = {...defaultObj, ...options};
 
         return NotificationUI.show(finalNotification);
     },
@@ -64,7 +78,7 @@ const UI = {
      * @param [options.side="top"] Can be any of top, right, bottom, left
      * @param [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
      * @param [options.disabled=false] Whether the tooltip should be disabled from showing on hover
-     * @returns The tooltip that was generated.
+     * @returns The tooltip that was generated
      */
     createTooltip(node: HTMLElement, content: string | HTMLElement, options: TooltipOptions = {}) {
         return Tooltip.create(node, content, options);
@@ -82,7 +96,7 @@ const UI = {
      * @param [options.onConfirm=NOOP] Callback to occur when clicking the submit button
      * @param [options.onCancel=NOOP] Callback to occur when clicking the cancel button
      * @param [options.onClose=NOOP] Callback to occur when exiting the modal
-     * @returns The key used for this modal.
+     * @returns The key used for this modal
      */
     showConfirmationModal(title: string, content: string | ReactElement | Array<string | ReactElement>, options: {
         confirmText?: string;
@@ -116,7 +130,7 @@ const UI = {
      * @param [options.poster] URL to use for the video freeze-frame poster
      * @param [options.footer] What to show in the modal footer
      * @param [options.changes] List of changes to show (see description for details)
-     * @returns The key used for this modal.
+     * @returns The key used for this modal
      */
     showChangelogModal(options: ChangelogProps) {
         return Modals.showChangelogModal(options);
@@ -124,14 +138,14 @@ const UI = {
 
     /**
      * Shows a modal for joining a guild like you would natively through Discord.
-     * @param inviteCode the invite code
+     * @param inviteCode The invite code
      */
     showInviteModal(inviteCode: string) {
         return Modals.showGuildJoinModal(inviteCode);
     },
 
     /**
-     * This shows a toast similar to android towards the bottom of the screen.
+     * Shows a toast similar to android towards the bottom of the screen.
      *
      * @param content The string to show in the toast
      * @param options Options for the toast
@@ -175,7 +189,7 @@ const UI = {
      * @param [options.openFile=true] Whether the user should be able to select a file as a target
      * @param [options.multiSelections=false] Whether the user should be able to select multiple targets
      * @param [options.modal=false] Whether the dialog should act as a modal to the main window
-     * @returns Result of the dialog
+     * @returns The result of the dialog
      */
     async openDialog(options: Partial<DialogOptions>) {
         const data = await ipc.openDialog(options);
@@ -188,6 +202,7 @@ const UI = {
      * Creates a single setting wrapped in a setting item that has a name and note.
      * The shape of the object should match the props of the component you want to render, check the
      * `BdApi.Components` section for details. Shown below are ones common to all setting types.
+     *
      * @param setting
      * @param setting.type One of: dropdown, number, switch, text, slider, radio, keybind, color, custom
      * @param setting.id Identifier to used for callbacks

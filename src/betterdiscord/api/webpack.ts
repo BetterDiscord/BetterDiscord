@@ -31,6 +31,9 @@ const Webpack = {
      */
     modules: modules,
 
+    /**
+     * An object containing all of Discord's internal stores which can be accessed by their name.
+     */
     Stores: Stores,
 
     /**

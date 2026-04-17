@@ -22,13 +22,13 @@ export default class Notices {
     static get baseClass() {return this.__baseClass ??= DiscordModules.NoticesBaseClasses?.base;}
     static get errorPageClass() {return this.__errorPageClass ??= DiscordModules.NoticesPageClasses?.errorPage;}
 
-    /** Shorthand for `type = "info"` for {@link module:Notices.show} */
+    /** Shorthand for `type = "info"` for {@link show} */
     static info(content: string, options: NoticeOptions = {}) {return this.show(content, Object.assign({}, options, {type: "info"}));}
-    /** Shorthand for `type = "warning"` for {@link module:Notices.show} */
+    /** Shorthand for `type = "warning"` for {@link show} */
     static warn(content: string, options: NoticeOptions = {}) {return this.show(content, Object.assign({}, options, {type: "warning"}));}
-    /** Shorthand for `type = "error"` for {@link module:Notices.show} */
+    /** Shorthand for `type = "error"` for {@link show} */
     static error(content: string, options: NoticeOptions = {}) {return this.show(content, Object.assign({}, options, {type: "error"}));}
-    /** Shorthand for `type = "success"` for {@link module:Notices.show} */
+    /** Shorthand for `type = "success"` for {@link show} */
     static success(content: string, options: NoticeOptions = {}) {return this.show(content, Object.assign({}, options, {type: "success"}));}
 
     static createElement(type: keyof HTMLElementTagNameMap, options: {[prop: string]: any;} = {}, ...children: Array<string | null | HTMLElement>) {
@@ -46,8 +46,8 @@ export default class Notices {
      * @param content Content of the notice
      * @param options Options for the notice.
      * @param [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
-     * @param [options.buttons] Buttons that should be added next to the notice text.
-     * @param [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0;
+     * @param [options.buttons] Buttons that should be added next to the notice text
+     * @param [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0.
      */
     static show(content: string, options: NoticeOptions = {}) {
         const {type, buttons = [], timeout = 0, onClose = () => {}} = options;

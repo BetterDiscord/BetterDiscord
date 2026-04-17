@@ -65,27 +65,27 @@ class Toasts extends Store {
         }
     }
 
-    /** Shorthand for `type = "default"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "default"` for {@link show} */
     default(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "default"});
     }
 
-    /** Shorthand for `type = "info"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "info"` for {@link show} */
     info(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "info"});
     }
 
-    /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "success"` for {@link show} */
     success(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "success"});
     }
 
-    /** Shorthand for `type = "warning"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "warning"` for {@link show} */
     warning(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "warning"});
     }
 
-    /** Shorthand for `type = "error"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "error"` for {@link show} */
     error(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "error"});
     }

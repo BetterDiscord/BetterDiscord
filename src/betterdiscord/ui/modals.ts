@@ -1,5 +1,3 @@
-import FormattableString from "@structs/string";
-
 import Logger from "@common/logger";
 import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
@@ -154,21 +152,19 @@ export default class Modals {
 
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
-     * @param title - title of the modal
-     * @param children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
-     * @param [options] - options to modify the modal
-     * @param [options.danger=false] - whether the main button should be red or not
-     * @param [options.confirmText=Okay] - text for the confirmation/submit button
-     * @param [options.cancelText=Cancel] - text for the cancel button
-     * @param [options.onConfirm=NOOP] - callback to occur when clicking the submit button
-     * @param [options.onCancel=NOOP] - callback to occur when clicking the cancel button
-     * @param [options.onClose=NOOP] - callback to occur when exiting the modal
-     * @param [options.key] - key used to identify the modal. If not provided, one is generated and returned
-     * @returns - the key used for this modal
+     * @param title The title of the modal
+     * @param children A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
+     * @param [options] Options to modify the modal
+     * @param [options.danger=false] Whether the main button should be red or not
+     * @param [options.confirmText=Okay] Text for the confirmation/submit button
+     * @param [options.cancelText=Cancel] Text for the cancel button
+     * @param [options.onConfirm=NOOP] Callback to occur when clicking the submit button
+     * @param [options.onCancel=NOOP] Callback to occur when clicking the cancel button
+     * @param [options.onClose=NOOP] Callback to occur when exiting the modal
+     * @param [options.key] Key used to identify the modal. If not provided, one is generated and returned
+     * @returns The key used for this modal
      */
     static showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options: ConfirmationModalOptions = {}) {
-        if (content instanceof FormattableString) content = content.toString();
-
         const emptyFunction = () => {};
         const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = t("Modals.okay"), cancelText = t("Modals.cancel"), danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
@@ -230,7 +226,7 @@ export default class Modals {
     }
 
     /**
-     * Shows the guild join modal, to join invites
+     * Shows the guild join modal, to join invites.
      */
     static async showGuildJoinModal(code: string) {
         const tester = /\.gg\/(.*)$/;

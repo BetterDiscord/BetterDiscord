@@ -10,12 +10,12 @@ type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: str
 class DOM<Bound extends boolean> {
 
     /**
-     * Current width of the user's screen.
+     * The current width of the user's screen.
      */
     get screenWidth() {return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);}
 
     /**
-     * Current height of the user's screen.
+     * The current height of the user's screen.
      */
     get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
 
@@ -64,7 +64,6 @@ class DOM<Bound extends boolean> {
 
     /**
      * Adds a listener for when the node is removed from the document body.
-     *
      * @param node Node to be observed
      * @param callback Function to run when removed
      */
@@ -76,8 +75,8 @@ class DOM<Bound extends boolean> {
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
      * The callback is given the matching element.
-     * @param selector - node to wait for
-     * @param callback - function to be performed on event
+     * @param selector Node to wait for
+     * @param callback Function to be performed on event
      */
     onAdded(selector: string, callback: () => void) {
         return DOMManager.onAdded(selector, callback);
@@ -85,7 +84,6 @@ class DOM<Bound extends boolean> {
 
     /**
      * Utility to help smoothly animate using JavaScript.
-     *
      * @param update Render function indicating the style should be updated
      * @param duration Duration in ms to animate for
      * @param [options] Options to customize the animation
@@ -98,7 +96,6 @@ class DOM<Bound extends boolean> {
     /**
      * Utility function to make creating DOM elements easier. Acts similarly
      * to `React.createElement`
-     *
      * @param tag HTML tag name to create
      * @param [options] Options object to customize the element
      * @param [options.className] Class name to add to the element

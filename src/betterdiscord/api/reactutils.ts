@@ -238,6 +238,14 @@ const ReactUtils: ReactUtils = {
         };
     },
 
+    /**
+     * Wraps a functional React component to allow it to be created outside of
+     * the normal React lifecycle.
+     *
+     * @param functionComponent The functional component to wrap
+     * @param customPatches Custom react hooks to use
+     * @returns The wrapped component
+     */
     wrapInHooks<T extends ReactType.FC<P>, P>(
         functionComponent: T | ReactType.MemoExoticComponent<T | ReactType.ForwardRefExoticComponent<T>> | ReactType.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
@@ -290,6 +298,9 @@ const ReactUtils: ReactUtils = {
     //     return false;
     // },
 
+    /**
+     * Gets the type of a React component, going through things such as forwardRef and memo
+     */
     getType<T extends ReactType.FC<P>, P>(elementType: ElementType<T, P>): T {
         while (true) {
             switch ((elementType as ReactType.MemoExoticComponent<T> | ReactType.ForwardRefExoticComponent<T>).$$typeof) {
@@ -316,6 +327,10 @@ const ReactUtils: ReactUtils = {
             }
         }
     },
+
+    /**
+     * Creates a NodePatcher instance which is used to patch React nodes
+     */
     createNodePatcher() {
         return new NodePatcher();
     }
