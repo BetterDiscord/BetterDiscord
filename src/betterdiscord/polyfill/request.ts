@@ -90,7 +90,7 @@ function request(this: any, ...args: any[]) {
     if (!validUrl(url) || !validCallback(callback)) return null;
 
     if (options.method && methods.indexOf(options.method.toLowerCase()) >= 0) {
-        const methodName = options.method as keyof typeof Remote.https;
+        const methodName = options.method.toLowerCase() as keyof typeof Remote.https;
         return Remote.https[methodName](url, options, fixBuffer(options, callback));
     }
 
