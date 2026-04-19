@@ -51,7 +51,7 @@ export type GroupProps = PropsWithChildren<{
     showDivider?: boolean;
     collapsible?: boolean;
     onDrawerToggle?(state?: boolean): void;
-    onChange: GroupOnChange;
+    onChange?: GroupOnChange;
     settings: any;
     collection?: any;
 }>;

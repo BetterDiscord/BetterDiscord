@@ -4,7 +4,7 @@ import {rollup} from "rollup";
 import {dts} from "rollup-plugin-dts";
 import {readFile, writeFile} from "node:fs/promises";
 
-buildTypes();
+await buildTypes();
 
 async function buildTypes() {
     console.log("Generating declaration files...");
