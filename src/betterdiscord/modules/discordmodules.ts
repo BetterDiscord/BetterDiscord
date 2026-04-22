@@ -32,8 +32,9 @@ const SyncModules = getBulkKeyed<Modules>({
         cacheId: "core-ReactSpring"
     },
     SimpleMarkdownWrapper: {
-        filter: Filters.byKeys(["defaultRules", "parse"]),
-        firstId: 454585,
+        filter: Filters.byKeys(["defaultReactOutput"]),
+        firstId: 791332,
+        searchExports: true,
         cacheId: "core-SimpleMarkdownWrapper"
     },
     Dispatcher: {
