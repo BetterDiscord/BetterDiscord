@@ -1,7 +1,6 @@
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
-import React from "react";
-import type {RefObject} from "react";
+import React, {type RefObject} from "react";
 import type {Fiber} from "react-reconciler";
 
 interface PatchedReactHooks {
