@@ -291,9 +291,9 @@ class MenuPatcher {
         named: Record<string, Set<PatchCallback>>,
         regex: Array<{regex: RegExp, patches: Set<PatchCallback>;}>;
     } = {
-            named: {},
-            regex: []
-        };
+        named: {},
+        regex: []
+    };
 
     static handleRender<T extends React.ComponentType<MenuRenderProps>>(Component: T): T {
         const fNode = {type: Component} as MenuRenderNode;
@@ -576,7 +576,7 @@ class ContextMenu {
      *     }]
      * }]);
      */
-    buildMenuChildren(setup: Array<MenuItem | MenuItemGroup>) {
+    buildMenuChildren(setup: ReadonlyArray<MenuItem | MenuItemGroup>) {
         const mapper = (s: MenuItem | MenuItemGroup) => {
             if (s.type === "group") return buildGroup(s);
             return this.buildItem(s);
@@ -596,7 +596,7 @@ class ContextMenu {
      * @param setup Array of item props used to build items. See {@link ContextMenu.buildMenuChildren}.
      * @returns The unique context menu component
      */
-    buildMenu(setup: Array<MenuItem | MenuItemGroup>) {
+    buildMenu(setup: ReadonlyArray<MenuItem | MenuItemGroup>) {
         return (props: MenuRenderProps) => {return React.createElement(MenuComponents.Menu!, props, this.buildMenuChildren(setup));};
     }
 

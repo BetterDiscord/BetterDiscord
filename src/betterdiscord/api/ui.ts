@@ -39,7 +39,7 @@ const UI = {
      * @param title Title of the modal
      * @param content A string of text to display in the modal
      */
-    alert(title: string, content: string | ReactElement | Array<string | ReactElement>) {
+    alert(title: string, content: string | ReactElement | ReadonlyArray<string | ReactElement>) {
         Modals.alert(title, content);
     },
 
@@ -82,7 +82,7 @@ const UI = {
      * @param children Single or mixed array of React elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
      * @param [options] Options to modify the modal
      */
-    showConfirmationModal(title: string, content: string | ReactElement | Array<string | ReactElement>, options: ConfirmationModalOptions = {}) {
+    showConfirmationModal(title: string, content: string | ReactElement | ReadonlyArray<string | ReactElement>, options: ConfirmationModalOptions = {}) {
         return Modals.showConfirmationModal(title, content, options);
     },
 

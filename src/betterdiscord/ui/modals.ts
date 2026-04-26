@@ -53,7 +53,7 @@ export default class Modals {
         }) as ModalActions;
     }
 
-    static default(title: string, content: string | ReactElement | ReactElement[] | HTMLElement | Array<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
+    static default(title: string, content: string | ReactElement | ReadonlyArray<ReactElement> | HTMLElement | ReadonlyArray<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
@@ -146,7 +146,7 @@ export default class Modals {
         }
     }
 
-    static alert(title: string, content: (string | ReactElement | Array<string | ReactElement>)) {
+    static alert(title: string, content: (string | ReactElement | ReadonlyArray<string | ReactElement>)) {
         this.showConfirmationModal(title, content, {cancelText: null});
     }
 
@@ -156,7 +156,7 @@ export default class Modals {
      * @param children A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
      * @returns The key used for this modal
      */
-    static showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options: ConfirmationModalOptions = {}) {
+    static showConfirmationModal(title: string, content: (string | ReactElement | ReadonlyArray<string | ReactElement>), options: ConfirmationModalOptions = {}) {
         const emptyFunction = () => {};
         const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = t("Modals.okay"), cancelText = t("Modals.cancel"), danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
@@ -167,15 +167,15 @@ export default class Modals {
             ].filter(Boolean) as any);
         }
 
-        if (!Array.isArray(content)) content = [content];
-        content = content.map(c => typeof (c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
+        let contentArray = Array.isArray(content) ? content : [content];
+        contentArray = contentArray.map(c => typeof (c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
         const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
                         this.ModalActions.closeModal(modalKey);
-                        this.default(title, content, [
+                        this.default(title, contentArray, [
                             confirmText && {label: confirmText, action: onConfirm},
                             cancelText && {label: cancelText, action: onCancel, danger}
                         ].filter(Boolean) as any);
@@ -192,7 +192,7 @@ export default class Modals {
                 onCloseCallback: () => {
                     if (props?.transitionState === 2) onClose?.();
                 }
-            }, props), React.createElement(ErrorBoundary, {id: "showConfirmationModal", name: "Modals"}, content)));
+            }, props), React.createElement(ErrorBoundary, {id: "showConfirmationModal", name: "Modals"}, contentArray)));
         }, {modalKey: key});
         return modalKey;
     }
