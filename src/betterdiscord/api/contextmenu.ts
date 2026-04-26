@@ -4,24 +4,10 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
 import DOMManager from "@modules/dommanager";
+import type {DiscordIconProps} from "@utils/icon";
 
 
 let startupComplete = false;
-
-// https://github.com/doggybootsy/vx/blob/main/packages/mod/src/components/icons.tsx
-export interface IconFullProps {
-    width?: React.CSSProperties["width"],
-    height?: React.CSSProperties["height"],
-    color?: React.CSSProperties["color"],
-    className?: string;
-};
-export interface IconSizeProps {
-    size?: React.CSSProperties["width"] | React.CSSProperties["height"],
-    color?: React.CSSProperties["color"],
-    className?: string;
-};
-
-export type IconProps = IconFullProps | IconSizeProps;
 
 // https://github.com/doggybootsy/vx/blob/main/packages/mod/src/api/menu/components.ts
 type MenuItemColor = "default" | "danger" | "premium-gradient";
@@ -31,7 +17,7 @@ export interface BaseMenuItemProps extends Record<string, any> {
     disabled?: boolean,
     action?(event: React.MouseEvent): void,
     children?: React.ReactNode,
-    icon?: React.FunctionComponent<IconProps>,
+    icon?: React.FunctionComponent<DiscordIconProps>,
     color?: MenuItemColor,
     subtext?: string,
     focusedClassName?: string,

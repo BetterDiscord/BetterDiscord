@@ -1,31 +1,30 @@
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
-import React from "@modules/react";
-import type * as ReactType from "react";
+import React from "react";
 import type {RefObject} from "react";
 import type {Fiber} from "react-reconciler";
 
 interface PatchedReactHooks {
-    use<T>(usable: PromiseLike<T> | ReactType.Context<T>): T;
+    use<T>(usable: PromiseLike<T> | React.Context<T>): T;
     useMemo<T>(factory: () => T): T;
     useState<T>(initial: T | (() => T)): [T, () => void];
     useReducer<T>(reducer: (state: T, action: any) => T, initial: T): [T, () => void];
     useRef<T>(value?: T): {current: T | null;};
     useCallback<T extends (...args: any[]) => any>(callback: T): T;
-    useContext<T>(context: ReactType.Context<T>): T;
-    readContext<T>(context: ReactType.Context<T>): T;
+    useContext<T>(context: React.Context<T>): T;
+    readContext<T>(context: React.Context<T>): T;
     useEffect(): void;
     useLayoutEffect(): void;
     useImperativeHandle(): void;
     useTransition(): [boolean, (callback: () => void) => void];
-    useActionState: typeof ReactType["useActionState"];
-    useFormState: typeof ReactType["useActionState"];
+    useActionState: typeof React["useActionState"];
+    useFormState: typeof React["useActionState"];
     useInsertionEffect(): void;
     useDebugValue(): void;
     useDeferredValue<T>(value: T): T;
     useSyncExternalStore<T>(subscribe: () => void, getSnapshot: () => T): T;
     useId(): string;
-    useOptimistic: typeof ReactType["useOptimistic"];
+    useOptimistic: typeof React["useOptimistic"];
 }
 
 const USE_ERR_MSG = "Minified React error #460; visit https://react.dev/errors/460 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
@@ -33,7 +32,7 @@ const USE_ERR_MSG = "Minified React error #460; visit https://react.dev/errors/4
 const NO_RESOLVE = Symbol("no-resolve");
 
 const patchedReactHooks: PatchedReactHooks = {
-    use<T>(usable: PromiseLike<T> | ReactType.Context<T>) {
+    use<T>(usable: PromiseLike<T> | React.Context<T>) {
         if (typeof (usable as PromiseLike<T>).then === "function") {
             let value: any = NO_RESOLVE;
 
@@ -49,7 +48,7 @@ const patchedReactHooks: PatchedReactHooks = {
     useFormState<T>(_action: (...args: unknown[]) => void, initialState: Awaited<T>, _permalink?: string): [state: Awaited<T>, dispatch: () => void, isPending: boolean] {
         return [initialState, () => {}, false];
     },
-    readContext<T>(context: ReactType.Context<T>) {
+    readContext<T>(context: React.Context<T>) {
         return (context as any)._currentValue as T;
     },
     useOptimistic<T>(passthrough: T): [T, (action: T | ((pendingState: T) => T)) => void] {
@@ -74,7 +73,7 @@ const patchedReactHooks: PatchedReactHooks = {
     useCallback<T extends (...args: any[]) => any>(callback: T) {
         return callback;
     },
-    useContext<T>(context: ReactType.Context<T>) {
+    useContext<T>(context: React.Context<T>) {
         return (context as any)._currentValue as T;
     },
     useEffect() {},
@@ -111,19 +110,19 @@ const exoticComponents = {
     lazy: Symbol.for("react.lazy")
 };
 
-type ElementType<T extends ReactType.FC<P>, P> = T | ReactType.MemoExoticComponent<T | ReactType.ForwardRefExoticComponent<T>> | ReactType.ForwardRefExoticComponent<T> | ReactType.LazyExoticComponent<T | ReactType.MemoExoticComponent<T | ReactType.ForwardRefExoticComponent<T>> | ReactType.ForwardRefExoticComponent<T>>;
+type ElementType<T extends React.FC<P>, P> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
 
 interface ReactUtils {
     rootInstance: any;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
-    wrapElement(element: Element | Element[]): ReactType.ComponentType;
-    wrapInHooks<T extends ReactType.FC<any>>(
-        functionComponent: ElementType<T, ReactType.ComponentProps<T>>,
+    wrapElement(element: Element | Element[]): React.ComponentType;
+    wrapInHooks<T extends React.FC<any>>(
+        functionComponent: ElementType<T, React.ComponentProps<T>>,
         customPatches?: Partial<PatchedReactHooks>
-    ): ReactType.FunctionComponent<ReactType.ComponentProps<T>>;
+    ): React.FunctionComponent<React.ComponentProps<T>>;
     // forceUpdateFiber(fiber: Fiber): boolean;
-    getType<T extends ReactType.FC<P>, P>(elementType: ElementType<T, P>): T;
+    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T;
     createNodePatcher(): NodePatcher;
 }
 
@@ -246,13 +245,13 @@ const ReactUtils: ReactUtils = {
      * @param customPatches Custom react hooks to use
      * @returns The wrapped component
      */
-    wrapInHooks<T extends ReactType.FC<P>, P>(
-        functionComponent: T | ReactType.MemoExoticComponent<T | ReactType.ForwardRefExoticComponent<T>> | ReactType.ForwardRefExoticComponent<T>,
+    wrapInHooks<T extends React.FC<P>, P>(
+        functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
         const FC = ReactUtils.getType<T, P>(functionComponent);
 
-        return function wrappedComponent(props: ReactType.ComponentProps<T>) {
+        return function wrappedComponent(props: React.ComponentProps<T>) {
             const reactDispatcher = (React as any).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE.H;
             const originalDispatcher = {...reactDispatcher};
 
@@ -301,14 +300,14 @@ const ReactUtils: ReactUtils = {
     /**
      * Gets the type of a React component, going through things such as forwardRef and memo
      */
-    getType<T extends ReactType.FC<P>, P>(elementType: ElementType<T, P>): T {
+    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T {
         while (true) {
-            switch ((elementType as ReactType.MemoExoticComponent<T> | ReactType.ForwardRefExoticComponent<T>).$$typeof) {
+            switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:
-                    elementType = (elementType as ReactType.MemoExoticComponent<T>).type;
+                    elementType = (elementType as React.MemoExoticComponent<T>).type;
                     break;
                 case exoticComponents.forwardRef:
-                    elementType = (elementType as ReactType.ForwardRefExoticComponent<T> & {render: T;}).render;
+                    elementType = (elementType as React.ForwardRefExoticComponent<T> & {render: T;}).render;
                     break;
                 case exoticComponents.lazy: {
                     const _payload = (elementType as any)._payload;
