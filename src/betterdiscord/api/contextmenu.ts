@@ -220,9 +220,13 @@ interface MenuRenderProps {
     target: Element,
     theme: string;
 }
+
 interface MenuConfig {
+    /** Default position for the menu */
     position?: "right" | "left",
+    /** Default alignment for the menu */
     align?: "top" | "bottom",
+    /** Function to run when the menu is closed */
     onClose?(): void;
 }
 
@@ -468,7 +472,6 @@ class ContextMenu {
      * for each, they often have less in common than you might think.
      *
      * @param props Props used to build the item
-     * @param [props.type="text"] Type of the item, options: text, submenu, toggle, radio, custom, separator
      * @returns The created component
      *
      * @example
@@ -603,9 +606,6 @@ class ContextMenu {
      * @param event The context menu event. This can be emulated, requires target, and all X, Y locations.
      * @param menuComponent Component to render. This can be any React component or output of {@link ContextMenu.buildMenu}.
      * @param config Configuration/props for the context menu
-     * @param [config.position="right"] Default position for the menu, options: "left", "right"
-     * @param [config.align="top"] Default alignment for the menu, options: "bottom", "top"
-     * @param [config.onClose] Function to run when the menu is closed
      */
     open(event: MouseEvent, menuComponent: React.ComponentType<MenuRenderProps>, config?: MenuConfig) {
         return ContextMenuActions.openContextMenu(event, function (props: MenuRenderProps) {

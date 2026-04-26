@@ -164,19 +164,30 @@ export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch"
 
 export interface SettingItem {
     type: SettingType;
+    /** An identifier used for callbacks */
     id: string;
+    /** The visual name to display */
     name?: string;
+    /** The visual description to display */
     note?: string;
+    /** Whether this setting is disabled */
     disabled?: boolean;
+    /** The id of another setting that is required to use this one */
     enableWith?: string;
+    /** The id of another setting that disables this setting */
     disableWith?: string;
+    /** A value to use if no value is provided */
     defaultValue?: unknown;
+    /** Whether the input should render inline with the name (this is false by default for radio type) */
     inline?: boolean;
+    /** Whether the setting should be hidden */
     hidden?: boolean;
 }
 
 export interface ValueSettingItem<T> extends SettingItem {
+    /** The current value of the setting */
     value: T;
+    /** A callback run when the setting changes */
     onChange?(value: T): void;
 }
 

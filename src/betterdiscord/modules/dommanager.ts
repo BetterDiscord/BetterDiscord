@@ -9,6 +9,11 @@ interface AnimationOptions {
     duration: number;
 }
 
+type CreateElementOptions = Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]> & {
+    /** @deprecated */
+    target?: string | Element;
+};
+
 // TODO: revamp the "manager" part
 export default class DOMManager {
 
@@ -53,7 +58,7 @@ export default class DOMManager {
      * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
      */
-    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<DeepArray<Node | string>>) {
+    static createElement(type: string, options: CreateElementOptions = {}, ...children: Array<DeepArray<Node | string>>) {
         const element = document.createElement(type);
 
         Object.assign(element, options);

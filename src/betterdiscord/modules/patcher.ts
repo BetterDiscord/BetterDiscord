@@ -44,14 +44,14 @@ export type AfterCallback<F extends (...a: any[]) => any = (...a: any[]) => any>
 export type PatchCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = BeforeCallback<F> | InsteadCallback<F> | AfterCallback<F>;
 
 export interface PatchOptions {
+    /**
+     * A meaningful name for the class/object provided in the `what` param for logging purposes.
+     * By default, this function will be determined automatically.
+     */
     displayName?: string;
+    /** Set to `true` to patch even if the function doesnt exist. (Adds noop function in place). */
     forcePatch?: boolean;
-    type?: "before" | "instead" | "after";
-}
-
-export interface PatchOptions {
-    displayName?: string;
-    forcePatch?: boolean;
+    /** The type of patch */
     type?: "before" | "instead" | "after";
 }
 
@@ -173,8 +173,6 @@ export default class Patcher {
      * @param functionName Name of the method to be patched
      * @param callback Function to run before the original method
      * @param options Object used to pass additional options.
-     * @param [options.displayName] You can provide meaningful name for class/object provided in `what` param for logging purposes. By default, this function will try to determine name automatically.
-     * @param [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
     static before<M extends object, K extends Extract<keyof M, string>>(
@@ -196,8 +194,6 @@ export default class Patcher {
      * @param functionName Name of the method to be patched
      * @param callback Function to run instead of the original method
      * @param options Object used to pass additional options.
-     * @param [options.displayName] You can provide meaningful name for class/object provided in `what` param for logging purposes. By default, this function will try to determine name automatically.
-     * @param [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
     static after<M extends object, K extends Extract<keyof M, string>>(caller: string,
@@ -218,8 +214,6 @@ export default class Patcher {
      * @param functionName Name of the method to be patched
      * @param callback Function to run after the original method
      * @param options Object used to pass additional options.
-     * @param [options.displayName] You can provide meaningful name for class/object provided in `what` param for logging purposes. By default, this function will try to determine name automatically.
-     * @param [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
     static instead<M extends object, K extends Extract<keyof M, string>>(
@@ -242,9 +236,6 @@ export default class Patcher {
      * @param functionName Name of the method to be patched
      * @param callback Function to run after the original method
      * @param options Object used to pass additional options.
-     * @param [options.type=after] Determines whether to run the function `before`, `instead`, or `after` the original.
-     * @param [options.displayName] You can provide meaningful name for class/object provided in `what` param for logging purposes. By default, this function will try to determine name automatically.
-     * @param [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
     static pushChildPatch<M extends object, K extends Extract<keyof M, string>>(

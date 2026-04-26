@@ -13,9 +13,13 @@ export type TooltipStyle = typeof styles[number];
 export type TooltipSide = typeof sides[number];
 
 export interface TooltipOptions {
+    /** Correlates to the Discord styling/colors */
     style?: TooltipStyle;
+    /** Can be any of top, right, bottom, left */
     side?: TooltipSide;
+    /** Prevents moving the tooltip to the opposite side if it is too big or goes offscreen */
     preventFlip?: boolean;
+    /** Whether the tooltip should be disabled from showing on hover */
     disabled?: boolean;
 }
 
@@ -35,10 +39,6 @@ export default class Tooltip {
      * @param node DOM node to monitor and show the tooltip on
      * @param tip A string to show in the tooltip
      * @param options Additional options for the tooltip
-     * @param [options.style="primary"] Correlates to the discord styling/colors
-     * @param [options.side="top"] Can be any of top, right, bottom, left
-     * @param [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
-     * @param [options.disabled=false] Whether the tooltip should be disabled from showing on hover
      */
     constructor(node: HTMLElement, text: string | HTMLElement, options: TooltipOptions = {}) {
         const {style = "primary", side = "top", preventFlip = false, disabled = false} = options;

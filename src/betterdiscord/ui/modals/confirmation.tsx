@@ -14,16 +14,26 @@ const {useRef, useEffect, useLayoutEffect} = React;
 
 
 export type ConfirmationModalOptions = PropsWithChildren<{
-    onClose?(): void;
-    onConfirm?(): void;
-    onCancel?(): void;
-    onCloseCallback?(): void;
     transitionState?: number;
+    /** A callback to run when exiting the modal */
+    onClose?(): void;
+    /** A callback to run when clicking the submit button */
+    onConfirm?(): void;
+    /** A callback to run when clicking the cancel button */
+    onCancel?(): void;
+    /** Called immediately on render */
+    onCloseCallback?(): void;
+    /** The size of the modal */
     size?: typeof Root.Sizes[keyof typeof Root.Sizes];
+    /** Classes to apply to the modal */
     className?: string;
+    /** Text to show at the top of the modal */
     header?: string;
+    /** Text for the confirmation/submit button */
     confirmText?: string;
+    /** Text for the cancel button */
     cancelText?: string | null;
+    /** Whether the main button should be red or not */
     danger?: boolean;
     key?: string | number;
 }>;

@@ -16,8 +16,6 @@ const Utils = {
      * @param tree Tree that should be walked
      * @param searchFilter Filter to check against each object and subobject
      * @param options Additional options to customize the search
-     * @param [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
-     * @param [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
      */
     findInTree: findInTree,
 

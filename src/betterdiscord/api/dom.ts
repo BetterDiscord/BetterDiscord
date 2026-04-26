@@ -3,6 +3,11 @@ import DOMManager from "@modules/dommanager";
 type AddStyleArgs<Bound extends boolean> = Bound extends true ? [css: string] | [id: string, css: string] : [id: string, css: string];
 type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: string] : [id: string];
 
+interface AnimateOptions {
+    /** Optional function that calculating progress based on current time fraction. Linear by default. */
+    timing?: (timeFraction: number) => number;
+}
+
 /**
  * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
  * @summary {@link DOM} is a simple utility class for dom manipulation.
@@ -87,9 +92,8 @@ class DOM<Bound extends boolean> {
      * @param update Render function indicating the style should be updated
      * @param duration Duration in ms to animate for
      * @param [options] Options to customize the animation
-     * @param [options.timing] Optional function calculating progress based on current time fraction. Linear by default.
      */
-    animate(update: (p: number) => void, duration: number, options: {timing?: (_: number) => number;} = {}) {
+    animate(update: (p: number) => void, duration: number, options: AnimateOptions = {}) {
         return DOMManager.animate({update, duration, timing: options.timing});
     }
 
@@ -98,13 +102,10 @@ class DOM<Bound extends boolean> {
      * to `React.createElement`
      * @param tag HTML tag name to create
      * @param [options] Options object to customize the element
-     * @param [options.className] Class name to add to the element
-     * @param [options.id] ID to set for the element
-     * @param [options.target] Target element to automatically append to
      * @param [children] Child nodes to add
      * @returns The created HTML element
      */
-    createElement(tag: keyof HTMLElementTagNameMap, options = {}, ...children: Array<Node | string>) {
+    createElement<T extends keyof HTMLElementTagNameMap>(tag: T, options: Partial<HTMLElementTagNameMap[T]> = {}, ...children: Array<Node | string>) {
         return DOMManager.createElement(tag, options, ...children);
     }
 

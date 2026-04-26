@@ -154,14 +154,6 @@ export default class Modals {
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
      * @param title The title of the modal
      * @param children A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
-     * @param [options] Options to modify the modal
-     * @param [options.danger=false] Whether the main button should be red or not
-     * @param [options.confirmText=Okay] Text for the confirmation/submit button
-     * @param [options.cancelText=Cancel] Text for the cancel button
-     * @param [options.onConfirm=NOOP] Callback to occur when clicking the submit button
-     * @param [options.onCancel=NOOP] Callback to occur when clicking the cancel button
-     * @param [options.onClose=NOOP] Callback to occur when exiting the modal
-     * @param [options.key] Key used to identify the modal. If not provided, one is generated and returned
      * @returns The key used for this modal
      */
     static showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options: ConfirmationModalOptions = {}) {

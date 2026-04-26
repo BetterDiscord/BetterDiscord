@@ -22,14 +22,22 @@ interface ButtonActions extends ButtonProps {
 }
 
 export interface Notification {
+    /** A unique id for the notification, will not be shown if another notification with the same id is already being shown */
     id: string;
+    /** The title of the notification */
     title?: string;
+    /** The content of the notification */
     content?: string | ReactNode;
+    /** The type of the notification which changes the color and icon */
     type?: NotificationType;
+    /** How long the notification should be shown in milliseconds */
     duration?: number;
+    /** An array of button actions to add to the notification */
     actions?: ButtonActions[];
+    /** A React component to use as a custom icon for the notification */
     icon?: React.ComponentType<any>;
 
+    /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
 
     [key: symbol]: boolean;

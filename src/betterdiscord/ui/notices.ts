@@ -10,9 +10,13 @@ export interface NoticeButton {
 }
 
 export interface NoticeOptions {
+    /** The type of the notice. Will affect the color. */
     type?: NoticeType;
+    /** Buttons that should be added next to the notice text */
     buttons?: NoticeButton[];
+    /** How long, in milliseconds, the notice will stay open. Will not automatically close when set to `0`. */
     timeout?: number;
+    /** A callback to fire when the notice is closed */
     onClose?(): void;
 }
 
@@ -45,9 +49,6 @@ export default class Notices {
      * Show a notice above discord's chat layer.
      * @param content Content of the notice
      * @param options Options for the notice.
-     * @param [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
-     * @param [options.buttons] Buttons that should be added next to the notice text
-     * @param [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0.
      */
     static show(content: string, options: NoticeOptions = {}) {
         const {type, buttons = [], timeout = 0, onClose = () => {}} = options;

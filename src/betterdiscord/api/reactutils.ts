@@ -98,8 +98,11 @@ const patchedReactHooks: PatchedReactHooks = {
 };
 
 interface GetOwnerInstanceOptions {
+    /** A list of items to include in the search */
     include?: string[];
+    /** A list of items to exclude from the search */
     exclude?: string[];
+    /** A filter to check the current instance with (should return a boolean) */
     filter?: (owner: any) => boolean;
 }
 
@@ -157,9 +160,6 @@ const ReactUtils: ReactUtils = {
      *
      * @param node Node to obtain React instance of
      * @param options Options for the search
-     * @param [options.include] List of items to include in the search
-     * @param [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
-     * @param [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
      * @returns The owner instance or `undefined` if not found
      */
     getOwnerInstance(node: HTMLElement | undefined, {

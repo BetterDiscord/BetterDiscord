@@ -4,9 +4,13 @@ import Logger from "@common/logger";
 import type {ToastProps, ToastType} from "@ui/toasts";
 
 export interface ToastOptions {
+    /** Changes the type of the toast stylistically and semantically */
     type?: ToastType;
+    /** Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. */
     icon?: boolean;
+    /** Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Defaults to 3000. */
     timeout?: number;
+    /** Whether to force showing the toast and ignore the BD setting */
     forceShow?: boolean;
 }
 
@@ -41,10 +45,6 @@ class Toasts extends Store {
      *
      * @param content The string to show in the toast.
      * @param options Options object. Optional parameter.
-     * @param [options.type="default"] Changes the type of the toast stylistically and semantically. Choices: "default", "info", "success", "error", "warning". Default: "default"
-     * @param [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
-     * @param [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
-     * @param [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
      */
     show(content: string, options: ToastOptions = {}) {
         try {
