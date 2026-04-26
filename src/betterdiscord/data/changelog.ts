@@ -8,29 +8,14 @@ export default {
     // https://youtu.be/BZq1eb9d0HI?si=67V2eArlF4atnGnz
     // video: "https://www.youtube.com/embed/BZq1eb9d0HI?si=67V2eArlF4atnGnz&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
-    blurb: "All around improvements.",
+    blurb: "Bug fixes",
     changes: [
         {
-            title: "Dropdown Improvements",
-            type: "improved",
-            items: [
-                "Dropdowns now close after selecting an option",
-                "Hides the scrollbar when its not needed"
-            ]
-        },
-        {
-            title: "Fix for Developers",
+            title: "BetterDiscord works!",
             type: "fixed",
             items: [
-                "Fix for lazy listeners firing before class modules get interpolated"
+                "Fixed for latest Discord changes"
             ]
-        },
-        {
-            title: "Misc. Improvements",
-            type: "improved",
-            items: [
-                "Improved the way other client mods are handled to prevent conflicts",
-            ]
-        },
+        }
     ]
 } as ChangelogProps;

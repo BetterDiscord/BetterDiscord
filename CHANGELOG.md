@@ -2,6 +2,10 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.12
+### Fixed
+- BetterDiscord now loads
+
 1.13.11
 ### Improvements
 - Dropdowns now close after selecting an option

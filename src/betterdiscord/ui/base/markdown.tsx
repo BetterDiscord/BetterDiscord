@@ -12,7 +12,7 @@ function setupMarkdown() {
     if (DiscordMarkdown) {
         rules = {
             ...DiscordMarkdown.rules,
-            link: DiscordModules.SimpleMarkdown!.defaultRules.link
+            link: DiscordModules.SimpleMarkdownWrapper!.defaultRules.link
         };
 
         const originalLink = rules.link?.react;
@@ -33,8 +33,8 @@ export default function Markdown({className, children}: PropsWithChildren<{class
 
     return <DiscordMarkdown
         className={className ?? ""}
-        parser={DiscordModules.SimpleMarkdown!.parserFor(rules)}
-        output={DiscordModules.SimpleMarkdown!.reactFor(DiscordModules.SimpleMarkdown!.ruleOutput(rules, "react"))}
+        parser={DiscordModules.SimpleMarkdownWrapper!.parserFor(rules)}
+        output={DiscordModules.SimpleMarkdownWrapper!.reactFor(DiscordModules.SimpleMarkdownWrapper!.ruleOutput(rules, "react"))}
     >
         {children}
     </DiscordMarkdown>;

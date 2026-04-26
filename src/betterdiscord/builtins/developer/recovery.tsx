@@ -224,7 +224,7 @@ export default new class Recovery extends Builtin {
             if (!buttons) return;
 
             const errorStack = (instance as ErrorBoundary).state;
-            const parsedError = errorStack ? DiscordModules.SimpleMarkdownWrapper.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
+            const parsedError = errorStack ? DiscordModules.SimpleMarkdown?.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
             const foundIssue = errorStack.error?.stack && TEST_PLUGIN_REGEX.exec(errorStack.error?.stack);
             let pluginInfo = null;

@@ -1,4 +1,5 @@
 import {webFrame} from "electron";
+import type {RawModule} from "../../betterdiscord/types/discord/webpack";
 
 
 // TODO: could use better typing when this is rewritten
@@ -60,9 +61,12 @@ export default function () {
                     const IS_CLASSNAME_MODULE = /^\d+(?:e\d+)?\((.{1,3}),.{1,3},.{1,3}\){("use strict";)?\1.exports={.+}}$/;
                     const EXTRACT_CLASS = /^(.+?)_/;
 
-                    function setter(newValue: any) {
-                        if (IS_CLASSNAME_MODULE.test(String(newValue))) {
+                    const USES_STEMMER = /\((\d+)\)\.newStemmer\("english"\);/;
 
+                    function setter(newValue: any) {
+                        const str = String(newValue);
+
+                        if (IS_CLASSNAME_MODULE.test(str)) {
                             function className(this: any, module: any, exports: any, _require: any) {
                                 if (newValue.__BD__) {
                                     newValue.__BD__.originalModule.call(this, module, exports, _require);
@@ -112,6 +116,49 @@ export default function () {
                             className.toString = () => newValue.toString();
 
                             return className;
+                        }
+
+                        const usesStemmerMatch = str.match(USES_STEMMER);
+
+                        if (usesStemmerMatch) {
+                            function polyfill(this: any, module: any, exports: any, _require: any) {
+                                if (require) {
+                                    if (!require.m[usesStemmerMatch![1]]) {
+                                        require.m[usesStemmerMatch![1]] = (function (fakeModule) {
+                                            fakeModule.exports.newStemmer = () => {
+                                                return {
+                                                    stem(word: string) {
+                                                        if (typeof word !== "string") return word;
+
+                                                        // extremely basic "stemming"
+                                                        const w = word.toLowerCase();
+
+                                                        // common suffix stripping
+                                                        if (w.length > 4 && w.endsWith("ing")) return w.slice(0, -3);
+                                                        if (w.length > 3 && w.endsWith("ed")) return w.slice(0, -2);
+                                                        if (w.length > 3 && w.endsWith("ly")) return w.slice(0, -2);
+                                                        if (w.length > 2 && w.endsWith("s")) return w.slice(0, -1);
+
+                                                        return w;
+                                                    }
+                                                };
+                                            };
+                                        }) as RawModule;
+                                    }
+                                }
+
+                                if (newValue.__BD__) {
+                                    newValue.__BD__.originalModule.call(this, module, exports, _require);
+                                    newValue.__BD__.runListeners.call(this, module, exports, _require);
+                                }
+                                else {
+                                    newValue.call(this, module, exports, _require);
+                                }
+                            }
+
+                            polyfill.toString = () => newValue.toString();
+
+                            return polyfill;
                         }
 
                         return newValue;
