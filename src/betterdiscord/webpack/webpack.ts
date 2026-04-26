@@ -3,33 +3,33 @@ import * as Filters from "./filter";
 import {getAllModules, getModule} from "./searching";
 import {getLazy} from "./lazy";
 
-export function getByKeys<T>(keys: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getByKeys<T>(keys: readonly string[], options: Webpack.Options = {}) {
     return getModule<T>(Filters.byKeys(keys), options);
 }
-export function getAllByKeys<T extends unknown[]>(keys: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getAllByKeys<T extends unknown[]>(keys: readonly string[], options: Webpack.Options = {}) {
     return getAllModules<T>(Filters.byKeys(keys), options);
 }
-export function getLazyByKeys<T>(keys: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getLazyByKeys<T>(keys: readonly string[], options: Webpack.Options = {}) {
     return getLazy<T>(Filters.byKeys(keys), options);
 }
 
-export function getByPrototypes<T>(prototypes: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getByPrototypes<T>(prototypes: readonly string[], options: Webpack.Options = {}) {
     return getModule<T>(Filters.byPrototypeKeys(prototypes), options);
 }
-export function getAllByPrototypes<T extends unknown[]>(prototypes: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getAllByPrototypes<T extends unknown[]>(prototypes: readonly string[], options: Webpack.Options = {}) {
     return getAllModules<T>(Filters.byPrototypeKeys(prototypes), options);
 }
-export function getLazyByPrototypes<T>(prototypes: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getLazyByPrototypes<T>(prototypes: readonly string[], options: Webpack.Options = {}) {
     return getLazy<T>(Filters.byPrototypeKeys(prototypes), options);
 }
 
-export function getByStrings<T>(strings: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getByStrings<T>(strings: readonly string[], options: Webpack.Options = {}) {
     return getModule<T>(Filters.byStrings(...strings), options);
 }
-export function getAllByStrings<T extends unknown[]>(strings: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getAllByStrings<T extends unknown[]>(strings: readonly string[], options: Webpack.Options = {}) {
     return getAllModules<T>(Filters.byStrings(...strings), options);
 }
-export function getLazyByStrings<T>(strings: ReadonlyArray<string>, options: Webpack.Options = {}) {
+export function getLazyByStrings<T>(strings: readonly string[], options: Webpack.Options = {}) {
     return getLazy<T>(Filters.byStrings(...strings), options);
 }
 

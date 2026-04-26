@@ -53,7 +53,7 @@ export default class Modals {
         }) as ModalActions;
     }
 
-    static default(title: string, content: string | ReactElement | ReadonlyArray<ReactElement> | HTMLElement | ReadonlyArray<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
+    static default(title: string, content: string | ReactElement | readonly ReactElement[] | HTMLElement | ReadonlyArray<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">

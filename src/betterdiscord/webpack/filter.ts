@@ -7,7 +7,7 @@ function assign<T extends Webpack.Filter | Webpack.ExportedOnlyFilter>(filter: T
     });
 }
 
-export function byKeys(props: ReadonlyArray<string>, filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
+export function byKeys(props: readonly string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;
@@ -23,7 +23,7 @@ export function byKeys(props: ReadonlyArray<string>, filter: Webpack.ExportedOnl
     });
 }
 
-export function byPrototypeKeys(fields: ReadonlyArray<string>, filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
+export function byPrototypeKeys(fields: readonly string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;

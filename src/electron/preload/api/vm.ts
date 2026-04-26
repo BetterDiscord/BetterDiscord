@@ -1,6 +1,6 @@
 import vm from "vm";
 
-export function compileFunction(code: string, params: ReadonlyArray<string> = [], options = {}) {
+export function compileFunction(code: string, params: readonly string[] = [], options = {}) {
     try {
         return vm.compileFunction(code, params, options);
     }
