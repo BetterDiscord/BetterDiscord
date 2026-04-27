@@ -1,8 +1,6 @@
 import React from "react";
 import ReactUtils from "@api/reactutils";
 
-// type FunctionPatch<P> = (props: P, res: React.ReactNode) => React.ReactNode;
-// type ClassPatch<P> = (props: P, res: React.ReactNode, instance: React.Component<P>) => React.ReactNode;
 type UnknownPatch<P> = (props: P, res: React.ReactNode, instance?: React.Component<P>) => React.ReactNode;
 
 // This does not allow 2 different things to patch 1 thing!

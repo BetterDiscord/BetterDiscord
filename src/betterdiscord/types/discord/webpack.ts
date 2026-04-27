@@ -1,4 +1,3 @@
-// export namespace Webpack {
 export interface Require {
     <T = any>(id: PropertyKey): T;
     d(target: object, exports: Record<string, () => any>): void;
@@ -50,4 +49,3 @@ export type ModuleWithoutEffect = [
 ];
 
 export type DefaultKey = "default" | "A" | "Ay";
-// }

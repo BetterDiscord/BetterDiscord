@@ -93,24 +93,6 @@ class BrowserWindow extends electron.BrowserWindow {
                 const handler = argArray[0];
 
                 argArray[0] = function (details: HandlerDetails) {
-                    // const match = details.url.match(EDITOR_URL_REGEX);
-                    // if (match) {
-                    //     const isCustomCSS = match[1] === undefined;
-
-                    //     return {
-                    //         action: "allow",
-                    //         createWindow(opts) {
-                    //             Editor._options = opts;
-
-                    //             const webContents = isCustomCSS ? Editor.open("custom-css") : Editor.open(match[1], match[2]);
-
-                    //             webContents.toggleDevTools();
-
-                    //             return webContents;
-                    //         }
-                    //     };
-                    // }
-
                     // Just like chat make it only be on this client
                     if (details.url.startsWith("betterdiscord://")) {
                         self.webContents.send(IPCEvents.HANDLE_PROTOCOL, details.url);

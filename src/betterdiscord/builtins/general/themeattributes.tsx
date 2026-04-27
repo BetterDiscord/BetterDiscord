@@ -38,7 +38,6 @@ export default new class ThemeAttributes extends Builtin {
 
             li["data-author-is-deleted"] = author.id === "456226577798135808";
             li["data-author-is-bot"] = author.bot && author.discriminator !== "0000";
-            // li["data-author-is-deleted"] = author.discriminator === "0000" && author.username === "Deleted User" && !author.bot;
 
             li["data-message-group-start"] = first;
             li["data-message-group-end"] = last;

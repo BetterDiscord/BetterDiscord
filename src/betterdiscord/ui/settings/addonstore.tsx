@@ -21,7 +21,6 @@ const {useState, useMemo, useCallback} = React;
 
 const buildSortOptions = () => [
     {label: t("Addons.downloads"), value: "downloads"},
-    // {label: t("Addons.popularity"), value: "popularity"},
     {label: t("Addons.name"), value: "name"},
     {label: t("Addons.author"), value: "author"},
     {label: t("Addons.version"), value: "version"},
@@ -226,9 +225,6 @@ export default function AddonStorePage({type, refToScroller}: AddonStorePageProp
                     break;
                 case "name":
                     break;
-                // case "popularity":
-                //     comparison = (b.downloads * 0.7 + b.likes * 0.3) - (a.downloads * 0.7 + a.likes * 0.3);
-                //     break;
                 default:
                     Logger.warn("AddonStore", `Sorting method '${sort}' is unknown`);
                     break;

@@ -59,9 +59,3 @@ export default function Text({tag: Tag = "div", className = "", children = null,
 
 Text.Colors = Colors;
 Text.Sizes = Sizes;
-
-// te = WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors)
-// foo = []
-// for (const color in te.Colors) foo.push(BdApi.React.createElement(te, {color: te.Colors[color]}, color))
-// for (const size in te.Sizes) foo.push(BdApi.React.createElement(te, {size: te.Sizes[size]}, size))
-// BdApi.showConfirmationModal("Text Elements", foo)

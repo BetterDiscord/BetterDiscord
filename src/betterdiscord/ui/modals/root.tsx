@@ -59,50 +59,6 @@ export default function ModalRoot({className, transitionState, children, size = 
         {children}
     </DiscordModules.ReactSpring.animated.div>
     </FocusLock>;
-    // const [visible, setVisible] = React.useState(true);
-
-    // const visible = transitionState < 2;
-    // const springTransition = Spring.useTransition(transitionState, {
-    //     keys: e => e ? "backdrop" : "empty",
-    //     from: {
-    //         opacity: 0,
-    //         transform: "scale(0.7)"
-    //     },
-    //     enter: {
-    //         opacity: 1,
-    //         transform: "scale(1)"
-    //     },
-    //     leave: {
-    //         opacity: 0,
-    //         transform: "scale(0.7)"
-    //     },
-    //     // config: (a, b, c, d) => {
-    //     //     console.log({a, b, c, d});
-    //     //     return {
-    //     //         duration: a ? 300 : 100,
-    //     //         easing: a ? Anims.Easing.inOut(Anims.Easing.back()) : Anims.Easing.quad,
-    //     //         clamp: true
-    //     //     };
-    //     // }
-    //     config: (a, b, c) => {
-    //         console.log({a, b, c});
-    //         return {
-    //             duration: true ? 300 : 100,
-    //             easing: true ? Anims.Easing.inOut(Anims.Easing.back()) : Anims.Easing.quad,
-    //             clamp: true
-    //         };
-    //     }
-    // });
-
-    // return springTransition((styles, isVisible) => {
-    //     if (!isVisible) console.log("not visible");
-    //     return <Spring.animated.div
-    //             className={clsx("bd-modal-root", size, className, style)}
-    //             style={styles}
-    //         >
-    //     {children}
-    // </Spring.animated.div>;
-    // });
 }
 
 ModalRoot.Sizes = Sizes;

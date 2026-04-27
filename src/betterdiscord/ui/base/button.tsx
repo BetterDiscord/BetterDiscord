@@ -3,12 +3,6 @@ import React from "@modules/react";
 import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChildren, RefObject} from "react";
 
 
-// S.Looks = y;
-// S.Colors = I;
-// S.BorderColors = O;
-// S.Hovers = T;
-// S.Sizes = v;
-
 const {useCallback} = React;
 
 export const Looks = Object.freeze({
@@ -98,23 +92,3 @@ export default function Button({
 Button.Looks = Looks;
 Button.Colors = Colors;
 Button.Sizes = Sizes;
-// window.BDButton = Button;
-// (() => {
-//     const buttons = [];
-//     for (const look in window.BDButton.Looks) {
-//         if (!window.BDButton.Looks[look] || look === "BLANK") continue;
-//         for (const color in window.BDButton.Colors) {
-//             if (!window.BDButton.Colors[color]) continue;
-//             for (const size in window.BDButton.Sizes) {
-//                 if (!window.BDButton.Sizes[size]) continue;
-//                 buttons.push(window.BdApi.React.createElement(window.BDButton, {
-//                     look: window.BDButton.Looks[look],
-//                     color: window.BDButton.Colors[color],
-//                     size: window.BDButton.Sizes[size]
-//                 }, "Hello World!"));
-//                 buttons.push(window.BdApi.React.createElement("br"));
-//             }
-//         }
-//     }
-//     window.BdApi.showConfirmationModal("Buttons", buttons);
-// })();

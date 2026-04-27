@@ -55,7 +55,6 @@ function setLoaderTheme(theme: string) {
             backgroundAlt = "oklab(0.303553 0.00292034 -0.0103036)";
             color = "oklab(0.894999 0.000801653 -0.00257665)";
             break;
-        // case "dark":
         default:
             background = "oklab(0.323409 0.00288205 -0.0101295)";
             backgroundAlt = "oklab(0.262384 0.00252247 -0.00889932)";

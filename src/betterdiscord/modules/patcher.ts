@@ -34,10 +34,6 @@ export interface GenericChildPatch {
     unpatch: () => void;
 }
 
-// interface ChildPatch<T extends PatchCallback<any> = PatchCallback> extends GenericChildPatch {
-//     callback: T;
-// }
-
 export type BeforeCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>) => void;
 export type InsteadCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, originalFunction: F) => any;
 export type AfterCallback<F extends (...a: any[]) => any = (...a: any[]) => any> = (thisObject: ThisType<F>, args: Parameters<F>, returnValue: ReturnType<F>) => any;

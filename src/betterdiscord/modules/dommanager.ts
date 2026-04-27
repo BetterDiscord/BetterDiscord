@@ -29,18 +29,6 @@ export default class DOMManager {
     static get bdStyles() {return this.getElement("bd-styles")!;}
     static get bdThemes() {return this.getElement("bd-themes")!;}
     static get bdCustomCSS() {return this.getElement("style#customcss")!;}
-    // static get bdTooltips() {return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody);}
-    // static get bdModals() {return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody);}
-    // static get bdToasts() {return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody);}
-
-    static initialize() {
-        // this.createElement("bd-head", {target: document.head});
-        // this.createElement("bd-body", {target: document.body});
-        // this.createElement("bd-scripts", {target: this.bdHead});
-        // this.createElement("bd-styles", {target: this.bdHead});
-        // this.createElement("bd-themes", {target: this.bdHead});
-        // this.createElement("style", {id: "customcss", target: this.bdHead});
-    }
 
     static escapeID(id: string) {
         return CSS.escape(id);

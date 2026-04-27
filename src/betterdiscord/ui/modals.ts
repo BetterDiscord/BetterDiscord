@@ -12,13 +12,9 @@ import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
 import ModalRoot from "./modals/root";
-// import ModalHeader from "./modals/header";
-// import ModalContent from "./modals/content";
-// import ModalFooter from "./modals/footer";
 
 import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
-// import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";

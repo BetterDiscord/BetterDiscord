@@ -22,23 +22,7 @@ type Replacements = {
     context?: string;
 };
 
-// type pString = `${string}_${keyof Plural}`;
-// type RemovePrefix<TPrefix extends string, TString extends string> = TString extends `${TPrefix}${infer T}` ? T : never;
-// type RemovePostfix<TPostfix extends string, TString extends string> = TString extends `${infer T}${TPostfix}` ? T : TString;
-
-// type NestedKeyOf2<ObjectType extends object> =
-//     {[Key in keyof ObjectType & (string | number | pString)]: ObjectType[Key] extends object
-//         ? `${Key}` | `${Key}.${RemovePostfix<`_${keyof Plural}`, NestedKeyOf<ObjectType[Key]>>}`
-//         : `${Key}`
-//     }[keyof ObjectType & (string | number | pString)];
-
-// type Single = typeof Localizations["en-US"];
-
-// export type AltKeys = NestedKeyOf2<typeof Default>;
 export type TranslationKey = NestedKeyOf<typeof Default>;
-
-// function foo(t: AltKeys) {}
-// const test = foo("Panels.plugins");
 
 export type Locale = keyof typeof Localizations;
 
@@ -221,20 +205,3 @@ export const formatters = {
         return `${size.toFixed(1)} ${units[unitIndex]}`;
     }
 };
-
-// i18n.init({translations: Localizations});
-// console.log(`Code Snippet:  t("Addons.results", {count: 0})`);
-// console.log(`Translation:   ${t("Addons.results", {count: 0})}`);
-// console.log("");
-// console.log(`Code Snippet:  t("Addons.results", {count: 1})`);
-// console.log(`Translation:   ${t("Addons.results", {count: 1})}`);
-// console.log("");
-// console.log(`Code Snippet:  t("Addons.results", {count: 2})`);
-// console.log(`Translation:   ${t("Addons.results", {count: 2})}`);
-// i18n.setLocale("hi");
-// console.log("");
-// console.log(`Code Snippet:  t("Panels.plugins", {count: 2})`);
-// console.log(`Translation:   ${t("Panels.plugins", {count: 2})}`);
-// console.log("");
-// console.log(`Code Snippet:  t("Addons.results", {count: 2})`);
-// console.log(`Translation:   ${t("Addons.results", {count: 2})}`);

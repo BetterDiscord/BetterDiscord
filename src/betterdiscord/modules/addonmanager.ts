@@ -118,9 +118,7 @@ export default abstract class AddonManager extends Store {
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
 
         const watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
-            // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
             if (!eventType || !filename) return;
-            // console.log(eventType, filename)
 
             const absolutePath = path.resolve(this.addonFolder, filename);
             if (!filename.endsWith(this.extension)) {
@@ -145,11 +143,9 @@ export default abstract class AddonManager extends Store {
                     Logger.err(this.name, `Could not rename file: ${filename} ${newFilename}`, error);
                 }
             }
-            // console.log("watcher", "before promise");
             await new Promise(r => setTimeout(r, 100));
             try {
                 const stats = fs.statSync(absolutePath);
-                // console.log("watcher", stats);
                 if (!stats.isFile()) return;
                 if (!stats || !stats.mtimeMs) return;
                 if (typeof (stats.mtimeMs) !== "number") return;
@@ -159,9 +155,6 @@ export default abstract class AddonManager extends Store {
                 if (eventType == "change") this.reloadAddon(filename, true);
             }
             catch (err) {
-                // window.watcherError = err;
-                // console.log("watcher", err);
-                // console.dir(err);
                 if ((err as SystemError).code !== "ENOENT" && !(err as SystemError)?.message.startsWith("ENOENT")) return;
                 delete this.timeCache[filename];
                 this.unloadAddon(filename, true);
@@ -241,7 +234,6 @@ export default abstract class AddonManager extends Store {
         if (!addon.author) addon.author = t("Addons.unknownAuthor");
         if (!addon.version) addon.version = "???";
         if (!addon.description) addon.description = t("Addons.noDescription");
-        // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
         addon.id = addon.name || path.basename(filename);
         addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
         addon.filename = path.basename(filename);
@@ -289,7 +281,6 @@ export default abstract class AddonManager extends Store {
 
     unloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true, isReload = false) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        // console.log("watcher", "unloadAddon", idOrFileOrAddon, addon);
         if (!addon) return false;
         if (this.state[addon.id]) {
             if (isReload) this.stopAddon(addon);
@@ -332,12 +323,10 @@ export default abstract class AddonManager extends Store {
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
-        // setTimeout(() => {
 
         const err = this.startAddon(addon);
         this.saveState();
         return err;
-        // }, SWITCH_ANIMATION_TIME);
     }
 
     enableAllAddons() {
@@ -356,11 +345,9 @@ export default abstract class AddonManager extends Store {
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
-        // setTimeout(() => {
         const err = this.stopAddon(addon);
         this.saveState();
         return err;
-        // }, SWITCH_ANIMATION_TIME);
     }
 
     disableAllAddons() {
@@ -432,7 +419,6 @@ export default abstract class AddonManager extends Store {
     deleteAddon(idOrFileOrAddon: string | Addon) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return;
-        // console.log(path.resolve(this.addonFolder, addon.filename), fs.unlinkSync)
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 

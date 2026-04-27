@@ -269,33 +269,6 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    // forceUpdateFiber(fiber: Fiber): boolean {
-    //     fiber.type = ReactUtils.getType(fiber.elementType);
-
-    //     // React Class Components
-    //     if (fiber.stateNode?.isReactComponent) {
-    //         fiber.stateNode.forceUpdate();
-    //         return true;
-    //     }
-
-    //     let memoizedState = fiber.memoizedState;
-
-    //     while (memoizedState) {
-    //         if (memoizedState.queue?.lanes === 0) {
-    //             const lastRenderedState = memoizedState.queue.lastRenderedState;
-
-    //             memoizedState.queue.dispatch((m: any) => !m);
-    //             memoizedState.queue.dispatch(lastRenderedState);
-
-    //             return true;
-    //         }
-
-    //         memoizedState = memoizedState.next;
-    //     }
-
-    //     return false;
-    // },
-
     /**
      * Gets the type of a React component, going through things such as forwardRef and memo
      */

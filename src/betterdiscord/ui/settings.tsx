@@ -242,7 +242,6 @@ const SettingsRenderer = new class SettingsRenderer {
                 };
 
                 for (const collection of Settings.collections) {
-                    // if (collection.disabled) continue;
                     const items = collection.settings.map(m => [m.name, m.settings.map(setting => setting.name)]).flat(2) as string[];
 
                     insert(collection.id, {
@@ -265,8 +264,6 @@ const SettingsRenderer = new class SettingsRenderer {
                 }
 
                 for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
-                    // if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
-                    // if (!panel.className) panel.className = `bd-${panel.id}-tab`;
                     if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager!});
 
                     const icon = panel.icon ? lucideToDiscordIcon(panel.icon) : () => panel.id;
