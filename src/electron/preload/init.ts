@@ -4,7 +4,7 @@ import * as IPCEvents from "@common/constants/ipcevents";
 
 export default function () {
     // Load Discord's original preload
-    const preload = process.env.DISCORD_PRELOAD;
+    const preload = process.env.BD_DISCORD_PRELOAD;
     if (preload) {
 
         // Restore original preload for future windows

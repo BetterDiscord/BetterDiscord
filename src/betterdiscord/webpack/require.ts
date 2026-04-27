@@ -24,12 +24,13 @@ Object.defineProperty(window.webpackChunkdiscord_app, "push", {
 
 function listenToModules(modules: Record<PropertyKey, RawModule>) {
     for (const moduleId in modules) {
+        if (!Reflect.has(modules, moduleId)) continue;
+        if (Reflect.has(webpackRequire.c, moduleId)) continue;
+
         const originalModule = modules[moduleId];
 
-        modules[moduleId] = (module, exports, require) => {
+        const runListeners: Webpack.RawModule = (module, exports, require) => {
             try {
-                Reflect.apply(originalModule, null, [module, exports, require]);
-
                 const listeners = [...lazyListeners];
                 for (let i = 0; i < listeners.length; i++) {
                     try {listeners[i](exports, module, module.id);}
@@ -46,8 +47,22 @@ function listenToModules(modules: Record<PropertyKey, RawModule>) {
             }
         };
 
+        modules[moduleId] = (module, exports, require) => {
+            try {
+                Reflect.apply(originalModule, null, [module, exports, require]);
+            }
+            finally {
+                require.m[moduleId] = originalModule;
+                runListeners(module, exports, require);
+            }
+        };
+
+
+        const stringed = String(originalModule);
+
         Object.assign(modules[moduleId], originalModule, {
-            toString: () => originalModule.toString()
+            toString: () => stringed,
+            __BD__: {runListeners, originalModule}
         });
     }
 }

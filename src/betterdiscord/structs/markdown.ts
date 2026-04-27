@@ -15,7 +15,7 @@ export default class SimpleMarkdownExt {
     }
 
     static _initialize() {
-        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdown!;
+        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdownWrapper!;
         const originalLink = SMD.defaultRules.link.react!;
         const newRules: SimpleMarkdown["defaultRules"] = extend({}, SMD.defaultRules, {
             link: {

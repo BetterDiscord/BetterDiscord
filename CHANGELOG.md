@@ -2,6 +2,19 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.12
+### Fixed
+- BetterDiscord now loads
+
+1.13.11
+### Improvements
+- Dropdowns now close after selecting an option
+- Dropdowns do not display the scrollbar when its not needed
+- Better handling of other client mods
+
+### Fixed
+- Fix for lazy listeners firing before class modules get interpolated
+
 1.13.10
 ### Fixed
 - Fixed crashing when trying to view BetterDiscord's custom setting tabs

@@ -3,6 +3,7 @@ import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, ty
 
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
+import BetterDiscord from "./betterdiscord";
 
 const getPath = (event: IpcMainEvent, pathReq: string) => {
     let returnPath;
@@ -172,6 +173,14 @@ const getSettings = (event: IpcMainEvent) => {
     event.returnValue = Editor.getSettings();
 };
 
+const getAllowPreloadOverride = (_: IpcMainInvokeEvent) => {
+    return BetterDiscord.clientModCompatibility.allowPreloadOverride();
+};
+const setAllowPreloadOverride = (_: IpcMainInvokeEvent, value: boolean) => {
+    return BetterDiscord.clientModCompatibility.setAllowPreloadOverride(value);
+};
+
+
 export default class IPCMain {
     static registerEvents() {
         try {
@@ -193,6 +202,8 @@ export default class IPCMain {
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
             ipc.handle(IPCEvents.EDITOR_OPEN, openEditor);
             ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
+            ipc.handle(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE, getAllowPreloadOverride);
+            ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
         }
         catch (err) {
             // eslint-disable-next-line no-console

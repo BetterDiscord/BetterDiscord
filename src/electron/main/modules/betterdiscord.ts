@@ -38,6 +38,54 @@ export default class BetterDiscord {
         }
     }
 
+    static clientModCompatibility = class ClientModCompatibility {
+        private static _settings: Record<string, any> | undefined = undefined;
+
+        private static getJSON() {
+            if (this._settings) return this._settings;
+
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
+                const buildInfo = require(buildInfoFile);
+                const settingsFile = path.resolve(bdFolder, "data", buildInfo.releaseChannel, "clientModCompatibility.json");
+
+                return this._settings = JSON.parse(fs.readFileSync(settingsFile, "utf-8"));
+            }
+            catch {
+                return this._settings = {};
+            }
+        }
+
+        private static writeJSON() {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
+                const buildInfo = require(buildInfoFile);
+                const settingsFile = path.resolve(bdFolder, "data", buildInfo.releaseChannel, "clientModCompatibility.json");
+
+                fs.writeFileSync(settingsFile, JSON.stringify(this.getJSON()));
+            }
+            catch {/* empty */}
+        }
+
+        public static shouldShow(): boolean {
+            return this.getJSON().shouldShow ?? true;
+        }
+
+        public static allowPreloadOverride(): boolean {
+            return this.getJSON().allowPreloadOverride ?? false;
+        }
+
+        public static stopShowing() {
+            this.getJSON().shouldShow = false;
+            this.writeJSON();
+        }
+
+        public static setAllowPreloadOverride(allowPreloadOverride: boolean = false) {
+            this.getJSON().allowPreloadOverride = allowPreloadOverride;
+            this.writeJSON();
+        }
+    };
+
     static ensureDirectories() {
         const dataFolder = path.join(bdFolder, "data");
         if (!fs.existsSync(bdFolder)) fs.mkdirSync(bdFolder);
@@ -82,7 +130,7 @@ export default class BetterDiscord {
         }
 
         // @ts-expect-error adding new property, don't want to override object
-        process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
+        process.env.BD_DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
         process.env.BETTERDISCORD_DATA_PATH = bdFolder;
@@ -175,6 +223,7 @@ Object.defineProperty(global, "appSettings", {
             setting.set("MIN_WIDTH", 940);
             setting.set("MIN_HEIGHT", 500);
         }
+
         delete global.appSettings;
         global.appSettings = setting;
     },
@@ -183,6 +232,5 @@ Object.defineProperty(global, "appSettings", {
 });
 
 declare global {
-    // eslint-disable-next-line no-var
-    var appSettings: any;
+    let appSettings: any;
 }
