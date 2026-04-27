@@ -2,6 +2,7 @@ import Localizations from "@assets/locales";
 import Default from "@assets/locales/en-us.json";
 import {formatString, getNestedProp} from "@common/utils";
 import Logger from "./logger";
+import type {NestedKeyOf} from "@typed/util";
 
 
 interface Plural {
@@ -20,13 +21,6 @@ type Replacements = {
     count?: number;
     context?: string;
 };
-
-// TODO: move this to the types folder its useful
-type NestedKeyOf<ObjectType extends object> =
-    {[Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-        ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
-        : `${Key}`
-    }[keyof ObjectType & (string | number)];
 
 // type pString = `${string}_${keyof Plural}`;
 // type RemovePrefix<TPrefix extends string, TString extends string> = TString extends `${TPrefix}${infer T}` ? T : never;
