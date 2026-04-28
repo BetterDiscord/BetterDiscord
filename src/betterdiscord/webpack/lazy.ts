@@ -68,39 +68,50 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
     });
 }
 
-export async function forceLoad(id: string | number): Promise<any[]> {
-    if (typeof webpackRequire.m[id] === "undefined") {
-        return [];
-    }
-    const text = String(webpackRequire.m[id]);
-    const loadedModules = [];
-    let match;
+type forceLoadId = string | number | string[] | number[]
 
-    while ((match = CreatePromiseId.exec(text)) !== null) {
-        const promiseBody = match[1];
-        const bindId = match[2];
+export async function forceLoad(startId: forceLoadId): Promise<any[]> {
+    const loadedModules = {};
+
+    async function startLoad(id: string | number) {
+        const text = String(webpackRequire.m[id]);
+        let match;
+
+        while ((match = CreatePromiseId.exec(text)) !== null) {
+            const promiseBody = match[1];
+            const bindId = match[2];
+            const chunkIds = [];
+            const chunkMatches = promiseBody.matchAll(ChunkIdRegex);
+            for (const chunkMatch of chunkMatches) {
+                chunkIds.push(chunkMatch[1]);
+            }
+            const finalId = parseInt(bindId, 10);
+            await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
+            const loadedModule = webpackRequire(finalId);
+            loadedModules[id] = loadedModule;
+        }
+
         const chunkIds = [];
-        const chunkMatches = promiseBody.matchAll(ChunkIdRegex);
-        for (const chunkMatch of chunkMatches) {
+        let chunkMatch;
+        while ((chunkMatch = ChunkIdRegex.exec(text)) !== null) {
             chunkIds.push(chunkMatch[1]);
         }
-        const finalId = parseInt(bindId, 10);
-        await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
-        const loadedModule = webpackRequire(finalId);
-        loadedModules.push(loadedModule);
+
+        const bindMatches = text.matchAll(FinalModuleIdRegex);
+        for (const bindMatch of bindMatches) {
+            await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
+            const loadedModule = webpackRequire(bindMatch[1]);
+            loadedModules[id] = {...loadedModule}; // bindMatch[1]
+        }
+
+        return loadedModules;
     }
 
-    const chunkIds = [];
-    let chunkMatch;
-    while ((chunkMatch = ChunkIdRegex.exec(text)) !== null) {
-        chunkIds.push(chunkMatch[1]);
+    if (Object.values(startId).length === 0) {
+        await startLoad(startId);
     }
-
-    const bindMatches = text.matchAll(FinalModuleIdRegex);
-    for (const bindMatch of bindMatches) {
-        await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
-        const loadedModule = webpackRequire(bindMatch[1]);
-        loadedModules.push(loadedModule);
+    else {
+        await Promise.all([...startId].map(id => startLoad(id)));
     }
 
     return loadedModules;
