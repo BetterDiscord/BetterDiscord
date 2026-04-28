@@ -1,11 +1,11 @@
 import type {Webpack} from "discord";
 import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
-import {shouldSkipModule, getDefaultKey, wrapFilter, makeException} from "./shared";
+import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";
 
-const ChunkIdRegex = /n\.e\("(\d+)"\)/g;
-const FinalModuleIdRegex = /n\.bind\(n,\s*(\d+)\s*\)/g;
-const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(n\.bind\(n,\s*(\d+)\)\)/g;
+const ChunkIdRegex = /.{1,2}\.e\("(\d+)"\)/g;
+const FinalModuleIdRegex = /.{1,2}\.bind\(.{1,2},\s*(\d+)\s*\)/g;
+const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1,2}\.bind\(.{1,2},\s*(\d+)\)\)/g;
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
     const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false} = options;
@@ -70,8 +70,8 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
 
 type ForceLoadId = string | number | Array<string | number>
 
-export async function forceLoad(startId: forceLoadId): Promise<any[]> {
-    const loadedModules = {};
+export async function forceLoad(startId: ForceLoadId): Promise<Record<any, any>> {
+    const loadedModules: Record<number | string, any> = {};
 
     async function startLoad(id: string | number) {
         const text = String(webpackRequire.m[id]);
@@ -87,8 +87,7 @@ export async function forceLoad(startId: forceLoadId): Promise<any[]> {
             }
             const finalId = parseInt(bindId, 10);
             await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
-            const loadedModule = webpackRequire(finalId);
-            loadedModules[id] = loadedModule;
+            loadedModules[id] = webpackRequire(finalId);
         }
 
         const chunkIds = [];
@@ -107,11 +106,10 @@ export async function forceLoad(startId: forceLoadId): Promise<any[]> {
         return loadedModules;
     }
 
-    if (Object.values(startId).length === 0) {
+    if (typeof startId === "string" || typeof startId === "number") {
         await startLoad(startId);
-    }
-    else {
-        await Promise.all([...startId].map(id => startLoad(id)));
+    } else {
+        await Promise.all([...startId].map(startLoad));
     }
 
     return loadedModules;
