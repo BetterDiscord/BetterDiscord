@@ -68,7 +68,7 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
     });
 }
 
-type forceLoadId = string | number | string[] | number[]
+type ForceLoadId = string | number | Array<string | number>
 
 export async function forceLoad(startId: forceLoadId): Promise<any[]> {
     const loadedModules = {};
