@@ -108,7 +108,8 @@ export async function forceLoad(startId: ForceLoadId): Promise<Record<any, any>>
 
     if (typeof startId === "string" || typeof startId === "number") {
         await startLoad(startId);
-    } else {
+    }
+    else {
         await Promise.all([...startId].map(startLoad));
     }
 
