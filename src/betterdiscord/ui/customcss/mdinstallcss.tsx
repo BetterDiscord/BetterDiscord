@@ -4,22 +4,23 @@ import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";
+import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
-import {getModule, getByKeys} from "@webpack";
+import {Filters, getLazy} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
 import Modals from "@ui/modals.js";
 import {findInTree} from "@common/utils";
-import type {Rule, SimpleMarkdown} from "discord/modules";
+import type {Rule} from "discord/modules";
 
 
 class InstallCSS {
     static activeNotifications = new Map();
 
-    static initialize() {
-        const patch = (getModule(m => m.defaultRules && m.parse) as SimpleMarkdown).defaultRules.codeBlock as Required<Rule>;
-        const codeBlockStyles: any = getByKeys(["codeActions"], {firstId: 206314, cacheId: "core-mdinstallcss-codeBlockStyles"});
+    static async initialize() {
+        const patch = DiscordModules.SimpleMarkdownWrapper.defaultRules.codeBlock as Required<Rule>;
+        const codeBlockStyles: any = await getLazy(Filters.byKeys(["codeActions"]), {firstId: 992595, cacheId: "core-mdinstallcss-codeBlockStyles"});
         if (!patch.react || typeof patch.react !== "function") return;
 
         Patcher.after("InstallCSS", patch, "react", (_, [args]: [{content?: string; lang?: string;}, any, any], child) => {

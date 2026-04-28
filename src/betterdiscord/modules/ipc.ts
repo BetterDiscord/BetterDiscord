@@ -65,4 +65,16 @@ export default new class IPCRenderer {
     openPath(path: string) {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
+
+    allowPreloadOverride = {
+        async set(value: boolean) {
+            await ipc.invoke(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, value);
+        },
+        async get(): Promise<boolean> {
+            return ipc.invoke(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE);
+        },
+        async toggle() {
+            await ipc.invoke(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, !await this.get());
+        }
+    };
 };

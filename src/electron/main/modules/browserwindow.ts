@@ -4,8 +4,20 @@ import path from "path";
 import BetterDiscord from "./betterdiscord";
 import Editor from "./editor";
 import * as IPCEvents from "@common/constants/ipcevents";
+import {isProxy} from "util/types";
 
 // const EDITOR_URL_REGEX = /^betterdiscord:\/\/editor\/(?:custom-css|(theme|plugin)\/([^/]+))\/?/;
+
+function maybeHasOtherClientMod() {
+    if (isProxy(electron) || isProxy(electron.BrowserWindow)) return true;
+
+    const str = electron.BrowserWindow.toString();
+
+    const extendsIndex = str.indexOf("extends");
+
+    if (extendsIndex === -1) return false;
+    return extendsIndex < str.indexOf("{");
+}
 
 class BrowserWindow extends electron.BrowserWindow {
     private __originalPreload?: string;
@@ -16,8 +28,35 @@ class BrowserWindow extends electron.BrowserWindow {
      */
     constructor(options: BrowserWindowConstructorOptions) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
+
+        if (maybeHasOtherClientMod() && BetterDiscord.clientModCompatibility.shouldShow()) {
+            // Not i18n but the i18n system doesn't exist here
+            electron.dialog.showMessageBox({
+                type: "warning",
+                title: "BetterDiscord Compatibility Warning",
+                message: "BetterDiscord has detected another client mod. This may cause issues with BetterDiscord and/or the other mod. Please remove any other client mods to ensure the best experience.",
+                checkboxLabel: "Don't show this again",
+                buttons: ["OK"],
+                defaultId: 0
+            }).then(result => {
+                if (result.checkboxChecked) {
+                    BetterDiscord.clientModCompatibility.stopShowing();
+                }
+            });
+        }
+
         const originalPreload = options.webPreferences.preload;
-        options.webPreferences.preload = path.join(__dirname, "preload.js");
+
+        let preload = options.webPreferences.preload = path.join(__dirname, "preload.js");
+
+        Object.defineProperty(options.webPreferences, "preload", {
+            get: () => preload,
+            set(newPreload) {
+                if (BetterDiscord.clientModCompatibility.allowPreloadOverride()) {
+                    preload = newPreload;
+                }
+            }
+        });
 
         // Don't allow just "truthy" values
         const shouldBeTransparent = BetterDiscord.getSetting("window", "transparency");

@@ -35,6 +35,7 @@ export default function Select({value: initialValue, options, style, onChange, d
     const change = useCallback((val: any) => {
         onChange?.(val);
         setValue(val);
+        optionsRef.current?.togglePopover(false);
     }, [onChange]);
 
     useEffect(() => {
