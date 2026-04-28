@@ -1,4 +1,4 @@
-import Button, {Colors} from "@ui/base/button";
+import Button, {ButtonColors} from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
@@ -146,7 +146,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetail
                         <Button
                             className="bd-error-github"
                             onClick={openGithubIssue}
-                            color={Colors.YELLOW}
+                            color={ButtonColors.YELLOW}
                         >
                             {t("Collections.settings.developer.recovery.report")}
                         </Button>
@@ -165,7 +165,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetail
                             pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
                             await IPC.relaunch();
                         }}
-                        color={Colors.RED}
+                        color={ButtonColors.RED}
                     >
                         {t("Collections.settings.developer.recovery.safeMode")}
                     </Button>

@@ -9,7 +9,7 @@ import Textbox from "./components/textbox";
 import Slider from "./components/slider";
 import Radio from "./components/radio";
 import Keybind from "./components/keybind";
-import Color from "./components/color";
+import ColorSettingComponent from "./components/color";
 import Filepicker from "./components/file";
 import Button, {type ButtonProps} from "../base/button";
 import Position from "@ui/settings/components/position";
@@ -96,7 +96,7 @@ export function buildSetting(setting: Setting | CustomSetting | ButtonSetting) {
     if (setting.type === "slider") children = <Slider {...setting} />;
     if (setting.type === "radio") children = <Radio {...setting} />;
     if (setting.type === "keybind") children = <Keybind {...setting} />;
-    if (setting.type === "color") children = <Color {...setting} />;
+    if (setting.type === "color") children = <ColorSettingComponent {...setting} />;
     if (setting.type === "button") children = <Button {...setting} />;
     if (setting.type === "position") children = <Position {...setting} />;
     if (setting.type === "custom") children = setting.children;

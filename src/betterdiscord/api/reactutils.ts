@@ -112,7 +112,7 @@ const exoticComponents = {
     lazy: Symbol.for("react.lazy")
 };
 
-type ElementType<T extends React.FC<P>, P> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
+type ReactElementType<T extends React.FC<P>, P> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
 
 interface ReactUtils {
     rootInstance: any;
@@ -120,11 +120,10 @@ interface ReactUtils {
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
     wrapInHooks<T extends React.FC<any>>(
-        functionComponent: ElementType<T, React.ComponentProps<T>>,
+        functionComponent: ReactElementType<T, React.ComponentProps<T>>,
         customPatches?: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
-    // forceUpdateFiber(fiber: Fiber): boolean;
-    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T;
+    getType<T extends React.FC<P>, P>(elementType: ReactElementType<T, P>): T;
     createNodePatcher(): NodePatcher;
 }
 
@@ -272,7 +271,7 @@ const ReactUtils: ReactUtils = {
     /**
      * Gets the type of a React component, going through things such as forwardRef and memo
      */
-    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T {
+    getType<T extends React.FC<P>, P>(elementType: ReactElementType<T, P>): T {
         while (true) {
             switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:

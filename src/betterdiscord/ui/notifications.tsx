@@ -1,5 +1,5 @@
 import React, {ReactDOM} from "@modules/react";
-import Button, {type ButtonProps, Colors, Looks} from "@ui/base/button";
+import Button, {type ButtonProps, ButtonColors, ButtonLooks} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";
 import Text from "@ui/base/text";
@@ -168,7 +168,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                 handleClose();
             }
         },
-    }) as { width: string };
+    }) as {width: string;};
 
     const handleClose = () => {
         NotificationUIInstance.hide(id);
@@ -217,14 +217,14 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
                     {actions.map((action, index) => {
-                        const color = Colors[action?.color?.toUpperCase() as keyof typeof Colors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
-                        const look = Looks[action?.look?.toUpperCase() as keyof typeof Looks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
+                        const color = ButtonColors[action?.color?.toUpperCase() as keyof typeof ButtonColors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
+                        const look = ButtonLooks[action?.look?.toUpperCase() as keyof typeof ButtonLooks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
 
                         return <Button
                             {...action}
                             key={index}
-                            color={color as typeof Colors[keyof typeof Colors]}
-                            look={look as typeof Looks[keyof typeof Looks]}
+                            color={color as typeof ButtonColors[keyof typeof ButtonColors]}
+                            look={look as typeof ButtonLooks[keyof typeof ButtonLooks]}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 action.onClick?.(e);

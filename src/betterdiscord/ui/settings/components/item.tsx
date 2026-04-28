@@ -10,7 +10,7 @@ export type SettingItemProp = PropsWithChildren<{
     inline?: boolean;
 }>;
 
-export default function SettingItem({id, name, note, inline, children}: SettingItemProp) {
+export default function SettingItemComponent({id, name, note, inline, children}: SettingItemProp) {
     return <div className={"bd-setting-item" + (inline ? " inline" : "")}>
         <div className={"bd-setting-header"}>
             <label htmlFor={id} className={"bd-setting-title"}>{name}</label>

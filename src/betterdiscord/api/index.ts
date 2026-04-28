@@ -21,7 +21,7 @@ import Hooks from "./hooks";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
-import SettingItem from "@ui/settings/components/item";
+import SettingItemComponent from "@ui/settings/components/item";
 import KeybindInput from "@ui/settings/components/keybind";
 import NumberInput from "@ui/settings/components/number";
 import RadioInput from "@ui/settings/components/radio";
@@ -63,7 +63,7 @@ const Components = {
     get Tooltip() {return DiscordModules.Tooltip;},
     get ColorInput() {return ColorInput;},
     get DropdownInput() {return DropdownInput;},
-    get SettingItem() {return SettingItem;},
+    get SettingItem() {return SettingItemComponent;},
     get KeybindInput() {return KeybindInput;},
     get NumberInput() {return NumberInput;},
     get RadioInput() {return RadioInput;},

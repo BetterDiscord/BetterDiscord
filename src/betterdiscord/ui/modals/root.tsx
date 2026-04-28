@@ -9,14 +9,14 @@ import {getByKeys, getModule} from "@webpack";
 const Anims: any = getByKeys(["Easing"], {firstId: 615300, cacheId: "core-modalroot-anims"});
 
 
-export const Sizes = Object.freeze({
+export const ModalSizes = Object.freeze({
     SMALL: "bd-modal-small",
     MEDIUM: "bd-modal-medium",
     LARGE: "bd-modal-large",
     DYNAMIC: ""
 });
 
-export const Styles = Object.freeze({
+export const ModalStyles = Object.freeze({
     STANDARD: "bd-modal-standard",
     CUSTOM: ""
 });
@@ -31,11 +31,11 @@ const FocusLock: any = getModule(m => m?.render?.toString().includes("impression
 type RootProps = PropsWithChildren<{
     className?: string;
     transitionState?: number;
-    size?: typeof Sizes[keyof typeof Sizes];
-    style?: typeof Styles[keyof typeof Styles];
+    size?: typeof ModalSizes[keyof typeof ModalSizes];
+    style?: typeof ModalStyles[keyof typeof ModalStyles];
 }>;
 
-export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}: RootProps) {
+export default function ModalRoot({className, transitionState, children, size = ModalSizes.DYNAMIC, style = ModalStyles.CUSTOM}: RootProps) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
 
     const preferences: any = React.useContext(DiscordModules.AccessibilityContext ?? {});
@@ -61,5 +61,5 @@ export default function ModalRoot({className, transitionState, children, size = 
     </FocusLock>;
 }
 
-ModalRoot.Sizes = Sizes;
-ModalRoot.Styles = Styles;
+ModalRoot.Sizes = ModalSizes;
+ModalRoot.Styles = ModalStyles;

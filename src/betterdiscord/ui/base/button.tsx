@@ -5,14 +5,14 @@ import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChild
 
 const {useCallback} = React;
 
-export const Looks = Object.freeze({
+export const ButtonLooks = Object.freeze({
     FILLED: "bd-button-filled",
     OUTLINED: "bd-button-outlined",
     LINK: "bd-button-link",
     BLANK: "bd-button-blank"
 });
 
-export const Colors = Object.freeze({
+export const ButtonColors = Object.freeze({
     BRAND: "bd-button-color-brand",
     BLURPLE: "bd-button-color-blurple",
     RED: "bd-button-color-red",
@@ -26,7 +26,7 @@ export const Colors = Object.freeze({
 });
 
 
-export const Sizes = Object.freeze({
+export const ButtonSizes = Object.freeze({
     NONE: "",
     TINY: "bd-button-tiny",
     SMALL: "bd-button-small",
@@ -43,9 +43,9 @@ export type ButtonProps = PropsWithChildren<{
     buttonRef?: RefObject<HTMLButtonElement | null>;
     disabled?: boolean;
     type?: "button" | "submit" | "reset";
-    look?: typeof Looks[keyof typeof Looks];
-    color?: typeof Colors[keyof typeof Colors];
-    size?: typeof Sizes[keyof typeof Sizes];
+    look?: typeof ButtonLooks[keyof typeof ButtonLooks];
+    color?: typeof ButtonColors[keyof typeof ButtonColors];
+    size?: typeof ButtonSizes[keyof typeof ButtonSizes];
     grow?: boolean;
 }>;
 
@@ -57,9 +57,9 @@ export default function Button({
     buttonRef,
     disabled = false,
     type = "button",
-    look = Looks.FILLED,
-    color = Colors.BRAND,
-    size = Sizes.MEDIUM,
+    look = ButtonLooks.FILLED,
+    color = ButtonColors.BRAND,
+    size = ButtonSizes.MEDIUM,
     grow = true,
     ...others
 }: ButtonProps) {
@@ -89,6 +89,6 @@ export default function Button({
     </button>;
 }
 
-Button.Looks = Looks;
-Button.Colors = Colors;
-Button.Sizes = Sizes;
+Button.Looks = ButtonLooks;
+Button.Colors = ButtonColors;
+Button.Sizes = ButtonSizes;

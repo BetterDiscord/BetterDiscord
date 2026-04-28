@@ -56,7 +56,7 @@ export interface ColorpickerProps {
     disabled?: boolean;
 }
 
-export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
+export default function ColorSettingComponent({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
