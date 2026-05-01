@@ -6,7 +6,7 @@ interface Helpers {
     MessageActions: any;
     CloudUpload: any;
     Moment: any;
-    Hljs: any;
+    // Hljs: any;
     Snowflake: any;
     Lodash: any;
     CssVars: any;
@@ -93,11 +93,12 @@ interface RawModules {
 
 interface All extends Components, Omit<Helpers, "ComponentDispatch" | "Fetching" | "ModalActions" | "Navigation">, RawModules {}
 
-const {SearchableSelect, AnimatedAvatar, FluxDispatch, SimpleMarkdownWrapper, Popout, MessageActions, Clickable, Slider, Modal, CloudUpload, Moment, Hljs, Snowflake, Lodash, CssVars, Intl, Flux, Permissions, ComponentDispatchModule, FormNotice,
+const {SearchableSelect, AnimatedAvatar, FluxDispatch, SimpleMarkdownWrapper, Popout, MessageActions, Clickable, Slider, Modal, CloudUpload, Moment, Snowflake, Lodash, CssVars, Intl, Flux, Permissions, ComponentDispatchModule, FormNotice,
     ImageUtils, ReactSpring, FetchingModule, ModalActionsModule, NavigationModule, LoadingPopout, Progress, Spinner, TextArea, CopyInput, Switch, FormSwitch, Text, Flex, Scroller, ProgressCircle, KeyCombo, Avatar, Slides, Button, CalendarPicker, Color, Electron
 } = getBulkKeyed<All>(
     {
-
+// Slider
+        Slider: {filter: Filters.byStrings("this.scaleValue("), searchExports: true, cacheId: "betterdiscord-Slider"},
 // SearchableSelect
         SearchableSelect: {filter: Filters.byStrings("SearchableSelect"), searchExports: true, cacheId: "betterdiscord-SearchableSelect"},
 // AnimatedAvatar
@@ -105,23 +106,19 @@ const {SearchableSelect, AnimatedAvatar, FluxDispatch, SimpleMarkdownWrapper, Po
 // FluxDispatch
         FluxDispatch: {filter: Filters.byKeys(["_dispatch"]), searchExports: true, cacheId: "betterdiscord-FluxDispatch"},
 // SimpleMarkdownWrapper
-        SimpleMarkdownWrapper: {filter: Filters.byKeys(["parseTopic"]), cacheId: "betterdiscord-SimpleMarkdownWrapper"},
+        SimpleMarkdownWrapper: {filter: Filters.byKeys(["defaultReactOutput"]), cacheId: "betterdiscord-SimpleMarkdownWrapper"},
 // Popout
         Popout: {filter: Filters.byStrings("Unsupported animation config: "), searchExports: true, cacheId: "betterdiscord-Popout"},
 // MessageActions
         MessageActions: {filter: Filters.byKeys(["editMessage"]), cacheId: "betterdiscord-MessageActions"},
 // Clickable
         Clickable: {filter: Filters.byStrings("renderNonInteractive()"), searchExports: true, cacheId: "betterdiscord-Clickable"},
-// Slider
-        Slider: {filter: Filters.byStrings("markerPositions"), searchExports: true, cacheId: "betterdiscord-Slider"},
 // Modal
         Modal: {filter: Filters.byStrings("actionBarInputLayout"), searchExports: true, cacheId: "betterdiscord-Modal"},
 // CloudUpload
         CloudUpload: {filter: Filters.byStrings("uploadFileToCloud"), searchExports: true, cacheId: "betterdiscord-CloudUpload"},
 // Moment
         Moment: {filter: Filters.byKeys(["parseTwoDigitYear"]), cacheId: "betterdiscord-Moment"},
-// Hljs
-        Hljs: {filter: Filters.byKeys(["registerLanguage"]), cacheId: "betterdiscord-Hljs"},
 // Snowflake
         Snowflake: {filter: Filters.byKeys(["extractTimestamp"]), cacheId: "betterdiscord-Snowflake"},
 // Lodash
@@ -253,7 +250,6 @@ const modules: WebpackModules = {
         MessageActions,
         CloudUpload,
         Moment,
-        Hljs,
         Snowflake,
         Lodash,
         CssVars,
