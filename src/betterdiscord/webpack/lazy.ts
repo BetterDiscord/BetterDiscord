@@ -100,7 +100,7 @@ export async function forceLoad(startId: ForceLoadId): Promise<Record<any, any>>
         for (const bindMatch of bindMatches) {
             await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
             const loadedModule = webpackRequire(bindMatch[1]);
-            loadedModules[id] = {...loadedModule}; // bindMatch[1]
+            loadedModules[id] = loadedModule; // bindMatch[1]
         }
 
         return loadedModules;
