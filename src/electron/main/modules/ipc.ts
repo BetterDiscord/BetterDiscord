@@ -180,6 +180,10 @@ const setAllowPreloadOverride = (_: IpcMainInvokeEvent, value: boolean) => {
     return BetterDiscord.clientModCompatibility.setAllowPreloadOverride(value);
 };
 
+const runRenderer = (event: IpcMainInvokeEvent) => {
+    BetterDiscord.injectRenderer(BrowserWindow.fromWebContents(event.sender)!);
+};
+
 
 export default class IPCMain {
     static registerEvents() {
@@ -204,6 +208,7 @@ export default class IPCMain {
             ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
             ipc.handle(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE, getAllowPreloadOverride);
             ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
+            ipc.handle(IPCEvents.RUN_RENDERER, runRenderer);
         }
         catch (err) {
             // eslint-disable-next-line no-console

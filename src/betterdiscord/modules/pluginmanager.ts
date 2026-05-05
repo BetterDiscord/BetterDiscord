@@ -14,6 +14,7 @@ import Events from "./emitter";
 
 import Modals from "@ui/modals";
 
+
 export interface Plugin extends Addon {
     exports: any;
     instance: {

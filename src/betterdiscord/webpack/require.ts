@@ -1,12 +1,13 @@
 import type {Webpack} from "discord";
 import Logger from "@common/logger";
 import type {RawModule} from "../types/discord/webpack";
+import Patcher from "@modules/patcher";
 
 export let webpackRequire: Webpack.Require;
 
-export const lazyListeners = new Set<Webpack.Filter>();
+export const lazyListeners = new Set<Webpack.ModuleFilter>();
 
-let __ORIGINAL_PUSH__ = window.webpackChunkdiscord_app.push;
+let __ORIGINAL_PUSH__ = (window.webpackChunkdiscord_app ??= []).push;
 
 Object.defineProperty(window.webpackChunkdiscord_app, "push", {
     configurable: true,
@@ -47,7 +48,9 @@ function listenToModules(modules: Record<PropertyKey, RawModule>) {
             }
         };
 
-        modules[moduleId] = (module, exports, require) => {
+        const stringed = String(originalModule);
+
+        modules[moduleId] = Object.assign(((module, exports, require) => {
             try {
                 Reflect.apply(originalModule, null, [module, exports, require]);
             }
@@ -55,16 +58,54 @@ function listenToModules(modules: Record<PropertyKey, RawModule>) {
                 require.m[moduleId] = originalModule;
                 runListeners(module, exports, require);
             }
-        };
-
-
-        const stringed = String(originalModule);
-
-        Object.assign(modules[moduleId], originalModule, {
+        }) as RawModule, originalModule, {
             toString: () => stringed,
             __BD__: {runListeners, originalModule}
         });
     }
+}
+
+const {promise, resolve} = Promise.withResolvers<void>();
+export const allModulesLoaded = promise;
+
+let loadingModules = 1;
+let moduleLoadTimeout: ReturnType<typeof setTimeout> | null = null;
+requestIdleCallback(onLoadEnd);
+
+function onLoadStart() {
+    loadingModules++;
+    if (moduleLoadTimeout) {
+        clearTimeout(moduleLoadTimeout);
+        moduleLoadTimeout = null;
+    }
+}
+
+function onLoadEnd() {
+    loadingModules--;
+    if (loadingModules > 0) return;
+
+    if (moduleLoadTimeout) clearTimeout(moduleLoadTimeout);
+    moduleLoadTimeout = setTimeout(() => {
+        resolve();
+        Patcher.unpatchAll("WebpackRequire");
+    }, 50);
+}
+
+function patchModuleLoading(require: Webpack.Require) {
+    Patcher.after("WebpackRequire", require, "e", (_, __, loadPromise) => {
+        onLoadStart();
+        loadPromise.finally(onLoadEnd);
+    });
+
+    Patcher.before("WebpackRequire", require, "l", (_, args) => {
+        onLoadStart();
+
+        const onLoad = args[1];
+        args[1] = function(event: Event) {
+            onLoadEnd();
+            onLoad.call(this, event);
+        };
+    });
 }
 
 function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect) {
@@ -80,6 +121,7 @@ window.webpackChunkdiscord_app.push([
         if ("b" in __webpack_require__) {
             webpackRequire = __webpack_require__;
             listenToModules(__webpack_require__.m);
+            patchModuleLoading(__webpack_require__);
         }
     }
 ]);

@@ -51,13 +51,13 @@ class AddonAPI {
      * @param {string} idOrFile Addon ID or filename
      * @returns {object} Addon instance
      */
-    get(idOrFile: string) {return this.#manager.getAddon(idOrFile);}
+    get(idOrFile: string) {return this.#manager.resolveAddon(idOrFile);}
 
     /**
      * Gets all addons of this type.
      * @returns {Array<object>} Array of all addon instances
      */
-    getAll() {return this.#manager.addonList.map(a => this.#manager.getAddon(a.id));}
+    getAll() {return this.#manager.addonList.map(a => this.#manager.resolveAddon(a.id));}
 }
 
 Object.freeze(AddonAPI);

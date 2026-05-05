@@ -116,13 +116,13 @@ export default class DOMManager {
 
     static removeTheme(id: string) {
         id = this.escapeID(id);
-        const exists = this.getElement(`#${id}`, this.bdThemes);
+        const exists = document.getElementById(id);
         if (exists) exists.remove();
     }
 
     static injectTheme(id: string, css: string) {
         id = this.escapeID(id);
-        const style = this.getElement(`#${id}`, this.bdThemes) || this.createElement("style", {id});
+        const style = document.getElementById(id) || this.createElement("style", {id});
         style.textContent = css;
         this.bdThemes.append(style);
     }

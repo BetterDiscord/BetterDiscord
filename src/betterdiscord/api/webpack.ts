@@ -1,4 +1,4 @@
-import type {Options, Filter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "discord/webpack";
+import type {Options, ModuleFilter, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, MangledOptions} from "discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
@@ -63,10 +63,10 @@ const Webpack = {
         byStoreName(name: string) {return Filters.byStoreName(name);},
 
         /** Generates a combined function from a list of filters. */
-        combine(...filters: Filter[]): Filter {return Filters.combine(...filters);},
+        combine(...filters: ModuleFilter[]): ModuleFilter {return Filters.combine(...filters);},
 
         /** Generates a filter that returns the opposite of the passed filter. */
-        not(filter: Filter): Filter {return Filters.not(filter);},
+        not(filter: ModuleFilter): ModuleFilter {return Filters.not(filter);},
 
         /** Generates a filter to search React functional components. */
         byComponentType(filter: ExportedOnlyFilter): ExportedOnlyFilter {
@@ -85,17 +85,18 @@ const Webpack = {
         return getWithKey(filter, options);
     },
 
-    getModule<T extends any>(filter: Filter, options: WebpackOptions = {}) {
+    getModule<T extends any>(filter: ModuleFilter, options: WebpackOptions = {}) {
         if (("first" in options) && typeof (options.first) !== "boolean") return Logger.error("BdApi.Webpack~get", "Invalid type for options.first", options.first, "Expected: boolean");
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
         if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.raw", options.raw, "Expected: boolean");
+        if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
 
         if (options.first === false) return getAllModules(filter, options) as T;
         return getModule<T>(filter, options);
     },
 
-    getModules<T extends any[]>(filter: Filter, options: WebpackOptions = {}) {
+    getModules<T extends any[]>(filter: ModuleFilter, options: WebpackOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
         if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.raw", options.raw, "Expected: boolean");
@@ -105,11 +106,12 @@ const Webpack = {
     getBulk<T extends any[]>(...queries: BulkQueries[]) {return getBulk<T>(...queries);},
     getBulkKeyed<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyed<T>(queries);},
 
-    waitForModule<T>(filter: Filter, options: LazyOptions = {}) {
+    waitForModule<T>(filter: ModuleFilter, options: LazyOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
         if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.signal", options.signal, "AbortSignal expected.");
         if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.raw", options.raw, "Expected: boolean");
+        if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
         return getLazy<T>(filter, options);
     },
 
@@ -121,11 +123,12 @@ const Webpack = {
         return Webpack.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
     },
 
-    getMangled<T extends object>(filter: Filter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: Options = {}) {
-        const {defaultExport = false, searchExports = false, raw = false} = options;
+    getMangled<T extends object>(filter: ModuleFilter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
+        const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
         if (typeof (searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.searchExports", searchExports, "Expected: boolean");
         if (typeof (raw) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.raw", raw, "Expected: boolean");
+        if (typeof (fatal) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.fatal", fatal, "Expected: boolean");
         return getMangled<T>(filter, mangled, options);
     },
 
@@ -176,7 +179,12 @@ const Webpack = {
 
     getStore(name: string) {return getStore(name);},
 
-    getById(id: PropertyKey) {return getById(id);}
+    getById(id: PropertyKey, options: WebpackOptions = {}) {
+        if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.raw", options.raw, "Expected: boolean");
+        if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
+
+        return getById(id, options);
+    }
 };
 
 Object.freeze(Webpack);

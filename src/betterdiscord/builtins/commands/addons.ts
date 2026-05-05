@@ -41,7 +41,7 @@ export default (type: "plugin" | "theme") => {
         execute: async (data, {channel}) => {
             const action = data.find(o => o.name === "action").value;
             const addonId = data.find(o => o.name === "name").value;
-            const addon = manager.getAddon(addonId)!;
+            const addon = manager.resolveAddon(addonId)!;
             const isEnabled = manager.isEnabled(addon.id);
 
             if (action === "enable") {

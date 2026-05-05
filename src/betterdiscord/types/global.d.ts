@@ -38,6 +38,8 @@ interface DiscordWindow {
     };
 
     BetterDiscordPreload(): typeof PreloadAPI;
+
+    BetterDiscordRunRenderer(): void;
 }
 
 declare global {

@@ -5,17 +5,27 @@ export interface Require {
     c: Record<PropertyKey, Module>;
     m: Record<PropertyKey, RawModule>;
     e(id: PropertyKey): Promise<unknown>;
+    l(url: string, onLoad: (event: Event) => void, key: string, id: string): void;
 }
 
 export interface Module<T extends any = any> {
     id: PropertyKey,
     exports: T,
+    declarations: Record<string, any>;
     loaded: boolean;
 }
 
-export type RawModule = (module: Module, exports: object, require: Require) => void;
+export type RawModule = ((module: Module, exports: object, require: Require) => void) & {
+    // BD specific properties
+    __BD__?: {
+        runListeners: (module: Module, exports: object, require: Require) => void;
+        originalModule: RawModule;
+    };
+    __early_patched__?: boolean;
+    __raw_module__?: () => RawModule;
+};
 
-export type Filter = (exported: any, module: Module, id: PropertyKey) => any;
+export type ModuleFilter = (exported: any, module: Module, id: PropertyKey) => any;
 export type ExportedOnlyFilter = (exported: any) => any;
 
 export type Options = {
@@ -26,12 +36,18 @@ export type Options = {
     fatal?: boolean;
     firstId?: PropertyKey;
     cacheId?: string | null;
+    declarationFilter?: ExportedOnlyFilter;
+};
+
+export type MangledOptions = Options & {
+    mapDeclarations?: boolean;
 };
 
 export type BulkQueries = Options & {
-    filter: Filter,
+    filter: ModuleFilter,
     all?: boolean,
     map?: Record<string, ExportedOnlyFilter>;
+    mapDeclarations?: boolean;
 };
 export type WithKeyOptions = Options & {
     target?: any;

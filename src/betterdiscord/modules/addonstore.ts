@@ -16,6 +16,7 @@ import Settings from "@stores/settings";
 import Web from "@data/web";
 import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
+import {parseJsDoc} from "@common/utils";
 
 
 /**
@@ -294,7 +295,7 @@ class Addon {
                     if (shouldEnable) {
                         // Shouldn't need a try..catch but better safe than sorry
                         try {
-                            const meta = AddonManager.prototype.extractMeta(text, this.filename);
+                            const meta = parseJsDoc(text);
                             this.manager.state[meta.name as string || this.name] = true;
                         }
                         catch {
