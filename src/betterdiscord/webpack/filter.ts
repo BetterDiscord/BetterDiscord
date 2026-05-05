@@ -1,7 +1,7 @@
 import type {Webpack} from "discord";
 import {webpackRequire} from "./require";
 
-function assign<T extends Webpack.Filter | Webpack.ExportedOnlyFilter>(filter: T, args: any) {
+function assign<T extends Webpack.ModuleFilter | Webpack.ExportedOnlyFilter>(filter: T, args: any) {
     return Object.assign(filter, {
         [Symbol.for("BetterDiscord.Filter")]: args
     });
@@ -54,7 +54,7 @@ export function byRegex(search: RegExp, filter: Webpack.ExportedOnlyFilter = m =
     });
 }
 
-export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
+export function bySource(...searches: Array<string | RegExp>): Webpack.ModuleFilter {
     const moduleCache = webpackRequire.m;
 
     return assign((_, module) => {
@@ -123,8 +123,8 @@ export function byStoreName(name: string): Webpack.ExportedOnlyFilter {
 }
 
 export function combine(...filters: Webpack.ExportedOnlyFilter[]): Webpack.ExportedOnlyFilter;
-export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter;
-export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
+export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.ModuleFilter>): Webpack.ModuleFilter;
+export function combine(...filters: Webpack.ModuleFilter[]): Webpack.ModuleFilter {
     return assign((exports, module, id) => {
         return filters.every(filter => filter(exports, module, id));
     }, {
@@ -133,8 +133,8 @@ export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
 }
 
 export function not(filter: Webpack.ExportedOnlyFilter): Webpack.ExportedOnlyFilter;
-export function not(filter: Webpack.ExportedOnlyFilter | Webpack.Filter): Webpack.Filter;
-export function not(filter: Webpack.Filter): Webpack.Filter {
+export function not(filter: Webpack.ExportedOnlyFilter | Webpack.ModuleFilter): Webpack.ModuleFilter;
+export function not(filter: Webpack.ModuleFilter): Webpack.ModuleFilter {
     return assign((exports, module, id) => !filter(exports, module, id), {
         filter
     });

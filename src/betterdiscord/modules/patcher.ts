@@ -279,7 +279,7 @@ export default class Patcher {
         if (!(module[functionName] instanceof Function)) return null;
 
         if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
-        const displayName = options.displayName || (module as any).displayName || (module as any).name || (module.constructor as any).displayName || module.constructor.name;
+        const displayName = options.displayName || (module as any).displayName || (module as any).name || (module.constructor as any)?.displayName || module.constructor?.name || "anonymous";
 
         const patchId = `${displayName}.${functionName}`;
         const patch: Patch<M, K> = (this.patches.find(p => p.module == module && p.functionName == functionName) || this.makePatch(module, functionName, patchId)) as Patch<M, K>;

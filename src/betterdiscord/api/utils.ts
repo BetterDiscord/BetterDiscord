@@ -3,6 +3,7 @@ import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
 import Store from "@stores/base";
+import {mapObject} from "@utils/object";
 
 
 /**
@@ -97,6 +98,8 @@ const Utils = {
      * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
     semverCompare: comparator,
+
+    mapObject: mapObject,
 
     Store
 } as const;

@@ -1,14 +1,15 @@
 import type {Webpack} from "discord";
-import {getDefaultKey, makeException, shouldSkipModule, wrapFilter} from "./shared";
+import {getDeclaration, getDefaultKey, makeException, shouldSkipModule, wrapModuleFilter} from "./shared";
 import {webpackRequire} from "./require";
 import WebpackCache from "./cache";
 
-export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, options: Webpack.Options): T | undefined {
+export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.ModuleFilter, options: Webpack.Options): T | undefined {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
 
     if (shouldSkipModule(module.exports)) return;
 
     if (filter(module.exports, module, module.id)) {
+        if (options.declarationFilter) return getDeclaration(module, options.declarationFilter);
         return raw ? module as T : module.exports;
     }
 
@@ -26,18 +27,16 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filte
         if (shouldSkipModule(exported)) continue;
 
         if (filter(exported, module, module.id)) {
-            if (!defaultExport && defaultKey === key) {
-                return module.exports;
-            }
-
+            if (options.declarationFilter) return getDeclaration(module, options.declarationFilter);
+            if (!defaultExport && defaultKey === key) return module.exports;
             if (raw) return module as T;
             return exported;
         }
     }
 }
 
-export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
-    filter = wrapFilter(filter);
+export function getModule<T>(filter: Webpack.ModuleFilter, options: Webpack.Options = {}): T | undefined {
+    filter = wrapModuleFilter(filter);
 
     if (options.firstId) {
         const module = webpackRequire.c[options.firstId];
@@ -77,10 +76,10 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
     return undefined;
 }
 
-export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, options: Webpack.Options = {}): T {
+export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter, options: Webpack.Options = {}): T {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, fatal = false} = options;
 
-    filter = wrapFilter(filter);
+    filter = wrapModuleFilter(filter);
     const modules = [] as unknown as T;
 
     const webpackModules = Object.values(webpackRequire.c);
@@ -90,7 +89,11 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
         if (shouldSkipModule(module.exports)) continue;
 
         if (filter(module.exports, module, module.id)) {
-            modules.push(raw ? module : module.exports);
+            if (options.declarationFilter) {
+                const declared = getDeclaration(module, options.declarationFilter);
+                if (declared) modules.push(declared);
+            }
+            else {modules.push(raw ? module : module.exports);}
         }
 
         if (!searchExports && !searchDefault) continue;
@@ -107,6 +110,12 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
             if (shouldSkipModule(exported)) continue;
 
             if (filter(exported, module, module.id)) {
+                if (options.declarationFilter) {
+                    const declared = getDeclaration(module, options.declarationFilter);
+                    if (declared) modules.push(declared);
+                    continue;
+                }
+
                 if (!defaultExport && defaultKey === key) {
                     modules.push(module.exports);
                     continue;

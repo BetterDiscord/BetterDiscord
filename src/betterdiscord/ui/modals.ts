@@ -26,7 +26,8 @@ import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
 import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
-import type AddonError from "@structs/addonerror";
+import AddonError from "@structs/addonerror";
+import AddonErrorsStore from "@stores/addonerrors";
 
 
 const queue: Array<() => void> = [];
@@ -209,16 +210,31 @@ export default class Modals {
         return modalKey;
     }
 
-    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins?: AddonError[]; themes?: AddonError[];}) {
-        if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
-        if (!pluginErrors.length && !themeErrors.length) return;
+    static addonErrorsOpen = false;
+    static showAddonError(error: AddonError) {
+        if (!this.shouldShowAddonErrors) return;
 
-        const options = {
-            pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
-            themeErrors: Array.isArray(themeErrors) ? themeErrors : []
-        };
-        this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showAddonErrors", name: "Modals"}, React.createElement(AddonErrorModal, Object.assign(options, props)));
+        // Add the error to the store
+        if (error.type === "theme") AddonErrorsStore.addThemeError(error);
+        else AddonErrorsStore.addPluginError(error);
+
+        // Don't have the modal open more than once, since the current one will just update
+        if (this.addonErrorsOpen) return;
+        this.addonErrorsOpen = true;
+
+        this.ModalActions.openModal((props: any) => {
+            return React.createElement(
+                ErrorBoundary,
+                {id: "showAddonErrors", name: "Modals"},
+                React.createElement(AddonErrorModal, {
+                    ...props
+                })
+            );
+        }, {
+            onCloseCallback: () => {
+                this.addonErrorsOpen = false;
+                AddonErrorsStore.clearErrors();
+            }
         });
     }
 

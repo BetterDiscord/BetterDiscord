@@ -2,6 +2,14 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.13.13
+### Fixed
+- Themes with special characters in their names didn't unload properly
+
+### Added
+- New system for exposing top-level module declarations
+- New `@runAt` meta tag to work around issues caused by lazy loading
+
 1.13.12
 ### Fixed
 - BetterDiscord now loads

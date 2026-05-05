@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.13.12",
+    "version": "1.13.13",
     "description": "Enhances Discord by adding functionality and themes.",
     "type": "module",
     "scripts": {
@@ -42,6 +42,7 @@
         "typescript-eslint": "^8.22.0"
     },
     "dependencies": {
+        "acorn": "^8.16.0",
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
         "fast-equals": "^5.2.2",

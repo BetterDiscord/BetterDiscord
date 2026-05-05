@@ -15,6 +15,7 @@ const makeBundle = function () {
         "dist/main.js",
         "dist/package.json",
         "dist/preload.js",
+        "dist/earlyRenderer.js",
         "dist/betterdiscord.js",
         "dist/editor/preload.js",
         "dist/editor/script.js",

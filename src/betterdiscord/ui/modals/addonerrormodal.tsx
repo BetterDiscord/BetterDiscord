@@ -15,6 +15,8 @@ import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
 import clsx from "clsx";
 import type AddonErrorType from "@structs/addonerror";
 import DiscordModules from "@modules/discordmodules";
+import {useStateFromStores} from "@ui/hooks";
+import AddonErrorsStore from "@stores/addonerrors";
 
 const Parser = DiscordModules.SimpleMarkdownWrapper.defaultRules;
 const {useState, useCallback, useMemo} = React;
@@ -61,8 +63,6 @@ function generateTab(id: string, errors: AddonErrorType[]) {
 export interface AddonErrorModalProps {
     transitionState?: number;
     onClose?(): void;
-    pluginErrors: AddonErrorType[];
-    themeErrors: AddonErrorType[];
 }
 
 /**
@@ -70,7 +70,10 @@ export interface AddonErrorModalProps {
  * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
  * @returns
  */
-export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}: AddonErrorModalProps) {
+export default function AddonErrorModal({transitionState, onClose}: AddonErrorModalProps) {
+    const pluginErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.pluginErrors]);
+    const themeErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.themeErrors]);
+
     const tabs = useMemo<Array<ReturnType<typeof generateTab>>>(() => {
         return [
             pluginErrors.length && generateTab("plugins", pluginErrors),
@@ -78,22 +81,22 @@ export default function AddonErrorModal({transitionState, onClose, pluginErrors,
         ].filter(e => e) as Array<ReturnType<typeof generateTab>>;
     }, [pluginErrors, themeErrors]);
 
-    const [tabId, setTab] = useState(tabs[0].id);
+    const [tabId, setTab] = useState(tabs[0]?.id);
     const switchToTab = useCallback((id: string) => setTab(id), []);
-    const selectedTab = tabs.find(e => e.id === tabId)!;
+    const selectedTab = tabs.find(e => e.id === tabId);
 
     return <ModalRoot transitionState={transitionState} className="bd-error-modal" size={ModalRoot.Sizes.MEDIUM}>
         <Header className="bd-error-modal-header">
             <Flex direction={Flex.Direction.VERTICAL}>
                 <Text tag="h1" size={Text.Sizes.SIZE_14} color={Text.Colors.HEADER_PRIMARY} strong={true} style={{textTransform: "uppercase", marginBottom: "8px"}}>{t("Modals.addonErrors")}</Text>
                 <div className="bd-tab-bar">
-                    {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={clsx("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
+                    {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={clsx("bd-tab-item", tab.id === selectedTab?.id && "selected")}>{tab.name}</div>)}
                 </div>
             </Flex>
         </Header>
         <Content className="bd-error-modal-content">
             <div className="bd-addon-errors">
-                {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
+                {selectedTab?.errors.map((error, index) => <AddonError index={index} err={error} />)}
             </div>
         </Content>
         <Footer className="bd-error-modal-footer">

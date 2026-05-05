@@ -27,7 +27,7 @@ import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 // import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
-import {getStore, Stores} from "@webpack";
+import {allModulesLoaded, getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
 
 export default new class Core {
@@ -86,12 +86,12 @@ export default new class Core {
         }
 
         Logger.log("Startup", "Loading Plugins");
-        // const pluginErrors = [];
-        const pluginErrors = PluginManager.initialize();
+        PluginManager.initialize();
+        PluginManager.loadAddons("connection");
 
         Logger.log("Startup", "Loading Themes");
-        // const themeErrors = [];
-        const themeErrors = ThemeManager.initialize();
+        ThemeManager.initialize();
+        ThemeManager.loadAddons();
 
         Logger.log("Startup", "Initializing Updater");
         Updater.initialize();
@@ -99,15 +99,13 @@ export default new class Core {
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
 
-        // Show loading errors
-        Logger.log("Startup", "Collecting Startup Errors");
-        Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
-
         const previousVersion = JsonStore.get("misc", "version");
         if (Config.get("version") !== previousVersion) {
             Modals.showChangelogModal(Changelog);
             JsonStore.set("misc", "version", Config.get("version"));
         }
+
+        allModulesLoaded.then(() => PluginManager.loadAddons("idle"));
     }
 
     waitForConnection() {

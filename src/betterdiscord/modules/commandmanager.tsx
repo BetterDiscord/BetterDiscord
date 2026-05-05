@@ -244,8 +244,7 @@ class CommandManager {
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
             const getIconUrl = () => {
-                // @ts-expect-error cba
-                const metadataIcon = pluginmanager.getAddon(id)?.icon || pluginmanager.getPlugin(id)?.instance?.icon || null;
+                const metadataIcon = pluginmanager.resolveAddon(id)?.icon || pluginmanager.resolveAddon(id)?.instance?.icon || null;
                 const sectionIcon = this.#sections.has(id) ? this.#sections.get(id)?.icon : null;
                 return metadataIcon || sectionIcon;
             };

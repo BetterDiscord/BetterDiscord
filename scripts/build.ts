@@ -22,6 +22,7 @@ const moduleConfigs: Record<string, EntryPoint> = {
     betterdiscord: {"in": "src/betterdiscord/index.ts", "out": "betterdiscord"},
     main: {"in": "src/electron/main/index.ts", "out": "main"},
     preload: {"in": "src/electron/preload/index.ts", "out": "preload"},
+    earlyRenderer: {"in": "src/electron/preload/early/index.ts", "out": "earlyRenderer"},
     editorPreload: {"in": "src/editor/preload.ts", "out": "editor/preload"},
     editor: {"in": "src/editor/script.ts", "out": "editor/script"},
     editorHtml: {"in": "src/editor/index.html", "out": "editor/index"}
