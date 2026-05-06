@@ -71,8 +71,8 @@ export interface AddonErrorModalProps {
  * @returns
  */
 export default function AddonErrorModal({transitionState, onClose}: AddonErrorModalProps) {
-    const pluginErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.pluginErrors]);
-    const themeErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.themeErrors]);
+    const pluginErrors = useStateFromStores(AddonErrorsStore, () => Object.values(AddonErrorsStore.pluginErrors), [], true);
+    const themeErrors = useStateFromStores(AddonErrorsStore, () => Object.values(AddonErrorsStore.themeErrors), [], true);
 
     const tabs = useMemo<Array<ReturnType<typeof generateTab>>>(() => {
         return [

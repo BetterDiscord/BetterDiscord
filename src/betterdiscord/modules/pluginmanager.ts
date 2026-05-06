@@ -88,7 +88,36 @@ export default new class PluginManager extends AddonManager<Plugin> {
         }
     }
 
+    private blacklist: Array<[filename: string, name: string, fileContentMatch?: string | RegExp]> = [
+        // Breaks the declaration API and this causes damage to BD and other plugins
+        [
+            "0PluginLibrary.plugin.js",
+            "ZeresPluginLibrary",
+            /(\()?(?:self|globalThis|global|window)\1\s*(?:\.ZeresPluginLibrary|\[\s*(["'])ZeresPluginLibrary\2\s*\])\s*=/
+        ]
+    ];
+
     initAddon(addon: Addon) {
+        if (this.blacklist.some(
+            ([filename, name, fileContentMatch]) => {
+                if (addon.filename === filename) return true;
+                if (addon.name === name) return true;
+                if (fileContentMatch && addon.fileContent) {
+                    if (typeof fileContentMatch === "string" && addon.fileContent.includes(fileContentMatch)) return true;
+                    if (fileContentMatch instanceof RegExp && fileContentMatch.test(addon.fileContent)) return true;
+                }
+
+                return false;
+            }
+        )) {
+            this.showAddonError(addon, t("Addons.blacklistedPlugin"), {
+                message: "",
+                stack: t("Addons.blacklistedPluginStack", {name: addon.name || addon.filename})
+            });
+
+            return null;
+        }
+
         const plugin = this.runPlugin(addon);
         if (!plugin) return null;
 
