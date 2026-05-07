@@ -1,13 +1,9 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonError from "@structs/addonerror";
-
 import AddonManager, {type Addon} from "./addonmanager";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
-
-import Modals from "@ui/modals";
 
 
 export interface Theme extends Addon {
@@ -32,65 +28,49 @@ function parseProperty(raw: string) {
     return out;
 }
 
-export default new class ThemeManager extends AddonManager {
-    get name() {return "ThemeManager";}
-    get extension() {return ".theme.css";}
-    get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
-    get addonFolder() {return Config.get("themesPath");}
-    get prefix() {return "theme" as const;}
-    get language() {return "css";}
-    get order() {return 4;}
+export default new class ThemeManager extends AddonManager<Theme> {
+    name = "ThemeManager";
+    extension = ".theme.css";
+    duplicatePattern = /\.theme\s?\([0-9]+\)\.css/;
+    addonFolder = Config.get("themesPath");
+    prefix = "theme" as const;
+    language = "css";
+    order = 4;
 
-    addonList: Theme[] = [];
+    loadAddons() {
+        for (const addon of this.addonInfo) {
+            this.loadAddon(addon);
+        }
 
-    /* Aliases */
-    updateThemeList() {return this.updateList();}
-    loadAllThemes() {return this.loadAllAddons();}
-
-    enableTheme(idOrAddon: string | Theme) {return this.enableAddon(idOrAddon);}
-    disableTheme(idOrAddon: string | Theme) {return this.disableAddon(idOrAddon);}
-    toggleTheme(id: string) {return this.toggleAddon(id);}
-
-    unloadTheme(idOrFileOrAddon: string | Theme) {return this.unloadAddon(idOrFileOrAddon);}
-    loadTheme(filename: string) {return this.loadAddon(filename);}
-    reloadTheme(idOrFileOrAddon: string | Theme) {return this.reloadAddon(idOrFileOrAddon);}
-
-    loadAddon(filename: string, shouldCTE = true) {
-        const error = super.loadAddon(filename, shouldCTE);
-        if (error && shouldCTE) Modals.showAddonErrors({themes: [error]});
-        return error;
+        this.finishInit();
     }
 
-    /* Overrides */
-    initializeAddon(addon: Theme) {
-        if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+    initAddon(addon: Addon) {
+        const theme = addon as Theme;
+        theme.css = theme.fileContent!;
+        delete theme.fileContent;
+
+        // Set the custom properties
+        const properties = this.extractCustomProperties(theme.css);
+        theme.properties = properties;
+        return theme;
     }
 
-    requireAddon(filename: string) {
-        const addon = super.requireAddon(filename) as Theme;
-        addon.css = addon.fileContent!;
-        delete addon.fileContent;
-        const properties = this.extractCustomProperties(addon.css);
-        addon.properties = properties;
-        return addon;
+    startAddon(idOrAddon: string | Theme) {
+        const theme = this.resolveAddon(idOrAddon);
+        if (!theme) return;
+
+        DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
+        if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
+        else this.initialAddonsLoaded++;
     }
 
-    startAddon(idOrAddon: string | Theme) {return this.addTheme(idOrAddon);}
-    stopAddon(idOrAddon: string | Theme) {return this.removeTheme(idOrAddon);}
+    stopAddon(idOrAddon: string | Theme) {
+        const theme = this.resolveAddon(idOrAddon);
+        if (!theme) return;
 
-    addTheme(idOrAddon: string | Theme) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
-
-        if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: addon.name, version: addon.version}));
-    }
-
-    removeTheme(idOrAddon: string | Theme) {
-        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
-        DOMManager.removeTheme(addon.slug + "-theme-container");
-        Toasts.error(t("Addons.disabled", {name: addon.name, version: addon.version}));
+        DOMManager.removeTheme(theme.slug + "-theme-container");
+        Toasts.error(t("Addons.disabled", {name: theme.name, version: theme.version}));
     }
 
     extractCustomProperties(css: string) {

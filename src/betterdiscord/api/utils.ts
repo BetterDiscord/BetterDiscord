@@ -3,6 +3,7 @@ import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
 import Store from "@stores/base";
+import {mapObject} from "@utils/object";
 
 
 /**
@@ -97,9 +98,10 @@ const Utils = {
     semverCompare: comparator,
 
     /**
-     * A store which can have listeners attached to it. When the store emits a change, all listeners will be called.
-     * This is most useful with `Hooks.useStateFromStores` to create reactive values.
+     * Maps the properties of one object onto another based on a set of filters
      */
+    mapObject: mapObject,
+
     Store
 } as const;
 

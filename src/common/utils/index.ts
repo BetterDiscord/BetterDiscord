@@ -5,3 +5,4 @@ export {default as findInTree} from "./findintree";
 export {default as formatString} from "./format";
 export {default as memoize} from "./memoize";
 export {default as getNestedProp} from "./nested";
+export {default as parseJsDoc} from "./jsdoc";

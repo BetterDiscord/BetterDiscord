@@ -33,6 +33,10 @@ async function attemptRecovery() {
             errorMessage: "Failed to pop all modals"
         },
         {
+            action: () => Dispatcher?.dispatch({type: "CONTEXT_MENU_CLOSE"}),
+            errorMessage: "Failed to close context menus"
+        },
+        {
             action: () => transitionTo?.("/channels/@me"),
             errorMessage: "Failed to route to main channel"
         },
@@ -198,7 +202,7 @@ export default new class Recovery extends Builtin {
 
     getPluginInfo(pluginName: string): PluginInfo | null {
         try {
-            const plugin = pluginmanager.getPlugin(pluginName);
+            const plugin = pluginmanager.resolveAddon(pluginName);
             if (!plugin) return null;
 
             return {
