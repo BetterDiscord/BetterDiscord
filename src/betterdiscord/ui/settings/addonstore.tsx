@@ -16,6 +16,7 @@ import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader
 import Paginator from "@ui/misc/paginator";
 import Logger from "@common/logger";
 import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react";
+import type {AddonType} from "@typed/addon";
 
 const {useState, useMemo, useCallback} = React;
 
@@ -66,7 +67,7 @@ function StoreContent({content, refToScroller, page, setPage}: StoreContentProps
 }
 
 interface TagDropdownProps {
-    type: "plugin" | "theme";
+    type: AddonType;
     selected: Record<string, boolean>;
     onChange(tag: string, value?: boolean): void;
 }
@@ -135,7 +136,7 @@ function TagDropdown({type, selected, onChange}: TagDropdownProps) {
 }
 
 interface AddonStorePageProps {
-    type: "plugin" | "theme";
+    type: AddonType;
     refToScroller?: any;
 }
 

@@ -20,31 +20,7 @@ import type {SystemError} from "bun";
 import RemoteAPI from "@polyfill/remote";
 import {parseJsDoc} from "@common/utils";
 import Modals from "@ui/modals";
-
-export interface Addon {
-    added: number;
-    author: string;
-    authorId?: string;
-    authorLink?: string;
-    description: string;
-    donate?: string;
-    fileContent?: string;
-    filename: string;
-    format: string;
-    id: string;
-    invite?: string;
-    modified: number;
-    name: string;
-    partial?: boolean;
-    patreon?: string;
-    size: number;
-    slug: string;
-    source?: string;
-    version: string;
-    website?: string;
-    runAt?: string;
-    icon?: string;
-}
+import type {Addon, AddonType} from "@typed/addon";
 
 export default abstract class AddonManager<T extends Addon = Addon> extends Store {
     abstract name: string;
@@ -52,7 +28,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     abstract duplicatePattern: RegExp;
     abstract addonFolder: string;
     abstract language: string;
-    abstract prefix: "plugin" | "theme";
+    abstract prefix: AddonType;
     abstract order: number;
 
     addonList: T[] = [];

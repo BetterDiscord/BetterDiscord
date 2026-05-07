@@ -112,7 +112,7 @@ export default new class AddonStoreBuiltin extends Builtin {
         this.extractDiscordProtocolList().push("betterdiscord:");
     }
 
-    // The patches are slightly late sometimes, so this will update chat
+    /** The patches are slightly late sometimes, so this will update chat */
     forceUpdateChat() {
         for (const message of document.querySelectorAll("[id^=chat-messages-]")) {
             const instance = ReactUtils.getInternalInstance(message);

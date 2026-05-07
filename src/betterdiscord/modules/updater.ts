@@ -29,6 +29,7 @@ import type {Release} from "@typed/github";
 import type {BdWebAddon} from "@typed/betterdiscordweb";
 import {Logo} from "@ui/logo";
 import {RefreshCcwIcon} from "lucide-react";
+import type {AddonType} from "@typed/addon";
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -244,11 +245,11 @@ export class CoreUpdater {
 
 export class AddonUpdater {
     manager: AddonManager;
-    type: "plugin" | "theme";
+    type: AddonType;
     cache: Record<string, {name: string; version: string; id: number;}> | Record<string, never>;
     pending: string[];
 
-    constructor(type: "plugin" | "theme") {
+    constructor(type: AddonType) {
         this.manager = type === "plugin" ? PluginManager : ThemeManager;
         this.type = type;
         this.cache = {};

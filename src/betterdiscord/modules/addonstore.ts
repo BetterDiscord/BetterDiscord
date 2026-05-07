@@ -17,9 +17,10 @@ import Web from "@data/web";
 import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
 import {parseJsDoc} from "@common/utils";
+import type {Addon as AddonType} from "@typed/addon";
 
 
-function showConfirmDelete(addon: import("./addonmanager").Addon) {
+function showConfirmDelete(addon: AddonType) {
     return new Promise<boolean>(resolve => {
         Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
@@ -627,7 +628,7 @@ const addonStore = new class AddonStore {
             loading: this.loading
         };
     }
-    
+
     /**
      * A react hook for {@link getState}
      */

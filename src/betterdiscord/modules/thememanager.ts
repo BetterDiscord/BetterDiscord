@@ -1,7 +1,8 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
+import {type Addon} from "@typed/addon";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 

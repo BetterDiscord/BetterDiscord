@@ -3,9 +3,10 @@ import {OptionTypes, type Command} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
 import Themes from "@modules/thememanager";
+import type {AddonType} from "@typed/addon";
 
 
-export default (type: "plugin" | "theme"): Command => {
+export default (type: AddonType): Command => {
     const manager = type === "plugin" ? Plugins : Themes;
 
     return {

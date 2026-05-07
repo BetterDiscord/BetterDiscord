@@ -3,7 +3,8 @@ import Logger from "@common/logger";
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
+import {type Addon} from "@typed/addon";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
