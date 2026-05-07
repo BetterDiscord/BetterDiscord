@@ -47,9 +47,9 @@ export default (type: "plugin" | "theme"): Command => {
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};
 
-                const err = manager.enableAddon(addon.id);
+                const success = manager.enableAddon(addon.id);
 
-                if (err) {
+                if (!success) {
                     return {content: t("Addons.couldNotEnable", {name: addon.id})};
                 }
 
@@ -59,9 +59,9 @@ export default (type: "plugin" | "theme"): Command => {
             if (action === "disable") {
                 if (!isEnabled) return {content: `${addon.name} is already disabled!`};
 
-                const err = manager.disableAddon(addon.id);
+                const success = manager.disableAddon(addon.id);
 
-                if (err) {
+                if (!success) {
                     return {content: t("Addons.couldNotDisable", {name: addon.id})};
                 }
 

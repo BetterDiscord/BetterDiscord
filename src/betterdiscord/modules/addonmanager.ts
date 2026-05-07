@@ -52,7 +52,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     abstract duplicatePattern: RegExp;
     abstract addonFolder: string;
     abstract language: string;
-    abstract prefix: string;
+    abstract prefix: "plugin" | "theme";
     abstract order: number;
 
     addonList: T[] = [];
@@ -88,8 +88,8 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
     }
 
-    abstract startAddon(idOrAddon: string | T): void;
-    abstract stopAddon(idOrAddon: string | T): void;
+    abstract startAddon(idOrAddon: string | T): boolean;
+    abstract stopAddon(idOrAddon: string | T): boolean;
 
     loadState() {
         const saved = JsonStore.get(`${this.prefix}s` as Files);
@@ -322,9 +322,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
 
-        const err = this.startAddon(addon);
+        const success = this.startAddon(addon);
         this.saveState();
-        return err;
+        return success;
     }
 
     enableAllAddons() {
@@ -339,9 +339,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
 
-        const err = this.stopAddon(addon);
+        const success = this.stopAddon(addon);
         this.saveState();
-        return err;
+        return success;
     }
 
     disableAllAddons() {
