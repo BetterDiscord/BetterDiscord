@@ -15,13 +15,13 @@ import ModalRoot from "./modals/root";
 
 import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
-import CustomMarkdown from "./base/markdown";
 import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
 import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
 import AddonError from "@structs/addonerror";
 import AddonErrorsStore from "@stores/addonerrors";
+import SimpleMarkdownExt from "@structs/markdown";
 
 
 const queue: Array<() => void> = [];
@@ -165,7 +165,7 @@ export default class Modals {
         }
 
         let contentArray = Array.isArray(content) ? content : [content];
-        contentArray = contentArray.map(c => typeof (c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
+        contentArray = contentArray.map(c => typeof (c) === "string" ? SimpleMarkdownExt.parseToReact(c) : c);
 
         const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {

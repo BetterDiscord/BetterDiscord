@@ -40,6 +40,10 @@ interface DiscordWindow {
     BetterDiscordPreload(): typeof PreloadAPI;
 
     BetterDiscordRunRenderer(): void;
+
+    GLOBAL_ENV?: {
+        RELEASE_CHANNEL?: string;
+    };
 }
 
 declare global {

@@ -38,7 +38,13 @@ export type Options = {
     declarationFilter?: ExportedOnlyFilter;
 };
 
-export type MangledOptions = Options & {
+export type LazyOptions = Options & {signal?: AbortSignal;};
+
+export type MangledOptions = Omit<Options, "declarationFilter"> & {
+    mapDeclarations?: boolean;
+};
+
+export type LazyMangledOptions = Omit<LazyOptions, "declarationFilter"> & {
     mapDeclarations?: boolean;
 };
 
@@ -51,8 +57,6 @@ export type BulkQueries = Options & {
 export type WithKeyOptions = Options & {
     target?: any;
 };
-
-export type LazyOptions = Options & {signal?: AbortSignal;};
 
 export type ModuleWithEffect = [
     any[],

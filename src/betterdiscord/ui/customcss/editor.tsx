@@ -210,7 +210,7 @@ export default forwardRef(function CodeEditor({
                 const foreground = styles.getPropertyValue("--vscode-foreground");
                 const tableColumnsBorder = styles.getPropertyValue("--vscode-tree-tableColumnsBorder");
 
-                let container = windowRef.current!.parentElement!.parentElement;
+                let container = windowRef.current?.parentElement?.parentElement;
                 if (!container || !container.classList.contains("floating-window")) container = windowRef.current!;
 
                 if (container) {

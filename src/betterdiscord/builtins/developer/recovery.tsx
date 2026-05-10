@@ -15,8 +15,8 @@ import config from "@stores/config";
 import {Logo} from "@ui/logo";
 import clsx from "clsx";
 import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
+import SimpleMarkdownExt from "@structs/markdown";
 
-const Dispatcher = DiscordModules.Dispatcher;
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
 // TODO: arven if you get a chance
@@ -25,15 +25,15 @@ async function attemptRecovery() {
 
     const recoverySteps = [
         {
-            action: () => Dispatcher?.dispatch?.({type: "LAYER_POP_ALL"}),
+            action: () => DiscordModules.Dispatcher?.dispatch?.({type: "LAYER_POP_ALL"}),
             errorMessage: "Failed to pop all layers"
         },
         {
-            action: () => Dispatcher?.dispatch?.({type: "MODAL_POP_ALL"}),
+            action: () => DiscordModules.Dispatcher?.dispatch?.({type: "MODAL_POP_ALL"}),
             errorMessage: "Failed to pop all modals"
         },
         {
-            action: () => Dispatcher?.dispatch({type: "CONTEXT_MENU_CLOSE"}),
+            action: () => DiscordModules.Dispatcher?.dispatch({type: "CONTEXT_MENU_CLOSE"}),
             errorMessage: "Failed to close context menus"
         },
         {
@@ -228,7 +228,8 @@ export default new class Recovery extends Builtin {
             if (!buttons) return;
 
             const errorStack = (instance as ErrorBoundary).state;
-            const parsedError = errorStack ? DiscordModules.SimpleMarkdown?.parse(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
+
+            const parsedError = errorStack ? SimpleMarkdownExt.parseToReact(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
             const foundIssue = errorStack.error?.stack && TEST_PLUGIN_REGEX.exec(errorStack.error?.stack);
             let pluginInfo = null;

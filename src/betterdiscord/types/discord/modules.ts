@@ -13,13 +13,6 @@ export interface RemoteModule {
     minimize(): void;
 }
 
-export type GetClientInfo = () => {
-    buildNumber: string;
-    logsUploaded: string;
-    releaseChannel: string;
-    versionHash: string;
-};
-
 export interface UserAgentInfo {
     description: string;
     layout: string;
@@ -186,7 +179,6 @@ export type Rules = {
 
 export interface SimpleMarkdown {
     defaultRules: Rules;
-    parse: (s: string) => object;
     parserFor: (r: Rules) => (s: string, o?: {inline: boolean;}) => object;
     ruleOutput: (r: Rules, t: string) => object;
     reactFor: (o: object) => (o2: object) => ReactElement;
@@ -245,3 +237,8 @@ export interface MessageUtils {
 }
 
 export type TabBarComponentType = React.PureComponent<{id: string;}>;
+export interface SimpleMarkdownWrapper {
+    defaultRules: Rules;
+    parse: (s: string, o?: boolean, i?: object) => object;
+    reactParserFor: (r: Rules) => this["parse"];
+}
