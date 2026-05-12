@@ -10,4 +10,4 @@ export default {
     execute: async () => {
         Modals.showGuildJoinModal("rC8b2H6SCt");
     }
-} as Command;
+} satisfies Command;

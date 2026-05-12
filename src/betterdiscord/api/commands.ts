@@ -32,7 +32,7 @@ class CommandAPI<Bounded extends boolean> {
      * Registers a new command
      * @param callerOrCommand Caller name or command object if caller is preset
      * @param [command] Command object (optional if caller is preset)
-     * @returns Unregister function
+     * @returns A function to unregister the command
      */
     register(...args: RegisterArgs<Bounded>) {
         const caller = (this.#callerName || args[0]) as string;

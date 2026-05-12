@@ -298,9 +298,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
 
-        const success = this.startAddon(addon);
+        const succeeded = this.startAddon(addon);
         this.saveState();
-        return success;
+        return succeeded;
     }
 
     enableAllAddons() {
@@ -315,9 +315,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
 
-        const success = this.stopAddon(addon);
+        const succeeded = this.stopAddon(addon);
         this.saveState();
-        return success;
+        return succeeded;
     }
 
     disableAllAddons() {
