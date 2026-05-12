@@ -28,7 +28,6 @@ export interface SettingsPanelProps {
 
 /**
  * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.
- * @summary {@link UI} is a utility class for creating user interfaces.
  */
 
 // TODO: merge types after converting ui folder

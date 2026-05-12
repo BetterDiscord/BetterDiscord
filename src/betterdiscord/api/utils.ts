@@ -8,7 +8,6 @@ import {mapObject} from "@utils/object";
 
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
- * @summary {@link Utils} is a utility class for interacting with React internals.
  */
 const Utils = {
     /**
@@ -54,7 +53,7 @@ const Utils = {
     debounce: debounce,
 
     /**
-     * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
+     * Takes a string of HTML and escapes it using the browser's own escaping mechanism
      *
      * @param html HTML to be escaped
      * @returns Escaped HTML string
@@ -89,7 +88,7 @@ const Utils = {
     },
 
     /**
-     * This works on semantic versioning e.g. "1.0.0".
+     * Compares two semantic versions, e.g. "1.0.0"
      *
      * @param currentVersion
      * @param newVersion
@@ -102,6 +101,9 @@ const Utils = {
      */
     mapObject: mapObject,
 
+    /**
+     * A class which can be listened to for changes
+     */
     Store
 } as const;
 

@@ -12,7 +12,6 @@ type SaveArgs<Bounded extends boolean, T> = [
 
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
- * @summary {@link Data} is a simple utility class for the management of plugin data.
  */
 class Data<Bounded extends boolean> {
     #pluginName = "";

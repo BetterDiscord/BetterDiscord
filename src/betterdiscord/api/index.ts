@@ -35,13 +35,7 @@ import Text from "@ui/base/text";
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
-
-import type ReactType from "react";
-import type ReactDOMBaseType from "react-dom";
-import type ReactDOMClientType from "react-dom/client";
-import ReactDOMImport from "@modules/reactdom";
-
-type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
+import ReactDOM from "@modules/reactdom";
 
 
 const bounded = new Map();
@@ -55,81 +49,125 @@ const CommandsAPI = new CommandAPI<false>();
 const HooksAPI = new Hooks();
 const DefaultLogger = new Logger<false>();
 
-/**
- * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
- * @summary {@link Components} a namespace holding a series of React components
- */
-const Components = {
-    get Tooltip() {return DiscordModules.Tooltip;},
-    get ColorInput() {return ColorInput;},
-    get DropdownInput() {return DropdownInput;},
-    get SettingItem() {return SettingItemComponent;},
-    get KeybindInput() {return KeybindInput;},
-    get NumberInput() {return NumberInput;},
-    get RadioInput() {return RadioInput;},
-    get SearchInput() {return SearchInput;},
-    get SliderInput() {return SliderInput;},
-    get SwitchInput() {return SwitchInput;},
-    get TextInput() {return TextInput;},
-    get SettingGroup() {return SettingGroup;},
-    get ErrorBoundary() {return ErrorBoundary;},
-    get Text() {return Text;},
-    get Flex() {return Flex;},
-    get Button() {return Button;},
-    get Spinner() {return Spinner;},
-};
+const Components = Object.freeze({
+    Tooltip: DiscordModules.Tooltip,
+    SettingItem: SettingItemComponent,
+    ColorInput,
+    DropdownInput,
+    KeybindInput,
+    NumberInput,
+    RadioInput,
+    SearchInput,
+    SliderInput,
+    SwitchInput,
+    TextInput,
+    SettingGroup,
+    ErrorBoundary,
+    Text,
+    Flex,
+    Button,
+    Spinner
+});
 
-/**
- * The React module being used inside Discord.
- * @memberof BdApi
- */
-const React: typeof ReactType = DiscordModules.React;
+const Net = Object.freeze({
+    fetch
+});
 
-/**
- * The ReactDOM module being used inside Discord.
- * @memberof BdApi
- */
-const ReactDOM: ReactDOMType = ReactDOMImport;
-
-/**
- * A reference string for BD's version.
- * @memberof BdApi
- */
 const version: string = Config.get("version");
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
  */
 export default class BdApi {
-    Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
-    Data: Data<true> = DataAPI as Data<true>;
-    DOM: DOM<true> = DOMAPI as DOM<true>;
-    Logger: Logger<true> = DefaultLogger as Logger<true>;
-    Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
-    Hooks: Hooks<any, true> = HooksAPI as unknown as Hooks<any, true>;
-    React = React;
-    ReactDOM = ReactDOM;
-    version = version;
+    /** The React module being used inside Discord */
+    get React() {return DiscordModules.React;}
+    /** The React module being used inside Discord */
+    static React = DiscordModules.React;
 
-    static Patcher: Patcher<false>;
-    static Data: Data<false>;
-    static DOM: DOM<false>;
-    static Logger: Logger<false>;
-    static Commands: CommandAPI<false>;
-    static Hooks: Hooks;
-    static React = React;
+    /** The ReactDOM module being used inside Discord */
+    get ReactDOM() {return ReactDOM;}
+    /** The ReactDOM module being used inside Discord */
     static ReactDOM = ReactDOM;
+
+    /** A reference string for BD's version */
+    get version() {return version;}
+    /** A reference string for BD's version */
     static version = version;
 
-    static Plugins: AddonAPI;
-    static Themes: AddonAPI;
-    static Webpack: typeof Webpack;
-    static UI: typeof UI;
-    static ReactUtils: typeof ReactUtils;
-    static Utils: typeof Utils;
-    static ContextMenu: ContextMenu;
-    static Components: typeof Components;
-    static Net: {fetch: typeof fetch;};
+    /** A set of react components plugins can make use of */
+    get Components() {return Components;}
+    /** A set of react components plugins can make use of */
+    static Components = Components;
+
+    /** An instance of {@link Net} for using network related tools */
+    get Net() {return Net;};
+    /** An instance of {@link Net} for using network related tools */
+    static Net = Net;
+
+    /** An instance of {@link Webpack} to search for modules */
+    get Webpack() {return Webpack;}
+    /** An instance of {@link Webpack} to search for modules */
+    static Webpack = Webpack;
+
+    /** An instance of {@link AddonAPI} to access plugins */
+    get Plugins() {return PluginAPI;}
+    /** An instance of {@link AddonAPI} to access plugins */
+    static Plugins = PluginAPI;
+
+    /** An instance of {@link AddonAPI} to access themes */
+    get Themes() {return ThemeAPI;}
+    /** An instance of {@link AddonAPI} to access themes */
+    static Themes = ThemeAPI;
+
+    /** An instance of {@link Utils} for general utility functions */
+    get Utils() {return Utils;}
+    /** An instance of {@link Utils} for general utility functions */
+    static Utils = Utils;
+
+    /** An instance of {@link UI} to create interfaces */
+    get UI() {return UI;}
+    /** An instance of {@link UI} to create interfaces */
+    static UI = UI;
+
+    /** An instance of {@link ReactUtils} to work with React */
+    get ReactUtils() {return ReactUtils;}
+    /** An instance of {@link ReactUtils} to work with React */
+    static ReactUtils = ReactUtils;
+
+    /** An instance of {@link ContextMenu} for interacting with context menus */
+    get ContextMenu() {return ContextMenuAPI;}
+    /** An instance of {@link ContextMenu} for interacting with context menus */
+    static ContextMenu = ContextMenuAPI;
+
+    /** An instance of {@link Patcher} to monkey patch functions */
+    Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
+    /** An instance of {@link Patcher} to monkey patch functions */
+    static Patcher: Patcher<false> = PatcherAPI;
+
+    /** An instance of {@link Data} to manage data */
+    Data: Data<true> = DataAPI as Data<true>;
+    /** An instance of {@link Data} to manage data */
+    static Data: Data<false> = DataAPI;
+
+    /** An instance of {@link DOM} to interact with the DOM */
+    DOM: DOM<true> = DOMAPI as DOM<true>;
+    /** An instance of {@link DOM} to interact with the DOM */
+    static DOM: DOM<false> = DOMAPI;
+
+    /** An instance of {@link Logger} for logging information */
+    Logger: Logger<true> = DefaultLogger as Logger<true>;
+    /** An instance of {@link Logger} for logging information */
+    static Logger: Logger<false> = DefaultLogger;
+
+    /** An instance of {@link CommandAPI} for adding slash commands */
+    Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    /** An instance of {@link CommandAPI} for adding slash commands */
+    static Commands: CommandAPI<false> = CommandsAPI;
+
+    /** An instance of {@link Hooks} for react hooks */
+    Hooks: Hooks<any, true> = HooksAPI as unknown as Hooks<any, true>;
+    /** An instance of {@link Hooks} for react hooks */
+    static Hooks: Hooks<any, false> = HooksAPI;
 
     constructor(pluginName: string) {
         // @ts-expect-error return the normal BdApi when called without a plugin name for backwards compatibility
@@ -151,95 +189,7 @@ export default class BdApi {
 
         bounded.set(pluginName, this);
     }
-
-    // Non-bound namespaces
-    get Plugins() {return PluginAPI;}
-    get Themes() {return ThemeAPI;}
-    get Webpack(): typeof Webpack {return Webpack;}
-    get Utils() {return Utils;}
-    get UI() {return UI;}
-    get ReactUtils() {return ReactUtils;}
-    get ContextMenu() {return ContextMenuAPI;}
-    get Components() {return Components;}
-    Net = {fetch};
 }
 
-/**
- * An instance of {@link AddonAPI} to access plugins.
- */
-BdApi.Plugins = PluginAPI;
-
-/**
- * An instance of {@link AddonAPI} to access themes.
- */
-BdApi.Themes = ThemeAPI;
-
-/**
- * An instance of {@link Patcher} to monkey patch functions.
- */
-BdApi.Patcher = PatcherAPI;
-
-/**
- * An instance of {@link Webpack} to search for modules.
- */
-BdApi.Webpack = Webpack;
-
-/**
- * An instance of {@link Data} to manage data.
- */
-BdApi.Data = DataAPI;
-
-/**
- * An instance of {@link UI} to create interfaces.
- */
-BdApi.UI = UI;
-
-/**
- * An instance of {@link ReactUtils} to work with React.
- */
-BdApi.ReactUtils = ReactUtils;
-
-/**
- * An instance of {@link Utils} for general utility functions.
- */
-BdApi.Utils = Utils;
-
-/**
- * An instance of {@link DOM} to interact with the DOM.
- */
-BdApi.DOM = DOMAPI;
-
-/**
- * An instance of {@link ContextMenu} for interacting with context menus.
- */
-BdApi.ContextMenu = ContextMenuAPI;
-
-/**
- * A set of react components plugins can make use of.
- */
-BdApi.Components = Components;
-
-/**
- * An instance of {@link CommandAPI} for adding slash commands.
- */
-BdApi.Commands = CommandsAPI;
-
-/**
- * An instance of {@link Net} for using network related tools.
- */
-BdApi.Net = {fetch};
-
-/**
- * An instance of {@link Logger} for logging information.
- */
-BdApi.Logger = DefaultLogger;
-
-/**
- * An instance of {@link Hooks} for react hooks.
- */
-BdApi.Hooks = HooksAPI;
-
 Object.freeze(BdApi);
-Object.freeze(BdApi.Net);
 Object.freeze(BdApi.prototype);
-Object.freeze(BdApi.Components);

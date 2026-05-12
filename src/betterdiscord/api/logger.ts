@@ -20,7 +20,6 @@ type LogArgs<Bounded extends boolean> = [
 
 /**
  * `Logger` is a helper class to log data in a nice and consistent way. An instance is available on {@link BdApi}.
- * @summary {@link Logger} is a simple utility for logging information.
  */
 class Logger<Bounded extends boolean> {
 

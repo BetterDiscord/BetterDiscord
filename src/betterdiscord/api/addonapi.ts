@@ -38,7 +38,7 @@ class AddonAPI {
     toggle(idOrAddon: string) {return this.#manager.toggleAddon(idOrAddon);}
 
     /**
-     * Reloads if a particular addon is enabled.
+     * Reloads a particular addon if it is enabled.
      * @param idOrFile Addon ID or filename
      */
     reload(idOrFileOrAddon: string) {return this.#manager.reloadAddon(idOrFileOrAddon);}
