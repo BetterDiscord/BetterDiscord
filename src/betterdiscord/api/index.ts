@@ -21,7 +21,7 @@ import Hooks from "./hooks";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
-import SettingItemComponent from "@ui/settings/components/item";
+import SettingItem from "@ui/settings/components/item";
 import KeybindInput from "@ui/settings/components/keybind";
 import NumberInput from "@ui/settings/components/number";
 import RadioInput from "@ui/settings/components/radio";
@@ -51,7 +51,7 @@ const DefaultLogger = new Logger<false>();
 
 const Components = Object.freeze({
     Tooltip: DiscordModules.Tooltip,
-    SettingItem: SettingItemComponent,
+    SettingItem: SettingItem,
     ColorInput,
     DropdownInput,
     KeybindInput,

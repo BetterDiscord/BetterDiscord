@@ -162,7 +162,7 @@ export default DefaultSettings;
 
 export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";
 
-export interface SettingItem {
+export interface BaseSettingItem {
     type: SettingType;
     /** An identifier used for callbacks */
     id: string;
@@ -184,7 +184,7 @@ export interface SettingItem {
     hidden?: boolean;
 }
 
-export interface ValueSettingItem<T> extends SettingItem {
+export interface ValueSettingItem<T> extends BaseSettingItem {
     /** The current value of the setting */
     value: T;
     /** A callback run when the setting changes */

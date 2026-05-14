@@ -16,7 +16,7 @@ const getOptions = <T, B extends Options>(args: WithOptions<T, B>, defaultOption
     return [args as T[], defaultOptions];
 };
 
-interface WebpackOptions extends Options {
+export interface WebpackOptions extends Options {
     first?: boolean;
 }
 
