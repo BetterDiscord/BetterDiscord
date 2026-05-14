@@ -47,7 +47,7 @@ export default forwardRef(function CssEditor({
         return {
             resize() {editorRef.current?.resize();},
             get value() {return editorRef.current?.value ?? "";},
-            set value(newValue) {editorRef.current && (editorRef.current.value = newValue);},
+            set value(newValue) {if (editorRef.current) editorRef.current.value = newValue;},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);

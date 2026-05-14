@@ -24,7 +24,7 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
         return {
             resize() {editorRef.current?.resize();},
             get value(): string | undefined {return editorRef.current?.value ?? "";},
-            set value(newValue: string) {editorRef.current && (editorRef.current!.value = newValue);},
+            set value(newValue: string) {if (editorRef.current) editorRef.current!.value = newValue;},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);
