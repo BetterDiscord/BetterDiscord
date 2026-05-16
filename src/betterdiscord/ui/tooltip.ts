@@ -37,7 +37,7 @@ export default class Tooltip {
     observer?: MutationObserver;
     /**
      * @param node DOM node to monitor and show the tooltip on
-     * @param tip A string to show in the tooltip
+     * @param text A string to show in the tooltip
      * @param options Additional options for the tooltip
      */
     constructor(node: HTMLElement, text: string | HTMLElement, options: TooltipOptions = {}) {

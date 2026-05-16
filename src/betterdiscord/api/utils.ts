@@ -78,10 +78,10 @@ const Utils = {
     className: clsx,
 
     /**
-     * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
+     * Gets a nested value (if it exists) of an object safely. path should be something like `key.key2.key3`.
      * Numbers can be used for arrays as well like `key.key2.array.0.id`.
-     * @param obj Object to get nested value from
-     * @param keyPath Key path to the desired value
+     * @param object Object to get nested value from
+     * @param path Key path to the desired value
      */
     getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
