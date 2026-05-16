@@ -29,7 +29,7 @@ class BaseDOM {
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
      * The callback is given the matching element.
-     * @param selector Node to wait for
+     * @param selector A CSS selector for the node to wait for
      * @param callback Function to be performed on event
      */
     onAdded(selector: string, callback: () => void) {

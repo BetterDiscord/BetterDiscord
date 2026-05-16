@@ -23,8 +23,8 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
     useImperativeHandle(ref, () => {
         return {
             resize() {editorRef.current?.resize();},
-            get value(): string | undefined {return editorRef.current!.value;},
-            set value(newValue: string) {editorRef.current!.value = newValue;},
+            get value(): string | undefined {return editorRef.current?.value ?? "";},
+            set value(newValue: string) {if (editorRef.current) editorRef.current!.value = newValue;},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);

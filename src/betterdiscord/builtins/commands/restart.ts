@@ -18,4 +18,4 @@ export default {
         const vanilla = data.find(o => o.name === "vanilla").value;
         ipc.relaunch(vanilla ? ["--vanilla"] : []);
     }
-} as Command;
+} satisfies Command;

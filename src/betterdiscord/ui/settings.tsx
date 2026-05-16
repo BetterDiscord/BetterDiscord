@@ -429,7 +429,7 @@ interface SidebarItemLayout {
     useSearchTerms(): string[];
 
     /**
-     * @warning You cannot have page with onClick!
+     * ⚠️ You cannot have page with onClick!
      */
     onClick?(): void;
 

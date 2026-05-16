@@ -150,7 +150,7 @@ export default class Modals {
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
      * @param title The title of the modal
-     * @param children A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
+     * @param content A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
      * @returns The key used for this modal
      */
     static showConfirmationModal(title: string, content: (string | ReactElement | ReadonlyArray<string | ReactElement>), options: ConfirmationModalOptions = {}) {

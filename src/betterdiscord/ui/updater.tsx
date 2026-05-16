@@ -8,7 +8,7 @@ import DiscordModules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";
 import Drawer from "@ui/settings/drawer";
-import SettingItemComponent from "@ui/settings/components/item";
+import SettingItem from "@ui/settings/components/item";
 import SettingsTitle from "@ui/settings/title";
 
 import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
@@ -46,10 +46,10 @@ function makeButton(tooltip: string, children: ReactNode, action: () => Promise<
 
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}: {hasUpdate: boolean; remoteVersion: string; update: () => Promise<void>;}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
-        <SettingItemComponent name={`Core v${Config.get("version")}`} note={hasUpdate ? t("Updater.versionAvailable", {version: remoteVersion}) : t("Updater.noUpdatesAvailable")} inline={true} id={"core-updater"}>
+        <SettingItem name={`Core v${Config.get("version")}`} note={hasUpdate ? t("Updater.versionAvailable", {version: remoteVersion}) : t("Updater.noUpdatesAvailable")} inline={true} id={"core-updater"}>
             {!hasUpdate && <div className="bd-filled-checkmark"><CheckIcon size="18px" /></div>}
             {hasUpdate && makeButton(t("Updater.updateButton"), <ArrowDownToLineIcon />, update, {className: "no-animation"})}
-        </SettingItemComponent>
+        </SettingItem>
     </Drawer>;
 }
 
@@ -72,10 +72,10 @@ function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll
 
             if (!info) return null;
 
-            return <SettingItemComponent key={addon.filename} name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
+            return <SettingItem key={addon.filename} name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
                 {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, f))}
                 {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{t("Updater.updateButton")}</Button> */}
-            </SettingItemComponent>;
+            </SettingItem>;
         })}
     </Drawer>;
 }

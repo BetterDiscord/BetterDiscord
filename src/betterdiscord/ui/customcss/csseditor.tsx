@@ -46,8 +46,8 @@ export default forwardRef(function CssEditor({
     useImperativeHandle(ref, () => {
         return {
             resize() {editorRef.current?.resize();},
-            get value() {return editorRef.current!.value;},
-            set value(newValue) {editorRef.current!.value = newValue;},
+            get value() {return editorRef.current?.value ?? "";},
+            set value(newValue) {if (editorRef.current) editorRef.current.value = newValue;},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);

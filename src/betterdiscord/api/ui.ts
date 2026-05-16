@@ -78,7 +78,7 @@ class UI {
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
      *
      * @param title Title of the modal.
-     * @param children Single or mixed array of React elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
+     * @param content Single or mixed array of React elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
      * @param [options] Options to modify the modal
      */
     showConfirmationModal(title: string, content: string | ReactElement | ReadonlyArray<string | ReactElement>, options: ConfirmationModalOptions = {}) {

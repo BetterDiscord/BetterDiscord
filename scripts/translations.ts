@@ -70,7 +70,7 @@ const editorMap = {
 };
 /* eslint-enable no-multi-spaces */
 
-const mo = (opts?: any) => Object.assign(opts ?? {}, {api_token: process.env.POEDITOR_API_KEY, id: process.env.POEDITOR_PROJECT_ID});
+const mo = (opts?: Record<string, any>) => Object.assign(opts ?? {}, {api_token: process.env.POEDITOR_API_KEY, id: process.env.POEDITOR_PROJECT_ID});
 
 const getAvailableLanguages = async () => {
     const response = await get({method: "POST", host: HOST, path: LIST}, mo());

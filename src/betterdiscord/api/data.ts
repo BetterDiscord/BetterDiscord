@@ -32,7 +32,7 @@ class Data {
      * @param pluginName Name of the plugin saving data
      * @returns Whether the data successfully recached
      *
-     * @warning ⚠️ **Use of recaching is discouraged!**
+     * ⚠️ **Use of recaching is discouraged!**
      *
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.

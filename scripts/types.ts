@@ -3,6 +3,7 @@ import {$} from "bun";
 import {rollup} from "rollup";
 import {dts} from "rollup-plugin-dts";
 import {readFile, writeFile} from "node:fs/promises";
+import {ModuleResolutionKind} from "typescript";
 
 await buildTypes();
 
@@ -16,6 +17,7 @@ async function buildTypes() {
         plugins: [dts({
             compilerOptions: {
                 baseUrl: "./dist/declarations",
+                moduleResolution: ModuleResolutionKind.Bundler,
                 paths: tsconfig.compilerOptions.paths
             },
             includeExternal: ["clsx"]

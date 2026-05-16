@@ -16,7 +16,7 @@ import Position from "@ui/settings/components/position";
 import {SettingsContext} from "@ui/contexts";
 import {useStateFromStores} from "@ui/hooks";
 import SettingsStore from "@stores/settings";
-import type {Setting, SettingItem} from "@data/settings";
+import type {Setting, BaseSettingItem} from "@data/settings";
 import type {PropsWithChildren, ReactNode} from "react";
 
 const {useCallback} = React;
@@ -77,12 +77,12 @@ export default function Group({onChange, id, name = "", shown, onDrawerToggle, s
 }
 
 
-export interface CustomSetting extends SettingItem {
+export interface CustomSetting extends BaseSettingItem {
     type: "custom";
     children: ReactNode;
 }
 
-export interface ButtonSetting extends ButtonProps, SettingItem {
+export interface ButtonSetting extends ButtonProps, BaseSettingItem {
     type: "button";
 }
 
