@@ -1,22 +1,7 @@
 import JsonStore from "@stores/json";
 import {useForceUpdate, useStateFromStores} from "@ui/hooks";
 
-type Falsey = false | 0 | "" | null | undefined | void;
-type IsTruthy<T> = T extends Falsey ? false : true;
-
-type UseDataArgs<Bounded extends boolean> = [
-    ...(Bounded extends false ? [pluginName: string] : []),
-    key: string
-];
-
-class Hooks<CN extends string | undefined = undefined, Bounded extends IsTruthy<CN> = IsTruthy<CN>> {
-    readonly #callerName: CN;
-
-    constructor(callerName?: CN);
-    constructor(callerName: CN) {
-        this.#callerName = callerName;
-    }
-
+class BaseHooks {
     /**
      * Subscribes to one or more stores and re-computes a value when they change, causing a re-render.
      * A store is anything with an `addChangeListener` and `removeChangeListener` method,
@@ -33,6 +18,29 @@ class Hooks<CN extends string | undefined = undefined, Bounded extends IsTruthy<
      * Creates a hook that forces a re-render when called.
      */
     public useForceUpdate = useForceUpdate;
+}
+
+class Hooks extends BaseHooks {
+    /**
+     * Retrieves data from storage and automatically re-renders when it changes.
+     *
+     * @param caller The name of the plugin to use data from
+     * @param key The key of the data to retrieve
+     * @returns The current value of the data with the given key, or undefined if it doesn't exist
+     */
+    public useData<T>(caller: string, key: string) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        return JsonStore.useData<T>(caller, key);
+    }
+}
+
+class BoundHooks extends BaseHooks {
+    readonly #callerName: string;
+
+    constructor(callerName: string) {
+        super();
+        this.#callerName = callerName;
+    }
 
     /**
      * Retrieves data from storage and automatically re-renders when it changes.
@@ -40,15 +48,13 @@ class Hooks<CN extends string | undefined = undefined, Bounded extends IsTruthy<
      * @param key The key of the data to retrieve
      * @returns The current value of the data with the given key, or undefined if it doesn't exist
      */
-    public useData<T>(...args: UseDataArgs<Bounded>) {
-        const callerName = this.#callerName || args.shift();
-
+    public useData<T>(key: string) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        return JsonStore.useData<T>(callerName!, args[0]);
+        return JsonStore.useData<T>(this.#callerName, key);
     }
 }
 
 Object.freeze(Hooks);
 Object.freeze(Hooks.prototype);
 
-export default Hooks;
+export {Hooks, BoundHooks};

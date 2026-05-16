@@ -6,18 +6,18 @@ import DiscordModules from "@modules/discordmodules";
 import Config from "@stores/config";
 
 import AddonAPI from "./addonapi";
-import Data from "./data";
-import DOM from "./dom";
-import Patcher from "./patcher";
 import ReactUtils from "./reactutils";
 import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
-import Logger from "./logger";
-import CommandAPI from "./commands";
-import Hooks from "./hooks";
+import {Logger, BoundLogger} from "./logger";
+import {CommandAPI, BoundCommandAPI} from "./commands";
+import {DOM, BoundDOM} from "./dom";
+import {Data, BoundData} from "./data";
+import {Patcher, BoundPatcher} from "./patcher";
+import {Hooks, BoundHooks} from "./hooks";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
@@ -39,15 +39,21 @@ import ReactDOM from "@modules/reactdom";
 
 
 const bounded = new Map();
+
+const ReactUtilsInstance = new ReactUtils();
+const UIInstance = new UI();
+const UtilsInstance = new Utils();
+const WebpackInstance = new Webpack();
+
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
-const PatcherAPI = new Patcher<false>();
-const DataAPI = new Data<false>();
-const DOMAPI = new DOM<false>();
+const PatcherAPI = new Patcher();
+const DataAPI = new Data();
+const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
-const CommandsAPI = new CommandAPI<false>();
+const CommandsAPI = new CommandAPI();
 const HooksAPI = new Hooks();
-const DefaultLogger = new Logger<false>();
+const DefaultLogger = new Logger();
 
 const Components = Object.freeze({
     Tooltip: DiscordModules.Tooltip,
@@ -105,9 +111,9 @@ export default class BdApi {
     static Net = Net;
 
     /** An instance of {@link Webpack} to search for modules */
-    get Webpack() {return Webpack;}
+    get Webpack() {return WebpackInstance;}
     /** An instance of {@link Webpack} to search for modules */
-    static Webpack = Webpack;
+    static Webpack = WebpackInstance;
 
     /** An instance of {@link AddonAPI} to access plugins */
     get Plugins() {return PluginAPI;}
@@ -120,19 +126,19 @@ export default class BdApi {
     static Themes = ThemeAPI;
 
     /** An instance of {@link Utils} for general utility functions */
-    get Utils() {return Utils;}
+    get Utils() {return UtilsInstance;}
     /** An instance of {@link Utils} for general utility functions */
-    static Utils = Utils;
+    static Utils = UtilsInstance;
 
     /** An instance of {@link UI} to create interfaces */
-    get UI() {return UI;}
+    get UI() {return UIInstance;}
     /** An instance of {@link UI} to create interfaces */
-    static UI = UI;
+    static UI = UIInstance;
 
     /** An instance of {@link ReactUtils} to work with React */
-    get ReactUtils() {return ReactUtils;}
+    get ReactUtils() {return ReactUtilsInstance;}
     /** An instance of {@link ReactUtils} to work with React */
-    static ReactUtils = ReactUtils;
+    static ReactUtils = ReactUtilsInstance;
 
     /** An instance of {@link ContextMenu} for interacting with context menus */
     get ContextMenu() {return ContextMenuAPI;}
@@ -140,34 +146,34 @@ export default class BdApi {
     static ContextMenu = ContextMenuAPI;
 
     /** An instance of {@link Patcher} to monkey patch functions */
-    Patcher: Patcher<true> = PatcherAPI as Patcher<true>;
+    Patcher: BoundPatcher = PatcherAPI as unknown as BoundPatcher;
     /** An instance of {@link Patcher} to monkey patch functions */
-    static Patcher: Patcher<false> = PatcherAPI;
+    static Patcher: Patcher = PatcherAPI;
 
     /** An instance of {@link Data} to manage data */
-    Data: Data<true> = DataAPI as Data<true>;
+    Data: BoundData = DataAPI as BoundData;
     /** An instance of {@link Data} to manage data */
-    static Data: Data<false> = DataAPI;
+    static Data: Data = DataAPI;
 
     /** An instance of {@link DOM} to interact with the DOM */
-    DOM: DOM<true> = DOMAPI as DOM<true>;
+    DOM: BoundDOM = DOMAPI as BoundDOM;
     /** An instance of {@link DOM} to interact with the DOM */
-    static DOM: DOM<false> = DOMAPI;
+    static DOM: DOM = DOMAPI;
 
     /** An instance of {@link Logger} for logging information */
-    Logger: Logger<true> = DefaultLogger as Logger<true>;
+    Logger: BoundLogger = DefaultLogger as unknown as BoundLogger;
     /** An instance of {@link Logger} for logging information */
-    static Logger: Logger<false> = DefaultLogger;
+    static Logger: Logger = DefaultLogger;
 
     /** An instance of {@link CommandAPI} for adding slash commands */
-    Commands: CommandAPI<true> = CommandsAPI as unknown as CommandAPI<true>;
+    Commands: BoundCommandAPI = CommandsAPI as unknown as BoundCommandAPI;
     /** An instance of {@link CommandAPI} for adding slash commands */
-    static Commands: CommandAPI<false> = CommandsAPI;
+    static Commands: CommandAPI = CommandsAPI;
 
     /** An instance of {@link Hooks} for react hooks */
-    Hooks: Hooks<any, true> = HooksAPI as unknown as Hooks<any, true>;
+    Hooks: BoundHooks = HooksAPI as unknown as BoundHooks;
     /** An instance of {@link Hooks} for react hooks */
-    static Hooks: Hooks<any, false> = HooksAPI;
+    static Hooks: Hooks = HooksAPI;
 
     constructor(pluginName: string) {
         // @ts-expect-error return the normal BdApi when called without a plugin name for backwards compatibility
@@ -180,12 +186,12 @@ export default class BdApi {
         }
 
         // Bind to pluginName
-        this.Patcher = new Patcher(pluginName);
-        this.Data = new Data(pluginName);
-        this.DOM = new DOM(pluginName);
-        this.Logger = new Logger(pluginName);
-        this.Commands = new CommandAPI(pluginName);
-        this.Hooks = new Hooks(pluginName);
+        this.Patcher = new BoundPatcher(pluginName);
+        this.Data = new BoundData(pluginName);
+        this.DOM = new BoundDOM(pluginName);
+        this.Logger = new BoundLogger(pluginName);
+        this.Commands = new BoundCommandAPI(pluginName);
+        this.Hooks = new BoundHooks(pluginName);
 
         bounded.set(pluginName, this);
     }

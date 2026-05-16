@@ -31,7 +31,7 @@ export interface SettingsPanelProps {
  */
 
 // TODO: merge types after converting ui folder
-const UI = {
+class UI {
     /**
      * Shows a generic but very customizable modal.
      *
@@ -40,7 +40,7 @@ const UI = {
      */
     alert(title: string, content: string | ReactElement | ReadonlyArray<string | ReactElement>) {
         Modals.alert(title, content);
-    },
+    }
 
     /**
      * Shows a customizable notification to the user.
@@ -60,7 +60,7 @@ const UI = {
         const finalNotification = {...defaultObj, ...options};
 
         return NotificationUI.show(finalNotification);
-    },
+    }
 
     /**
      * Creates a tooltip to automatically show on hover.
@@ -72,7 +72,7 @@ const UI = {
      */
     createTooltip(node: HTMLElement, content: string | HTMLElement, options: TooltipOptions = {}) {
         return Tooltip.create(node, content, options);
-    },
+    }
 
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
@@ -83,7 +83,7 @@ const UI = {
      */
     showConfirmationModal(title: string, content: string | ReactElement | ReadonlyArray<string | ReactElement>, options: ConfirmationModalOptions = {}) {
         return Modals.showConfirmationModal(title, content, options);
-    },
+    }
 
     /**
      * Shows a changelog modal in a similar style to Discord's. Customizable with images, videos, colored sections and supports markdown.
@@ -103,7 +103,7 @@ const UI = {
      */
     showChangelogModal(options: ChangelogProps) {
         return Modals.showChangelogModal(options);
-    },
+    }
 
     /**
      * Shows a modal for joining a guild like you would natively through Discord.
@@ -111,7 +111,7 @@ const UI = {
      */
     showInviteModal(inviteCode: string) {
         return Modals.showGuildJoinModal(inviteCode);
-    },
+    }
 
     /**
      * Shows a toast similar to android towards the bottom of the screen.
@@ -121,7 +121,7 @@ const UI = {
      */
     showToast(content: string, options: ToastOptions = {}) {
         Toasts.show(content, options);
-    },
+    }
 
     /**
      * Shows a notice above Discord's chat layer.
@@ -132,7 +132,7 @@ const UI = {
      */
     showNotice(content: string, options: NoticeOptions = {}) {
         return Notices.show(content, options);
-    },
+    }
 
     /**
      * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api.
@@ -146,7 +146,7 @@ const UI = {
         if (data.error) throw new Error(data.error);
 
         return data;
-    },
+    }
 
     /**
      * Creates a single setting wrapped in a setting item that has a name and note.
@@ -156,7 +156,7 @@ const UI = {
      */
     buildSettingItem(setting: Setting | CustomSetting | ButtonSetting) {
         return buildSetting(setting);
-    },
+    }
 
     /**
      * Creates a settings panel (react element) based on json-like data.
@@ -210,5 +210,6 @@ const UI = {
 };
 
 Object.freeze(UI);
+Object.freeze(UI.prototype);
 
 export default UI;

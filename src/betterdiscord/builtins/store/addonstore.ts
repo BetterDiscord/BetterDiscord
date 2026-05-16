@@ -2,7 +2,6 @@ import Builtin from "@structs/builtin";
 
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
-import ReactUtils from "@api/reactutils";
 import Settings from "@stores/settings";
 
 import AddonEmbed from "@ui/misc/storeembed";
@@ -14,6 +13,7 @@ import RemoteAPI from "@polyfill/remote";
 import {Filters, getLazy, getLazyBySource, getWithKey} from "@webpack";
 import {findInTree} from "@common/utils";
 import DiscordModules from "@modules/discordmodules";
+import {getInternalInstance, getOwnerInstance} from "@utils/react";
 
 
 let MessageAccessories;
@@ -115,7 +115,7 @@ export default new class AddonStoreBuiltin extends Builtin {
     /** The patches are slightly late sometimes, so this will update chat */
     forceUpdateChat() {
         for (const message of document.querySelectorAll("[id^=chat-messages-]")) {
-            const instance = ReactUtils.getInternalInstance(message);
+            const instance = getInternalInstance(message);
 
             const child = findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
                 walkable: ["child"]
@@ -128,7 +128,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
             // Update forward messages
             for (const forward of message.querySelectorAll("[id^=\"message-accessories-\"] [id^=\"message-accessories-\"]")) {
-                ReactUtils.getOwnerInstance(forward).forceUpdate();
+                getOwnerInstance(forward).forceUpdate();
             }
         }
     }

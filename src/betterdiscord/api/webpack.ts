@@ -1,7 +1,7 @@
 import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "@typed/discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
-import ReactUtils from "./reactutils";
+import {getType} from "@utils/react";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 
@@ -24,21 +24,21 @@ interface WebpackOptions extends Options {
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of Discord.
  */
-const Webpack = {
+class Webpack {
     /**
      * A Proxy that returns the module source by ID.
      */
-    modules: modules,
+    modules = modules;
 
     /**
      * An object containing all of Discord's internal stores which can be accessed by their name.
      */
-    Stores: Stores,
+    Stores = Stores;
 
     /**
      * Series of {@link Filters} to be used for finding webpack modules.
      */
-    Filters: {
+    Filters = {
         /** Generates a function that filters by a set of properties. */
         byKeys(...keys: string[]) {return Filters.byKeys(keys);},
 
@@ -69,11 +69,11 @@ const Webpack = {
         /** Generates a filter to search React functional components. */
         byComponentType(filter: ExportedOnlyFilter): ExportedOnlyFilter {
             return (exports) => {
-                const component = ReactUtils.getType(exports);
+                const component = getType(exports);
                 return typeof component === "function" && filter(component);
             };
         }
-    },
+    }
 
     getWithKey(filter: ExportedOnlyFilter, options: WithKeyOptions = {}) {
         if (("first" in options)) return Logger.error("BdApi.Webpack~getWithKey", "Unsupported option first.");
@@ -81,7 +81,7 @@ const Webpack = {
         if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getWithKey", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getWithKey", "Invalid type for options.raw", options.raw, "Expected: boolean");
         return getWithKey(filter, options);
-    },
+    }
 
     getModule<T extends any>(filter: ModuleFilter, options: WebpackOptions = {}) {
         if (("first" in options) && typeof (options.first) !== "boolean") return Logger.error("BdApi.Webpack~get", "Invalid type for options.first", options.first, "Expected: boolean");
@@ -92,17 +92,17 @@ const Webpack = {
 
         if (options.first === false) return getAllModules(filter, options) as T;
         return getModule<T>(filter, options);
-    },
+    }
 
     getModules<T extends any[]>(filter: ModuleFilter, options: WebpackOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
         if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Invalid type for options.raw", options.raw, "Expected: boolean");
         return getAllModules<T>(filter, options);
-    },
+    }
 
-    getBulk<T extends any[]>(...queries: BulkQueries[]) {return getBulk<T>(...queries);},
-    getBulkKeyed<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyed<T>(queries);},
+    getBulk<T extends any[]>(...queries: BulkQueries[]) {return getBulk<T>(...queries);}
+    getBulkKeyed<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyed<T>(queries);}
 
     waitForModule<T>(filter: ModuleFilter, options: LazyOptions = {}) {
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
@@ -111,15 +111,15 @@ const Webpack = {
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.raw", options.raw, "Expected: boolean");
         if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
         return getLazy<T>(filter, options);
-    },
+    }
 
     getByRegex<T>(regex: RegExp, options: WebpackOptions = {}) {
-        return Webpack.getModule<T>(Filters.byRegex(regex), options);
-    },
+        return this.getModule<T>(Filters.byRegex(regex), options);
+    }
 
     getAllByRegex<T extends any[]>(regex: RegExp, options: WebpackOptions = {}) {
-        return Webpack.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
-    },
+        return this.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
+    }
 
     getMangled<T extends object>(filter: ModuleFilter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
@@ -128,54 +128,53 @@ const Webpack = {
         if (typeof (raw) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.raw", raw, "Expected: boolean");
         if (typeof (fatal) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.fatal", fatal, "Expected: boolean");
         return getMangled<T>(filter, mangled, options);
-    },
+    }
 
     getByPrototypeKeys<T>(...prototypes: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(prototypes);
 
-        return Webpack.getModule<T>(Filters.byPrototypeKeys(keys), options);
-    },
+        return this.getModule<T>(Filters.byPrototypeKeys(keys), options);
+    }
     getAllByPrototypeKeys<T extends any[]>(...prototypes: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(prototypes);
 
-        return Webpack.getModule<T>(Filters.byPrototypeKeys(keys), Object.assign({}, options, {first: false}));
-    },
+        return this.getModule<T>(Filters.byPrototypeKeys(keys), Object.assign({}, options, {first: false}));
+    }
 
     getByKeys<T>(...props: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(props);
 
-        return Webpack.getModule<T>(Filters.byKeys(keys), options);
-    },
+        return this.getModule<T>(Filters.byKeys(keys), options);
+    }
     getAllByKeys<T extends any[]>(...props: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(props);
 
-        return Webpack.getModule<T>(Filters.byKeys(keys), Object.assign({}, options, {first: false}));
-    },
+        return this.getModule<T>(Filters.byKeys(keys), Object.assign({}, options, {first: false}));
+    }
 
     getByStrings<T>(...strings: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(strings);
 
-        return Webpack.getModule<T>(Filters.byStrings(...keys), options);
-    },
+        return this.getModule<T>(Filters.byStrings(...keys), options);
+    }
     getAllByStrings<T extends any[]>(...strings: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(strings);
 
-        return Webpack.getModule<T>(Filters.byStrings(...keys), Object.assign({}, options, {first: false}));
-    },
+        return this.getModule<T>(Filters.byStrings(...keys), Object.assign({}, options, {first: false}));
+    }
 
     getBySource<T>(...searches: WithOptions<string | RegExp, WebpackOptions>) {
         const [keys, options] = getOptions(searches);
 
-        return Webpack.getModule<T>(Filters.bySource(...keys), options);
-    },
-
+        return this.getModule<T>(Filters.bySource(...keys), options);
+    }
     getAllBySource<T extends object[]>(...searches: WithOptions<string | RegExp, WebpackOptions>) {
         const [keys, options] = getOptions(searches);
 
-        return Webpack.getModule<T>(Filters.bySource(...keys), Object.assign({}, options, {first: false}));
-    },
+        return this.getModule<T>(Filters.bySource(...keys), Object.assign({}, options, {first: false}));
+    }
 
-    getStore(name: string) {return getStore(name);},
+    getStore(name: string) {return getStore(name);}
 
     getById(id: PropertyKey, options: WebpackOptions = {}) {
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.raw", options.raw, "Expected: boolean");
@@ -186,6 +185,6 @@ const Webpack = {
 };
 
 Object.freeze(Webpack);
-Object.freeze(Filters);
+Object.freeze(Webpack.prototype);
 
 export default Webpack;

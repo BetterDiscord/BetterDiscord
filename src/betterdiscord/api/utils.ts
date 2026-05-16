@@ -9,7 +9,7 @@ import {mapObject} from "@utils/object";
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
  */
-const Utils = {
+class Utils {
     /**
      * Finds a value, subobject, or array from a tree that matches a specific filter. This is a DFS.
      *
@@ -17,7 +17,7 @@ const Utils = {
      * @param searchFilter Filter to check against each object and subobject
      * @param options Additional options to customize the search
      */
-    findInTree: findInTree,
+    findInTree = findInTree;
 
     /**
      * Loads the module ids within a chunk
@@ -25,7 +25,7 @@ const Utils = {
      * @param id Module with the chunk id.
      * @returns Resolved chunk module
      */
-    forceLoad: forceLoad,
+    forceLoad = forceLoad;
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
@@ -37,7 +37,7 @@ const Utils = {
      * @param extenders Objects to extend with
      * @returns A reference to `extendee`
      */
-    extend: extend,
+    extend = extend;
 
     /**
      * Returns a function, that, as long as it continues to be invoked, will not
@@ -50,7 +50,7 @@ const Utils = {
      * @param delay Number of ms to delay calls
      * @returns A debounced version of the function
      */
-    debounce: debounce,
+    debounce = debounce;
 
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism
@@ -64,7 +64,7 @@ const Utils = {
         spanElement.append(textNode);
         textNode.nodeValue = html;
         return spanElement.innerHTML;
-    },
+    }
 
     /**
      * Builds a classname string from any number of arguments. This includes arrays and objects.
@@ -75,7 +75,7 @@ const Utils = {
      * @param argument Anything that should be used to add classnames
      * @returns Joined classname
      */
-    className: clsx,
+    className = clsx;
 
     /**
      * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
@@ -85,7 +85,7 @@ const Utils = {
      */
     getNestedValue<T extends Record<string | number | symbol, unknown>, R = any>(object: T, path: string): R {
         return getNestedProp(object, path);
-    },
+    }
 
     /**
      * Compares two semantic versions, e.g. "1.0.0"
@@ -94,19 +94,20 @@ const Utils = {
      * @param newVersion
      * @returns 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
-    semverCompare: comparator,
+    semverCompare = comparator;
 
     /**
      * Maps the properties of one object onto another based on a set of filters
      */
-    mapObject: mapObject,
+    mapObject = mapObject;
 
     /**
      * A class which can be listened to for changes
      */
-    Store
-} as const;
+    Store = Store;
+}
 
 Object.freeze(Utils);
+Object.freeze(Utils.prototype);
 
 export default Utils;
