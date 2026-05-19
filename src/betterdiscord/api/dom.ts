@@ -6,6 +6,9 @@ interface AnimateOptions {
 }
 
 class BaseDOM {
+    /** @ignore */
+    constructor() {};
+
     /**
      * The current width of the user's screen.
      */
@@ -79,6 +82,9 @@ class BaseDOM {
  * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
  */
 class DOM extends BaseDOM {
+    /** @ignore */
+    constructor() {super();};
+
     /**
      * Adds a `<style>` to the document with the given ID.
      *
@@ -105,9 +111,14 @@ class DOM extends BaseDOM {
     }
 }
 
+/**
+ * `BoundDOM` is a simple utility class for dom manipulation, with plugin scoping optionally automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ */
 class BoundDOM extends BaseDOM {
     #callerName: string;
 
+    /** @ignore */
     constructor(callerName: string) {
         super();
         this.#callerName = callerName;
@@ -150,4 +161,4 @@ class BoundDOM extends BaseDOM {
 
 Object.freeze(DOM);
 Object.freeze(DOM.prototype);
-export { DOM, BoundDOM };
+export {DOM, BoundDOM};

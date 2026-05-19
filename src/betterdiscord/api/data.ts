@@ -4,6 +4,9 @@ import JsonStore from "@stores/json";
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
  */
 class Data {
+    /** @ignore */
+    constructor() {};
+
     /**
      * Saves JSON-serializable data.
      *
@@ -53,11 +56,13 @@ class Data {
 }
 
 /**
- * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
+ * `BoundData` is a simple utility class for the management of plugin data, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
  */
 class BoundData {
     #pluginName: string;
 
+    /** @ignore */
     constructor(pluginName: string) {
         this.#pluginName = pluginName;
     }
@@ -87,7 +92,7 @@ class BoundData {
      *
      * @returns Whether the data successfully recached
      *
-     * @warning ⚠️ **Use of recaching is discouraged!**
+     * ⚠️ **Use of recaching is discouraged!**
      *
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
@@ -108,4 +113,4 @@ class BoundData {
 
 Object.freeze(Data);
 Object.freeze(Data.prototype);
-export { Data, BoundData };
+export {Data, BoundData};

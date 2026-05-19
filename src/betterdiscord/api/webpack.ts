@@ -21,10 +21,13 @@ export interface WebpackOptions extends Options {
 }
 
 /**
- * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
+ * `Webpack` is a utility class for getting internal webpack modules. An instance is available on {@link BdApi}.
  * This is extremely useful for interacting with the internals of Discord.
  */
 class Webpack {
+    /** @ignore */
+    constructor() {};
+
     /**
      * A Proxy that returns the module source by ID.
      */
@@ -73,7 +76,7 @@ class Webpack {
                 return typeof component === "function" && filter(component);
             };
         }
-    }
+    };
 
     getWithKey(filter: ExportedOnlyFilter, options: WithKeyOptions = {}) {
         if (("first" in options)) return Logger.error("BdApi.Webpack~getWithKey", "Unsupported option first.");

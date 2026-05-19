@@ -2,12 +2,6 @@ import type {Fiber} from "react-reconciler";
 import DiscordModules from "@modules/discordmodules";
 import React, {type RefObject} from "react";
 
-/**
- * Gets the internal React data of a specified node.
- *
- * @param node Node to get the internal React data from
- * @returns Either the found data or `undefined`
- */
 export function getInternalInstance(node: Element): Fiber | null {
     if (node.__reactFiber$) return node.__reactFiber$;
     const key = Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"));

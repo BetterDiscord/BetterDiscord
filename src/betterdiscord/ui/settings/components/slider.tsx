@@ -21,7 +21,8 @@ export interface SliderProps {
     markers?: Array<number | SliderMarker>;
 }
 
-export default function Slider({value: initialValue, min, max, step, onChange, disabled, units = "", markers = []}: SliderProps) {
+export default function Slider(props: SliderProps) {
+    const {value: initialValue, min, max, step, onChange, disabled, units = "", markers = []} = props;
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 

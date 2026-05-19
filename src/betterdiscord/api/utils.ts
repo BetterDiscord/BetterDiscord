@@ -7,9 +7,12 @@ import {mapObject} from "@utils/object";
 
 
 /**
- * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
+ * `Utils` is a utility containing commonly reused functions. An instance is available on {@link BdApi}.
  */
 class Utils {
+    /** @ignore */
+    constructor() {};
+
     /**
      * Finds a value, subobject, or array from a tree that matches a specific filter. This is a DFS.
      *

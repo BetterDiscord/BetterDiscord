@@ -12,7 +12,8 @@ export interface SwitchProps {
     internalState?: boolean;
 }
 
-export default function Switch({id = undefined, value: initialValue, disabled = undefined, onChange, internalState = true}: SwitchProps) {
+export default function Switch(props: SwitchProps) {
+    const {id = undefined, value: initialValue, disabled = undefined, onChange, internalState = true} = props;
     const [checked, setChecked] = useState(initialValue);
     const {value: contextValue, disabled: contextDisable} = useContext(SettingsContext);
 

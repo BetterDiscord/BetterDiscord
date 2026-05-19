@@ -52,21 +52,23 @@ type FlexProps = PropsWithChildren<{
     onClick?: MouseEventHandler<HTMLDivElement>;
 }>;
 
-export default function Flex({
-    children,
-    className,
-    style,
-    shrink = 1,
-    grow = 1,
-    basis = "auto",
-    direction = FlexDirection.HORIZONTAL,
-    align = FlexAlign.STRETCH,
-    justify = FlexJustify.START,
-    wrap = FlexWrap.NO_WRAP,
-    ...props
-}: FlexProps) {
+export default function Flex(props: FlexProps) {
+    const {
+        children,
+        className,
+        style,
+        shrink = 1,
+        grow = 1,
+        basis = "auto",
+        direction = FlexDirection.HORIZONTAL,
+        align = FlexAlign.STRETCH,
+        justify = FlexJustify.START,
+        wrap = FlexWrap.NO_WRAP,
+        ...rest
+    } = props;
+
     return <div
-        {...props}
+        {...rest}
         className={clsx(
             "bd-flex",
             direction,

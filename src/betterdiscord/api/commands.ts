@@ -14,14 +14,17 @@ const Types = {
     CommandTypes,
     InputTypes,
     MessageEmbedTypes
-}
+};
 
 /**
- * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
+ * `CommandAPI` is a utility class for managing commands. An instance is available on {@link BdApi}.
  * This allows plugins to register and manage their own commands.
  */
 class CommandAPI {
     Types = Types;
+
+    /** @ignore */
+    constructor() {};
 
     /**
      * Registers a new command
@@ -39,9 +42,9 @@ class CommandAPI {
      * @param caller Caller name
      * @param commandId Command ID
      */
-    unregister(caller: string, id: string) {
-        if (!validateUnregistration(caller, id)) return;
-        CommandManager.unregisterCommand(caller, id);
+    unregister(caller: string, commandId: string) {
+        if (!validateUnregistration(caller, commandId)) return;
+        CommandManager.unregisterCommand(caller, commandId);
     }
 
     /**
@@ -62,9 +65,15 @@ class CommandAPI {
     }
 }
 
+/**
+ * `CommandAPI` is a utility class for managing commands, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ * This allows plugins to register and manage their own commands.
+ */
 class BoundCommandAPI {
     #callerName: string;
 
+    /** @ignore */
     constructor(callerName: string) {
         this.#callerName = callerName;
     }

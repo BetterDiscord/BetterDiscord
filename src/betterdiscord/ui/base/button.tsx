@@ -35,7 +35,6 @@ export const ButtonSizes = Object.freeze({
     ICON: "bd-button-icon"
 });
 
-
 export type ButtonProps = PropsWithChildren<{
     className?: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
@@ -49,20 +48,21 @@ export type ButtonProps = PropsWithChildren<{
     grow?: boolean;
 }>;
 
-export default function Button({
-    className,
-    children,
-    onClick,
-    onKeyDown,
-    buttonRef,
-    disabled = false,
-    type = "button",
-    look = ButtonLooks.FILLED,
-    color = ButtonColors.BRAND,
-    size = ButtonSizes.MEDIUM,
-    grow = true,
-    ...others
-}: ButtonProps) {
+export default function Button(props: ButtonProps) {
+    const {
+        className,
+        children,
+        onClick,
+        onKeyDown,
+        buttonRef,
+        disabled = false,
+        type = "button",
+        look = ButtonLooks.FILLED,
+        color = ButtonColors.BRAND,
+        size = ButtonSizes.MEDIUM,
+        grow = true,
+        ...others
+    } = props;
 
     const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();

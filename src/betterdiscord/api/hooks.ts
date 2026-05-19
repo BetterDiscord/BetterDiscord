@@ -2,6 +2,9 @@ import JsonStore from "@stores/json";
 import {useForceUpdate, useStateFromStores} from "@ui/hooks";
 
 class BaseHooks {
+    /** @ignore */
+    constructor() {};
+
     /**
      * Subscribes to one or more stores and re-computes a value when they change, causing a re-render.
      * A store is anything with an `addChangeListener` and `removeChangeListener` method,
@@ -20,7 +23,13 @@ class BaseHooks {
     public useForceUpdate = useForceUpdate;
 }
 
+/**
+ * `Hooks` is a utility class for React hooks. An instance is available on {@link BdApi}.
+ */
 class Hooks extends BaseHooks {
+    /** @ignore */
+    constructor() {super();};
+
     /**
      * Retrieves data from storage and automatically re-renders when it changes.
      *
@@ -34,9 +43,14 @@ class Hooks extends BaseHooks {
     }
 }
 
+/**
+ * `BoundHooks` is a utility class for React hooks, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ */
 class BoundHooks extends BaseHooks {
-    readonly #callerName: string;
+    #callerName: string;
 
+    /** @ignore */
     constructor(callerName: string) {
         super();
         this.#callerName = callerName;

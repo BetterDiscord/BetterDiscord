@@ -2,10 +2,13 @@ import NodePatcher from "@modules/nodepatcher";
 import {getInternalInstance, getOwnerInstance, getType, wrapElement, wrapInHooks} from "@utils/react";
 
 /**
- * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
+ * `ReactUtils` is a utility class for interacting with React internals. An instance is available on {@link BdApi}.
  * This is extremely useful for interacting with the internals of the UI.
  */
 class ReactUtils {
+    /** @ignore */
+    constructor() {};
+
     /**
      * @deprecated
      */
@@ -13,6 +16,12 @@ class ReactUtils {
         return (document.getElementById("app-mount") as any)?._reactRootContainer?._internalRoot?.current;
     }
 
+    /**
+     * Gets the internal React data of a specified node.
+     *
+     * @param node Node to get the internal React data from
+     * @returns Either the found data or `undefined`
+     */
     getInternalInstance = getInternalInstance;
 
     /**

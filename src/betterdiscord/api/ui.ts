@@ -27,11 +27,14 @@ export interface SettingsPanelProps {
 }
 
 /**
- * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.
+ * `UI` is a utility class for creating user interfaces. An instance is available on {@link BdApi}.
  */
 
 // TODO: merge types after converting ui folder
 class UI {
+    /** @ignore */
+    constructor() {};
+
     /**
      * Shows a generic but very customizable modal.
      *

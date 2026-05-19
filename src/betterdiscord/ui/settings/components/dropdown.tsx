@@ -20,7 +20,8 @@ export interface SelectProps {
     disabled?: boolean;
 }
 
-export default function Select({value: initialValue, options, style, onChange, disabled}: SelectProps) {
+export default function Select(props: SelectProps) {
+    const {value: initialValue, options, style, onChange, disabled} = props;
     const [internalValue, setValue] = useState(initialValue ?? options[0].value);
     const [isOpen, setIsOpen] = useState(false);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);

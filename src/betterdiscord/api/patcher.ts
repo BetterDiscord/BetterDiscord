@@ -12,10 +12,13 @@ function isModuleInvalid(moduleToPatch: any): boolean {
 }
 
 /**
- * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.
- * This is extremely useful for modifying the internals of Discord by adjusting return value or React renders, or arguments of internal functions.
+ * `Patcher` is a utility class for modifying existing functions. An instance is available on {@link BdApi}.
+ * This is extremely useful for modifying the internals of Discord by adjusting return values of React renders, or arguments of internal functions.
  */
 class Patcher {
+    /** @ignore */
+    constructor() {};
+
     /**
      * This method patches onto another function, allowing your code to run beforehand.
      * Using this, you are also able to modify the incoming arguments before the original method is run.
@@ -95,9 +98,15 @@ class Patcher {
     }
 }
 
+/**
+ * `BoundPatcher` is a utility class for modifying existing functions, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ * This is extremely useful for modifying the internals of Discord by adjusting return values of React renders, or arguments of internal functions.
+ */
 class BoundPatcher {
     #callerName: string;
 
+    /** @ignore */
     constructor(callerName: string) {
         this.#callerName = callerName;
     }
@@ -174,4 +183,4 @@ Object.freeze(Patcher.prototype);
 Object.freeze(BoundPatcher);
 Object.freeze(BoundPatcher.prototype);
 
-export { Patcher, BoundPatcher };
+export {Patcher, BoundPatcher};

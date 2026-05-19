@@ -90,7 +90,7 @@ export interface Command {
     description?: string,
     id: string,
     options?: Option[],
-    execute(options: any[], {channel, guild}: {channel: Channel, guild?: Guild;}): void,
+    execute(options: any[], props: {channel: Channel, guild?: Guild;}): void,
     predicate?(): boolean;
 }
 

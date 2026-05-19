@@ -11,30 +11,14 @@ import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import ContextMenu from "./contextmenu";
-import fetch from "./fetch";
+import Net from "./net";
+import Components from "./components";
 import {Logger, BoundLogger} from "./logger";
 import {CommandAPI, BoundCommandAPI} from "./commands";
 import {DOM, BoundDOM} from "./dom";
 import {Data, BoundData} from "./data";
 import {Patcher, BoundPatcher} from "./patcher";
 import {Hooks, BoundHooks} from "./hooks";
-
-import ColorInput from "@ui/settings/components/color";
-import DropdownInput from "@ui/settings/components/dropdown";
-import SettingItem from "@ui/settings/components/item";
-import KeybindInput from "@ui/settings/components/keybind";
-import NumberInput from "@ui/settings/components/number";
-import RadioInput from "@ui/settings/components/radio";
-import SearchInput from "@ui/settings/components/search";
-import SliderInput from "@ui/settings/components/slider";
-import SwitchInput from "@ui/settings/components/switch";
-import TextInput from "@ui/settings/components/textbox";
-import SettingGroup from "@ui/settings/group";
-import ErrorBoundary from "@ui/errorboundary";
-import Text from "@ui/base/text";
-import Flex from "@ui/base/flex";
-import Button from "@ui/base/button";
-import Spinner from "@ui/spinner";
 import ReactDOM from "@modules/reactdom";
 
 
@@ -44,6 +28,7 @@ const ReactUtilsInstance = new ReactUtils();
 const UIInstance = new UI();
 const UtilsInstance = new Utils();
 const WebpackInstance = new Webpack();
+const ComponentsInstance = new Components();
 
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
@@ -54,35 +39,14 @@ const ContextMenuAPI = new ContextMenu();
 const CommandsAPI = new CommandAPI();
 const HooksAPI = new Hooks();
 const DefaultLogger = new Logger();
-
-const Components = Object.freeze({
-    Tooltip: DiscordModules.Tooltip,
-    SettingItem: SettingItem,
-    ColorInput,
-    DropdownInput,
-    KeybindInput,
-    NumberInput,
-    RadioInput,
-    SearchInput,
-    SliderInput,
-    SwitchInput,
-    TextInput,
-    SettingGroup,
-    ErrorBoundary,
-    Text,
-    Flex,
-    Button,
-    Spinner
-});
-
-const Net = Object.freeze({
-    fetch
-});
+const NetInstance = new Net();
 
 const version: string = Config.get("version");
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
+ * It can be instantiated (`new BdApi("MyPlugin")`) to get a version of the API with automatic scoping for plugins,
+ * or its static properties can be used directly.
  */
 export default class BdApi {
     /** The React module being used inside Discord */
@@ -101,14 +65,14 @@ export default class BdApi {
     static version = version;
 
     /** A set of react components plugins can make use of */
-    get Components() {return Components;}
+    get Components() {return ComponentsInstance;}
     /** A set of react components plugins can make use of */
-    static Components = Components;
+    static Components = ComponentsInstance;
 
     /** An instance of {@link Net} for using network related tools */
-    get Net() {return Net;};
+    get Net() {return NetInstance;};
     /** An instance of {@link Net} for using network related tools */
-    static Net = Net;
+    static Net = NetInstance;
 
     /** An instance of {@link Webpack} to search for modules */
     get Webpack() {return WebpackInstance;}
@@ -146,32 +110,32 @@ export default class BdApi {
     static ContextMenu = ContextMenuAPI;
 
     /** An instance of {@link Patcher} to monkey patch functions */
-    Patcher: BoundPatcher = PatcherAPI as unknown as BoundPatcher;
+    get Patcher(): BoundPatcher {return PatcherAPI as unknown as BoundPatcher;}
     /** An instance of {@link Patcher} to monkey patch functions */
     static Patcher: Patcher = PatcherAPI;
 
     /** An instance of {@link Data} to manage data */
-    Data: BoundData = DataAPI as BoundData;
+    get Data(): BoundData {return DataAPI as BoundData;}
     /** An instance of {@link Data} to manage data */
     static Data: Data = DataAPI;
 
     /** An instance of {@link DOM} to interact with the DOM */
-    DOM: BoundDOM = DOMAPI as BoundDOM;
+    get DOM(): BoundDOM {return DOMAPI as BoundDOM;}
     /** An instance of {@link DOM} to interact with the DOM */
     static DOM: DOM = DOMAPI;
 
     /** An instance of {@link Logger} for logging information */
-    Logger: BoundLogger = DefaultLogger as unknown as BoundLogger;
+    get Logger(): BoundLogger {return DefaultLogger as unknown as BoundLogger;}
     /** An instance of {@link Logger} for logging information */
     static Logger: Logger = DefaultLogger;
 
     /** An instance of {@link CommandAPI} for adding slash commands */
-    Commands: BoundCommandAPI = CommandsAPI as unknown as BoundCommandAPI;
+    get Commands(): BoundCommandAPI {return CommandsAPI as unknown as BoundCommandAPI;}
     /** An instance of {@link CommandAPI} for adding slash commands */
     static Commands: CommandAPI = CommandsAPI;
 
     /** An instance of {@link Hooks} for react hooks */
-    Hooks: BoundHooks = HooksAPI as unknown as BoundHooks;
+    get Hooks(): BoundHooks {return HooksAPI as unknown as BoundHooks;}
     /** An instance of {@link Hooks} for react hooks */
     static Hooks: Hooks = HooksAPI;
 
@@ -186,12 +150,21 @@ export default class BdApi {
         }
 
         // Bind to pluginName
-        this.Patcher = new BoundPatcher(pluginName);
-        this.Data = new BoundData(pluginName);
-        this.DOM = new BoundDOM(pluginName);
-        this.Logger = new BoundLogger(pluginName);
-        this.Commands = new BoundCommandAPI(pluginName);
-        this.Hooks = new BoundHooks(pluginName);
+        const ScopedPatcher = new BoundPatcher(pluginName);
+        const ScopedData = new BoundData(pluginName);
+        const ScopedDOM = new BoundDOM(pluginName);
+        const ScopedLogger = new BoundLogger(pluginName);
+        const ScopedCommands = new BoundCommandAPI(pluginName);
+        const ScopedHooks = new BoundHooks(pluginName);
+
+        Object.defineProperties(this, {
+            Patcher: {get: () => ScopedPatcher},
+            Data: {get: () => ScopedData},
+            DOM: {get: () => ScopedDOM},
+            Logger: {get: () => ScopedLogger},
+            Commands: {get: () => ScopedCommands},
+            Hooks: {get: () => ScopedHooks}
+        });
 
         bounded.set(pluginName, this);
     }
