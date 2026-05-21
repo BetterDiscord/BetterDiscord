@@ -246,6 +246,8 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         addon.fileContent = fileContent;
 
         this.addonList.push(addon as T);
+        this.trigger("read", addon);
+
         if (startAfter && this.state[addon.id]) this.startAddon(addon as T);
     }
 
