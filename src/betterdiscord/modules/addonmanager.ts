@@ -263,10 +263,8 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
             return false;
         }
 
-        const created = addon as T;
-
         this.trigger("loaded", addon);
-        if (this.hasInitialized) Toasts.success(t("Addons.wasLoaded", {name: created.name, version: created.version}));
+        if (this.hasInitialized) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
 
         return true;
     }

@@ -203,7 +203,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
         return sorted.map(addon => {
             const hasSettings = (addon as Plugin).instance
                 ? typeof (addon as Plugin).instance?.getSettingsPanel === "function"
-                : Boolean(addon.fileContent?.includes("getSettingsPanel"));
+                : Boolean(store.prefix === "plugin" && addon.fileContent?.includes("getSettingsPanel"));
             const getSettings = hasSettings && (addon as Plugin).instance?.getSettingsPanel?.bind((addon as Plugin).instance);
             return <ErrorBoundary id={addon.id} name="AddonCard">
                 <AddonCard
