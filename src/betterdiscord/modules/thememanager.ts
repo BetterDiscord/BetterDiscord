@@ -46,8 +46,7 @@ export default new class ThemeManager extends AddonManager<Theme> {
         this.finishInit();
     }
 
-    initAddon(addon: Addon) {
-        const theme = addon as Theme;
+    initAddon(theme: Theme) {
         theme.css = theme.fileContent!;
         delete theme.fileContent;
 
