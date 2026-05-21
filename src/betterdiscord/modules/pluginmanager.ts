@@ -195,7 +195,7 @@ export default new class PluginManager extends AddonManager<Plugin> {
         if (!plugin) return;
 
         try {
-            plugin.instance.stop();
+            plugin.instance?.stop();
         }
         catch (err) {
             this.state[plugin.id] = false;

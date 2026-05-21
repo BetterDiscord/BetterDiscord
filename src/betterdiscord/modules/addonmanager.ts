@@ -200,8 +200,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
 
             this.timeCache[filename] = stats.mtimeMs;
 
-            const addon = this.readAddon(filename);
-            if (addon) this.addonList.push(addon);
+            this.readAddon(filename);
         }
 
         this.saveState();
@@ -225,7 +224,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
                 message: "",
                 stack: fileContent
             }, this.prefix));
-            return null;
+            return;
         }
 
         const stats = fs.statSync(filePath);
@@ -246,8 +245,8 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         addon.size = stats.size;
         addon.fileContent = fileContent;
 
+        this.addonList.push(addon as T);
         if (startAfter && this.state[addon.id]) this.startAddon(addon as T);
-        return addon as T;
     }
 
     abstract initAddon(addon: T): boolean;
