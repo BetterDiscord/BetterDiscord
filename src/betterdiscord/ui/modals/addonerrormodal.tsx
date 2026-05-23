@@ -18,7 +18,6 @@ import DiscordModules from "@modules/discordmodules";
 import {useStateFromStores} from "@ui/hooks";
 import AddonErrorsStore from "@stores/addonerrors";
 
-const Parser = DiscordModules.SimpleMarkdownWrapper.defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 
@@ -27,12 +26,14 @@ function AddonError({err, index}: {err: AddonErrorType; index: number;}) {
     const toggle = useCallback(() => setExpanded(!expanded), [expanded]);
 
     function renderErrorBody() {
+        const defaultRules = (DiscordModules.SimpleMarkdownWrapper || DiscordModules.SimpleMarkdown)?.defaultRules;
+
         const stack = err?.error?.stack ?? err.stack;
         if (!expanded || !stack) return null;
         return <div className="bd-addon-error-body">
             <Divider />
             <div className="bd-addon-error-stack">
-                {Parser ? Parser.codeBlock.react?.({content: stack, lang: "js"}, null, {}) : stack}
+                {defaultRules ? defaultRules.codeBlock.react?.({content: stack, lang: "js"}, null, {}) : stack}
             </div>
         </div>;
     }

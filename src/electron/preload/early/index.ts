@@ -1,11 +1,10 @@
 import Logger from "@common/logger";
 import type {RawModule} from "../../../betterdiscord/types/discord/webpack";
-import * as acorn from "acorn";
+import parseDeclarations from "@common/parseDeclarations";
 
 const getPrefix = /^(.*?)\(/;
 // Functions like ones from objects ({ a() {} }) will throw so we replace 'a' with 'function'
-function toStringFunction(fn: (...args: any[]) => any): string {
-    const stringed = Function.prototype.toString.call(fn);
+function toStringFunction(stringed: string): string {
     const match = stringed.match(getPrefix);
 
     if (!match || !match[1]) return stringed;
@@ -58,88 +57,30 @@ function toStringFunction(fn: (...args: any[]) => any): string {
                 if (rawModule) return rawModule;
 
                 try {
-                    let stringedModule = `(${toStringFunction(trueOriginal)})`;
+                    const rawString = Function.prototype.toString.call(trueOriginal);
 
-                    const ast = acorn.parse(stringedModule, {ecmaVersion: "latest", sourceType: "script"});
+                    // Get the path of the module
+                    const nameEnd = rawString.indexOf("(");
+                    const moduleName = rawString.slice(0, nameEnd);
+                    const nameNumber = Number(moduleName);
+                    const path = isNaN(nameNumber) ? `misc/${moduleName}.js` : `${Math.floor(nameNumber / 1000)}/${nameNumber}.js`;
 
-                    const kid = id.toString();
-                    const nid = typeof id === "symbol" ? NaN : Number(id);
+                    const moduleString = toStringFunction(rawString);
+                    const vars = parseDeclarations(moduleString);
+                    const functionBody = moduleString.indexOf(")") + 2;
 
-                    const path = isNaN(nid) ? `misc/${kid}.js` : `${Math.floor(nid / 1_000)}/${kid}.js`;
+                    // Add getters and setters for declarations
+                    const varGettersAndSetters = vars.map((name) => `get ${name}(){return ${name}},set ${name}(_${name}){${name}=_${name}}`);
+                    const declarationString = `Object.seal({__proto__:null,${varGettersAndSetters.join(",")}})`;
 
-                    if (ast.body[0]?.type !== "ExpressionStatement" || ast.body[0].expression.type !== "FunctionExpression") {
-                        return rawModule = trueOriginal;
-                    }
-
-                    const func = ast.body[0].expression;
-
-                    const vars: acorn.Identifier[] = [];
-
-                    function stripVars(declaration: acorn.Pattern) {
-                        switch (declaration.type) {
-                            case "Identifier":
-                                vars.push(declaration);
-                                break;
-                            case "ArrayPattern":
-                                for (const ele of declaration.elements) {
-                                    if (ele) stripVars(ele);
-                                }
-                                break;
-                            case "AssignmentPattern":
-                                stripVars(declaration.left);
-                                break;
-                            case "ObjectPattern":
-                                for (const prop of declaration.properties) {
-                                    if (prop.type === "RestElement") {
-                                        stripVars(prop.argument);
-                                    }
-                                    else {
-                                        stripVars(prop.value);
-                                    }
-                                }
-                                break;
-                            case "MemberExpression":
-                                // idk
-                                // vars.push(declaration.object as acorn.Identifier);
-                                break;
-                            case "RestElement":
-                                stripVars(declaration.argument);
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-
-                    for (let index = 0; index < func.body.body.length; index++) {
-                        const element = func.body.body[index];
-
-                        if (element.type === "FunctionDeclaration") {
-                            stripVars(element.id);
-                        }
-                        else if (element.type === "VariableDeclaration") {
-                            for (const declaration of element.declarations) {
-                                stripVars(declaration.id);
-                            }
-                        }
-                        else if (element.type === "ClassDeclaration" && element.id) {
-                            stripVars(element.id);
-                        }
-                    }
-
-                    stringedModule = `(()=>
-function(){
-/*
-    Module Id: ${typeof id === "symbol" ? `Symbol(${id.description})` : id}
-    Exposed ${vars.length} variables
-    Is Probably Class Module: ${isClassModule}
-*/
-(${stringedModule.slice(0, func.end - 1)};
-{
-    arguments[0].declarations = Object.seal({__proto__: null, ${vars.map((node) => `\n\t\tget ${node.name}(){return ${node.name}},set ${node.name}(_${node.name}){${node.name}=_${node.name}}`).join(",")}${vars.length ? "\n\t" : ""}});
-}
-${stringedModule.slice(func.end - 1)}).apply(this, arguments)
-})()
+                    const stringedModule = `(function(){
+    /*
+        Module Id: ${typeof id === "symbol" ? `Symbol(${id.description})` : id}
+        Exposed ${vars.length} variables
+        Is Probably Class Module: ${isClassModule}
+    */
+    (${moduleString.slice(0, functionBody)}arguments[0].declarations=${declarationString};${moduleString.slice(functionBody)}).apply(this, arguments)
+});
 //# sourceURL=betterdiscord://BD/webpack-modules/patched/${path}`;
 
                     // eslint-disable-next-line no-eval

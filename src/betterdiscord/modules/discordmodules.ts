@@ -6,14 +6,14 @@
  */
 
 import {memoize} from "@common/utils";
-import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring} from "discord/modules";
+import type {RemoteModule, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring, SimpleMarkdownWrapper} from "discord/modules";
 import {Filters, getBulkKeyed, getByKeys, getBySource, getByStrings, getModule} from "@webpack";
 import type React from "react";
 
 interface Modules {
     React: typeof React;
     ReactSpring: ReactSpring;
-    SimpleMarkdownWrapper: SimpleMarkdown;
+    SimpleMarkdown: SimpleMarkdown;
     Dispatcher: Dispatcher;
     Tooltip: React.ComponentType<{color?: string; position?: string; text?: string; children: React.FunctionComponent;}>;
     AccessibilityContext: React.Context<{reducedMotion: {enabled: false;};}>;
@@ -31,11 +31,11 @@ const SyncModules = getBulkKeyed<Modules>({
         firstId: 429783,
         cacheId: "core-ReactSpring"
     },
-    SimpleMarkdownWrapper: {
+    SimpleMarkdown: {
         filter: Filters.byKeys(["defaultReactOutput"]),
         firstId: 791332,
         searchExports: true,
-        cacheId: "core-SimpleMarkdownWrapper"
+        cacheId: "core-SimpleMarkdown"
     },
     Dispatcher: {
         filter: Filters.byKeys(["dispatch", "subscribe", "register"]),
@@ -66,11 +66,10 @@ SyncModules.Tooltip ??= props => props.children?.({}) ?? null;
 
 const MemoModules = memoize({
     get InviteActions(): InviteActions | undefined {return getByKeys(["createInvite"], {firstId: 846293, cacheId: "core-InviteActions"});},
-    get SimpleMarkdown(): SimpleMarkdown | undefined {return getByKeys(["reactParserFor"], {firstId: 46054, cacheId: "core-SimpleMarkdown"});},
+    get SimpleMarkdownWrapper(): SimpleMarkdownWrapper | undefined {return getByKeys(["reactParserFor"], {firstId: 46054, cacheId: "core-SimpleMarkdownWrapper"});},
     get promptToUpload() {return getByStrings(["getUploadCount", ".UPLOAD_FILE_LIMIT_ERROR"], {searchExports: true, firstId: 518960, cacheId: "core-promptToUpload"});},
     get RemoteModule(): RemoteModule | undefined {return getByKeys(["setBadge"], {firstId: 837921, cacheId: "core-RemoteModule"});},
     get UserAgentInfo(): UserAgentInfo | undefined {return getByKeys(["os", "layout"], {firstId: 214958, cacheId: "core-UserAgentInfo"});},
-    get GetClientInfo(): GetClientInfo | undefined {return getByStrings(["versionHash"], {firstId: 551602, cacheId: "core-GetClientInfo"});},
     get MessageUtils() {return getByKeys(["sendMessage"], {firstId: 843472, cacheId: "core-MessageUtils"});},
     get LinkParser(): any {return getModule(m => m.html && m.requiredFirstCharacters?.[0] === "[", {firstId: 694403, cacheId: "core-LinkParser"});},
     get DiscordMarkdown(): any {return getModule(m => m?.prototype?.render && m.rules, {firstId: 558179, cacheId: "core-DiscordMarkdown"});},

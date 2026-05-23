@@ -1,4 +1,4 @@
-import React, {ReactDOM} from "@modules/react";
+import {ReactDOM} from "@modules/react";
 import Button, {type ButtonProps, Colors, Looks} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";
@@ -6,10 +6,10 @@ import Text from "@ui/base/text";
 import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 import DOMManager from "@modules/dommanager";
 import DiscordModules from "@modules/discordmodules";
-import type {MouseEvent, ReactNode} from "react";
-import {useStateFromStores} from "@ui/hooks.ts";
-import Markdown from "@ui/base/markdown.tsx";
-import ErrorBoundary from "@ui/errorboundary.tsx";
+import React, {Children, type MouseEvent, type ReactNode} from "react";
+import {useStateFromStores} from "@ui/hooks";
+import SimpleMarkdownExt from "@structs/markdown";
+import ErrorBoundary from "@ui/errorboundary";
 
 const spring = DiscordModules.ReactSpring;
 
@@ -195,11 +195,11 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                             {content && (
                                 <div className="bd-notification-body">
                                     <div className="bd-notification-content-text">
-                                        {typeof content === "string" ? (
-                                            <Markdown>{content}</Markdown>
-                                        ) : (
-                                            <ErrorBoundary>{content}</ErrorBoundary>
-                                        )}
+                                        <ErrorBoundary>
+                                            {Children.map(content, (child) => (
+                                                typeof child === "string" ? SimpleMarkdownExt.parseToReact(child as string) : child
+                                            ))}
+                                        </ErrorBoundary>
                                     </div>
                                 </div>
                             )}

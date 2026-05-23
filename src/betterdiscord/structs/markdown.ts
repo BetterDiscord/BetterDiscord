@@ -15,7 +15,23 @@ export default class SimpleMarkdownExt {
     }
 
     static _initialize() {
-        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdownWrapper!;
+        if (DiscordModules.SimpleMarkdownWrapper) {
+            this._parse = (s) => DiscordModules.SimpleMarkdownWrapper!.parse(s, true, {
+                allowLinks: true
+            });
+            this._renderer = o => o as ReactElement;
+
+            return;
+        }
+
+        if (!DiscordModules.SimpleMarkdown) {
+            this._parse = (s) => s as unknown as object;
+            this._renderer = o => o as ReactElement;
+
+            return;
+        }
+
+        const SMD: SimpleMarkdown = DiscordModules.SimpleMarkdown!;
         const originalLink = SMD.defaultRules.link.react!;
         const newRules: SimpleMarkdown["defaultRules"] = extend({}, SMD.defaultRules, {
             link: {

@@ -10,7 +10,7 @@ import {PackageOpenIcon} from "lucide-react";
 import {Filters, getLazy} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
-import Modals from "@ui/modals.js";
+import Modals from "@ui/modals";
 import {findInTree} from "@common/utils";
 import type {Rule} from "discord/modules";
 
@@ -19,7 +19,10 @@ class InstallCSS {
     static activeNotifications = new Map();
 
     static async initialize() {
+        if (!DiscordModules.SimpleMarkdownWrapper) return;
+
         const patch = DiscordModules.SimpleMarkdownWrapper.defaultRules.codeBlock as Required<Rule>;
+
         const codeBlockStyles: any = await getLazy(Filters.byKeys(["codeActions"]), {firstId: 992595, cacheId: "core-mdinstallcss-codeBlockStyles"});
         if (!patch.react || typeof patch.react !== "function") return;
 

@@ -1,7 +1,7 @@
 import React, {ReactDOM} from "@modules/react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy, getLazyByStrings, getMangled} from "@webpack";
+import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -359,12 +359,16 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazyByStrings<{A(): void;}>(["copyValue", "RELEASE_CHANNEL"], {defaultExport: false});
-        if (!versionDisplayModule?.A) return;
-
-        Patcher.after("SettingsManager", versionDisplayModule, "A", () => {
-            return React.createElement(VersionInfo);
+        const versionDisplayModule = await getMangledLazy<{
+            versionDisplay: React.FC;
+        }>(["copyValue", "RELEASE_CHANNEL"], {
+            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL")
+        }, {
+            searchDefault: false,
+            mapDeclarations: true
         });
+
+        Patcher.instead("SettingsManager", versionDisplayModule, "versionDisplay", () => <VersionInfo />);
     }
 
     public openSettingsPage(key: string) {

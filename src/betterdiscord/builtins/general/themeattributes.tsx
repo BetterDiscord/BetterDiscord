@@ -1,5 +1,5 @@
 import Builtin from "@structs/builtin";
-import {getLazy, getLazyByDisplayName, getLazyByStrings, Stores} from "@webpack";
+import {getLazy, getLazyBySource, getLazyByStrings, getMangledLazy, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React from "react";
 
@@ -14,8 +14,10 @@ export default new class ThemeAttributes extends Builtin {
     get id() {return "themeAttributes";}
 
     async patchMessage() {
-        const MessageComponent = await getLazy(m => String(m.type).includes("Message must not be a thread starter message"), {
-            cacheId: "core-themeattributes-MessageComponent"
+        const MessageComponent = await getLazyBySource(["Message must not be a thread starter message"], {
+            cacheId: "core-themeattributes-MessageComponent",
+            searchDefault: false,
+            declarationFilter: m => String(m.type).includes("Message must not be a thread starter message")
         });
 
         this.after(MessageComponent!, "type", (_, [props], returnValue) => {
@@ -48,17 +50,27 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchMessageHook() {
-        const messageHook = await getLazyByStrings(["SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries"], {
+        const messageHook = await getMangledLazy("SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries", {
+            key: x => String(x?.type).includes("SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries")
+        }, {
             cacheId: "core-themeattributes-messageHook",
-            defaultExport: false
+            mapDeclarations: true
         });
 
-        this.after(messageHook!, "A", (_, __, res) => {
-            if (!Array.isArray(res.channelStreamMarkup)) return;
+        this.after(messageHook!, "key", (_, __, res) => {
+            const node = findInTree(res, m => m["data-list-id"] === "chat-messages", {
+                walkable: ["props", "children"]
+            });
+
+            if (!Array.isArray(node?.children)) return;
+
+            const baseChannelStreamMarkup = node.children.find(Array.isArray);
+
+            if (!baseChannelStreamMarkup) return;
 
             const channelStreamMarkup: Array<[number, React.ReactElement<any, any>]> = [];
-            for (let index = 0; index < res.channelStreamMarkup.length; index++) {
-                const element = res.channelStreamMarkup[index];
+            for (let index = 0; index < baseChannelStreamMarkup.length; index++) {
+                const element = baseChannelStreamMarkup[index];
 
                 if (React.isValidElement(element) && typeof (element as React.ReactElement<any, any>).props.groupId === "string") {
                     channelStreamMarkup.push([index, element]);
@@ -83,7 +95,7 @@ export default new class ThemeAttributes extends Builtin {
 
                 // We could directly pass props to the Message component
                 // but we will not be doing that
-                res.channelStreamMarkup[index] = <MessageGroupingContext value={{last, first}}>{res.channelStreamMarkup[index]}</MessageGroupingContext>;
+                baseChannelStreamMarkup[index] = <MessageGroupingContext value={{last, first}}>{baseChannelStreamMarkup[index]}</MessageGroupingContext>;
             }
         });
     }
@@ -102,10 +114,10 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchTabBarComponent() {
-        const TabBarComponent = await getLazyByStrings(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
+        const TabBarComponent = await getLazyByStrings<any>(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
 
         this.after(TabBarComponent?.Item?.prototype, "render", (thisObject, _, returnValue) => {
-            returnValue.props["data-tab-id"] = thisObject?.props?.id;
+            returnValue.props["data-tab-id"] = (thisObject as any)?.props?.id;
         });
     }
 
@@ -156,9 +168,10 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchAvatars() {
-        const AvatarImg = await getLazyByDisplayName("AvatarImg", {
-            searchExports: true,
-            cacheId: "core-themeattributes-AvatarImg"
+        const AvatarImg = await getLazyBySource([".displayName=\"AvatarImg\""], {
+            searchDefault: false,
+            cacheId: "core-themeattributes-AvatarImg",
+            declarationFilter: m => m?.displayName === "AvatarImg"
         })!;
 
         this.after(AvatarImg!, "render", (_, __, res) => {
