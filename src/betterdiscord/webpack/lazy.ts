@@ -9,21 +9,23 @@ const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1}\.bind\
 
 interface LazyQueue<T = any> {
     query: Webpack.BulkQueries;
-    resolve(value?: T): void;
+    resolve(value: QueueResolvedState<T>): void;
 }
+
+type QueueResolvedState<T> = {state: "aborted";} | {state: "resolved", value: T;};
 
 const queue = {
     _inQueue: false,
     _queue: <LazyQueue[]>[],
-    enqueue<T>(filter: Webpack.ModuleFilter, options?: Webpack.LazyOptions | undefined | null | void) {
+    enqueue<T>(filter: Webpack.ModuleFilter, options?: Webpack.LazyOptions | undefined | null | void): Promise<QueueResolvedState<T>> {
         if (options?.signal?.aborted) {
             if (options?.fatal) return Promise.reject(makeException());
-            return Promise.resolve(undefined);
+            return Promise.resolve({state: "aborted"});
         }
 
-        const {promise, resolve, reject} = Promise.withResolvers<T>();
+        const {promise, resolve, reject} = Promise.withResolvers<QueueResolvedState<T>>();
 
-        const lazyQueue: LazyQueue = {
+        const lazyQueue: LazyQueue<T> = {
             query: {
                 ...options,
                 filter
@@ -34,8 +36,8 @@ const queue = {
         this._queue.push(lazyQueue);
 
         const onAbort = () => {
-            if (options?.fatal) reject(options!.signal!.reason);
-            else resolve(undefined);
+            if (options?.fatal) reject(makeException());
+            else resolve({state: "aborted"});
 
             options!.signal!.removeEventListener("abort", onAbort);
 
@@ -52,7 +54,10 @@ const queue = {
                 const result = getBulk(...this._queue.map((x) => x.query));
 
                 for (let index = 0; index < this._queue.length; index++) {
-                    this._queue[index].resolve(result[index]);
+                    this._queue[index].resolve({
+                        state: "resolved",
+                        value: result[index]
+                    });
                 }
 
                 this._queue.length = 0;
@@ -68,8 +73,9 @@ export async function getLazy<T>(filter: Webpack.ModuleFilter, options: Webpack.
     const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false, declarationFilter} = options;
     if (!options.cacheId) options.cacheId = null;
 
-    const result = await queue.enqueue<T>(filter, options);
-    if (result) return result;
+    const state = await queue.enqueue<T>(filter, options);
+    if (state.state === "resolved" && state.value) return state.value;
+    if (state.state === "aborted") return undefined;
 
     filter = wrapModuleFilter(filter);
 
