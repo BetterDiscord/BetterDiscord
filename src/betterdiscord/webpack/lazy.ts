@@ -34,7 +34,8 @@ const queue = {
         this._queue.push(lazyQueue);
 
         const onAbort = () => {
-            reject(options!.signal!.reason);
+            if (options?.fatal) reject(options!.signal!.reason);
+            else resolve(undefined);
 
             const index = this._queue.indexOf(lazyQueue);
             if (index !== -1) this._queue.splice(index, 1);
