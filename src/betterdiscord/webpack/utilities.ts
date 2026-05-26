@@ -119,14 +119,19 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const returnedModules = Array(queries.length) as T;
     if (queries.length === 0) return returnedModules;
 
-    queries = queries.map((query, i) => ({
-        ...query,
-        filter: wrapModuleFilter(query.filter),
-        cacheId: query.cacheId || (query.cacheId === null ? undefined : WebpackCache.getIdFromStack(i))
-    }));
+    let shouldExitEarly = true;
+    queries = queries.map((query, i) => {
+        if (query.all) shouldExitEarly = false;
 
-    const shouldExitEarly = queries.every((m) => !m.all);
-    const shouldExit = () => shouldExitEarly && queries.every((_, index) => index in returnedModules);
+        return {
+            ...query,
+            filter: wrapModuleFilter(query.filter),
+            cacheId: query.cacheId || (query.cacheId === null ? undefined : WebpackCache.getIdFromStack(i))
+        };
+    });
+
+    let count = 0;
+    const shouldExit = () => shouldExitEarly && count === queries.length;
 
     // Check the firstId for each query
     for (let i = 0; i < queries.length; i++) {
@@ -137,7 +142,10 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if (matched) returnedModules[i] = matched;
+        if (matched) {
+            count++;
+            returnedModules[i] = matched;
+        }
     }
 
     if (shouldExit()) return returnedModules;
@@ -154,7 +162,10 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if (matched) returnedModules[i] = matched;
+        if (matched) {
+            count++;
+            returnedModules[i] = matched;
+        }
     }
 
     if (shouldExit()) return returnedModules;
@@ -174,6 +185,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
             if (!matched) continue;
 
             if (!all) {
+                count++;
                 returnedModules[index] = matched;
                 if (cacheId) WebpackCache.set(cacheId, keys[i]);
 
