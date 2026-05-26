@@ -37,6 +37,8 @@ const queue = {
             if (options?.fatal) reject(options!.signal!.reason);
             else resolve(undefined);
 
+            options!.signal!.removeEventListener("abort", onAbort);
+
             const index = this._queue.indexOf(lazyQueue);
             if (index !== -1) this._queue.splice(index, 1);
         };

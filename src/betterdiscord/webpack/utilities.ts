@@ -152,6 +152,8 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
     // Check if modules are cached
     for (let i = 0; i < queries.length; i++) {
+        if (i in returnedModules) continue;
+
         const {all, cacheId} = queries[i];
         if (all || !cacheId) continue;
 
