@@ -206,7 +206,7 @@ export interface SliderSetting extends ValueSettingItem<number> {
     min: number;
     max: number;
     step?: number;
-    units: string;
+    units?: string;
     markers: Array<(number | {label: string; value: number;})>;
 }
 
