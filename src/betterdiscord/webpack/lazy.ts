@@ -28,6 +28,7 @@ const queue = {
         const lazyQueue: LazyQueue<T> = {
             query: {
                 ...options,
+                fatal: false,
                 filter
             },
             resolve
