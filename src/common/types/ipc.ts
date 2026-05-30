@@ -1,12 +1,17 @@
 import type * as https from "node:https";
 
+interface FileFilter {
+    name: string;
+    extensions: string[];
+}
+
 export interface DialogOptions {
     /** Determines whether the dialog should open or save files */
     mode: "open" | "save";
     /** The path the dialog should show on launch */
     defaultPath: string;
     /** An array of [file filters](https://www.electronjs.org/docs/latest/api/structures/file-filter) */
-    filters: Array<Record<string, string[]>>;
+    filters: FileFilter[];
     /** A title for the titlebar */
     title: string;
     /** A message for the dialog */

@@ -1,5 +1,5 @@
 import Patcher from "@modules/patcher";
-import React from "@modules/react";
+import React from "react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByKeys, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";

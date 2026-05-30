@@ -1,6 +1,6 @@
 import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
-import React from "@modules/react";
+import React from "react";
 import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";

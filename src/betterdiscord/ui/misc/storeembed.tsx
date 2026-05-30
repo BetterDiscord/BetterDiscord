@@ -1,9 +1,8 @@
-import React from "@modules/react";
+import React, {type ReactNode} from "react";
 import AddonStore from "@modules/addonstore";
 
 import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Spinner from "@ui/spinner";
-import type {ReactNode} from "react";
 
 const {useState, useEffect} = React;
 

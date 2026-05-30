@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Web from "@data/web";
 
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";

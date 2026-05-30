@@ -1,9 +1,9 @@
-import React from "@modules/react";
+import React from "react";
 import type {ToastType} from "@ui/toasts";
 
 import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 
-export default function ToastIcon({type}: {type: ToastType}) {
+export default function ToastIcon({type}: {type: ToastType;}) {
     switch (type) {
         case "info":
             return <InfoIcon size="24px" />;

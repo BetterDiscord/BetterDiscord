@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {PropsWithChildren} from "react";
+import React, {type PropsWithChildren} from "react";
 import DiscordModules from "@modules/discordmodules";
 import {getByKeys, getModule} from "@webpack";
 
@@ -53,11 +52,11 @@ export default function ModalRoot({className, transitionState, children, size = 
 
     return <FocusLock disableTrack={true}>
         <DiscordModules.ReactSpring.animated.div
-                className={clsx("bd-modal-root", size, className, style)}
-                style={springStyles}
-            >
-        {children}
-    </DiscordModules.ReactSpring.animated.div>
+            className={clsx("bd-modal-root", size, className, style)}
+            style={springStyles}
+        >
+            {children}
+        </DiscordModules.ReactSpring.animated.div>
     </FocusLock>;
 }
 

@@ -7,7 +7,7 @@ import Logger from "@common/logger";
 import Toasts from "@stores/toasts";
 import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
-import React from "@modules/react";
+import React from "react";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 import Modals from "@ui/modals";

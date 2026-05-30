@@ -1,7 +1,6 @@
-import React from "@modules/react";
+import React, {type ChangeEvent, type KeyboardEvent} from "react";
 import Button from "@ui/base/button";
 import {SearchIcon, XIcon} from "lucide-react";
-import type {ChangeEvent, KeyboardEvent} from "react";
 
 const {useState, useEffect, useCallback, useRef} = React;
 

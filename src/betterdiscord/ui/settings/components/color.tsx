@@ -1,9 +1,8 @@
-import React from "@modules/react";
+import React, {type ChangeEvent} from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import {CheckIcon, PipetteIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
-import type {ChangeEvent} from "react";
 import type {Color as ColorType, HexString} from "@data/settings";
 
 const {useState, useCallback, useContext} = React;

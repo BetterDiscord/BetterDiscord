@@ -1,7 +1,6 @@
-import React from "@modules/react";
+import React, {type MouseEvent, type PropsWithChildren} from "react";
 
 import Button from "../base/button";
-import type {MouseEvent, PropsWithChildren} from "react";
 
 const {useCallback} = React;
 

@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {CSSProperties, ElementType, HTMLAttributes, PropsWithChildren} from "react";
+import React, {type CSSProperties, type ElementType, type HTMLAttributes, type PropsWithChildren} from "react";
 
 
 export const TextColors = Object.freeze({

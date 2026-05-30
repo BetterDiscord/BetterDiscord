@@ -1,8 +1,7 @@
 import clsx from "clsx";
-import React from "@modules/react";
+import React, {type PropsWithChildren} from "react";
 
 import {t} from "@common/i18n";
-import type {PropsWithChildren} from "react";
 
 
 function MagnifyingGlass(props: PropsWithChildren<{size?: "string";}>) {

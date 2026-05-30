@@ -1,4 +1,4 @@
-import {ReactDOM} from "@modules/react";
+import ReactDOM from "@modules/reactdom";
 import Button, {type ButtonProps, ButtonColors, ButtonLooks} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";

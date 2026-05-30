@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {CSSProperties, MouseEventHandler, PropsWithChildren} from "react";
+import React, {type CSSProperties, type MouseEventHandler, type PropsWithChildren} from "react";
 
 
 export const FlexDirection = Object.freeze({

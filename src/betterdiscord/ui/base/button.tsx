@@ -1,6 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChildren, RefObject} from "react";
+import React, {type KeyboardEventHandler, type MouseEvent, type MouseEventHandler, type PropsWithChildren, type RefObject} from "react";
 
 
 const {useCallback} = React;

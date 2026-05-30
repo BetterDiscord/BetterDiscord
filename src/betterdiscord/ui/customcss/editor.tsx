@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React, {useLayoutEffect, useRef} from "react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@stores/settings";
 import EditorStore from "@stores/editor";
@@ -9,7 +9,6 @@ import Flex from "../base/flex";
 import Switch from "../settings/components/switch";
 import Text from "@ui/base/text";
 import {useStateFromStores} from "@ui/hooks";
-import {useLayoutEffect, useRef} from "react";
 
 import type {editor as MonacoEditor} from "monaco-editor";
 import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
@@ -37,7 +36,7 @@ type ButtonControl = Omit<ButtonProps, "onClick"> & BaseControl & {
     type?: "button";
     tooltip?: string;
     onClick?(event: React.MouseEvent, value?: string): void;
-}
+};
 
 export type Control = SwitchControl | ButtonControl;
 

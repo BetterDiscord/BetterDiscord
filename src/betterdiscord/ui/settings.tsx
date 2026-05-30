@@ -1,4 +1,5 @@
-import React, {ReactDOM} from "@modules/react";
+import ReactDOM from "@modules/reactdom";
+import React from "react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
 import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
@@ -72,7 +73,7 @@ const SettingsRenderer = new class SettingsRenderer {
         });
     }
 
-    getAddonPanel(title: string, options: {store: AddonManager}) {
+    getAddonPanel(title: string, options: {store: AddonManager;}) {
         return (props: any) => {
             return React.createElement(AddonPage, Object.assign({}, {
                 title: title,
@@ -512,7 +513,7 @@ function LayerSettingTitle() {
             >
                 BetterDiscord
             </div>
-            {node && ReactDOM.createPortal(
+            {!!node && ReactDOM.createPortal(
                 <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
                     {props =>
                         <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
@@ -606,7 +607,7 @@ function useAddonMenu(manager: AddonManager) {
             <ContextMenu.Group key={`bd.${manager.prefix}.installed`}>
                 {toggles}
             </ContextMenu.Group>
-            {addonStoreIsEnabled && (
+            {!!addonStoreIsEnabled && (
                 <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
                     <ContextMenu.Item
                         label={t("Addons.openStore", {context: manager.prefix})}

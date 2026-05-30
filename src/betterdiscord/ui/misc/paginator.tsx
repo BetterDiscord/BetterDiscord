@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 
 import Button from "@ui/base/button";

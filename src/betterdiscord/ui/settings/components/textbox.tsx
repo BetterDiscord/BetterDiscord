@@ -1,6 +1,5 @@
-import React from "@modules/react";
+import React, {type ChangeEvent, type KeyboardEvent} from "react";
 import {none, SettingsContext} from "@ui/contexts";
-import type {ChangeEvent, KeyboardEvent} from "react";
 
 const {useState, useCallback, useContext} = React;
 

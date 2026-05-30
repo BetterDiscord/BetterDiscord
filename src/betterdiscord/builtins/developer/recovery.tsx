@@ -1,5 +1,5 @@
 import Button, {ButtonColors} from "@ui/base/button";
-import React from "@modules/react";
+import React from "react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";

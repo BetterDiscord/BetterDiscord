@@ -8,7 +8,7 @@ import Builtin from "@structs/builtin";
 import SettingsStore from "@stores/settings";
 import Settings, {SettingsTitleContext} from "@ui/settings";
 import Config from "@stores/config";
-import React from "@modules/react";
+import React from "react";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import {t} from "@common/i18n";

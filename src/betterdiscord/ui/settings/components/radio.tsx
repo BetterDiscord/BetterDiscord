@@ -1,7 +1,5 @@
-import React from "@modules/react";
+import React, {type ChangeEvent} from "react";
 import {none, SettingsContext} from "@ui/contexts";
-
-import type {ChangeEvent} from "react";
 
 const {useState, useCallback, useContext} = React;
 
@@ -23,7 +21,7 @@ export interface RadioProps {
     disabled?: boolean;
 }
 
-function RadioIndicator({checked} : {checked: boolean}) {
+function RadioIndicator({checked}: {checked: boolean;}) {
     return <svg className="bd-radio-indicator" width="24" height="24" viewBox="0 0 24 24">
         <circle
             cx="12"

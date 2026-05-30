@@ -1,8 +1,7 @@
 import {webUtils} from "electron";
-import React from "@modules/react";
+import React, {type ChangeEvent} from "react";
 import Button from "@ui/base/button";
 import {XIcon} from "lucide-react";
-import type {ChangeEvent} from "react";
 
 const {useRef, useCallback, useEffect} = React;
 
