@@ -8,13 +8,13 @@ import Builtin from "@structs/builtin";
 import SettingsStore from "@stores/settings";
 import Settings, {SettingsTitleContext} from "@ui/settings";
 import Config from "@stores/config";
-import React from "@modules/react";
+import React from "react";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
-import CSSEditor from "@ui/customcss/csseditor";
+import CSSEditor, {type CssEditorRef} from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
 import {debounce, findInTree} from "@common/utils";
@@ -170,7 +170,7 @@ export default new class CustomCSS extends Builtin {
     }
 
     openDetached(currentCSS: string) {
-        const editorRef = React.createRef();
+        const editorRef = React.createRef<CssEditorRef>();
         const editor = React.createElement(CSSEditor, {
             id: "bd-floating-editor",
             ref: editorRef,

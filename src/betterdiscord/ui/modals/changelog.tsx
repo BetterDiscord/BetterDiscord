@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React, {type MouseEvent, type ReactNode} from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 
@@ -14,7 +14,6 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
 import {GithubIcon, TwitterIcon} from "lucide-react";
-import type {MouseEvent, ReactNode} from "react";
 import {getByKeys} from "@webpack";
 import ipc from "@modules/ipc";
 
@@ -84,14 +83,23 @@ export interface ChangelogEntry {
 
 export interface ChangelogProps {
     transitionState?: number;
+    /** What to show in the modal footer */
     footer?: ReactNode;
+    /** Title to show in the modal header */
     title?: ReactNode;
+    /** Title to show below the main header */
     subtitle?: ReactNode;
+    /** A callback to fire when the changelog modal is closed */
     onClose?(): void;
+    /** Youtube link or url of a video file to use as the banner */
     video?: string;
+    /** URL to use for the video freeze-frame poster */
     poster?: string;
+    /** URL to an image to display as the banner of the modal */
     banner?: string;
+    /** Text to show in the body of the modal before the list of changes */
     blurb?: string;
+    /** List of changes to show (see description for details) */
     changes?: ChangelogEntry[];
 }
 

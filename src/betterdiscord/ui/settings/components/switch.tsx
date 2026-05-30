@@ -1,4 +1,4 @@
-import React, {useContext} from "@modules/react";
+import React, {useContext} from "react";
 import {none, SettingsContext} from "@ui/contexts";
 
 const {useState, useCallback} = React;

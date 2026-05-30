@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
@@ -7,39 +7,48 @@ import JsonStore from "@stores/json";
 import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 import {SettingsTitleContext} from "@ui/settings";
+import type AddonManager from "@modules/addonmanager";
 
 export const buildDirectionOptions = () => [
     {label: t("Sorting.ascending"), value: true},
     {label: t("Sorting.descending"), value: false}
 ];
 
-// TODO: let doggy do these types
-export function makeBasicButton(title, children, action, key) {
+export function makeBasicButton(title: string, children: React.ReactElement, action: (event: React.MouseEvent) => void, key: string) {
     return <DiscordModules.Tooltip color="primary" position="top" aria-label={title} text={title} key={key}>
         {(props) => <Button {...props} aria-label={title} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
     </DiscordModules.Tooltip>;
 }
 
-export function getState(type, control, defaultValue) {
-    const addonlistControls = JsonStore.get("misc", "addonlistControls") || {};
+export function getState(type: string, control: string, defaultValue: any) {
+    const addonlistControls = JsonStore.get("misc", "addonlistControls") as Record<string, Record<string, any>> || {};
     if (!addonlistControls[type]) return defaultValue;
     if (!Object.prototype.hasOwnProperty.call(addonlistControls[type], control)) return defaultValue;
     return addonlistControls[type][control];
 }
-export function saveState(type, control, value) {
-    const addonlistControls = JsonStore.get("misc", "addonlistControls") || {};
+export function saveState(type: string, control: string, value: any) {
+    const addonlistControls = JsonStore.get("misc", "addonlistControls") as Record<string, Record<string, any>> || {};
     if (!addonlistControls[type]) addonlistControls[type] = {};
     addonlistControls[type][control] = value;
     JsonStore.set("misc", "addonlistControls", addonlistControls);
 }
 
-export const addonContext = React.createContext();
+export interface AddonContext {
+    title: string;
+    toggleStore(): void;
+    showingStore: boolean;
+    store: AddonManager;
+}
 
-/**
- * @param {{ children: any, count: number, searching: boolean}} param0
- */
-export function AddonHeader({children, count, searching}) {
-    /** @type {{ title: any, toggleStore(): void, showingStore: boolean }} */
+export const addonContext = React.createContext<AddonContext>({} as AddonContext);
+
+interface AddonHeaderProps {
+    children: React.ReactNode;
+    count: number;
+    searching: boolean;
+}
+
+export function AddonHeader({children, count, searching}: AddonHeaderProps) {
     const {title, toggleStore, showingStore} = React.useContext(addonContext);
 
     const exitStore = React.useCallback(() => {
@@ -70,7 +79,6 @@ export function AddonHeader({children, count, searching}) {
 }
 
 export function FlowerStar({size = 16}) {
-
     return (
         <DiscordModules.Tooltip text={t("Addons.official")} aria-label={t("Addons.official")} hideOnClick={false}>
             {(props) => (

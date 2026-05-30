@@ -44,7 +44,7 @@ electron.contextBridge.exposeInMainWorld("Editor", {
     settings: {
         get: () => ipcRenderer.sendSync(IPCEvents.EDITOR_SETTINGS_GET),
         subscribe(listener) {
-            electron.ipcRenderer.on(IPCEvents.EDITOR_SETTINGS_UPDATE, (event, settings) => {
+            electron.ipcRenderer.on(IPCEvents.EDITOR_SETTINGS_UPDATE, (_, settings) => {
                 listener(settings);
             });
         },

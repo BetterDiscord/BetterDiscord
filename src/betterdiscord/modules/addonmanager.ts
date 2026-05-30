@@ -20,31 +20,7 @@ import type {SystemError} from "bun";
 import RemoteAPI from "@polyfill/remote";
 import {parseJsDoc} from "@common/utils";
 import Modals from "@ui/modals";
-
-export interface Addon {
-    added: number;
-    author: string;
-    authorId?: string;
-    authorLink?: string;
-    description: string;
-    donate?: string;
-    fileContent?: string;
-    filename: string;
-    format: string;
-    id: string;
-    invite?: string;
-    modified: number;
-    name: string;
-    partial?: boolean;
-    patreon?: string;
-    size: number;
-    slug: string;
-    source?: string;
-    version: string;
-    website?: string;
-    runAt?: string;
-    icon?: string;
-}
+import type {Addon, AddonType} from "@typed/addon";
 
 export default abstract class AddonManager<T extends Addon = Addon> extends Store {
     abstract name: string;
@@ -52,7 +28,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     abstract duplicatePattern: RegExp;
     abstract addonFolder: string;
     abstract language: string;
-    abstract prefix: string;
+    abstract prefix: AddonType;
     abstract order: number;
 
     addonList: T[] = [];
@@ -86,8 +62,8 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
     }
 
-    abstract startAddon(idOrAddon: string | T): void;
-    abstract stopAddon(idOrAddon: string | T): void;
+    abstract startAddon(idOrAddon: string | T): boolean;
+    abstract stopAddon(idOrAddon: string | T): boolean;
 
     loadState() {
         const saved = JsonStore.get(`${this.prefix}s` as Files);
@@ -316,9 +292,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
 
-        const err = this.startAddon(addon);
+        const succeeded = this.startAddon(addon);
         this.saveState();
-        return err;
+        return succeeded;
     }
 
     enableAllAddons() {
@@ -333,9 +309,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
 
-        const err = this.stopAddon(addon);
+        const succeeded = this.stopAddon(addon);
         this.saveState();
-        return err;
+        return succeeded;
     }
 
     disableAllAddons() {

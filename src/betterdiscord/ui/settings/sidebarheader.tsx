@@ -1,6 +1,6 @@
 import Changelog from "@data/changelog";
 
-import React from "@modules/react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 

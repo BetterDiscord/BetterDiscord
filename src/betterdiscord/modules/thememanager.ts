@@ -1,7 +1,8 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
+import {type Addon} from "@typed/addon";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 
@@ -58,24 +59,28 @@ export default new class ThemeManager extends AddonManager<Theme> {
 
     startAddon(idOrAddon: string | Theme) {
         const theme = this.resolveAddon(idOrAddon);
-        if (!theme) return;
+        if (!theme) return false;
 
         if (!theme.css) {
             const loaded = this.loadAddon(theme);
-            if (!loaded) return;
+            if (!loaded) return false;
         }
 
         DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
         else this.initialAddonsLoaded++;
+
+        return true;
     }
 
     stopAddon(idOrAddon: string | Theme) {
         const theme = this.resolveAddon(idOrAddon);
-        if (!theme) return;
+        if (!theme) return false;
 
         DOMManager.removeTheme(theme.slug + "-theme-container");
         Toasts.error(t("Addons.disabled", {name: theme.name, version: theme.version}));
+
+        return true;
     }
 
     extractCustomProperties(css: string) {

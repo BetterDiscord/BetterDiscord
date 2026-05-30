@@ -1,11 +1,12 @@
 import {t} from "@common/i18n";
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
 import Themes from "@modules/thememanager";
+import type {AddonType} from "@typed/addon";
 
 
-export default (type: "plugin" | "theme") => {
+export default (type: AddonType): Command => {
     const manager = type === "plugin" ? Plugins : Themes;
 
     return {
@@ -47,9 +48,9 @@ export default (type: "plugin" | "theme") => {
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};
 
-                const err = manager.enableAddon(addon.id);
+                const succeeded = manager.enableAddon(addon.id);
 
-                if (err) {
+                if (!succeeded) {
                     return {content: t("Addons.couldNotEnable", {name: addon.id})};
                 }
 
@@ -59,9 +60,9 @@ export default (type: "plugin" | "theme") => {
             if (action === "disable") {
                 if (!isEnabled) return {content: `${addon.name} is already disabled!`};
 
-                const err = manager.disableAddon(addon.id);
+                const succeeded = manager.disableAddon(addon.id);
 
-                if (err) {
+                if (!succeeded) {
                     return {content: t("Addons.couldNotDisable", {name: addon.id})};
                 }
 
@@ -95,7 +96,7 @@ export default (type: "plugin" | "theme") => {
             }
 
             if (action === "share") {
-                DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${encodeURIComponent(addon.name)}>`}, undefined, {});
+                DiscordModules.MessageUtils?.sendMessage(channel.id, {content: `<betterdiscord://store/${encodeURIComponent(addon.name)}>`}, undefined, {});
             }
         }
     };

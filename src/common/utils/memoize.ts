@@ -1,7 +1,7 @@
 /**
  * Generates an automatically memoizing version of an object.
- * @param object - object to memoize
- * @returns the proxy to the object that memoizes properties
+ * @param object Object to memoize
+ * @returns The proxy to the object that memoizes properties
  */
 export default function memoizeObject<T extends Record<string | number | symbol, any>>(object: T) {
     const proxy = new Proxy(object, {

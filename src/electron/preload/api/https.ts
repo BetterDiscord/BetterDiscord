@@ -1,14 +1,13 @@
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
+import type {RequestCallback, RequestOptions} from "@common/types/ipc";
 
 
-const methods = ["get", "put", "post", "delete", "head"];
+const methods = ["get", "put", "post", "delete", "head"] as const;
 const redirectCodes = new Set([301, 302, 307, 308]);
 const dataToClone: Array<keyof http.IncomingMessage> = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders"];
 
-type RequestOptions = https.RequestOptions & {formData?: Buffer | string;};
-type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer | string) => void;
 type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
 
 const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {
@@ -81,15 +80,18 @@ const request = function (url: string, options: RequestOptions, callback: Reques
     };
 };
 
+type HttpsModule = { request: typeof request } & {
+    [M in typeof methods[number]]: typeof request;
+}
+
 export default Object.assign({request},
     Object.fromEntries(methods.map(method => [
         method,
-        function (this: typeof https["get"], ...args: any[]) {
+        function (this: HttpsModule, ...args: any[]) {
             args[1] ??= {};
-
             args[1].method ??= method.toUpperCase();
 
             return Reflect.apply(request, this, args);
         }
     ]))
-);
+) as HttpsModule;

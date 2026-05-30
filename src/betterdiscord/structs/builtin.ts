@@ -4,8 +4,7 @@ import Logger from "@common/logger";
 import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
-import CommandManager from "@modules/commandmanager";
-
+import CommandManager, {type Command} from "@modules/commandmanager";
 
 export default class BuiltinModule {
 
@@ -76,15 +75,15 @@ export default class BuiltinModule {
     async enabled() {}
     async disabled() {}
 
-    log(...message: string[]) {
+    log(...message: any[]) {
         Logger.log(this.name, ...message);
     }
 
-    warn(...message: string[]) {
+    warn(...message: any[]) {
         Logger.warn(this.name, ...message);
     }
 
-    error(...message: string[]) {
+    error(...message: any[]) {
         Logger.err(this.name, ...message);
     }
 
@@ -100,7 +99,8 @@ export default class BuiltinModule {
         return Patcher.instead(this.name, object, func as keyof typeof object, callback);
     }
 
-    after(object: object, func: string, callback: (t: object, a: any[], r: any) => void) {
+    after(object: object | undefined, func: string, callback: (t: object, a: any[], r: any) => void) {
+        if (!object) return;
         return Patcher.after(this.name, object, func as keyof typeof object, callback);
     }
 
@@ -108,8 +108,7 @@ export default class BuiltinModule {
         return Patcher.unpatchAll(this.name);
     }
 
-    // TODO: fix type when commands are properly TS
-    addCommands(...commands: object[]) {
+    addCommands(...commands: Command[]) {
         for (const command of commands) {
             const unregister = CommandManager.registerCommand("BetterDiscord", command);
             this.#commands.add(unregister);

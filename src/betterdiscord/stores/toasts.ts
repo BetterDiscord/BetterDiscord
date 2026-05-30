@@ -4,13 +4,17 @@ import Logger from "@common/logger";
 import type {ToastProps, ToastType} from "@ui/toasts";
 
 export interface ToastOptions {
+    /** Changes the type of the toast stylistically and semantically */
     type?: ToastType;
+    /** Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. */
     icon?: boolean;
+    /** Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Defaults to 3000. */
     timeout?: number;
+    /** Whether to force showing the toast and ignore the BD setting */
     forceShow?: boolean;
 }
 
-export default new class Toasts extends Store {
+class Toasts extends Store {
     private _toasts: ToastProps[] = [];
     private toastKey: number = 0;
 
@@ -39,12 +43,8 @@ export default new class Toasts extends Store {
     /**
      * This shows a toast similar to android towards the bottom of the screen.
      *
-     * @param {string} content The string to show in the toast.
-     * @param {object} options Options object. Optional parameter.
-     * @param {string} [options.type="default"] Changes the type of the toast stylistically and semantically. Choices: "default", "info", "success", "error", "warning". Default: "default"
-     * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
-     * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
-     * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
+     * @param content The string to show in the toast.
+     * @param options Options object. Optional parameter.
      */
     show(content: string, options: ToastOptions = {}) {
         try {
@@ -65,28 +65,30 @@ export default new class Toasts extends Store {
         }
     }
 
-    /** Shorthand for `type = "default"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "default"` for {@link show} */
     default(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "default"});
     }
 
-    /** Shorthand for `type = "info"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "info"` for {@link show} */
     info(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "info"});
     }
 
-    /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "success"` for {@link show} */
     success(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "success"});
     }
 
-    /** Shorthand for `type = "warning"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "warning"` for {@link show} */
     warning(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "warning"});
     }
 
-    /** Shorthand for `type = "error"` for {@link module:Toasts.show} */
+    /** Shorthand for `type = "error"` for {@link show} */
     error(content: string, options: ToastOptions = {}) {
         return this.show(content, {...options, type: "error"});
     }
 };
+
+export default new Toasts();

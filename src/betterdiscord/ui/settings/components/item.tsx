@@ -1,6 +1,5 @@
-import React from "@modules/react";
+import React, {type PropsWithChildren} from "react";
 import Divider from "@ui/divider";
-import type {PropsWithChildren} from "react";
 
 
 export type SettingItemProp = PropsWithChildren<{

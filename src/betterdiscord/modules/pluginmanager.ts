@@ -3,7 +3,8 @@ import Logger from "@common/logger";
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
+import {type Addon} from "@typed/addon";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
@@ -162,11 +163,11 @@ export default new class PluginManager extends AddonManager<Plugin> {
 
     startAddon(idOrAddon: string | Plugin) {
         const plugin = this.resolveAddon(idOrAddon);
-        if (!plugin) return;
+        if (!plugin) return false;
 
         if (!plugin.instance) {
             const loaded = this.loadAddon(plugin);
-            if (!loaded) return;
+            if (!loaded) return false;
         }
 
         try {
@@ -179,20 +180,24 @@ export default new class PluginManager extends AddonManager<Plugin> {
             Toasts.warning(t("Addons.couldNotStart", {name: plugin.name, version: plugin.version}));
             Logger.stacktrace(this.name, `${plugin.name} v${plugin.version} could not be started.`, err as Error);
 
-            return this.showAddonError(plugin, t("Addons.methodError", {method: "start()"}), {
+            this.showAddonError(plugin, t("Addons.methodError", {method: "start()"}), {
                 message: (err as Error).message,
                 stack: (err as Error).stack
             });
+
+            return false;
         }
 
         this.trigger("started", plugin.id);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: plugin.name, version: plugin.version}));
         else this.initialAddonsLoaded++;
+
+        return true;
     }
 
     stopAddon(idOrAddon: string | Plugin) {
         const plugin = this.resolveAddon(idOrAddon);
-        if (!plugin) return;
+        if (!plugin) return false;
 
         try {
             plugin.instance?.stop();
@@ -202,14 +207,18 @@ export default new class PluginManager extends AddonManager<Plugin> {
             Toasts.warning(t("Addons.couldNotStop", {name: plugin.name, version: plugin.version}));
             Logger.stacktrace(this.name, `${plugin.name} v${plugin.version} could not be stopped.`, err as Error);
 
-            return this.showAddonError(plugin, t("Addons.methodError", {method: "stop()"}), {
+            this.showAddonError(plugin, t("Addons.methodError", {method: "stop()"}), {
                 message: (err as Error).message,
                 stack: (err as Error).stack
             });
+
+            return false;
         }
 
         this.trigger("stopped", plugin.id);
         Toasts.error(t("Addons.disabled", {name: plugin.name, version: plugin.version}));
+
+        return true;
     }
 
     setupFunctions() {

@@ -12,9 +12,6 @@ type UnregisterArgs<Bounded extends boolean> = [
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
  * This allows plugins to register and manage their own commands.
- * @type CommandAPI
- * @summary {@link CommandAPI} is a utility class for managing commands.
- * @name CommandAPI
  */
 class CommandAPI<Bounded extends boolean> {
     #callerName = "";
@@ -33,9 +30,9 @@ class CommandAPI<Bounded extends boolean> {
 
     /**
      * Registers a new command
-     * @param {string|object} callerOrCommand Caller name or command object if caller is preset
-     * @param {object} [command] Command object (optional if caller is preset)
-     * @returns {Function|undefined} Unregister function
+     * @param callerOrCommand Caller name or command object if caller is preset
+     * @param [command] Command object (optional if caller is preset)
+     * @returns A function to unregister the command
      */
     register(...args: RegisterArgs<Bounded>) {
         const caller = (this.#callerName || args[0]) as string;
@@ -50,8 +47,8 @@ class CommandAPI<Bounded extends boolean> {
 
     /**
      * Unregisters a command
-     * @param {string} callerOrCommandId Caller name or command ID if caller is preset
-     * @param {string} [commandId] Command ID (optional if caller is preset)
+     * @param callerOrCommandId Caller name or command ID if caller is preset
+     * @param [commandId] Command ID (optional if caller is preset)
      */
     unregister(...args: UnregisterArgs<Bounded>) {
         const caller = (this.#callerName || args[0]) as string;
@@ -64,24 +61,18 @@ class CommandAPI<Bounded extends boolean> {
         CommandManager.unregisterCommand(caller, id);
     }
 
-    /**
-     * @private
-     */
     #validateRegistration(caller: string, command: any) {
         if (caller === "BetterDiscord") throw new Error("Plugins cannot register commands as BetterDiscord");
         return typeof caller === "string" && typeof command === "object" && command?.id && command?.name && command?.execute;
     }
 
-    /**
-     * @private
-     */
     #validateUnregistration(caller: string, commandId: string) {
         return typeof caller === "string" && (!commandId || typeof commandId === "string");
     }
 
     /**
      * Unregisters all commands for a specific caller
-     * @param {string} caller Name of the caller whose commands should be unregistered
+     * @param caller Name of the caller whose commands should be unregistered
      */
     unregisterAll(caller: string) {
         if (this.#callerName) caller = this.#callerName;
@@ -90,8 +81,8 @@ class CommandAPI<Bounded extends boolean> {
 
     /**
      * Gets all commands registered by a specific caller
-     * @param {string} caller Name of the caller whose commands should be retrieved
-     * @returns {Array} Array of command objects registered by the caller
+     * @param caller Name of the caller whose commands should be retrieved
+     * @returns Array of command objects registered by the caller
      */
     getCommandsByCaller(caller: string) {
         if (this.#callerName) caller = this.#callerName;

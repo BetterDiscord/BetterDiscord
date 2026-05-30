@@ -62,10 +62,6 @@ async function fetch(input: string | URL | Request, init?: NativeRequestInit): P
         headers = new Headers(init.headers);
     }
 
-    // if (!headers.has("user-agent")) {
-    //     headers.set("user-agent", navigator.userAgent);
-    // }
-
     const driedResponse = await Remote.nativeFetch({
         url: request.url,
 

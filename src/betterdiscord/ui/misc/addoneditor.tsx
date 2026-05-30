@@ -1,7 +1,7 @@
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 
-import Editor from "@ui/customcss/editor";
+import Editor, {type EditorRef} from "@ui/customcss/editor";
 
 import {RotateCwIcon, SaveIcon} from "lucide-react";
 
@@ -17,21 +17,21 @@ interface Props {
 }
 
 export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}: Props, ref) {
-    const editorRef = useRef<{resize(): void; getValue(): string; setValue(s: string): void;}>(null);
+    const editorRef = useRef<EditorRef>(null);
     const [hasUnsavedChanges, setUnsaved] = useState(false);
 
     useImperativeHandle(ref, () => {
         return {
             resize() {editorRef.current?.resize();},
-            get value(): string | undefined {return editorRef.current?.getValue();},
-            set value(newValue: string) {editorRef.current?.setValue(newValue);},
+            get value(): string | undefined {return editorRef.current?.value ?? "";},
+            set value(newValue: string) {if (editorRef.current) editorRef.current!.value = newValue;},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);
 
     const popoutNative = useCallback(() => openNative?.(), [openNative]);
     const onChange = useCallback(() => setUnsaved(true), []);
-    const saveAddon = useCallback((_: any, newCSS: string) => {
+    const saveAddon = useCallback((_: React.MouseEvent, newCSS: string) => {
         save?.(newCSS);
         setUnsaved(false);
     }, [save]);

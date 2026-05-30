@@ -1,10 +1,9 @@
-import React from "@modules/react";
+import React, {useLayoutEffect} from "react";
 import {t} from "@common/i18n";
 
 import Modals from "@ui/modals";
 
 import {XIcon, MaximizeIcon} from "lucide-react";
-import {useLayoutEffect} from "react";
 
 const {useState, useCallback, useEffect, useRef} = React;
 

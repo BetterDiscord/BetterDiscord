@@ -1,9 +1,9 @@
-import React from "@modules/react";
+import React, {type ChangeEvent} from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import {CheckIcon, PipetteIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
-import type {ChangeEvent} from "react";
+import type {Color as ColorType, HexString} from "@data/settings";
 
 const {useState, useCallback, useContext} = React;
 
@@ -11,12 +11,12 @@ const {useState, useCallback, useContext} = React;
 const defaultColors = [1752220, 3066993, 3447003, 10181046, 15277667, 15844367, 15105570, 15158332, 9807270, 6323595, 1146986, 2067276, 2123412, 7419530, 11342935, 12745742, 11027200, 10038562, 9936031, 5533306];
 
 // TODO: consider creating a color util
-function resolveColor(color: string | number, hex: false): number;
-function resolveColor(color: string | number, hex?: true): string;
-function resolveColor(color: string | number, hex = true): string | number {
+function resolveColor(color: ColorType, hex: false): number;
+function resolveColor(color: ColorType, hex?: true): HexString;
+function resolveColor(color: ColorType, hex = true): HexString | number {
     switch (typeof color) {
         case (hex && "number"): return `#${color.toString(16)}`;
-        case (!hex && "string"): return Number.parseInt((color as string).replace("#", ""), 16);
+        case (!hex && "string"): return Number.parseInt((color as HexString).replace("#", ""), 16);
         case (!hex && "number"): return color;
         case (hex && "string"): return color;
 
@@ -24,7 +24,7 @@ function resolveColor(color: string | number, hex = true): string | number {
     }
 };
 
-const getRGB = (color: string) => {
+const getRGB = (color: HexString) => {
     let result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color);
     if (result) return [parseInt(result[1]), parseInt(result[2]), parseInt(result[3])];
 
@@ -38,34 +38,35 @@ const getRGB = (color: string) => {
     if (result) return [parseInt(result[1] + result[1], 16), parseInt(result[2] + result[2], 16), parseInt(result[3] + result[3], 16)];
 };
 
-const luma = (color: string | number[]) => {
+const luma = (color: HexString | number[]) => {
     const rgb = (typeof (color) === "string") ? getRGB(color) : color;
     return (0.2126 * rgb![0]) + (0.7152 * rgb![1]) + (0.0722 * rgb![2]); // SMPTE C, Rec. 709 weightings
 };
 
-const getContrastColor = (color: string | number[]) => {
+const getContrastColor = (color: HexString | number[]) => {
     return (luma(color) >= 150) ? "#000" : "#fff";
 };
 
 export interface ColorpickerProps {
-    value: string | number;
-    onChange?(newValue: string): void;
-    colors?: Array<string | number>;
-    defaultValue?: string | number;
+    value: ColorType;
+    onChange?(newValue: HexString): void;
+    colors?: ColorType[];
+    defaultValue?: ColorType;
     disabled?: boolean;
 }
 
-export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
+export default function ColorPicker({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
-    const value = (contextValue !== none ? contextValue : internalValue) as string | number;
+    const value = (contextValue !== none ? contextValue : internalValue) as ColorType;
     const isDisabled = contextValue !== none ? contextDisabled : disabled;
 
-    const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: string | number;};}) => {
+    const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: ColorType;};}) => {
         if (isDisabled) return;
-        onChange?.(resolveColor(e.target.value));
-        setValue(e.target.value);
+        const color = resolveColor(e.target.value as ColorType);
+        onChange?.(color);
+        setValue(color);
     }, [onChange, isDisabled]);
 
     const intValue: number = resolveColor(value, false);

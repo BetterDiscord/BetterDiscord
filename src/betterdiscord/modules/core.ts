@@ -25,7 +25,6 @@ import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
-// import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 import {allModulesLoaded, getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
@@ -59,14 +58,8 @@ export default new class Core {
         Settings.initialize();
         SettingsRenderer.initialize();
 
-        Logger.log("Startup", "Initializing DOMManager");
-        DOMManager.initialize();
-
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
-
-        // Logger.log("Startup", "Initializing NotificationUI");
-        // NotificationUI.initialize();
 
         Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
