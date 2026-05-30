@@ -80,11 +80,11 @@ export default new class Core {
 
         Logger.log("Startup", "Loading Plugins");
         PluginManager.initialize();
-        PluginManager.loadAddons("connection");
+        PluginManager.startAddons("connection");
 
         Logger.log("Startup", "Loading Themes");
         ThemeManager.initialize();
-        ThemeManager.loadAddons();
+        ThemeManager.startAddons();
 
         Logger.log("Startup", "Initializing Updater");
         Updater.initialize();
@@ -98,7 +98,7 @@ export default new class Core {
             JsonStore.set("misc", "version", Config.get("version"));
         }
 
-        allModulesLoaded.then(() => PluginManager.loadAddons("idle"));
+        allModulesLoaded.then(() => PluginManager.startAddons("idle"));
     }
 
     waitForConnection() {

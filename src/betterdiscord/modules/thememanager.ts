@@ -38,28 +38,33 @@ export default new class ThemeManager extends AddonManager<Theme> {
     language = "css";
     order = 4;
 
-    loadAddons() {
-        for (const addon of this.addonInfo) {
-            this.loadAddon(addon);
+    startAddons() {
+        for (const addon of this.addonList) {
+            if (!this.state[addon.id]) continue;
+            this.startAddon(addon);
         }
 
         this.finishInit();
     }
 
-    initAddon(addon: Addon) {
-        const theme = addon as Theme;
+    initAddon(theme: Theme) {
         theme.css = theme.fileContent!;
         delete theme.fileContent;
 
         // Set the custom properties
         const properties = this.extractCustomProperties(theme.css);
         theme.properties = properties;
-        return theme;
+        return true;
     }
 
     startAddon(idOrAddon: string | Theme) {
         const theme = this.resolveAddon(idOrAddon);
         if (!theme) return false;
+
+        if (!theme.css) {
+            const loaded = this.loadAddon(theme);
+            if (!loaded) return false;
+        }
 
         DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));

@@ -185,10 +185,24 @@ export default function AddonList({store}: {store: AddonManager;}) {
         }
 
         return sorted.map(addon => {
-            const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-            const getSettings = hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance);
+            const hasSettings = (addon as Plugin).instance
+                ? typeof (addon as Plugin).instance?.getSettingsPanel === "function"
+                : Boolean(store.prefix === "plugin" && addon.fileContent?.includes("getSettingsPanel"));
+            const getSettings = hasSettings && (addon as Plugin).instance?.getSettingsPanel?.bind((addon as Plugin).instance);
             return <ErrorBoundary id={addon.id} name="AddonCard">
-                <AddonCard store={store} disabled={addon.partial} type={store.prefix as AddonType} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} />
+                <AddonCard
+                    store={store}
+                    disabled={addon.partial}
+                    type={store.prefix as "plugin" | "theme"}
+                    editAddon={() => triggerEdit(addon.id)}
+                    deleteAddon={() => triggerDelete(addon.id)}
+                    key={addon.id}
+                    addon={addon}
+                    onChange={onChange}
+                    enabled={addonState[addon.id]}
+                    hasSettings={hasSettings}
+                    getSettingsPanel={getSettings ? getSettings : undefined}
+                />
             </ErrorBoundary>;
         });
     }, [store, addonList, addonState, onChange, triggerDelete, triggerEdit, query, ascending, sort]);
