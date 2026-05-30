@@ -74,7 +74,7 @@ export async function getLazy<T>(filter: Webpack.ModuleFilter, options: Webpack.
     if (!options.cacheId) options.cacheId = null;
 
     const state = await queue.enqueue<T>(filter, options);
-    if (state.state === "resolved" && state.value) return state.value;
+    if (state.state === "resolved" && typeof state.value !== "undefined") return state.value;
     if (state.state === "aborted") return undefined;
 
     filter = wrapModuleFilter(filter);

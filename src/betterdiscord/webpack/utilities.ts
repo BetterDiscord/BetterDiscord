@@ -204,16 +204,18 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         const query = queries[index];
         const exists = index in returnedModules;
 
-        if (query.fatal) {
-            if (query.all && (!Array.isArray(returnedModules[index]) || returnedModules[index].length === 0)) {
+        if (query.map && !exists) {
+            returnedModules[index] = {};
+        }
+
+        if (query.all) {
+            if ((!exists || returnedModules[index].length === 0) && query.fatal) {
                 throw makeException();
             }
 
-            if (!exists) throw makeException();
-        }
-
-        if (query.map && !exists) {
-            returnedModules[index] = {};
+            if (!exists) {
+                returnedModules[index] = [];
+            }
         }
     }
 
