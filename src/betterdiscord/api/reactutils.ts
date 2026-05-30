@@ -1,7 +1,6 @@
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
-import React from "@modules/react";
-import type {RefObject} from "react";
+import React, {type RefObject} from "react";
 import type {Fiber} from "react-reconciler";
 
 interface PatchedReactHooks {
@@ -99,8 +98,11 @@ const patchedReactHooks: PatchedReactHooks = {
 };
 
 interface GetOwnerInstanceOptions {
+    /** A list of items to include in the search */
     include?: string[];
+    /** A list of items to exclude from the search */
     exclude?: string[];
+    /** A filter to check the current instance with (should return a boolean) */
     filter?: (owner: any) => boolean;
 }
 
@@ -110,28 +112,24 @@ const exoticComponents = {
     lazy: Symbol.for("react.lazy")
 };
 
-type ElementType<T extends React.FC<P>, P> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
+type ReactElementType<T extends React.FC<P>, P> = T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T> | React.LazyExoticComponent<T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>>;
 
 interface ReactUtils {
     rootInstance: any;
     getInternalInstance(node: Element): any | null;
     getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
     wrapElement(element: Element | Element[]): React.ComponentType;
-    wrapInHooks<T extends React.FC>(
-        functionComponent: ElementType<T, React.ComponentProps<T>>,
+    wrapInHooks<T extends React.FC<any>>(
+        functionComponent: ReactElementType<T, React.ComponentProps<T>>,
         customPatches?: Partial<PatchedReactHooks>
     ): React.FunctionComponent<React.ComponentProps<T>>;
-    // forceUpdateFiber(fiber: Fiber): boolean;
-    getType<T extends React.FC<P>, P>(elementType: ElementType<T, P>): T;
+    getType<T extends React.FC<P>, P>(elementType: ReactElementType<T, P>): T;
     createNodePatcher(): NodePatcher;
 }
 
 /**
  * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of the UI.
- * @type ReactUtils
- * @summary {@link ReactUtils} is a utility class for interacting with React internals.
- * @name ReactUtils
  */
 const ReactUtils: ReactUtils = {
     /**
@@ -144,8 +142,8 @@ const ReactUtils: ReactUtils = {
     /**
      * Gets the internal React data of a specified node.
      *
-     * @param {HTMLElement} node Node to get the internal React data from
-     * @returns {Fiber|undefined} Either the found data or `undefined`
+     * @param node Node to get the internal React data from
+     * @returns Either the found data or `undefined`
      */
     getInternalInstance(node: HTMLElement): Fiber | null {
         if (node.__reactFiber$) return node.__reactFiber$;
@@ -158,12 +156,9 @@ const ReactUtils: ReactUtils = {
      * Attempts to find the "owner" node to the current node. This is generally
      * a node with a `stateNode` - a class component.
      *
-     * @param {HTMLElement} node Node to obtain React instance of
-     * @param {object} options Options for the search
-     * @param {array} [options.include] List of items to include in the search
-     * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
-     * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
-     * @return {object|undefined} The owner instance or `undefined` if not found
+     * @param node Node to obtain React instance of
+     * @param options Options for the search
+     * @returns The owner instance or `undefined` if not found
      */
     getOwnerInstance(node: HTMLElement | undefined, {
         include,
@@ -200,8 +195,8 @@ const ReactUtils: ReactUtils = {
     /**
      * Creates an unrendered React component that wraps HTML elements.
      *
-     * @param {HTMLElement} element Element or array of elements to wrap
-     * @returns {object} Unrendered React component
+     * @param element Element or array of elements to wrap
+     * @returns Unrendered React component
      */
     wrapElement(element: HTMLElement | HTMLElement[]) {
         return class ReactWrapper extends React.Component {
@@ -239,11 +234,19 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    wrapInHooks<T extends React.FC>(
+    /**
+     * Wraps a functional React component to allow it to be created outside of
+     * the normal React lifecycle.
+     *
+     * @param functionComponent The functional component to wrap
+     * @param customPatches Custom react hooks to use
+     * @returns The wrapped component
+     */
+    wrapInHooks<T extends React.FC<P>, P>(
         functionComponent: T | React.MemoExoticComponent<T | React.ForwardRefExoticComponent<T>> | React.ForwardRefExoticComponent<T>,
         customPatches: Partial<PatchedReactHooks> = {}
     ) {
-        const FC = ReactUtils.getType(functionComponent);
+        const FC = ReactUtils.getType<T, P>(functionComponent);
 
         return function wrappedComponent(props: React.ComponentProps<T>) {
             const reactDispatcher = (React as any).__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE.H;
@@ -264,34 +267,10 @@ const ReactUtils: ReactUtils = {
         };
     },
 
-    // forceUpdateFiber(fiber: Fiber): boolean {
-    //     fiber.type = ReactUtils.getType(fiber.elementType);
-
-    //     // React Class Components
-    //     if (fiber.stateNode?.isReactComponent) {
-    //         fiber.stateNode.forceUpdate();
-    //         return true;
-    //     }
-
-    //     let memoizedState = fiber.memoizedState;
-
-    //     while (memoizedState) {
-    //         if (memoizedState.queue?.lanes === 0) {
-    //             const lastRenderedState = memoizedState.queue.lastRenderedState;
-
-    //             memoizedState.queue.dispatch((m: any) => !m);
-    //             memoizedState.queue.dispatch(lastRenderedState);
-
-    //             return true;
-    //         }
-
-    //         memoizedState = memoizedState.next;
-    //     }
-
-    //     return false;
-    // },
-
-    getType<T extends React.FC>(elementType: ElementType<T>): T {
+    /**
+     * Gets the type of a React component, going through things such as forwardRef and memo
+     */
+    getType<T extends React.FC<P>, P>(elementType: ReactElementType<T, P>): T {
         while (true) {
             switch ((elementType as React.MemoExoticComponent<T> | React.ForwardRefExoticComponent<T>).$$typeof) {
                 case exoticComponents.memo:
@@ -317,6 +296,10 @@ const ReactUtils: ReactUtils = {
             }
         }
     },
+
+    /**
+     * Creates a NodePatcher instance which is used to patch React nodes
+     */
     createNodePatcher() {
         return new NodePatcher();
     }

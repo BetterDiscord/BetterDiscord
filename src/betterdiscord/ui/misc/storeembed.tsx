@@ -1,16 +1,15 @@
-import React from "@modules/react";
+import React, {type ReactNode} from "react";
 import AddonStore from "@modules/addonstore";
 
 import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Spinner from "@ui/spinner";
-import type {ReactNode} from "react";
 
 const {useState, useEffect} = React;
 
-export default function AddonEmbed({id, original}: {id: string; original: ReactNode;}) {
+export default function AddonEmbed({id, original}: {id: string; original?: ReactNode;}) {
     const [addon, setAddon] = useState(() => AddonStore.getAddon(id));
     const [loading, setLoading] = useState(() => true);
-    const [tags, setTags] = useState({});
+    const [tags, setTags] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         setAddon(AddonStore.getAddon(id));
@@ -33,7 +32,6 @@ export default function AddonEmbed({id, original}: {id: string; original: ReactN
         );
     }
 
-    // TODO: doggy, fix the type errors below
     return (
         <TagContext.Provider
             value={[

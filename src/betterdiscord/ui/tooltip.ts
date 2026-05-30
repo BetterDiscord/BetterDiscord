@@ -13,9 +13,13 @@ export type TooltipStyle = typeof styles[number];
 export type TooltipSide = typeof sides[number];
 
 export interface TooltipOptions {
+    /** Correlates to the Discord styling/colors */
     style?: TooltipStyle;
+    /** Can be any of top, right, bottom, left */
     side?: TooltipSide;
+    /** Prevents moving the tooltip to the opposite side if it is too big or goes offscreen */
     preventFlip?: boolean;
+    /** Whether the tooltip should be disabled from showing on hover */
     disabled?: boolean;
 }
 
@@ -32,15 +36,9 @@ export default class Tooltip {
     labelElement: HTMLDivElement;
     observer?: MutationObserver;
     /**
-     *
-     * @constructor
-     * @param {HTMLElement} node - DOM node to monitor and show the tooltip on
-     * @param {string|HTMLElement} tip - string to show in the tooltip
-     * @param {object} options - additional options for the tooltip
-     * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] - correlates to the discord styling/colors
-     * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] - can be any of top, right, bottom, left
-     * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
-     * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
+     * @param node DOM node to monitor and show the tooltip on
+     * @param text A string to show in the tooltip
+     * @param options Additional options for the tooltip
      */
     constructor(node: HTMLElement, text: string | HTMLElement, options: TooltipOptions = {}) {
         const {style = "primary", side = "top", preventFlip = false, disabled = false} = options;
@@ -91,7 +89,7 @@ export default class Tooltip {
 
     /** Hides the tooltip. Automatically called on mouseleave. */
     hide() {
-        /** Don't rehide if already inactive */
+        // Don't rehide if already inactive
         if (!this.active) return;
         this.active = false;
         this.element.remove();
@@ -99,7 +97,7 @@ export default class Tooltip {
 
     /** Shows the tooltip. Automatically called on mouseenter. Will attempt to flip if position was wrong. */
     show() {
-        /** Don't reshow if already active */
+        // Don't reshow if already active
         if (this.active) return;
         this.active = true;
         // this.labelElement.textContent = this.label;
@@ -125,9 +123,9 @@ export default class Tooltip {
             else this.showLeft();
         }
 
-        /** Do not create a new observer each time if one already exists! */
+        // Do not create a new observer each time if one already exists!
         if (this.observer) return;
-        /** Use an observer in show otherwise you'll cause unclosable tooltips */
+        // Use an observer in show otherwise you'll cause unclosable tooltips
         this.observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 const nodes = Array.from(mutation.removedNodes);

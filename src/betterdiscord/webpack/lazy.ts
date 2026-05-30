@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";

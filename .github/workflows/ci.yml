@@ -28,6 +28,9 @@ jobs:
       - name: Lint code
         run: bun run lint
 
+      - name: Check types
+        run: bun run typecheck
+
       - name: Build asar
         run: bun run dist
         env:

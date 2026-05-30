@@ -2,7 +2,6 @@ import type AddonManager from "@modules/addonmanager";
 
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are accessible through the {@link BdApi}.
- * @name AddonAPI
  */
 class AddonAPI {
     #manager: AddonManager;
@@ -11,51 +10,49 @@ class AddonAPI {
 
     /**
      * The path to the addon folder.
-     * @type string
      */
     get folder() {return this.#manager.addonFolder;}
 
     /**
      * Determines if a particular addon is enabled.
-     * @param {string} idOrFile Addon ID or filename
-     * @returns {boolean}
+     * @param idOrFile Addon ID or filename
      */
     isEnabled(idOrFile: string) {return this.#manager.isEnabled(idOrFile);}
 
     /**
      * Enables the given addon.
-     * @param {string} idOrFile Addon ID or filename
+     * @param idOrFile Addon ID or filename
      */
-    enable(idOrAddon: string) {return this.#manager.enableAddon(idOrAddon);}
+    enable(idOrFile: string) {return this.#manager.enableAddon(idOrFile);}
 
     /**
      * Disables the given addon.
-     * @param {string} idOrFile Addon ID or filename
+     * @param idOrFile Addon ID or filename
      */
-    disable(idOrAddon: string) {return this.#manager.disableAddon(idOrAddon);}
+    disable(idOrFile: string) {return this.#manager.disableAddon(idOrFile);}
 
     /**
      * Toggles if a particular addon is enabled.
-     * @param {string} idOrFile Addon ID or filename
+     * @param idOrFile Addon ID or filename
      */
-    toggle(idOrAddon: string) {return this.#manager.toggleAddon(idOrAddon);}
+    toggle(idOrFile: string) {return this.#manager.toggleAddon(idOrFile);}
 
     /**
-     * Reloads if a particular addon is enabled.
-     * @param {string} idOrFile Addon ID or filename
+     * Reloads a particular addon if it is enabled.
+     * @param idOrFile Addon ID or filename
      */
-    reload(idOrFileOrAddon: string) {return this.#manager.reloadAddon(idOrFileOrAddon);}
+    reload(idOrFile: string) {return this.#manager.reloadAddon(idOrFile);}
 
     /**
      * Gets a particular addon.
-     * @param {string} idOrFile Addon ID or filename
-     * @returns {object} Addon instance
+     * @param idOrFile Addon ID or filename
+     * @returns Addon instance
      */
     get(idOrFile: string) {return this.#manager.resolveAddon(idOrFile);}
 
     /**
      * Gets all addons of this type.
-     * @returns {Array<object>} Array of all addon instances
+     * @returns Array of all addon instances
      */
     getAll() {return this.#manager.addonList.map(a => this.#manager.resolveAddon(a.id));}
 }

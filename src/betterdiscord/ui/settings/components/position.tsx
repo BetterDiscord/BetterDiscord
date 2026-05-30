@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "@modules/react";
+import React, {useContext, useState} from "react";
 import Text from "@ui/base/text";
 import {none, SettingsContext} from "@ui/contexts";
 

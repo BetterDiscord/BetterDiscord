@@ -266,7 +266,7 @@ export default new class SettingsManager extends Store {
         return this.state[collection][category][id!] as T;
     }
 
-    set(collection: string, category: string, id: string | unknown, value?: unknown): any {
+    set(collection: string, category: string, id: string | unknown, value?: unknown) {
         if (arguments.length == 3) {
             value = id;
             id = category;

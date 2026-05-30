@@ -1,18 +1,17 @@
-import {useInsertionEffect, useReducer, useRef} from "@modules/react";
+import {useInsertionEffect, useReducer, useRef} from "react";
 import type Store from "../stores/base";
-import type React from "react";
 import {shallowEqual} from "fast-equals";
-import type {FluxStore} from "discord/modules";
+import type {FluxStore} from "@typed/discord/modules";
 
 type StoreType = Store | FluxStore;
 
-export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: () => T, deps?: React.DependencyList, areStateEqual: true | ((oldState: T, newState: T) => boolean) = (oldState, newState) => oldState === newState): T {
+export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: () => T, deps?: React.DependencyList, isStateEqual: true | ((oldState: T, newState: T) => boolean) = (oldState, newState) => oldState === newState): T {
     const [, forceUpdate] = useForceUpdate();
     const state = useRef(undefined as T);
     const factoryRef = useRef(undefined as unknown as () => T);
 
     const compareStates = useRef(null as unknown as (oldState: T, newState: T) => boolean);
-    compareStates.current = areStateEqual === true ? shallowEqual : areStateEqual;
+    compareStates.current = isStateEqual === true ? shallowEqual : isStateEqual;
 
     if (factoryRef.current === undefined) {
         factoryRef.current = factory;

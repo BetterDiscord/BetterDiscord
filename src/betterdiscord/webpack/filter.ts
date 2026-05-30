@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {webpackRequire} from "./require";
 
 function assign<T extends Webpack.ModuleFilter | Webpack.ExportedOnlyFilter>(filter: T, args: any) {
@@ -7,7 +7,7 @@ function assign<T extends Webpack.ModuleFilter | Webpack.ExportedOnlyFilter>(fil
     });
 }
 
-export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
+export function byKeys(props: readonly string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;
@@ -23,7 +23,7 @@ export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m =
     });
 }
 
-export function byPrototypeKeys(fields: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
+export function byPrototypeKeys(fields: readonly string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return assign(module => {
         if (!module) return false;
         if (typeof (module) !== "object" && typeof (module) !== "function") return false;

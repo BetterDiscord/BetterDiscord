@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React, {type PropsWithChildren, type ReactNode} from "react";
 
 import Drawer from "./drawer";
 import Switch from "./components/switch";
@@ -9,15 +9,14 @@ import Textbox from "./components/textbox";
 import Slider from "./components/slider";
 import Radio from "./components/radio";
 import Keybind from "./components/keybind";
-import Color from "./components/color";
+import ColorPicker from "./components/color";
 import Filepicker from "./components/file";
 import Button, {type ButtonProps} from "../base/button";
 import Position from "@ui/settings/components/position";
 import {SettingsContext} from "@ui/contexts";
 import {useStateFromStores} from "@ui/hooks";
 import SettingsStore from "@stores/settings";
-import type {Setting, SettingItem} from "@data/settings";
-import type {PropsWithChildren, ReactNode} from "react";
+import type {Setting, BaseSettingItem} from "@data/settings";
 
 const {useCallback} = React;
 
@@ -39,6 +38,10 @@ function SettingsProvider({collection, category, id, children}: PropsWithChildre
     return <SettingsContext.Provider value={context}>{children}</SettingsContext.Provider>;
 }
 
+export type GroupOnChange =
+    & ((id: string, cid: string, value: any) => void)
+    & ((id: string, value: any) => void);
+
 export type GroupProps = PropsWithChildren<{
     id: string;
     name?: string;
@@ -47,10 +50,9 @@ export type GroupProps = PropsWithChildren<{
     showDivider?: boolean;
     collapsible?: boolean;
     onDrawerToggle?(state?: boolean): void;
-    onChange?(id: string, cid: string, value: any): void;
-    onChange?(id: string, value: any): void;
+    onChange?: GroupOnChange;
     settings: any;
-    collection: any;
+    collection?: any;
 }>;
 
 export default function Group({onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}: GroupProps) {
@@ -74,12 +76,12 @@ export default function Group({onChange, id, name = "", shown, onDrawerToggle, s
 }
 
 
-interface CustomSetting extends SettingItem {
+export interface CustomSetting extends BaseSettingItem {
     type: "custom";
     children: ReactNode;
 }
 
-interface ButtonSetting extends ButtonProps, SettingItem {
+export interface ButtonSetting extends ButtonProps, BaseSettingItem {
     type: "button";
 }
 
@@ -93,7 +95,7 @@ export function buildSetting(setting: Setting | CustomSetting | ButtonSetting) {
     if (setting.type === "slider") children = <Slider {...setting} />;
     if (setting.type === "radio") children = <Radio {...setting} />;
     if (setting.type === "keybind") children = <Keybind {...setting} />;
-    if (setting.type === "color") children = <Color {...setting} />;
+    if (setting.type === "color") children = <ColorPicker {...setting} />;
     if (setting.type === "button") children = <Button {...setting} />;
     if (setting.type === "position") children = <Position {...setting} />;
     if (setting.type === "custom") children = setting.children;

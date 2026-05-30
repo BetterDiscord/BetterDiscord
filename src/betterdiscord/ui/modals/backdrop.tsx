@@ -1,7 +1,6 @@
 import clsx from "clsx";
-import React from "@modules/react";
+import React, {type MouseEvent} from "react";
 import DiscordModules from "@modules/discordmodules";
-import type {MouseEvent} from "react";
 
 const Spring = DiscordModules.ReactSpring;
 

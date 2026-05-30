@@ -9,10 +9,6 @@ export {default as DefaultCommands} from "./commands/defaultcommands";
 
 export {default as AddonStore} from "./store/addonstore";
 
-// export {default as EmoteModule} from "./emotes/emotes";
-// export {default as EmoteMenu} from "./emotes/emotemenu";
-// export {default as EmoteAutocaps} from "./emotes/emoteautocaps";
-
 export {default as Recovery} from "@builtins/developer/recovery";
 
 export {default as DevToolsListener} from "./developer/devtools";

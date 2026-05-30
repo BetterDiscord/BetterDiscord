@@ -39,7 +39,6 @@ export default new class ThemeAttributes extends Builtin {
 
             li["data-author-is-deleted"] = author.id === "456226577798135808";
             li["data-author-is-bot"] = author.bot && author.discriminator !== "0000";
-            // li["data-author-is-deleted"] = author.discriminator === "0000" && author.username === "Deleted User" && !author.bot;
 
             li["data-message-group-start"] = first;
             li["data-message-group-end"] = last;
@@ -114,7 +113,7 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchTabBarComponent() {
-        const TabBarComponent = await getLazyByStrings<any>(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
+        const TabBarComponent = await getLazyByStrings<{Item: typeof React.PureComponent;}>(["({getFocusableElements:()=>{let"], {searchExports: true, firstId: 158954, cacheId: "core-themeattributes-TabBar"});
 
         this.after(TabBarComponent?.Item?.prototype, "render", (thisObject, _, returnValue) => {
             returnValue.props["data-tab-id"] = (thisObject as any)?.props?.id;
