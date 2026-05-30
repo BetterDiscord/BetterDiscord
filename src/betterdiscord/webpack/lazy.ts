@@ -2,6 +2,7 @@ import type {Webpack} from "@typed/discord";
 import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
 import {getBulk} from "./utilities";
+import {getModule} from "./searching";
 
 const ChunkIdRegex = /.{1}\.e\("(\d+)"\)/g;
 const FinalModuleIdRegex = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/g;
@@ -15,8 +16,48 @@ interface LazyQueue<T = any> {
 type QueueResolvedState<T> = {state: "aborted";} | {state: "resolved", value: T;};
 
 const queue = {
-    _inQueue: false,
+    /** @private */
+    _scheduled: false,
+    /** @private */
     _queue: <LazyQueue[]>[],
+    /** @private */
+    _flushSync() {
+        // Should make it faster?
+        if (this._queue.length === 0) {
+            this._scheduled = false;
+            return;
+        }
+        if (this._queue.length === 1) {
+            const [{resolve, query: {filter, ...options}}] = this._queue;
+
+            resolve(getModule<any>(filter, options));
+
+            this._queue.length = 0;
+            this._scheduled = false;
+
+            return;
+        }
+
+        const result = getBulk(...this._queue.map((x) => x.query));
+
+        for (let index = 0; index < this._queue.length; index++) {
+            this._queue[index].resolve({
+                state: "resolved",
+                value: result[index]
+            });
+        }
+
+        this._queue.length = 0;
+        this._scheduled = false;
+    },
+    /** @private */
+    _scheduleFlush() {
+        if (this._scheduled) return;
+
+        this._scheduled = true;
+
+        queueMicrotask(() => this._flushSync());
+    },
     enqueue<T>(filter: Webpack.ModuleFilter, options?: Webpack.LazyOptions | undefined | null | void): Promise<QueueResolvedState<T>> {
         if (options?.signal?.aborted) {
             if (options?.fatal) return Promise.reject(makeException());
@@ -24,17 +65,6 @@ const queue = {
         }
 
         const {promise, resolve, reject} = Promise.withResolvers<QueueResolvedState<T>>();
-
-        const lazyQueue: LazyQueue<T> = {
-            query: {
-                ...options,
-                fatal: false,
-                filter
-            },
-            resolve
-        };
-
-        this._queue.push(lazyQueue);
 
         const onAbort = () => {
             if (options?.fatal) reject(makeException());
@@ -48,23 +78,21 @@ const queue = {
 
         options?.signal?.addEventListener("abort", onAbort);
 
-        if (!this._inQueue) {
-            this._inQueue = true;
+        const lazyQueue: LazyQueue<T> = {
+            query: {
+                ...options,
+                fatal: false,
+                filter
+            },
+            resolve: (value) => {
+                options?.signal?.removeEventListener("abort", onAbort);
+                resolve(value);
+            }
+        };
 
-            queueMicrotask(() => {
-                const result = getBulk(...this._queue.map((x) => x.query));
+        this._queue.push(lazyQueue);
 
-                for (let index = 0; index < this._queue.length; index++) {
-                    this._queue[index].resolve({
-                        state: "resolved",
-                        value: result[index]
-                    });
-                }
-
-                this._queue.length = 0;
-                this._inQueue = false;
-            });
-        }
+        this._scheduleFlush();
 
         return promise;
     }
