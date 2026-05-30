@@ -259,7 +259,7 @@ export class AddonUpdater {
         await this.updateCache();
         if (SettingsStore.get("addons", "checkForUpdates")) this.checkAll();
 
-        Events.on(`${this.type}-loaded`, addon => {
+        Events.on(`${this.type}-read`, addon => {
             if (!SettingsStore.get("addons", "checkForUpdates")) return;
             this.checkForUpdate(addon.filename, addon.version);
         });

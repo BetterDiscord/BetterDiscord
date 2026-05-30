@@ -64,11 +64,11 @@ export default function AddonCard({addon, isEmbed}) {
 
         listener();
 
-        Events.on(`${addon.manager.prefix}-loaded`, listener);
+        Events.on(`${addon.manager.prefix}-read`, listener);
         Events.on(`${addon.manager.prefix}-unloaded`, listener);
 
         return () => {
-            Events.off(`${addon.manager.prefix}-loaded`, listener);
+            Events.off(`${addon.manager.prefix}-read`, listener);
             Events.off(`${addon.manager.prefix}-unloaded`, listener);
         };
     }, [addon]);
