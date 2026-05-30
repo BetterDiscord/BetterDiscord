@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo} from "@modules/react";
+import React, {useState, useCallback, useMemo, type ChangeEvent, type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
@@ -20,9 +20,8 @@ import Text from "@ui/base/text";
 import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 import {useStateFromStores} from "@ui/hooks";
 import {type Addon, type AddonType} from "@typed/addon";
-import type AddonManager from "@modules/addonmanager";  
+import type AddonManager from "@modules/addonmanager";
 import type {Plugin} from "@modules/pluginmanager";
-import type {ChangeEvent, MouseEvent, ReactNode} from "react";
 
 
 

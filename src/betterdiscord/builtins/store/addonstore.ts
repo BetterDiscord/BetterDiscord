@@ -1,7 +1,7 @@
 import Builtin from "@structs/builtin";
 
 import AddonStore from "@modules/addonstore";
-import React from "@modules/react";
+import React from "react";
 import ReactUtils from "@api/reactutils";
 import Settings from "@stores/settings";
 

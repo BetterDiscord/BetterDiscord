@@ -25,7 +25,7 @@ class Hooks<CN extends string | undefined = undefined, Bounded extends IsTruthy<
      * @param stores The store(s) to subscribe to
      * @param factory A function that computes the value to return when stores change
      * @param deps An optional dependency list that controls when the factory function is updated
-     * @param isStateEqual An optional function that allows for skipping re-renders if the state hasn't changed
+     * @param isStateEqual An optional function that allows for skipping re-renders if the state hasn't changed, or `true` to use a shallow equality check
      */
     public useStateFromStores = useStateFromStores;
 

@@ -1,6 +1,6 @@
 import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
 import DOMManager from "@modules/dommanager";
@@ -291,9 +291,9 @@ class MenuPatcher {
         named: Record<string, Set<PatchCallback>>,
         regex: Array<{regex: RegExp, patches: Set<PatchCallback>;}>;
     } = {
-        named: {},
-        regex: []
-    };
+            named: {},
+            regex: []
+        };
 
     static handleRender<T extends React.ComponentType<MenuRenderProps>>(Component: T): T {
         const fNode = {type: Component} as MenuRenderNode;

@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React, {type PropsWithChildren, type ReactNode} from "react";
 
 import Drawer from "./drawer";
 import Switch from "./components/switch";
@@ -17,7 +17,6 @@ import {SettingsContext} from "@ui/contexts";
 import {useStateFromStores} from "@ui/hooks";
 import SettingsStore from "@stores/settings";
 import type {Setting, BaseSettingItem} from "@data/settings";
-import type {PropsWithChildren, ReactNode} from "react";
 
 const {useCallback} = React;
 

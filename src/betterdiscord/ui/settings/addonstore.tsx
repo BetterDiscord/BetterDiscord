@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import AddonStore from "@modules/addonstore";
 import {t} from "@common/i18n";
 import ipc from "@modules/ipc";
@@ -158,8 +158,8 @@ export default function AddonStorePage({type, refToScroller}: AddonStorePageProp
 
     const [query, setQuery] = useState("");
 
-    const search = useCallback((event: React.ChangeEvent) => {
-        setQuery((event.target as HTMLInputElement).value.toLocaleLowerCase());
+    const search = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(event.target.value.toLocaleLowerCase());
         setPage(0);
     }, []);
 

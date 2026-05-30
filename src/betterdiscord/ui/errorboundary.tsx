@@ -1,7 +1,6 @@
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React, {type PropsWithChildren, type ReactNode} from "react";
 import IPC from "@modules/ipc";
-import type {PropsWithChildren, ReactNode} from "react";
 
 
 export type ErrorBoundaryProps = PropsWithChildren<{

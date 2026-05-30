@@ -1,5 +1,5 @@
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React, {type ComponentType, type ReactElement, type ReactNode, type RefObject} from "react";
 import ReactDOM from "@modules/reactdom";
 import {t} from "@common/i18n";
 import Settings from "@stores/settings";
@@ -18,7 +18,6 @@ import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirm
 import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
-import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
 import AddonError from "@structs/addonerror";
 import AddonErrorsStore from "@stores/addonerrors";
 import SimpleMarkdownExt from "@structs/markdown";

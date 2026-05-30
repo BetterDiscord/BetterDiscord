@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React, {type MouseEvent, type ReactNode} from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 
@@ -14,7 +14,6 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
 import {GithubIcon, TwitterIcon} from "lucide-react";
-import type {MouseEvent, ReactNode} from "react";
 import {getByKeys} from "@webpack";
 import ipc from "@modules/ipc";
 

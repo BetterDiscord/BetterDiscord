@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "@modules/react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 
 

@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {none, SettingsContext} from "@ui/contexts";
 import clsx from "clsx";
 import {ChevronDown} from "lucide-react";

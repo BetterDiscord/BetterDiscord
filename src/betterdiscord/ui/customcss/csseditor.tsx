@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 import Events from "@modules/emitter";
 import Settings from "@stores/settings";

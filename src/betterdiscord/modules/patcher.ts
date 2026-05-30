@@ -45,7 +45,7 @@ export interface PatchOptions {
      * By default, this function will be determined automatically.
      */
     displayName?: string;
-    /** Set to `true` to patch even if the function doesnt exist. (Adds noop function in place). */
+    /** Set to `true` to patch even if the function doesnt exist. (Adds noop function in place). Defaults to true. */
     forcePatch?: boolean;
     /** The type of patch */
     type?: "before" | "instead" | "after";

@@ -1,9 +1,8 @@
-import React from "@modules/react";
+import React, {type ReactNode} from "react";
 import Events from "@modules/emitter";
 
 import Backdrop from "./backdrop";
 import {getWithKey} from "@webpack";
-import type {ReactNode} from "react";
 
 const {Fragment, useState, useCallback, useEffect} = React;
 

@@ -1,6 +1,6 @@
 import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
-import React from "@modules/react";
+import React, {type MouseEvent, type ReactNode} from "react";
 import Settings from "@stores/settings";
 import {t} from "@common/i18n";
 import Web from "@data/web";
@@ -15,7 +15,6 @@ import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
 import {FlowerStar} from "@ui/settings/addonshared";
 import {CircleHelpIcon, ClockIcon, GithubIcon, InfoIcon, TagIcon, UserIcon} from "lucide-react";
-import type {MouseEvent, ReactNode} from "react";
 import type {Addon, Guild} from "@modules/addonstore";
 
 

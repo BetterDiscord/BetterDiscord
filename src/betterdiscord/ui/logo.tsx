@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {lucideToDiscordIcon} from "@utils/icon";
 import clsx from "clsx";
 import {Icon, type LucideProps} from "lucide-react";

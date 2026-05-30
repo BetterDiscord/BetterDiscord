@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import AddonStorePage from "./addonstore";
 import AddonList from "./addonlist";
 import Settings from "@stores/settings";
