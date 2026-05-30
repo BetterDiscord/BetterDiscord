@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import {getDeclaration, getDefaultKey, makeException, shouldSkipModule, wrapModuleFilter} from "./shared";
 import {webpackRequire} from "./require";
 import WebpackCache from "./cache";
@@ -69,8 +69,6 @@ export function getModule<T>(filter: Webpack.ModuleFilter, options: Webpack.Opti
             return matched;
         }
     }
-
-    // console.log("WEBPACK FAIL", arguments);
 
     if (options.fatal) throw makeException();
     return undefined;

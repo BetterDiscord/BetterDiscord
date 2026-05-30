@@ -1,4 +1,4 @@
-import React, {Fragment} from "@modules/react";
+import React, {Fragment} from "react";
 import DiscordModules from "@modules/discordmodules";
 import DOMManager from "@modules/dommanager";
 import ReactDOM from "@modules/reactdom";

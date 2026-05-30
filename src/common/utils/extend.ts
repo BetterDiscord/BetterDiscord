@@ -27,8 +27,8 @@ function shouldSkip(obj: any) {
  * of `extenders` have priority, that is to say if one sets a key to be a primitive,
  * it will be overwritten with the next one with the same key. If it is an object,
  * and the keys match, the object is extended. This happens recursively.
- * @param target target object for extension
- * @param extenders series of objects to use for extension
+ * @param target Target object for extension
+ * @param extenders Series of objects to use for extension
  */
 export default function extend(target: object, ...extenders: object[]): object;
 export default function extend<T extends Record<string | number | symbol, any>>(target: T, ...extenders: object[]): T {

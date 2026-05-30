@@ -3,8 +3,8 @@
  * be triggered. The function will be called after it stops being called for
  * N milliseconds.
  *
- * @param executor function to debounce
- * @param delay time to delay in milliseconds
+ * @param executor Function to debounce
+ * @param delay Time to delay in milliseconds
  */
 export default function debounce<T extends (...args: any[]) => any>(executor: T, delay: number) {
     let timeout: Timer;

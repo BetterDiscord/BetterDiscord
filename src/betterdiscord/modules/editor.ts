@@ -218,23 +218,6 @@ export default new class Editor {
                 target: monaco.languages.typescript.ScriptTarget.ESNext,
                 allowNonTsExtensions: true
             });
-
-            // const libSource = `
-            //     interface Webpack {}
-
-            //     declare class BdApi {
-            //         constructor(name: string) {}
-
-            //         Webpack!: Webpack;
-            //         static Webpack!: Webpack;
-            //     }
-            // `;
-
-            // const libUri = "ts:filename/bdapi.d.ts";
-            // monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
-            // // When resolving definitions and references, the editor will try to use created models.
-            // // Creating a model for the library allows "peek definition/references" commands to work with the library.
-            // monaco.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
         }
         catch (e) {
             Logger.error("Editor", "Failed to load monaco editor", e);

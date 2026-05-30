@@ -1,15 +1,22 @@
 import * as fs from "fs";
 import {clone} from "@common/utils";
 import Logger from "@common/logger";
+import {wrapFunction} from "@common/utils/clone";
 
+export const readDirectory = wrapFunction(fs.readdirSync);
+export const createDirectory = wrapFunction(fs.mkdirSync);
+export const deleteDirectory = wrapFunction(fs.rmdirSync);
+export const exists = wrapFunction(fs.existsSync);
+export const getRealPath = wrapFunction(fs.realpathSync);
+export const renameSync = wrapFunction(fs.renameSync);
+export const rmSync = wrapFunction(fs.rmSync);
+export const unlinkSync = wrapFunction(fs.unlinkSync);
 
-// TODO: this whole file could use better typing
-
-export function readFile(path: string, options: object | BufferEncoding = "utf8") {
+export function readFile(path: fs.PathOrFileDescriptor, options: Parameters<typeof fs.readFileSync>[1] = "utf-8") {
     return fs.readFileSync(path, options);
 }
 
-export function writeFile(path: string, content: string | Uint8Array, options?: fs.WriteFileOptions & {originalFs: boolean;}) {
+export function writeFile(path: fs.PathOrFileDescriptor, content: string | Uint8Array, options?: fs.WriteFileOptions & {originalFs: boolean;}) {
     if (content instanceof Uint8Array) {
         content = Buffer.from(content);
     }
@@ -20,55 +27,15 @@ export function writeFile(path: string, content: string | Uint8Array, options?: 
     return doWriteFile(path, content, options);
 }
 
-export function readDirectory(path: string, options?: object) {
-    return fs.readdirSync(path, options);
-}
-
-export function createDirectory(path: string, options: object) {
-    return fs.mkdirSync(path, options);
-}
-
-export function deleteDirectory(path: string, options: object) {
-    fs.rmdirSync(path, options);
-}
-
-export function exists(path: string) {
-    return fs.existsSync(path);
-}
-
-export function getRealPath(path: string, options?: object) {
-    return fs.realpathSync(path, options);
-}
-
-export function rename(oldPath: string, newPath: string) {
-    return fs.renameSync(oldPath, newPath);
-}
-
-export function renameSync(oldPath: string, newPath: string) {
-    return fs.renameSync(oldPath, newPath);
-}
-
-export function rm(pathToFile: string) {
-    return fs.rmSync(pathToFile);
-}
-
-export function rmSync(pathToFile: string) {
-    return fs.rmSync(pathToFile);
-}
-
-export function unlinkSync(fileToDelete: string) {
-    return fs.unlinkSync(fileToDelete);
-}
-
-export function createWriteStream(path: string, options: object) {
+export function createWriteStream(...args: Parameters<typeof fs.createWriteStream>) {
     // @ts-expect-error this should be deprecated probably
-    return clone(fs.createWriteStream(path, options));
+    return clone(fs.createWriteStream(...args));
 }
 
-export function watch(path: string, options: object, callback: (e: string, f: string) => void) {
+export function watch(path: string, options: fs.WatchOptions | BufferEncoding | null, listener: fs.WatchListener<string>) {
     const watcher = fs.watch(path, options, (event, filename) => {
         try {
-            callback(event, filename!);
+            listener(event, filename!);
         }
         catch (error) {
             Logger.stacktrace("filesystem", "Failed to watch path", error as Error);
@@ -82,7 +49,7 @@ export function watch(path: string, options: object, callback: (e: string, f: st
     };
 }
 
-export function getStats(path: string, options?: object) {
+export function getStats(path: string, options?: fs.StatSyncOptions & {bigint?: false;}) {
     const stats = fs.statSync(path, options);
 
     return {

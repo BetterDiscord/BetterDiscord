@@ -1,7 +1,7 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import React from "@modules/react";
+import React, {type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
@@ -13,7 +13,6 @@ import SettingsTitle from "@ui/settings/title";
 
 import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 import type {CoreUpdater, ThemeUpdater, PluginUpdater, AddonUpdater} from "@modules/updater";
-import type {MouseEvent, ReactNode} from "react";
 import {SettingsTitleContext} from "./settings";
 
 

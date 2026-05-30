@@ -1,6 +1,6 @@
 import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
-import React from "@modules/react";
+import React from "react";
 import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";
@@ -12,7 +12,7 @@ import Logger from "@common/logger";
 import NotificationUI from "@ui/notifications";
 import Modals from "@ui/modals";
 import {findInTree} from "@common/utils";
-import type {Rule} from "discord/modules";
+import type {Rule} from "@typed/discord/modules";
 
 
 class InstallCSS {

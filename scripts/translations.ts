@@ -7,7 +7,7 @@ import qs from "querystring";
 
 
 // TODO: this needs to be rewritten for new crowdsourcing
-const get = (opts, postData) => {
+const get = (opts: https.RequestOptions, postData?: any) => {
     if (postData) {
         postData = qs.stringify(postData);
         opts.headers = {
@@ -17,7 +17,7 @@ const get = (opts, postData) => {
     }
 
     if (!opts.method) opts.method = "GET";
-    return new Promise(resolve => {
+    return new Promise<string>(resolve => {
         const req = https.request(opts, res => {
             let data = "";
             res.on("data", chunk => data += chunk);
@@ -70,7 +70,7 @@ const editorMap = {
 };
 /* eslint-enable no-multi-spaces */
 
-const mo = opts => Object.assign(opts ?? {}, {api_token: process.env.POEDITOR_API_KEY, id: process.env.POEDITOR_PROJECT_ID});
+const mo = (opts?: Record<string, any>) => Object.assign(opts ?? {}, {api_token: process.env.POEDITOR_API_KEY, id: process.env.POEDITOR_PROJECT_ID});
 
 const getAvailableLanguages = async () => {
     const response = await get({method: "POST", host: HOST, path: LIST}, mo());
@@ -78,18 +78,18 @@ const getAvailableLanguages = async () => {
     return respJson.result.languages;
 };
 
-const getTranslationUrl = async (code) => {
+const getTranslationUrl = async (code: string) => {
     const response = await get({method: "POST", host: HOST, path: EXPORT}, mo({language: code, type: "key_value_json", filters: "translated"}));
     const respJson = JSON.parse(response);
     return new URL(respJson.result.url);
 };
 
-const getTranslationString = async (hostname, pathname) => {
+const getTranslationString = async (hostname: string, pathname: string) => {
     const response = await get({host: hostname, path: pathname});
     return response ? response : "{}";
 };
 
-const saveTranslationFile = (code, fileString) => {
+const saveTranslationFile = (code: keyof typeof editorMap, fileString: string) => {
     const filename = editorMap[code];
     const filePath = path.join(localeFolder, filename);
     fs.writeFileSync(filePath, fileString);

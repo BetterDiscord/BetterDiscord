@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 
 import Button from "../base/button";
 import {XIcon} from "lucide-react";

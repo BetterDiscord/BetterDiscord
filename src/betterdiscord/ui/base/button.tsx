@@ -1,24 +1,17 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChildren, RefObject} from "react";
+import React, {type KeyboardEventHandler, type MouseEvent, type MouseEventHandler, type PropsWithChildren, type RefObject} from "react";
 
-
-// S.Looks = y;
-// S.Colors = I;
-// S.BorderColors = O;
-// S.Hovers = T;
-// S.Sizes = v;
 
 const {useCallback} = React;
 
-export const Looks = Object.freeze({
+export const ButtonLooks = Object.freeze({
     FILLED: "bd-button-filled",
     OUTLINED: "bd-button-outlined",
     LINK: "bd-button-link",
     BLANK: "bd-button-blank"
 });
 
-export const Colors = Object.freeze({
+export const ButtonColors = Object.freeze({
     BRAND: "bd-button-color-brand",
     BLURPLE: "bd-button-color-blurple",
     RED: "bd-button-color-red",
@@ -32,7 +25,7 @@ export const Colors = Object.freeze({
 });
 
 
-export const Sizes = Object.freeze({
+export const ButtonSizes = Object.freeze({
     NONE: "",
     TINY: "bd-button-tiny",
     SMALL: "bd-button-small",
@@ -49,9 +42,9 @@ export type ButtonProps = PropsWithChildren<{
     buttonRef?: RefObject<HTMLButtonElement | null>;
     disabled?: boolean;
     type?: "button" | "submit" | "reset";
-    look?: typeof Looks[keyof typeof Looks];
-    color?: typeof Colors[keyof typeof Colors];
-    size?: typeof Sizes[keyof typeof Sizes];
+    look?: typeof ButtonLooks[keyof typeof ButtonLooks];
+    color?: typeof ButtonColors[keyof typeof ButtonColors];
+    size?: typeof ButtonSizes[keyof typeof ButtonSizes];
     grow?: boolean;
 }>;
 
@@ -63,9 +56,9 @@ export default function Button({
     buttonRef,
     disabled = false,
     type = "button",
-    look = Looks.FILLED,
-    color = Colors.BRAND,
-    size = Sizes.MEDIUM,
+    look = ButtonLooks.FILLED,
+    color = ButtonColors.BRAND,
+    size = ButtonSizes.MEDIUM,
     grow = true,
     ...others
 }: ButtonProps) {
@@ -95,26 +88,6 @@ export default function Button({
     </button>;
 }
 
-Button.Looks = Looks;
-Button.Colors = Colors;
-Button.Sizes = Sizes;
-// window.BDButton = Button;
-// (() => {
-//     const buttons = [];
-//     for (const look in window.BDButton.Looks) {
-//         if (!window.BDButton.Looks[look] || look === "BLANK") continue;
-//         for (const color in window.BDButton.Colors) {
-//             if (!window.BDButton.Colors[color]) continue;
-//             for (const size in window.BDButton.Sizes) {
-//                 if (!window.BDButton.Sizes[size]) continue;
-//                 buttons.push(window.BdApi.React.createElement(window.BDButton, {
-//                     look: window.BDButton.Looks[look],
-//                     color: window.BDButton.Colors[color],
-//                     size: window.BDButton.Sizes[size]
-//                 }, "Hello World!"));
-//                 buttons.push(window.BdApi.React.createElement("br"));
-//             }
-//         }
-//     }
-//     window.BdApi.showConfirmationModal("Buttons", buttons);
-// })();
+Button.Looks = ButtonLooks;
+Button.Colors = ButtonColors;
+Button.Sizes = ButtonSizes;

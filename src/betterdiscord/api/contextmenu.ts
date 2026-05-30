@@ -1,17 +1,119 @@
 import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
 import DOMManager from "@modules/dommanager";
+import type {DiscordIconProps} from "@utils/icon";
 
 
 let startupComplete = false;
 
-// TODO: actually do the typing
-// https://github.com/doggybootsy/vx/blob/main/packages/mod/src/betterdiscord/context-menu.tsx
 // https://github.com/doggybootsy/vx/blob/main/packages/mod/src/api/menu/components.ts
-const ModulesBundle = getByKeys(["MenuItem", "Menu"], {cacheId: "core-contextmenu-ModulesBundle"});
+type MenuItemColor = "default" | "danger" | "premium-gradient";
+
+export interface BaseMenuItemProps extends Record<string, any> {
+    id: string,
+    disabled?: boolean,
+    action?(event: React.MouseEvent): void,
+    children?: React.ReactNode,
+    icon?: React.FunctionComponent<DiscordIconProps>,
+    color?: MenuItemColor,
+    subtext?: string,
+    focusedClassName?: string,
+    className?: string,
+    keepItemStyles?: boolean,
+    dontCloseOnActionIfHoldingShiftKey?: boolean,
+    imageUrl?(props: unknown): string;
+};
+
+export interface MenuCheckboxItemProps {
+    id: string,
+    label: string,
+    disabled?: boolean,
+    subtext?: React.ReactNode,
+    action?(event: React.MouseEvent): void,
+    checked: boolean;
+};
+
+export interface MenuControlProps {
+    disabled?: boolean,
+    isFocused: boolean,
+    onClose(): void;
+};
+
+export interface MenuRadioItemProps extends MenuCheckboxItemProps {
+    group: string;
+};
+
+export interface MenuControlRef {
+    activate(): void,
+    blur(): void,
+    focus(): void;
+};
+
+export interface MenuControlItemProps {
+    id: string,
+    label?: string,
+    disabled?: boolean,
+    control(props: MenuControlProps, ref: {ref: null | void | MenuControlRef;}): React.ReactElement;
+};
+
+// https://github.com/doggybootsy/vx/blob/main/packages/mod/src/betterdiscord/context-menu.tsx
+interface MenuItemSeparator {
+    type: "separator";
+}
+
+interface MenuItemSubmenu extends BaseMenuItemProps {
+    type: "submenu",
+    render?: MenuItem[],
+    items?: MenuItem[],
+    danger?: boolean,
+    onClick?(event: React.MouseEvent): void,
+}
+
+interface MenuItemDefault extends BaseMenuItemProps {
+    type?: "item",
+    danger?: boolean,
+    onClick?(event: React.MouseEvent): void,
+}
+
+interface MenuItemRadio extends MenuRadioItemProps {
+    type: "radio",
+    danger?: boolean,
+    onClick?(event: React.MouseEvent): void,
+    active?: boolean;
+}
+
+interface MenuItemCheckbox extends MenuCheckboxItemProps {
+    type: "toggle",
+    danger?: boolean,
+    onClick?(event: React.MouseEvent): void,
+    active?: boolean;
+}
+
+interface MenuItemControl extends MenuControlItemProps {
+    type: "control";
+}
+
+interface MenuItemGroup {
+    type: "group",
+    items: MenuItem[];
+}
+
+type MenuItem = MenuItemSeparator | MenuItemSubmenu | MenuItemDefault | MenuItemRadio | MenuItemCheckbox | MenuItemControl;
+
+interface ContextMenuComponents {
+    MenuSeparator: React.FC;
+    MenuCheckboxItem: React.FC<React.PropsWithChildren<MenuCheckboxItemProps>>;
+    MenuRadioItem: React.FC<React.PropsWithChildren<MenuRadioItemProps>>;
+    MenuControlItem: React.FC<React.PropsWithChildren<MenuControlItemProps>>;
+    MenuGroup: React.FC<React.PropsWithChildren>;
+    MenuItem: React.FC<React.PropsWithChildren<BaseMenuItemProps>>;
+    Menu: React.FC<React.PropsWithChildren<MenuRenderProps>>;
+}
+
+const ModulesBundle = getByKeys<ContextMenuComponents>(["MenuItem", "Menu"], {cacheId: "core-contextmenu-ModulesBundle"})!;
 const MenuComponents = {
     Separator: ModulesBundle?.MenuSeparator,
     CheckboxItem: ModulesBundle?.MenuCheckboxItem,
@@ -81,7 +183,7 @@ if (!startupComplete) {
         searchExports: true,
         firstId: 397927,
         cacheId: "core-contextmenu-menu"
-    });
+    })!;
 }
 
 startupComplete = Object.values(MenuComponents).every(v => v);
@@ -118,9 +220,13 @@ interface MenuRenderProps {
     target: Element,
     theme: string;
 }
+
 interface MenuConfig {
+    /** Default position for the menu */
     position?: "right" | "left",
+    /** Default alignment for the menu */
     align?: "top" | "bottom",
+    /** Function to run when the menu is closed */
     onClose?(): void;
 }
 
@@ -333,18 +439,15 @@ class MenuPatcher {
 
 /**
  * `ContextMenu` is a module to help patch and create context menus. Instance is accessible through the {@link BdApi}.
- * @type ContextMenu
- * @summary {@link ContextMenu} is a utility class for interacting with React internals.
- * @name ContextMenu
  */
 class ContextMenu {
 
     /**
      * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.
      *
-     * @param {string | RegExp} navId Discord's internal `navId` used to identify context menus
-     * @param {function} callback Callback function that accepts the React render tree
-     * @returns {function} A function that automatically unpatches
+     * @param navId Discord's internal `navId` used to identify context menus
+     * @param callback Callback function that accepts the React render tree
+     * @returns A function that automatically unpatches
      */
     patch(navId: string | RegExp, callback: PatchCallback) {
         MenuPatcher.patch(navId, callback);
@@ -355,8 +458,8 @@ class ContextMenu {
     /**
      * Allows you to remove the patch added to a given context menu.
      *
-     * @param {string | RegExp} navId The original `navId` from patching
-     * @param {function} callback The original callback from patching
+     * @param navId The original `navId` from patching
+     * @param callback The original callback from patching
      */
     unpatch(navId: string | RegExp, callback: PatchCallback) {
         MenuPatcher.unpatch(navId, callback);
@@ -367,9 +470,8 @@ class ContextMenu {
      * match the actual component being built. View those to see what options exist
      * for each, they often have less in common than you might think.
      *
-     * @param {object} props Props used to build the item
-     * @param {string} [props.type="text"] Type of the item, options: text, submenu, toggle, radio, custom, separator
-     * @returns {object} The created component
+     * @param props Props used to build the item
+     * @returns The created component
      *
      * @example
      * // Creates a single menu item that prints "MENU ITEM" on click
@@ -388,13 +490,16 @@ class ContextMenu {
      *      action: (newValue) => {console.log(newValue);}
      * });
      */
-    buildItem(props) {
+    buildItem(props: MenuItem) {
         const {type} = props;
-        if (type === "separator") return React.createElement(MenuComponents.Separator);
+        if (type === "separator") return React.createElement(MenuComponents.Separator!);
 
-        let Component = MenuComponents.Item;
+        let Component = MenuComponents.Item as React.FC<any>;
         if (type === "submenu") {
-            if (!props.children) props.children = this.buildMenuChildren(props.render || props.items);
+            if (!props.children) {
+                const children = props.render || props.items;
+                if (children) props.children = this.buildMenuChildren(children);
+            }
         }
         else if (type === "toggle" || type === "radio") {
             Component = type === "toggle" ? MenuComponents.CheckboxItem : MenuComponents.RadioItem;
@@ -404,9 +509,12 @@ class ContextMenu {
             Component = MenuComponents.ControlItem;
         }
         if (!props.id) props.id = `${props.label.replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
-        if (props.danger) props.color = "danger";
-        if (props.onClick && !props.action) props.action = props.onClick;
-        props.extended = true;
+
+        if (props.type !== "control") {
+            if (props.danger) (props as BaseMenuItemProps).color = "danger";
+            if (props.onClick && !props.action) props.action = props.onClick;
+            (props as BaseMenuItemProps).extended = true;
+        }
 
         // This is done to make sure the UI actually displays the on/off correctly
         if (type === "toggle") {
@@ -415,7 +523,7 @@ class ContextMenu {
             const originalAction = props.action;
             props.checked = active;
             props.action = function (ev: React.MouseEvent) {
-                originalAction(ev);
+                originalAction?.(ev);
                 if (!ev.defaultPrevented) doToggle(!active);
             };
         }
@@ -428,8 +536,8 @@ class ContextMenu {
      * There is no hard limit to the number of groups within groups or number
      * of items in a menu.
      *
-     * @param {Array<object>} setup Array of item props used to build items. See {@link ContextMenu.buildItem}.
-     * @returns {Array<object>} Array of the created component
+     * @param setup Array of item props used to build items. See {@link ContextMenu.buildItem}.
+     * @returns Array of the created component
      *
      * @example
      * // Creates a single item group item with a toggle item
@@ -467,14 +575,14 @@ class ContextMenu {
      *     }]
      * }]);
      */
-    buildMenuChildren(setup) {
-        const mapper = s => {
+    buildMenuChildren(setup: ReadonlyArray<MenuItem | MenuItemGroup>) {
+        const mapper = (s: MenuItem | MenuItemGroup) => {
             if (s.type === "group") return buildGroup(s);
             return this.buildItem(s);
         };
-        const buildGroup = function (group) {
+        const buildGroup = function (group: MenuItemGroup): React.ReactElement {
             const items = group.items.map(mapper).filter(i => i);
-            return React.createElement(MenuComponents.Group, null, items);
+            return React.createElement(MenuComponents.Group!, null, items);
         };
         return setup.map(mapper).filter(i => i);
     }
@@ -484,26 +592,23 @@ class ContextMenu {
      * Calls {@link ContextMenu.buildMenuChildren} under the covers.
      * Used to call in combination with {@link ContextMenu.open}.
      *
-     * @param {Array<object>} setup Array of item props used to build items. See {@link ContextMenu.buildMenuChildren}.
-     * @returns {function} The unique context menu component
+     * @param setup Array of item props used to build items. See {@link ContextMenu.buildMenuChildren}.
+     * @returns The unique context menu component
      */
-    buildMenu(setup) {
-        return (props) => {return React.createElement(MenuComponents.Menu, props, this.buildMenuChildren(setup));};
+    buildMenu(setup: ReadonlyArray<MenuItem | MenuItemGroup>) {
+        return (props: MenuRenderProps) => {return React.createElement(MenuComponents.Menu!, props, this.buildMenuChildren(setup));};
     }
 
     /**
      * Function that allows you to open an entire context menu. Recommended to build the menu with this module.
      *
-     * @param {MouseEvent} event The context menu event. This can be emulated, requires target, and all X, Y locations.
-     * @param {function} menuComponent Component to render. This can be any React component or output of {@link ContextMenu.buildMenu}.
-     * @param {object} config Configuration/props for the context menu
-     * @param {string} [config.position="right"] Default position for the menu, options: "left", "right"
-     * @param {string} [config.align="top"] Default alignment for the menu, options: "bottom", "top"
-     * @param {function} [config.onClose] Function to run when the menu is closed
+     * @param event The context menu event. This can be emulated, requires target, and all X, Y locations.
+     * @param menuComponent Component to render. This can be any React component or output of {@link ContextMenu.buildMenu}.
+     * @param config Configuration/props for the context menu
      */
     open(event: MouseEvent, menuComponent: React.ComponentType<MenuRenderProps>, config?: MenuConfig) {
-        return ContextMenuActions.openContextMenu(event, function (e) {
-            return React.createElement(menuComponent, Object.assign({}, e, {onClose: ContextMenuActions.closeContextMenu}));
+        return ContextMenuActions.openContextMenu(event, function (props: MenuRenderProps) {
+            return React.createElement(menuComponent, Object.assign({}, props, {onClose: ContextMenuActions.closeContextMenu}));
         }, config);
     }
 
