@@ -1,4 +1,4 @@
-import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, ProxyOptions} from "@typed/discord/webpack";
+import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, ProxyOptions, ProxyBulkQueries} from "@typed/discord/webpack";
 import Logger from "@common/logger";
 import {Filters, getAllModules, getBulk, getBulkKeyed, getBulkKeyedProxy, getBulkProxy, getById, getLazy, getMangled, getMangledProxy, getModule, getProxy, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
@@ -121,7 +121,7 @@ const Webpack = {
         return Webpack.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
     },
 
-    getMangled<T extends object>(filter: ModuleFilter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
+    getMangled<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
         if (typeof (searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.searchExports", searchExports, "Expected: boolean");
@@ -193,10 +193,10 @@ const Webpack = {
         return getProxy<T>(filter, options);
     },
 
-    getBulkProxy<T extends any[]>(...queries: BulkQueries[]) {return getBulkProxy<T>(...queries);},
-    getBulkKeyedProxy<T extends object>(queries: Record<keyof T, BulkQueries>) {return getBulkKeyedProxy<T>(queries);},
+    getBulkProxy<T extends any[]>(...queries: ProxyBulkQueries[]) {return getBulkProxy<T>(...queries);},
+    getBulkKeyedProxy<T extends object>(queries: Record<keyof T, ProxyBulkQueries>) {return getBulkKeyedProxy<T>(queries);},
 
-    getMangledProxy<T extends object>(filter: ModuleFilter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
+    getMangledProxy<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
         if (typeof (searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.searchExports", searchExports, "Expected: boolean");

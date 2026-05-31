@@ -13,7 +13,7 @@ export interface Cache<T> {
      */
     hasValue(): boolean,
     /**
-     * Completly resets the cache factory
+     * Completely resets the cache factory
      *
      * @example
      * const foo = cache(() => console.log("Called"));
@@ -68,7 +68,7 @@ export default function cache<T>(factory: () => T): Cache<T> {
         get: () => limit,
         set: (v) => {
             if (typeof v !== "number" || isNaN(v) || v <= 0 || Math.round(v) !== v) {
-                throw new Error("Unable to set max call threshould. Value is not a positive int");
+                throw new Error("Unable to set max call threshold. Value is not a positive int");
             }
 
             limit = v;
@@ -93,7 +93,9 @@ cache.proxy = <T extends object>(factory: () => T, typeofIsObject: boolean = fal
 
     const cacheFactory = () => {
         if (!cFactory.hasValue()) return cFactory();
-        if (cFactory() instanceof Object) return cFactory();
+
+        const cached = cFactory();
+        if (cached instanceof Object) return cached;
         // Attempt to hopefully have the results be a instance of Object
         cFactory.reset();
         return cFactory();

@@ -51,7 +51,7 @@ export type LazyOptions = Options & {
     signal?: AbortSignal;
 };
 
-export type ProxyOptions = Options & {
+export type ProxyOptions = Omit<Options, "fatal"> & {
     /** Makes the proxy be an object when `true` sometimes needed for react components */
     typeofIsObject?: boolean;
 };
@@ -77,7 +77,7 @@ export type BulkQueries = Options & {
     mapDeclarations?: boolean;
 };
 
-export type ProxyBulkQueries = BulkQueries & {
+export type ProxyBulkQueries = Omit<BulkQueries, "fatal"> & {
     /** Makes the proxy be an object when `true` sometimes needed for react components */
     typeofIsObject?: boolean;
 };
