@@ -55,21 +55,21 @@ export default new class PluginManager extends AddonManager<Plugin> {
         return errors;
     }
 
-    loadAddons(point: PluginLoadPoint) {
+    startAddons(point: PluginLoadPoint) {
         Logger.log("PluginManager", `Loading addons at point: ${point}`);
 
-        for (const addon of this.addonInfo) {
-            if (addon.runAt !== point) continue;
-            this.loadAddon(addon);
+        for (const addon of this.addonList) {
+            if (addon.runAt !== point || !this.state[addon.id]) continue;
+            this.startAddon(addon);
         }
 
         if (point === "idle") this.finishInit();
     }
 
-    runPlugin(addon: Addon) {
+    initAddon(plugin: Plugin) {
+        // Evaluate the plugin
         try {
-            const module = {filename: addon.filename, exports: {}};
-            const plugin = addon as Plugin;
+            const module = {filename: plugin.filename, exports: {}};
 
             plugin.fileContent += normalizeExports + `\n//# sourceURL=betterdiscord://plugins/${plugin.filename}`;
 
@@ -79,34 +79,31 @@ export default new class PluginManager extends AddonManager<Plugin> {
 
             plugin.exports = module.exports;
             delete plugin.fileContent;
-            return plugin;
         }
         catch (err) {
-            return this.showAddonError(addon, t("Addons.compileError"), {
+            this.showAddonError(plugin, t("Addons.compileError"), {
                 message: (err as Error).message,
                 stack: (err as Error).stack
             });
+            return false;
         }
-    }
-
-    initAddon(addon: Addon) {
-        const plugin = this.runPlugin(addon);
-        if (!plugin) return null;
 
         // Confirm the plugin has a name
         if (!plugin.exports || !plugin.name) {
-            return this.showAddonError(plugin, "Plugin had no exports or @name property", {
+            this.showAddonError(plugin, "Plugin had no exports or @name property", {
                 message: "Plugin had no exports or no @name property. @name property is required for all addons.",
                 stack: ""
             });
+            return false;
         }
 
         // Confirm the exports are valid
         if (typeof plugin.exports !== "function") {
-            return this.showAddonError(plugin, "Plugin not a valid format.", {
+            this.showAddonError(plugin, "Plugin not a valid format.", {
                 message: "Plugins should be either a function or a class",
                 stack: ""
             });
+            return false;
         }
 
         const meta = Object.assign({}, plugin);
@@ -119,10 +116,11 @@ export default new class PluginManager extends AddonManager<Plugin> {
 
             // Confirm the required methods are present
             if (!instance.start || !instance.stop) {
-                return this.showAddonError(plugin, "Missing start or stop function.", {
+                this.showAddonError(plugin, "Missing start or stop function.", {
                     message: "Plugins must have both a start and stop function.",
                     stack: ""
                 });
+                return false;
             }
 
             plugin.instance = instance;
@@ -133,30 +131,33 @@ export default new class PluginManager extends AddonManager<Plugin> {
 
             // Confirm required fields are present
             if (!plugin.name || !plugin.author || !plugin.description || !plugin.version) {
-                return this.showAddonError(plugin, "Plugin is missing name, author, description, or version", {
+                this.showAddonError(plugin, "Plugin is missing name, author, description, or version", {
                     message: "Plugin must provide name, author, description, and version.",
                     stack: ""
                 });
+                return false;
             }
 
             // Run the plugin's load function
             try {
                 if (typeof instance.load === "function") instance.load();
-                return plugin;
+                return true;
             }
             catch (err) {
                 this.state[plugin.id] = false;
-                return this.showAddonError(addon, t("Addons.methodError", {method: "load()"}), {
+                this.showAddonError(plugin, t("Addons.methodError", {method: "load()"}), {
                     message: (err as Error).message,
                     stack: (err as Error).stack
                 });
+                return false;
             }
         }
         catch (err) {
-            return this.showAddonError(addon, t("Addons.methodError", {method: "Plugin constructor()"}), {
+            this.showAddonError(plugin, t("Addons.methodError", {method: "Plugin constructor()"}), {
                 message: (err as Error).message,
                 stack: (err as Error).stack
             });
+            return false;
         }
     }
 
@@ -194,7 +195,7 @@ export default new class PluginManager extends AddonManager<Plugin> {
         if (!plugin) return false;
 
         try {
-            plugin.instance.stop();
+            plugin.instance?.stop();
         }
         catch (err) {
             this.state[plugin.id] = false;

@@ -2,10 +2,21 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
-1.13.13
+1.13.14
+### Improvements
+- Improved start up times
+
 ### Fixed
 - Themes with special characters in their names didn't unload properly
+- Fixed BD's markdown
+- Fixed theme attributes
+- Fixed `@runAt idle` running too early
+- Fixed passing fatal to waitForModule / getLazy causing a possible error
 
+### Added
+- Added declarationFilter to waitForModule / getLazy
+
+1.13.13
 ### Added
 - New system for exposing top-level module declarations
 - New `@runAt` meta tag to work around issues caused by lazy loading

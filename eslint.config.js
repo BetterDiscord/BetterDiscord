@@ -88,7 +88,7 @@ export default ts.config(
             "operator-linebreak": [
                 "error",
                 "none",
-                {overrides: {"?": "before", ":": "before", "&&": "before"}}
+                {overrides: {"?": "before", ":": "before", "&&": "before", "||": "before"}}
             ],
             "prefer-const": "error",
             "quote-props": ["error", "consistent-as-needed", {keywords: true}],

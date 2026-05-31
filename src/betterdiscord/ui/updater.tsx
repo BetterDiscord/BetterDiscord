@@ -95,14 +95,14 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
     }, [checkAddons]);
 
     useEffect(() => {
-        Events.on(`plugin-loaded`, update);
+        Events.on(`plugin-read`, update);
         Events.on(`plugin-unloaded`, update);
-        Events.on(`theme-loaded`, update);
+        Events.on(`theme-read`, update);
         Events.on(`theme-unloaded`, update);
         return () => {
-            Events.off(`plugin-loaded`, update);
+            Events.off(`plugin-read`, update);
             Events.off(`plugin-unloaded`, update);
-            Events.off(`theme-loaded`, update);
+            Events.off(`theme-read`, update);
             Events.off(`theme-unloaded`, update);
         };
     }, [update]);

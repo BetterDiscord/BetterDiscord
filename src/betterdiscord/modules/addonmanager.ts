@@ -32,7 +32,6 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     abstract order: number;
 
     addonList: T[] = [];
-    addonInfo: Addon[] = [];
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
@@ -57,10 +56,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     }
 
     finishInit() {
-        this.addonInfo = [];
         this.hasInitialized = true;
-
         if (this.initialAddonsLoaded === 0) return;
+
         Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
     }
 
@@ -178,14 +176,13 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
 
             this.timeCache[filename] = stats.mtimeMs;
 
-            const addon = this.readAddon(filename);
-            if (addon) this.addonInfo.push(addon);
+            this.readAddon(filename);
         }
 
         this.saveState();
     }
 
-    readAddon(filename: string, loadAfter?: boolean) {
+    readAddon(filename: string, startAfter?: boolean) {
         const filePath = path.resolve(this.addonFolder, filename);
         let fileContent = fs.readFileSync(filePath, "utf8");
 
@@ -203,7 +200,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
                 message: "",
                 stack: fileContent
             }, this.prefix));
-            return null;
+            return;
         }
 
         const stats = fs.statSync(filePath);
@@ -224,32 +221,29 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         addon.size = stats.size;
         addon.fileContent = fileContent;
 
-        if (loadAfter) this.loadAddon(addon as Addon);
-        return addon as Addon;
+        this.addonList.push(addon as T);
+        this.trigger("read", addon);
+
+        if (startAfter && this.state[addon.id]) this.startAddon(addon as T);
     }
 
-    abstract initAddon(addon: Addon): T | null;
+    abstract initAddon(addon: T): boolean;
 
-    loadAddon(addon: Addon) {
+    loadAddon(addon: T) {
         const initialized = this.initAddon(addon);
 
         // Make the addon partial if it failed to initialize
         if (!initialized) {
             this.state[addon.id] = false;
             addon.partial = true;
-            this.addonList.push(addon as T);
             this.trigger("loaded", addon);
-            return;
+            return false;
         }
 
-        this.addonList.push(initialized);
-        this.trigger("loaded", initialized);
+        this.trigger("loaded", addon);
         if (this.hasInitialized) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
 
-        // Start the addon if it's enabled
-        if (this.state[initialized.id]) {
-            this.startAddon(initialized);
-        }
+        return true;
     }
 
     unloadAddon(idOrFileOrAddon: string | T, isReload = false) {
