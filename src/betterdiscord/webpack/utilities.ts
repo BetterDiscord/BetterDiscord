@@ -119,14 +119,19 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const returnedModules = Array(queries.length) as T;
     if (queries.length === 0) return returnedModules;
 
-    queries = queries.map((query, i) => ({
-        ...query,
-        filter: wrapModuleFilter(query.filter),
-        cacheId: query.cacheId || (query.cacheId === null ? undefined : WebpackCache.getIdFromStack(i))
-    }));
+    let shouldExitEarly = true;
+    queries = queries.map((query, i) => {
+        if (query.all) shouldExitEarly = false;
 
-    const shouldExitEarly = queries.every((m) => !m.all);
-    const shouldExit = () => shouldExitEarly && queries.every((_, index) => index in returnedModules);
+        return {
+            ...query,
+            filter: wrapModuleFilter(query.filter),
+            cacheId: query.cacheId || (query.cacheId === null ? undefined : WebpackCache.getIdFromStack(i))
+        };
+    });
+
+    let count = 0;
+    const shouldExit = () => shouldExitEarly && count === queries.length;
 
     // Check the firstId for each query
     for (let i = 0; i < queries.length; i++) {
@@ -137,13 +142,18 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if (matched) returnedModules[i] = matched;
+        if (matched) {
+            count++;
+            returnedModules[i] = matched;
+        }
     }
 
     if (shouldExit()) return returnedModules;
 
     // Check if modules are cached
     for (let i = 0; i < queries.length; i++) {
+        if (i in returnedModules) continue;
+
         const {all, cacheId} = queries[i];
         if (all || !cacheId) continue;
 
@@ -154,7 +164,10 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!module) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
-        if (matched) returnedModules[i] = matched;
+        if (matched) {
+            count++;
+            returnedModules[i] = matched;
+        }
     }
 
     if (shouldExit()) return returnedModules;
@@ -174,6 +187,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
             if (!matched) continue;
 
             if (!all) {
+                count++;
                 returnedModules[index] = matched;
                 if (cacheId) WebpackCache.set(cacheId, keys[i]);
 
@@ -190,16 +204,24 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         const query = queries[index];
         const exists = index in returnedModules;
 
-        if (query.fatal) {
-            if (query.all && (!Array.isArray(returnedModules[index]) || returnedModules[index].length === 0)) {
+        if (query.map) {
+            if (!exists) {
+                if (query.fatal) throw makeException();
+
+                returnedModules[index] = {};
+            }
+        }
+        else if (query.all) {
+            if ((!exists || returnedModules[index].length === 0) && query.fatal) {
                 throw makeException();
             }
 
-            if (!exists) throw makeException();
+            if (!exists) {
+                returnedModules[index] = [];
+            }
         }
-
-        if (query.map && !exists) {
-            returnedModules[index] = {};
+        else if (!exists && query.fatal) {
+            throw makeException();
         }
     }
 
