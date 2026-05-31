@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {type CSSProperties, type ElementType, type HTMLAttributes, type PropsWithChildren} from "react";
+import React, {type CSSProperties, type ElementType, type HTMLAttributes} from "react";
 
 
 export const TextColors = Object.freeze({
@@ -29,7 +29,7 @@ export const TextSizes = Object.freeze({
 });
 
 
-type TextProps = PropsWithChildren<{
+interface TextProps {
     tag?: ElementType<HTMLAttributes<HTMLElement>>;
     className?: string;
     color?: typeof TextColors[keyof typeof TextColors];
@@ -37,8 +37,9 @@ type TextProps = PropsWithChildren<{
     selectable?: boolean;
     strong?: boolean;
     style?: CSSProperties;
+    children?: React.ReactNode;
     [other: string]: any;
-}>;
+};
 
 export default function Text(props: TextProps) {
     const {tag: Tag = "div", className = "", children = null, color = TextColors.STANDARD, size = TextSizes.SIZE_14, selectable, strong, style, ...rest} = props;

@@ -36,7 +36,7 @@ class Utils {
      * it will be overwritten with the next one with the same key. If it is an object,
      * and the keys match, the object is extended. This happens recursively.
      *
-     * @param extendee Object to be extended
+     * @param target Object to be extended
      * @param extenders Objects to extend with
      * @returns A reference to `extendee`
      */

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {type CSSProperties, type MouseEventHandler, type PropsWithChildren} from "react";
+import React, {type CSSProperties, type MouseEventHandler} from "react";
 
 
 export const FlexDirection = Object.freeze({
@@ -37,7 +37,7 @@ export function FlexChild(props: {className?: string;[x: string]: any;}) {
     return <Flex {...props} />;
 }
 
-type FlexProps = PropsWithChildren<{
+interface FlexProps {
     id?: string;
     className?: string;
     style?: CSSProperties;
@@ -49,7 +49,8 @@ type FlexProps = PropsWithChildren<{
     align?: typeof FlexAlign[keyof typeof FlexAlign];
     wrap?: typeof FlexWrap[keyof typeof FlexWrap];
     onClick?: MouseEventHandler<HTMLDivElement>;
-}>;
+    children?: React.ReactNode;
+};
 
 export default function Flex(props: FlexProps) {
     const {

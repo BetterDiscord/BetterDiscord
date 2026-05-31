@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {type KeyboardEventHandler, type MouseEvent, type MouseEventHandler, type PropsWithChildren, type RefObject} from "react";
+import React, {type KeyboardEventHandler, type MouseEvent, type MouseEventHandler, type RefObject} from "react";
 
 
 const {useCallback} = React;
@@ -34,7 +34,7 @@ export const ButtonSizes = Object.freeze({
     ICON: "bd-button-icon"
 });
 
-export type ButtonProps = PropsWithChildren<{
+export interface ButtonProps {
     className?: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
     onKeyDown?: KeyboardEventHandler<HTMLButtonElement>;
@@ -45,7 +45,8 @@ export type ButtonProps = PropsWithChildren<{
     color?: typeof ButtonColors[keyof typeof ButtonColors];
     size?: typeof ButtonSizes[keyof typeof ButtonSizes];
     grow?: boolean;
-}>;
+    children?: React.ReactNode;
+};
 
 export default function Button(props: ButtonProps) {
     const {

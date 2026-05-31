@@ -3,7 +3,6 @@ import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
 import {getBulk} from "./utilities";
-import {getModule} from "./searching";
 
 const ChunkIdRegex = /.{1}\.e\("(\d+)"\)/g;
 const FinalModuleIdRegex = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/g;
