@@ -41,7 +41,7 @@ async function buildTypes() {
         .replaceAll("\ndeclare ", "\n")
         .replace(/\nexport .+\n/, "");
 
-    const insertAt = content.indexOf("\n", content.lastIndexOf("import")) + 2;
+    const insertAt = content.indexOf("\n", content.lastIndexOf("import")) + 1;
     const namespaces = "declare global {\nnamespace BetterDiscord {\n";
     const declaration = "\n\nconst BdApi: typeof BetterDiscord.BdApi;\ninterface Window {\n    BdApi: typeof BetterDiscord.BdApi;\n}";
     const header = "export {};\n\n";

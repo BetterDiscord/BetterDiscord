@@ -8,6 +8,7 @@ import {webpackRequire} from "./require";
 import WebpackCache from "./cache";
 import {mapObject} from "@utils/object";
 import {getLazy} from "./lazy";
+import cache from "@common/utils/cache";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
@@ -233,4 +234,30 @@ export function getBulkKeyed<T extends object>(queries: Record<keyof T, Webpack.
     return Object.fromEntries(
         Object.keys(queries).map((key, index) => [key, modules[index]])
     ) as T;
+}
+
+export function getProxy<T extends object>(filter: Webpack.ModuleFilter, options: Webpack.ProxyOptions = {}): T {
+    return cache.proxy(() => getModule<T>(filter, options)!, options.typeofIsObject);
+}
+
+export function getBulkProxy<T extends any[]>(...queries: Webpack.ProxyBulkQueries[]): T {
+    const cached = cache(() => getBulk(...queries));
+
+    return queries.map((query, index) => cache.proxy(() => cached()[index], query.typeofIsObject)) as T;
+}
+
+export function getBulkKeyedProxy<T extends object>(queries: Record<keyof T, Webpack.ProxyBulkQueries>): T {
+    const modules = cache(() => getBulk(...Object.values(queries) as Webpack.ProxyBulkQueries[]));
+
+    return Object.fromEntries(
+        Object.entries(queries).map(([key, query], index) => [key, cache.proxy(() => modules()[index], (query as Webpack.ProxyBulkQueries).typeofIsObject)])
+    ) as T;
+}
+
+export function getMangledProxy<T extends object>(
+    filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp> | number,
+    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
+    options: Webpack.MangledOptions = {}
+): T {
+    return cache.proxy(() => getMangled<T>(filter, mappers, options));
 }

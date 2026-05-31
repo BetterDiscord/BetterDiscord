@@ -81,7 +81,7 @@ function toStringFunction(stringed: string): string {
     */
     (${moduleString.slice(0, functionBody)}arguments[0].declarations=${declarationString};${moduleString.slice(functionBody)}).apply(this, arguments)
 });
-//# sourceURL=betterdiscord://BD/webpack-modules/patched/${path}`;
+//# sourceURL=betterdiscord://betterdiscord/webpack-modules/patched/${path}`;
 
                     // eslint-disable-next-line no-eval
                     rawModule = (0, eval)(stringedModule);

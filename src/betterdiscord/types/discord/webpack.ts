@@ -51,6 +51,11 @@ export type LazyOptions = Options & {
     signal?: AbortSignal;
 };
 
+export type ProxyOptions = Options & {
+    /** Makes the proxy be an object when `true` sometimes needed for react components */
+    typeofIsObject?: boolean;
+};
+
 export type MangledOptions = Omit<Options, "declarationFilter"> & {
     /** Whether to map declarations instead of exports */
     mapDeclarations?: boolean;
@@ -71,6 +76,12 @@ export type BulkQueries = Options & {
     /** Whether the mapper should apply to the module's declarations instead of exports */
     mapDeclarations?: boolean;
 };
+
+export type ProxyBulkQueries = BulkQueries & {
+    /** Makes the proxy be an object when `true` sometimes needed for react components */
+    typeofIsObject?: boolean;
+};
+
 export type WithKeyOptions = Options & {
     /** The module to find the key on */
     target?: any;
