@@ -30,7 +30,7 @@ const queue = {
         if (this._queue.length === 1) {
             const [{resolve, query: {filter, ...options}}] = this._queue;
 
-            resolve(getModule<any>(filter, options));
+            resolve({state: "resolved", value: getModule<any>(filter, options)});
 
             this._queue.length = 0;
             this._scheduled = false;
