@@ -1,6 +1,6 @@
-import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, ProxyOptions, ProxyBulkQueries} from "@typed/discord/webpack";
+import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, ProxyOptions} from "@typed/discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getBulkKeyed, getBulkKeyedProxy, getBulkProxy, getById, getLazy, getMangled, getMangledProxy, getModule, getProxy, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getMangledProxy, getModule, getProxy, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
@@ -192,9 +192,6 @@ const Webpack = {
 
         return getProxy<T>(filter, options);
     },
-
-    getBulkProxy<T extends any[]>(...queries: ProxyBulkQueries[]) {return getBulkProxy<T>(...queries);},
-    getBulkKeyedProxy<T extends object>(queries: Record<keyof T, ProxyBulkQueries>) {return getBulkKeyedProxy<T>(queries);},
 
     getMangledProxy<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;

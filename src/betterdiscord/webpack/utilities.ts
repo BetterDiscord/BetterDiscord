@@ -240,20 +240,6 @@ export function getProxy<T extends object>(filter: Webpack.ModuleFilter, options
     return cache.proxy(() => getModule<T>(filter, {...options, fatal: true})!, options.typeofIsObject);
 }
 
-export function getBulkProxy<T extends any[]>(...queries: Webpack.ProxyBulkQueries[]): T {
-    const cached = cache(() => getBulk(...queries.map(x => ({...x, fatal: true}))));
-
-    return queries.map((query, index) => cache.proxy(() => cached()[index], query.typeofIsObject)) as T;
-}
-
-export function getBulkKeyedProxy<T extends object>(queries: Record<keyof T, Webpack.ProxyBulkQueries>): T {
-    const modules = cache(() => getBulk(...Object.values(queries).map(x => ({...(x as Webpack.ProxyBulkQueries), fatal: true}))));
-
-    return Object.fromEntries(
-        Object.entries(queries).map(([key, query], index) => [key, cache.proxy(() => modules()[index], (query as Webpack.ProxyBulkQueries).typeofIsObject)])
-    ) as T;
-}
-
 export function getMangledProxy<T extends object>(
     filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp> | number,
     mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,

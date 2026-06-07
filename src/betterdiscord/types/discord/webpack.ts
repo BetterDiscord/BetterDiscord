@@ -77,11 +77,6 @@ export type BulkQueries = Options & {
     mapDeclarations?: boolean;
 };
 
-export type ProxyBulkQueries = Omit<BulkQueries, "fatal"> & {
-    /** Makes the proxy be an object when `true` sometimes needed for react components */
-    typeofIsObject?: boolean;
-};
-
 export type WithKeyOptions = Options & {
     /** The module to find the key on */
     target?: any;
