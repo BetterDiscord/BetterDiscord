@@ -18,7 +18,8 @@
         "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
         "translations": "bun -r dotenv/config scripts/translations.js",
         "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js",
-        "typecheck": "tsc"
+        "typecheck": "tsc",
+        "generate-types": "bun scripts/types"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",

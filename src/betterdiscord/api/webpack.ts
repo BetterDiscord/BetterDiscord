@@ -1,6 +1,6 @@
-import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions} from "@typed/discord/webpack";
+import type {Options, ModuleFilter, MangledOptions, WithKeyOptions, ExportedOnlyFilter, BulkQueries, LazyOptions, ProxyOptions} from "@typed/discord/webpack";
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
+import {Filters, getAllModules, getBulk, getBulkKeyed, getById, getLazy, getMangled, getMangledProxy, getModule, getProxy, getStore, getWithKey, modules, Stores} from "@webpack";
 import ReactUtils from "./reactutils";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
@@ -121,7 +121,7 @@ const Webpack = {
         return Webpack.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
     },
 
-    getMangled<T extends object>(filter: ModuleFilter | string | RegExp, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
+    getMangled<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
         if (typeof (searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.searchExports", searchExports, "Expected: boolean");
@@ -182,6 +182,24 @@ const Webpack = {
         if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
 
         return getById(id, options);
+    },
+
+    getProxy<T extends object>(filter: ModuleFilter, options: ProxyOptions = {}) {
+        if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getProxy", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
+        if (("searchExports" in options) && typeof (options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getProxy", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
+        if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getProxy", "Invalid type for options.raw", options.raw, "Expected: boolean");
+        if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getProxy", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
+
+        return getProxy<T>(filter, options);
+    },
+
+    getMangledProxy<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
+        const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
+        if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
+        if (typeof (searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.searchExports", searchExports, "Expected: boolean");
+        if (typeof (raw) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.raw", raw, "Expected: boolean");
+        if (typeof (fatal) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.fatal", fatal, "Expected: boolean");
+        return getMangledProxy<T>(filter, mangled, options);
     }
 };
 
