@@ -33,13 +33,7 @@ if (!process.argv.includes("--vanilla")) {
     // Register all IPC events
     ipc.registerEvents();
 
-    // Remove CSP immediately on linux since they install to discord_desktop_core still
-    try {
-        CSP.remove();
-    }
-    catch {
-        // Remove when everyone is moved to core
-    }
+    CSP.remove();
 }
 
 // Needs to run this after Discord but before ready()
