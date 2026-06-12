@@ -7,7 +7,7 @@ import Logger from "@common/logger";
 
 import Config from "@stores/config";
 
-import {comparator as semverComparator, regex as semverRegex} from "@structs/semver";
+import {comparator as semverComparator, regex as semverRegex} from "@common/semver";
 
 import Events from "./emitter";
 import IPC from "./ipc";

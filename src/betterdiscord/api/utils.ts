@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import {comparator} from "@structs/semver";
+import {comparator} from "@common/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
 import Store from "@stores/base";

@@ -1,7 +1,6 @@
 // "Official" regex from https://semver.org/
 export const regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
-
 // Some of the code here adapted from https://github.com/npm/node-semver
 const numeric = /^[0-9]+$/;
 function compare(a: string | number, b: string | number) {
