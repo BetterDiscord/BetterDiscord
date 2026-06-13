@@ -25,7 +25,7 @@ const resources = await (async function () {
     }
     else {
         if (process.platform === "darwin") {
-            return path.join("Applications", `${release}.app`, "Contents", "Resources");
+            return path.sep + path.join("Applications", `${release}.app`, "Contents", "Resources");
         }
 
         basedir = path.join(process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"), release.toLowerCase().replace(" ", ""));
