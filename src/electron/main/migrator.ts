@@ -6,7 +6,8 @@ import {bdFolder} from "./modules/betterdiscord";
 import {randomUUID} from "crypto";
 
 const supported: NodeJS.Platform[] = [
-    "win32"
+    "win32",
+    "linux"
 ];
 
 function migrate() {
