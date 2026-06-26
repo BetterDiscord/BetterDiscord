@@ -41,7 +41,7 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
     }
 
     // If null or infinite no timeout | undefined or finite then timeout
-    const timeout = ((t) => init.timeout === null && !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
+    const timeout = ((t) => init.timeout === null || !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
 
     async function execute(uri: string) {
         const httpModule = uri.startsWith("http:") ? http : uri.startsWith("https:") ? https : null;

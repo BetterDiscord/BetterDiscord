@@ -4,6 +4,7 @@ import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
 import {forceLoad} from "@webpack";
 import Store from "@stores/base";
 import {mapObject} from "@utils/object";
+import cache from "@common/utils/cache";
 
 
 /**
@@ -107,6 +108,29 @@ class Utils {
      * A class which can be listened to for changes
      */
     Store = Store;
+
+    /**
+     * A simple utility for caching a result
+     *
+     * @example
+     * const foo = cache(() => console.log("Called"));
+     *
+     * foo(); // LOG: Called
+     * foo(); // No log
+     */
+    cache = Object.freeze(Object.assign(<T>(factory: () => T) => cache<T>(factory), {
+        /**
+         * Like {@link Utils.cache} but factory runs when its accessed instead of manually calling it
+         *
+         * @example
+         * const foo = cache.proxy(() => console.log("Called")); // no log
+         *
+         * foo.bar // LOG: Called
+         * foo.bar // No log
+         */
+
+        proxy: <T extends object>(factory: () => T, typeofIsObject?: boolean, CALL_LIMIT?: number) => cache.proxy<T>(factory, typeofIsObject, CALL_LIMIT)
+    }));
 }
 
 Object.freeze(Utils);

@@ -8,6 +8,7 @@ import {webpackRequire} from "./require";
 import WebpackCache from "./cache";
 import {mapObject} from "@utils/object";
 import {getLazy} from "./lazy";
+import cache from "@common/utils/cache";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
@@ -233,4 +234,16 @@ export function getBulkKeyed<T extends object>(queries: Record<keyof T, Webpack.
     return Object.fromEntries(
         Object.keys(queries).map((key, index) => [key, modules[index]])
     ) as T;
+}
+
+export function getProxy<T extends object>(filter: Webpack.ModuleFilter, options: Webpack.ProxyOptions = {}): T {
+    return cache.proxy(() => getModule<T>(filter, {...options, fatal: true})!, options.typeofIsObject);
+}
+
+export function getMangledProxy<T extends object>(
+    filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp> | number,
+    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
+    options: Webpack.MangledOptions = {}
+): T {
+    return cache.proxy(() => getMangled<T>(filter, mappers, {...options, fatal: true}));
 }
