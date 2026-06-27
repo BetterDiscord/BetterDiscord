@@ -165,6 +165,11 @@ export default new class PluginManager extends AddonManager<Plugin> {
         const plugin = this.resolveAddon(idOrAddon);
         if (!plugin) return false;
 
+        if (!plugin.instance) {
+            const loaded = this.loadAddon(plugin);
+            if (!loaded) return false;
+        }
+
         try {
             plugin.instance.start();
         }

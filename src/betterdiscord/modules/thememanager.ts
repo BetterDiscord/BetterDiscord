@@ -61,6 +61,11 @@ export default new class ThemeManager extends AddonManager<Theme> {
         const theme = this.resolveAddon(idOrAddon);
         if (!theme) return false;
 
+        if (!theme.css) {
+            const loaded = this.loadAddon(theme);
+            if (!loaded) return false;
+        }
+
         DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
         else this.initialAddonsLoaded++;
