@@ -1,4 +1,4 @@
-import React, {type PropsWithChildren} from "react";
+import React from "react";
 import {t} from "@common/i18n";
 
 import Root from "./root";
@@ -11,8 +11,7 @@ import Button from "../base/button";
 
 const {useRef, useEffect, useLayoutEffect} = React;
 
-
-export type ConfirmationModalOptions = PropsWithChildren<{
+export interface ConfirmationModalOptions {
     transitionState?: number;
     /** A callback to run when exiting the modal */
     onClose?(): void;
@@ -34,8 +33,11 @@ export type ConfirmationModalOptions = PropsWithChildren<{
     cancelText?: string | null;
     /** Whether the main button should be red or not */
     danger?: boolean;
+    /** A unique key for the modal */
     key?: string | number;
-}>;
+    /** The contents of the modal */
+    children?: React.ReactNode;
+};
 
 export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = t("Modals.cancel"), confirmText = t("Modals.okay")}: ConfirmationModalOptions) {
 

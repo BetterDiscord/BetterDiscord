@@ -5,8 +5,6 @@ import JsonStore from "@stores/json";
 import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
-import ReactUtils from "@api/reactutils";
-
 import AddonPage from "@ui/settings/addonpage";
 
 import type {SettingsCategory} from "@data/settings";
@@ -29,6 +27,7 @@ import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
 import type {GroupOnChange} from "./settings/group";
+import {getInternalInstance} from "@utils/react";
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -394,7 +393,7 @@ const SettingsRenderer = new class SettingsRenderer {
         const viewClass = DiscordModules.ViewClasses?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = findInTree(getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };

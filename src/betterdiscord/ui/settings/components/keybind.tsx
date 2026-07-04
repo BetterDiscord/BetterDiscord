@@ -15,7 +15,9 @@ export interface KeybindProps {
     disabled?: boolean;
 }
 
-export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, disabled}: KeybindProps) {
+export default function Keybind(props: KeybindProps) {
+    const {value: initialValue, onChange, max = 4, clearable = false, disabled} = props;
+
     // TODO: make these their own states
     const [state, setState] = useState<{isRecording: boolean; accum: string[];}>({isRecording: false, accum: []});
 

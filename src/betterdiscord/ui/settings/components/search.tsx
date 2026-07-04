@@ -12,7 +12,8 @@ export interface SearchProps {
     onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
 }
 
-export default function Search({onChange, className, onKeyDown, placeholder}: SearchProps) {
+export default function Search(props: SearchProps) {
+    const {onChange, className, onKeyDown, placeholder} = props;
     const input = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState("");
 

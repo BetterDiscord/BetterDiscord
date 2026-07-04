@@ -438,9 +438,11 @@ class MenuPatcher {
 
 
 /**
- * `ContextMenu` is a module to help patch and create context menus. Instance is accessible through the {@link BdApi}.
+ * `ContextMenu` is a module to help patch and create context menus. An instance is available on {@link BdApi}.
  */
 class ContextMenu {
+    /** @ignore */
+    constructor() {};
 
     /**
      * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.

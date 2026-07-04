@@ -15,7 +15,8 @@ export interface NumberInputProps {
     disabled?: boolean;
 }
 
-export default function Number({value: initialValue, min, max, step = 1, onChange, disabled}: NumberInputProps) {
+export default function Number(props: NumberInputProps) {
+    const {value: initialValue, min, max, step = 1, onChange, disabled} = props;
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
