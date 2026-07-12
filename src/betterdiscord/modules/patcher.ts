@@ -7,6 +7,7 @@ import Logger from "@common/logger";
 
 import DiscordModules from "./discordmodules";
 import {getByKeys} from "@webpack";
+import type {StringKeys} from "@typed/util";
 
 
 export interface GenericPatch {
@@ -20,7 +21,7 @@ export interface GenericPatch {
     children: GenericChildPatch[];
 }
 
-export interface Patch<M extends object, K extends Extract<keyof M, string>> extends GenericPatch {
+export interface Patch<M extends object, K extends StringKeys<M>> extends GenericPatch {
     module: M;
     functionName: K;
     originalFunction: M[K] extends (...a: any[]) => any ? M[K] : never;
@@ -91,7 +92,7 @@ export default class Patcher {
         return null;
     }
 
-    static makeOverride<M extends object, K extends Extract<keyof M, string>>(patch: Patch<M, K>) {
+    static makeOverride<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         return function BDPatcher(this: any, ...args: any[]) {
             let returnValue;
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, args);
@@ -131,13 +132,13 @@ export default class Patcher {
         };
     }
 
-    static rePatch<M extends object, K extends Extract<keyof M, string>>(patch: Patch<M, K>) {
+    static rePatch<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         const override = this.makeOverride(patch) as M[K];
         patch.proxyFunction = override;
         patch.module[patch.functionName] = override;
     }
 
-    static makePatch<M extends object, K extends Extract<keyof M, string>>(module: M, functionName: K, name: string) {
+    static makePatch<M extends object, K extends StringKeys<M>>(module: M, functionName: K, name: string) {
         const patch: Patch<M, K> = {
             name,
             module,
@@ -171,7 +172,7 @@ export default class Patcher {
      * @param options Object used to pass additional options.
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static before<M extends object, K extends Extract<keyof M, string>>(
+    static before<M extends object, K extends StringKeys<M>>(
         caller: string,
         moduleToPatch: M,
         functionName: K,
@@ -192,7 +193,7 @@ export default class Patcher {
      * @param options Object used to pass additional options.
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static after<M extends object, K extends Extract<keyof M, string>>(caller: string,
+    static after<M extends object, K extends StringKeys<M>>(caller: string,
         moduleToPatch: M,
         functionName: K,
         callback: M[K] extends (...a: any[]) => any ? AfterCallback<M[K]> : never,
@@ -212,7 +213,7 @@ export default class Patcher {
      * @param options Object used to pass additional options.
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static instead<M extends object, K extends Extract<keyof M, string>>(
+    static instead<M extends object, K extends StringKeys<M>>(
         caller: string,
         moduleToPatch: M,
         functionName: K,
@@ -234,7 +235,7 @@ export default class Patcher {
      * @param options Object used to pass additional options.
      * @returns Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static pushChildPatch<M extends object, K extends Extract<keyof M, string>>(
+    static pushChildPatch<M extends object, K extends StringKeys<M>>(
         caller: string,
         moduleToPatch: M,
         functionName: K,

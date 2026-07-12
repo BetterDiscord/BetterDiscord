@@ -42,7 +42,8 @@ function RadioIndicator({checked}: {checked: boolean;}) {
     </svg>;
 }
 
-export default function Radio({name, value: initialValue, options, onChange, disabled}: RadioProps) {
+export default function Radio(props: RadioProps) {
+    const {name, value: initialValue, options, onChange, disabled} = props;
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
     const value = contextValue !== none ? contextValue : initialValue;
     const isDisabled = contextValue !== none ? contextDisabled : disabled;

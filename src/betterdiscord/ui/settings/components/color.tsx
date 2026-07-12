@@ -55,7 +55,8 @@ export interface ColorpickerProps {
     disabled?: boolean;
 }
 
-export default function ColorPicker({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}: ColorpickerProps) {
+export default function ColorPicker(props: ColorpickerProps) {
+    const {value: initialValue, onChange, colors = defaultColors, defaultValue, disabled} = props;
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
@@ -73,8 +74,8 @@ export default function ColorPicker({value: initialValue, onChange, colors = def
     return <div className={`bd-color-picker-container ${isDisabled ? "bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
             {defaultValue && <DiscordModules.Tooltip text="Default" position="bottom">
-                {props => (
-                    <div {...props} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => change({target: {value: defaultValue}})}>
+                {tooltipProps => (
+                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => change({target: {value: defaultValue}})}>
                         {intValue === resolveColor(defaultValue, false)
                             ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultValue, true))} />
                             : null
@@ -83,10 +84,10 @@ export default function ColorPicker({value: initialValue, onChange, colors = def
                 )}
             </DiscordModules.Tooltip>}
             <DiscordModules.Tooltip text={t("Settings.customColor")} position="bottom">
-                {props => (
+                {tooltipProps => (
                     <div className="bd-color-picker-custom">
                         <PipetteIcon size="14px" color={getContrastColor(resolveColor(value, true))} />
-                        <input {...props} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} disabled={disabled} />
+                        <input {...tooltipProps} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} disabled={disabled} />
                     </div>
                 )}
             </DiscordModules.Tooltip>

@@ -13,7 +13,8 @@ export interface TextboxProps {
     disabled?: boolean;
 }
 
-export default function Textbox({value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled}: TextboxProps) {
+export default function Textbox(props: TextboxProps) {
+    const {value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled} = props;
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 

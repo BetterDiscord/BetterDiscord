@@ -42,7 +42,7 @@ export type GroupOnChange =
     & ((id: string, cid: string, value: any) => void)
     & ((id: string, value: any) => void);
 
-export type GroupProps = PropsWithChildren<{
+export interface GroupProps {
     id: string;
     name?: string;
     button?: object;
@@ -53,9 +53,11 @@ export type GroupProps = PropsWithChildren<{
     onChange?: GroupOnChange;
     settings: any;
     collection?: any;
-}>;
+    children?: React.ReactNode;
+};
 
-export default function Group({onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}: GroupProps) {
+export default function Group(props: GroupProps) {
+    const {onChange, id, name = "", shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection} = props;
     const change = useCallback((settingId: string, value: any) => {
         if (id) onChange?.(id, settingId, value);
         else onChange?.(settingId, value);

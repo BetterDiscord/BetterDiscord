@@ -52,12 +52,6 @@ function preCompare(a: string, b: string) {
     return compareTokens(a, b);
 }
 
-/**
- * This works on semantic versioning e.g. "1.0.0".
- * @param currentVersion The current installed version
- * @param remoteVersion The version to compare against
- * @returns 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
- */
 export function comparator(currentVersion: string, remoteVersion: string) {
     const current = regex.exec(currentVersion);
     const remote = regex.exec(remoteVersion);

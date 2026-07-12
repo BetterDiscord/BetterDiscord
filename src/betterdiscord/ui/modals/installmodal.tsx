@@ -106,8 +106,8 @@ export default function InstallModal({addon, transitionState, install, onClose}:
             if (addon.isInstalled()) onClose();
         };
 
-        Events.on(`${addon.type}-read`, listener);
-        return () => void Events.off(`${addon.type}-read`, listener);
+        Events.on(`${addon.type}-loaded`, listener);
+        return () => void Events.off(`${addon.type}-loaded`, listener);
     }, [addon, onClose]);
 
     return (

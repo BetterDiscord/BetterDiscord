@@ -1,5 +1,5 @@
 import React from "react";
-import ReactUtils from "@api/reactutils";
+import {getType} from "@utils/react";
 
 type UnknownPatch<P> = (props: P, res: React.ReactNode, instance?: React.Component<P>) => React.ReactNode;
 
@@ -51,7 +51,7 @@ export default class NodePatcher {
             return;
         }
 
-        const FC = ReactUtils.getType<React.FunctionComponent<P>, P>(type as React.FunctionComponent<P>);
+        const FC = getType<React.FunctionComponent<P>, P>(type as React.FunctionComponent<P>);
 
         function FunctionType(...args: [props: P]) {
             const res = FC(...args);

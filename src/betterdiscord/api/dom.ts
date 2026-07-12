@@ -1,17 +1,13 @@
 import DOMManager from "@modules/dommanager";
 
-type AddStyleArgs<Bound extends boolean> = Bound extends true ? [css: string] | [id: string, css: string] : [id: string, css: string];
-type RemoveStyleArgs<Bound extends boolean> = Bound extends true ? [] | [id: string] : [id: string];
-
 interface AnimateOptions {
     /** Optional function that calculating progress based on current time fraction. Linear by default. */
     timing?: (timeFraction: number) => number;
 }
 
-/**
- * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
- */
-class DOM<Bound extends boolean> {
+class BaseDOM {
+    /** @ignore */
+    constructor() {};
 
     /**
      * The current width of the user's screen.
@@ -22,49 +18,6 @@ class DOM<Bound extends boolean> {
      * The current height of the user's screen.
      */
     get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
-
-    #callerName = "";
-
-    constructor(callerName?: string) {
-        if (!callerName) return;
-        this.#callerName = callerName;
-    }
-
-    /**
-     * Adds a `<style>` to the document with the given ID.
-     *
-     * @param id ID to use for style element
-     * @param css CSS to apply to the document
-     */
-    addStyle(...args: AddStyleArgs<Bound>) {
-        if (args.length === 1) {
-            if (this.#callerName) {
-                args.unshift(this.#callerName);
-            }
-            else {
-                throw new Error("No css provided");
-            }
-        }
-
-        DOMManager.injectStyle(args[0], args[1]!);
-    }
-
-    /**
-     * Removes a `<style>` from the document corresponding to the given ID.
-     *
-     * @param id ID used for the style element
-     */
-    removeStyle(...args: RemoveStyleArgs<Bound>) {
-        let id = args[0];
-
-        if (this.#callerName && arguments.length === 0) {
-            id = this.#callerName;
-        }
-
-        if (!id) throw new Error("No id provided");
-
-        DOMManager.removeStyle(id);
-    }
 
     /**
      * Adds a listener for when the node is removed from the document body.
@@ -125,6 +78,87 @@ class DOM<Bound extends boolean> {
     }
 }
 
+/**
+ * `DOM` is a simple utility class for dom manipulation. An instance is available on {@link BdApi}.
+ */
+class DOM extends BaseDOM {
+    /** @ignore */
+    constructor() {super();};
+
+    /**
+     * Adds a `<style>` to the document with the given ID.
+     *
+     * @param id ID to use for style element
+     * @param css CSS to apply to the document
+     */
+    addStyle(id: string, css: string) {
+        if (!css) {
+            throw new Error("No css provided");
+        }
+
+        DOMManager.injectStyle(id, css);
+    }
+
+    /**
+     * Removes a `<style>` from the document corresponding to the given ID.
+     *
+     * @param id ID used for the style element
+     */
+    removeStyle(id: string) {
+        if (!id) throw new Error("No id provided");
+
+        DOMManager.removeStyle(id);
+    }
+}
+
+/**
+ * `BoundDOM` is a simple utility class for dom manipulation, with plugin scoping optionally automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ */
+class BoundDOM extends BaseDOM {
+    #callerName: string;
+
+    /** @ignore */
+    constructor(callerName: string) {
+        super();
+        this.#callerName = callerName;
+    }
+
+    /**
+     * Adds a `<style>` to the document with the given ID.
+     *
+     * @param id ID to use for style element
+     * @param css CSS to apply to the document
+     */
+    addStyle(css: string): void;
+    addStyle(id: string, css: string): void;
+    addStyle(id: string, css?: string): void {
+        if (!css) {
+            if (this.#callerName) {
+                css = id;
+                id = this.#callerName;
+            }
+            else {
+                throw new Error("No css provided");
+            }
+        }
+
+        DOMManager.injectStyle(id, css);
+    }
+
+    /**
+     * Removes a `<style>` from the document corresponding to the given ID.
+     *
+     * @param id ID used for the style element
+     */
+    removeStyle(id?: string) {
+        id ??= this.#callerName;
+        if (!id) throw new Error("No id provided");
+
+        DOMManager.removeStyle(id);
+    }
+}
+
 Object.freeze(DOM);
 Object.freeze(DOM.prototype);
-export default DOM;
+export {DOM, BoundDOM};
