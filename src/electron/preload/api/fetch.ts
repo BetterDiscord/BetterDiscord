@@ -1,6 +1,7 @@
 import https from "https";
 import http from "http";
 import {hydrateReadableStream, dryReadableStream, type DriedRequest, type DriedResponse} from "@common/native-fetch";
+import {isWebhookUrl} from "./webhook";
 
 const redirectCodes = new Set([301, 302, 307, 308]);
 const bodylessStatusCodes = new Set([101, 204, 205, 304]);
@@ -48,14 +49,7 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
         // Node's https and does not inherit the origin/referrer of Discord.com which Discord
         // uses to block requests to webhooks by default. Checked per hop so a redirect into a
         // webhook URL is caught too.
-        let isWebhook = false;
-        try {
-            isWebhook = new URL(uri).pathname.toLowerCase().includes("api/webhooks");
-        }
-        catch {
-            isWebhook = uri.toLowerCase().includes("api/webhooks");
-        }
-        if (isWebhook) {
+        if (isWebhookUrl(uri)) {
             reject(new Error("Failed to fetch"));
             return;
         }

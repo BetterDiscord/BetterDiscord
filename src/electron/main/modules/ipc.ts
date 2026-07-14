@@ -75,7 +75,9 @@ const SAFE_WEB_PREFERENCES: BrowserWindowConstructorOptions["webPreferences"] = 
     nodeIntegrationInSubFrames: false,
     contextIsolation: true,
     sandbox: true,
-    webviewTag: false
+    webviewTag: false,
+    webSecurity: true,
+    allowRunningInsecureContent: false,
 };
 
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {

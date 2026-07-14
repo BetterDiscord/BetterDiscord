@@ -22,6 +22,12 @@ newProcess.execve = noop;
 newProcess.binding = noop;
 // @ts-expect-error this is the point
 newProcess._linkedBinding = noop;
+// @ts-expect-error this is the point
+newProcess.kill = noop;
+// @ts-expect-error this is the point
+newProcess.exit = noop;
+// @ts-expect-error this is the point
+newProcess.abort = noop;
 
 
 export default newProcess;
