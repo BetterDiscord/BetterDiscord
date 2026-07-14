@@ -32,11 +32,19 @@ type DiscordToLucide = (lucide: DiscordIcon, middleWare?: DiscordMiddleware) => 
 
 // TODO: Extend for all discord icon prop types
 export const lucideToDiscordIcon: LucideToDiscord = (lucide, middleWare = v => v) => memo(
-    (props) => React.createElement(lucide, middleWare({
-        size: sizes[props.size || "md"],
-        className: props.className,
-        color: props.color
-    }, props))
+    (props) => {
+        const lucideProps: LucideProps = {
+            size: sizes[props.size || "md"],
+            className: props.className,
+            color: props.color
+        };
+        if (props.size === "custom") {
+            const {width, height} = props as {width?: LucideProps["width"]; height?: LucideProps["height"];};
+            lucideProps.width = width;
+            lucideProps.height = height;
+        }
+        return React.createElement(lucide, middleWare(lucideProps, props));
+    }
 );
 
 export const discordIconToLucide: DiscordToLucide = (discord, middleWare = v => v) => memo(

@@ -79,14 +79,12 @@ export default class DOMManager {
     }
 
     static removeStyle(id: string) {
-        id = this.escapeID(id);
-        const exists = this.getElement(`#${id}`, this.bdStyles);
+        const exists = this.getElement(`#${this.escapeID(id)}`, this.bdStyles);
         if (exists) exists.remove();
     }
 
     static injectStyle(id: string, css: string) {
-        id = this.escapeID(id);
-        const style = this.getElement(`#${id}`, this.bdStyles) || this.createElement("style", {id});
+        const style = this.getElement(`#${this.escapeID(id)}`, this.bdStyles) || this.createElement("style", {id});
         style.textContent = css;
         this.bdStyles.append(style);
     }
@@ -96,9 +94,8 @@ export default class DOMManager {
     }
 
     static linkStyle(id: string, url: string, {documentHead = false} = {}) {
-        id = this.escapeID(id);
         return new Promise(resolve => {
-            const link: HTMLLinkElement = this.getElement(`#${id}`, this.bdStyles) as HTMLLinkElement || this.createElement("link", {id});
+            const link: HTMLLinkElement = this.getElement(`#${this.escapeID(id)}`, this.bdStyles) as HTMLLinkElement || this.createElement("link", {id});
             link.rel = "stylesheet";
             link.href = url;
             link.onload = resolve;
@@ -108,13 +105,11 @@ export default class DOMManager {
     }
 
     static removeTheme(id: string) {
-        id = this.escapeID(id);
         const exists = document.getElementById(id);
         if (exists) exists.remove();
     }
 
     static injectTheme(id: string, css: string) {
-        id = this.escapeID(id);
         const style = document.getElementById(id) || this.createElement("style", {id});
         style.textContent = css;
         this.bdThemes.append(style);
@@ -125,15 +120,13 @@ export default class DOMManager {
     }
 
     static removeScript(id: string) {
-        id = this.escapeID(id);
-        const exists = this.getElement(`#${id}`, this.bdScripts);
+        const exists = this.getElement(`#${this.escapeID(id)}`, this.bdScripts);
         if (exists) exists.remove();
     }
 
     static injectScript(id: string, url: string) {
-        id = this.escapeID(id);
         return new Promise((resolve, reject) => {
-            const script: HTMLScriptElement = this.getElement(`#${id}`, this.bdScripts) as HTMLScriptElement || this.createElement("script", {id});
+            const script: HTMLScriptElement = this.getElement(`#${this.escapeID(id)}`, this.bdScripts) as HTMLScriptElement || this.createElement("script", {id});
             script.src = url;
             script.onload = resolve;
             script.onerror = reject;

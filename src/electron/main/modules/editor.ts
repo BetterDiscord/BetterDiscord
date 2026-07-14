@@ -115,7 +115,7 @@ export default class Editor {
                 };
 
                 this._window.once("closed", listener);
-                window.once("close", () => {
+                window.once("closed", () => {
                     this._window.off("closed", listener);
 
                     if (type === "custom-css") {

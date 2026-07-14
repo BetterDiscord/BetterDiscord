@@ -279,7 +279,7 @@ class MenuPatcher {
         // .colorDanger.focused:not(.checkboxContainer) path {fill: var(--text-feedback-critical)}
 
         DOMManager.injectStyle("bd-lucide-context-menu-fix", `
-            :where(.${menuClasses!.colorDefault}, ${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
+            :where(.${menuClasses!.colorDefault}, .${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
                 fill: revert;
             }
         `);
@@ -510,7 +510,7 @@ class ContextMenu {
         else if (type === "control") {
             Component = MenuComponents.ControlItem;
         }
-        if (!props.id) props.id = `${props.label.replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
+        if (!props.id) props.id = `${(props.label ?? `${type ?? "item"}`).replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
 
         if (props.type !== "control") {
             if (props.danger) (props as BaseMenuItemProps).color = "danger";

@@ -345,7 +345,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         const fullPath = path.resolve(this.addonFolder, addon.filename);
         if (typeof system == "undefined") system = Settings.get("settings", "addons", "editAction");
 
-        if (system === "system") return ipc.openPath(`${fullPath}`);
+        if (system === "system" || system === true) return ipc.openPath(`${fullPath}`);
         else if (system === "external") return RemoteAPI.editor.open(this.prefix as "theme", addon.filename);
         return this.openDetached(addon);
     }

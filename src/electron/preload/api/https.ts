@@ -10,33 +10,50 @@ const dataToClone: Array<keyof http.IncomingMessage> = ["statusCode", "statusMes
 
 type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
 
-const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {
+const MAX_REDIRECTS = 20;
+
+const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq, redirectCount = 0) => {
+    // A failure can surface on both the request and the response objects; only ever call back once
+    let done = false;
+    const doCallback: RequestCallback = (...args) => {
+        if (done) return;
+        done = true;
+        callback(...args);
+    };
+
     const req = https.request(url, Object.assign({method: "GET"}, options), res => {
         if (redirectCodes.has(res.statusCode ?? 0) && res.headers.location) {
-            const final = new URL(res.headers.location);
+            if (redirectCount >= MAX_REDIRECTS) {
+                return doCallback(new Error(`Maximum amount of redirects reached (${MAX_REDIRECTS})`));
+            }
+
+            // Location headers may be relative to the requested url
+            const final = new URL(res.headers.location, url);
 
             for (const [key, value] of new URL(url).searchParams.entries()) {
                 final.searchParams.set(key, value);
             }
 
-            return makeRequest(final.toString(), options, callback, setReq);
+            // The recursive call owns the callback from here on
+            done = true;
+            return makeRequest(final.toString(), options, callback, setReq, redirectCount + 1);
         }
 
         const chunks: Buffer[] = [];
-        let error: Error | null = null;
 
         setReq(res, req);
 
-        res.addListener("error", err => {error = err;});
+        res.addListener("error", err => doCallback(err));
 
         res.addListener("data", chunk => {
             chunks.push(chunk);
         });
 
         res.addListener("end", () => {
+            if (done) return;
             const data = Object.fromEntries(dataToClone.map(h => [h, res[h]]));
 
-            callback(error as Error, data, Buffer.concat(chunks));
+            doCallback(null as unknown as Error, data, Buffer.concat(chunks));
             req.end();
         });
     });
@@ -50,7 +67,7 @@ const makeRequest = (url: string, options: RequestOptions, callback: RequestCall
         req.end();
     }
 
-    req.on("error", (error) => callback(error));
+    req.on("error", (error) => doCallback(error));
 };
 
 const request = function (url: string, options: RequestOptions, callback: RequestCallback) {

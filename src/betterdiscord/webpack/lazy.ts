@@ -4,9 +4,10 @@ import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
 import {getBulk} from "./utilities";
 
-const ChunkIdRegex = /.{1}\.e\("(\d+)"\)/g;
-const FinalModuleIdRegex = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/g;
-const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1}\.bind\(.{1},\s*(\d+)\)\)/g;
+// Sources only — instantiate per use so shared `lastIndex` state can't leak across (possibly concurrent) calls
+const ChunkIdRegexSource = /.{1}\.e\("(\d+)"\)/.source;
+const FinalModuleIdRegexSource = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/.source;
+const CreatePromiseIdSource = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1}\.bind\(.{1},\s*(\d+)\)\)/.source;
 
 interface LazyQueue<T = any> {
     query: Webpack.BulkQueries;
@@ -22,33 +23,40 @@ const queue = {
     _queue: <LazyQueue[]>[],
     /** @private */
     _flushSync() {
-        // Should make it faster?
-        if (this._queue.length === 0) {
-            this._scheduled = false;
-            return;
+        try {
+            // Should make it faster?
+            if (this._queue.length === 0) {
+                return;
+            }
+            if (this._queue.length === 1) {
+                const [{resolve, query: {filter, ...options}}] = this._queue;
+
+                resolve({state: "resolved", value: getModule<any>(filter, options)});
+
+                return;
+            }
+
+            const result = getBulk(...this._queue.map((x) => x.query));
+
+            for (let index = 0; index < this._queue.length; index++) {
+                this._queue[index].resolve({
+                    state: "resolved",
+                    value: result[index]
+                });
+            }
         }
-        if (this._queue.length === 1) {
-            const [{resolve, query: {filter, ...options}}] = this._queue;
-
-            resolve({state: "resolved", value: getModule<any>(filter, options)});
-
+        catch (error) {
+            // Settle whatever is left so callers fall back to lazy listeners instead of hanging
+            for (const item of this._queue) {
+                item.resolve({state: "resolved", value: undefined});
+            }
+            throw error;
+        }
+        finally {
+            // Always reset state so one bad search can't wedge the queue permanently
             this._queue.length = 0;
             this._scheduled = false;
-
-            return;
         }
-
-        const result = getBulk(...this._queue.map((x) => x.query));
-
-        for (let index = 0; index < this._queue.length; index++) {
-            this._queue[index].resolve({
-                state: "resolved",
-                value: result[index]
-            });
-        }
-
-        this._queue.length = 0;
-        this._scheduled = false;
     },
     /** @private */
     _scheduleFlush() {
@@ -109,11 +117,13 @@ export async function getLazy<T>(filter: Webpack.ModuleFilter, options: Webpack.
     filter = wrapModuleFilter(filter);
 
     return new Promise((resolve, reject) => {
-        const cancel = () => void lazyListeners.delete(listener);
+        const cancel = () => {
+            lazyListeners.delete(listener);
+            abortSignal?.removeEventListener("abort", onAbort);
+        };
 
         const onAbort = () => {
             cancel();
-            abortSignal?.removeEventListener("abort", onAbort);
             if (fatal) reject(makeException());
             else resolve(undefined);
         };
@@ -172,11 +182,12 @@ export async function forceLoad(id: string | number): Promise<any[]> {
     const loadedModules = [];
     let match;
 
-    while ((match = CreatePromiseId.exec(text)) !== null) {
+    const createPromiseId = new RegExp(CreatePromiseIdSource, "g");
+    while ((match = createPromiseId.exec(text)) !== null) {
         const promiseBody = match[1];
         const bindId = match[2];
         const chunkIds = [];
-        const chunkMatches = promiseBody.matchAll(ChunkIdRegex);
+        const chunkMatches = promiseBody.matchAll(new RegExp(ChunkIdRegexSource, "g"));
         for (const chunkMatch of chunkMatches) {
             chunkIds.push(chunkMatch[1]);
         }
@@ -188,11 +199,12 @@ export async function forceLoad(id: string | number): Promise<any[]> {
 
     const chunkIds = [];
     let chunkMatch;
-    while ((chunkMatch = ChunkIdRegex.exec(text)) !== null) {
+    const chunkIdRegex = new RegExp(ChunkIdRegexSource, "g");
+    while ((chunkMatch = chunkIdRegex.exec(text)) !== null) {
         chunkIds.push(chunkMatch[1]);
     }
 
-    const bindMatches = text.matchAll(FinalModuleIdRegex);
+    const bindMatches = text.matchAll(new RegExp(FinalModuleIdRegexSource, "g"));
     for (const bindMatch of bindMatches) {
         await Promise.all(chunkIds.map((cid) => webpackRequire.e(cid)));
         const loadedModule = webpackRequire(bindMatch[1]);

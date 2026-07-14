@@ -16,9 +16,18 @@ const deprecated = new Map([
 ]);
 
 
+// Node allows a bare encoding string in place of the options object
+const withOriginalFs = (options: unknown) => Object.assign({}, typeof options === "string" ? {encoding: options} : options, {originalFs: true});
+
 const originalFs = Object.assign({}, fs);
-originalFs.writeFileSync = (path, data, options) => fs.writeFileSync(path, data, Object.assign({}, options, {originalFs: true}));
-originalFs.writeFile = (path, data, options) => fs.writeFile(path, data, Object.assign({}, options, {originalFs: true}));
+originalFs.writeFileSync = (path, data, options) => fs.writeFileSync(path, data, withOriginalFs(options));
+originalFs.writeFile = (path, data, options, callback) => {
+    if (typeof options === "function") {
+        callback = options;
+        options = undefined;
+    }
+    return fs.writeFile(path, data, withOriginalFs(options), callback);
+};
 
 type PolyfillRequire = ((mod: string) => any) & {cache?: Record<string, any>; resolve?(path: string): any;};
 

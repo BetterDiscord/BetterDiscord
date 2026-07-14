@@ -1,5 +1,6 @@
 import fs from "@polyfill/fs";
 import path from "path";
+import {deepEqual} from "fast-equals";
 import Store from "./base";
 import Config from "./config";
 import Logger from "@common/logger";
@@ -123,8 +124,8 @@ class JsonStore extends Store {
             };
 
             for (const k of beforeSet) {
-                if (afterSet.has(k)) result.changed.push(k);
-                else result.deleted.push(k);
+                if (!afterSet.has(k)) result.deleted.push(k);
+                else if (!deepEqual(before[k], after[k])) result.changed.push(k);
             }
 
             for (const k of afterSet) {

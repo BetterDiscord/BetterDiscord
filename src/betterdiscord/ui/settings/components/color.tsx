@@ -15,7 +15,7 @@ function resolveColor(color: ColorType, hex: false): number;
 function resolveColor(color: ColorType, hex?: true): HexString;
 function resolveColor(color: ColorType, hex = true): HexString | number {
     switch (typeof color) {
-        case (hex && "number"): return `#${color.toString(16)}`;
+        case (hex && "number"): return `#${(color as number).toString(16).padStart(6, "0")}`;
         case (!hex && "string"): return Number.parseInt((color as HexString).replace("#", ""), 16);
         case (!hex && "number"): return color;
         case (hex && "string"): return color;
@@ -96,7 +96,7 @@ export default function ColorPicker(props: ColorpickerProps) {
             {
                 colors.map((int, index) => (
                     <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => change({target: {value: int}})}>
-                        {intValue === int
+                        {intValue === resolveColor(int, false)
                             ? <CheckIcon size="16px" color={getContrastColor(resolveColor(value, true))} />
                             : null
                         }

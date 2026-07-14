@@ -108,6 +108,10 @@ export default new class CustomCSS extends Builtin {
                 if ((err as ErrnoException).code !== "ENOENT") return;
                 delete timeCache[filename];
                 this.saveCSS("");
+                // The deletion event is a "rename", so clear the injected CSS here too
+                this.insertCSS("");
+                Events.emit("customcss-updated", "");
+                return;
             }
             const stats = fs.statSync(this.file);
             if (!stats || !stats.mtimeMs) return;

@@ -49,7 +49,14 @@ class UI {
      * @returns An object with `isVisible` and `close` methods
      */
     showNotification(options: Notification) {
-        if (!Settings.get("settings", "general", "notificationEnabled")) return;
+        // Keep the documented return shape even when notifications are disabled
+        if (!Settings.get("settings", "general", "notificationEnabled")) {
+            return {
+                id: options?.id,
+                isVisible: () => false,
+                close: () => {}
+            };
+        }
 
         const defaultObj = {
             title: "",

@@ -8,7 +8,7 @@ type AsAfterCallback<M extends object, K extends StringKeys<M>> = M[K] extends (
 type AsInsteadCallback<M extends object, K extends StringKeys<M>> = M[K] extends (...a: any[]) => any ? InsteadCallback<M[K]> : never;
 
 function isModuleInvalid(moduleToPatch: any): boolean {
-    return typeof moduleToPatch !== "object" && typeof moduleToPatch !== "function" && moduleToPatch !== null;
+    return (typeof moduleToPatch !== "object" && typeof moduleToPatch !== "function") || moduleToPatch === null;
 }
 
 /**

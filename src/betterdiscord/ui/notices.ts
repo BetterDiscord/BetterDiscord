@@ -55,7 +55,10 @@ export default class Notices {
         const haveContainer = this.ensureContainer();
         if (!haveContainer) return;
 
+        let closed = false;
         const closeNotification = function (immediately = false) {
+            if (closed) return; // Timeout and manual close can race; only close once
+            closed = true;
             onClose?.();
             // Immediately remove the notice without adding the closing class.
             if (immediately) return noticeElement.remove();

@@ -71,6 +71,7 @@ const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions,
             windowInstance.close();
             resolve();
         });
+        windowInstance.on("closed", () => resolve());
         windowInstance.loadURL(url);
     });
 };
@@ -78,7 +79,10 @@ const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions,
 const inspectElement = async (event: IpcMainEvent) => {
     if (!event.sender.isDevToolsOpened()) {
         event.sender.openDevTools();
-        while (!event.sender.isDevToolsOpened()) await new Promise(r => setTimeout(r, 100));
+        for (let attempts = 0; !event.sender.isDevToolsOpened(); attempts++) {
+            if (attempts >= 50 || event.sender.isDestroyed()) return;
+            await new Promise(r => setTimeout(r, 100));
+        }
     }
     event.sender.devToolsWebContents?.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
 };
@@ -121,7 +125,7 @@ const openDialog = (event: IpcMainInvokeEvent, options: Partial<DialogOptions> =
         open: dialog.showOpenDialog,
         save: dialog.showSaveDialog
     }[mode];
-    if (!openFunction) return Promise.resolve({error: "Unkown Mode: " + mode});
+    if (!openFunction) return Promise.resolve({error: "Unknown Mode: " + mode});
 
     // @ts-expect-error cba to write separate types for these dialogs that are never used
     return openFunction(...[

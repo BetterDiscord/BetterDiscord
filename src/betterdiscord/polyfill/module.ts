@@ -25,7 +25,8 @@ export const RequireExtensions = {
 
 export default class Module {
     static resolveMainFile(mod: string, basePath: string) {
-        const parent = path.extname(basePath) ? path.dirname(basePath) : basePath;
+        if (!path.isAbsolute(mod)) mod = path.resolve(basePath, mod);
+        const parent = path.extname(mod) ? path.dirname(mod) : mod;
         const files = Remote.filesystem.readDirectory(parent);
         if (!Array.isArray(files)) return null;
 
@@ -40,8 +41,12 @@ export default class Module {
                 return path.resolve(parent, pkg.main);
             }
 
-            if (ext.slice(0, -ext.length) == "index" && RequireExtensions[ext as keyof typeof RequireExtensions]) return mod;
+            if ((file as string).slice(0, -ext.length) === "index" && RequireExtensions[ext as keyof typeof RequireExtensions]) {
+                return path.resolve(parent, file as string);
+            }
         }
+
+        return null;
     }
 
     static getExtension(mod: string) {
@@ -64,17 +69,25 @@ export default class Module {
     static _load(mod: string, basePath: string, createRequire: (m: string) => any) {
         const originalReq = mod;
         if (!path.isAbsolute(mod)) mod = path.resolve(basePath, mod);
-        const filePath = this.getFilePath(basePath, mod);
+        let filePath = this.getFilePath(basePath, mod);
         if (!Remote.filesystem.exists(filePath)) throw new Error(`Cannot find module ${mod}`);
-        if (window.require.cache[filePath]) return window.require.cache[filePath].exports;
+        const cached = window.require.cache[filePath];
+        if (cached) return cached.exports;
         const stats = Remote.filesystem.getStats(filePath);
-        if (stats.isDirectory()) mod = this.resolveMainFile(mod, basePath)!;
+        if (stats.isDirectory()) {
+            const mainFile = this.resolveMainFile(filePath, basePath);
+            if (!mainFile) throw new Error(`Cannot find module ${originalReq}`);
+            filePath = this.getFilePath(basePath, mainFile);
+            if (!Remote.filesystem.exists(filePath)) throw new Error(`Cannot find module ${originalReq}`);
+            const cachedMain = window.require.cache[filePath];
+            if (cachedMain) return cachedMain.exports;
+        }
         const ext = this.getExtension(filePath);
         const loader = RequireExtensions[ext as keyof typeof RequireExtensions];
 
         if (!loader) throw new Error(`Cannot find module ${originalReq}`);
         // @ts-expect-error no, remove with polyfill
-        const module = window.require.cache[mod] = new Module(filePath, internalModule, createRequire(mod));
+        const module = window.require.cache[filePath] = new Module(filePath, internalModule, createRequire(filePath));
         loader(module, filePath);
         return module.exports;
     }

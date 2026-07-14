@@ -14,15 +14,17 @@ export default function () {
         // Restore original preload for future windows
         IPC.send(IPCEvents.REGISTER_PRELOAD, preload);
         // Run original preload
+        const originalKill = process.kill;
         try {
-            const originalKill = process.kill;
             process.kill = function (_: number, __?: string | number | undefined) {return true;};
             // eslint-disable-next-line @typescript-eslint/no-require-imports
             require(preload);
-            process.kill = originalKill;
         }
         catch {
             // TODO bail out
+        }
+        finally {
+            process.kill = originalKill;
         }
     }
 }

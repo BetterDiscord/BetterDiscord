@@ -3,6 +3,7 @@ export default function () {
     Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
         get: function (...args: any[]) {
             const contentWindow = Reflect.apply(contentWindowGetter, this, args);
+            if (!contentWindow) return contentWindow; // Detached iframes have no contentWindow
             return new Proxy(contentWindow, {
                 getOwnPropertyDescriptor: function (obj, prop) {
                     if (prop === "localStorage") return undefined;
@@ -24,7 +25,7 @@ export default function () {
 
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function (...args: any[]) {
-        const url = args[1];
+        const url = String(args[1]); // URL objects are valid here too
         if (url.toLowerCase().includes("api/webhooks")) return null;
         return Reflect.apply(oOpen, this, args);
     };
