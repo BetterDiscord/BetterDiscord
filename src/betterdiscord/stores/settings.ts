@@ -35,7 +35,7 @@ export interface SettingsPanel {
 
 type State = Record<string, Record<string, any>>;
 
-export default new class SettingsManager extends Store {
+class SettingsManager extends Store {
     state: State = {};
     collections: SettingsCollection[] = [];
     panels: SettingsPanel[] = [];
@@ -284,4 +284,6 @@ export default new class SettingsManager extends Store {
         Events.on("setting-updated", handler);
         return () => {Events.off("setting-updated", handler);};
     }
-};
+}
+
+export default new SettingsManager();

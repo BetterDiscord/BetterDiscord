@@ -1,0 +1,41 @@
+name: Publish Types
+
+on:
+  # Publish when a types release is created (tag prefixed with "@betterdiscord/types@", e.g. @betterdiscord/types@1.0.0).
+  push:
+    tags:
+      - "@betterdiscord/types@*"
+  # Allow manual publishing from the Actions tab.
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write # required for npm provenance
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Prepare Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Prepare Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Generate types
+        run: bun run generate-types
+
+      - name: Publish to npm
+        run: npm publish ./dist/types --provenance --access public

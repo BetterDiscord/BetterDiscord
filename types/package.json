@@ -1,0 +1,36 @@
+{
+    "name": "@betterdiscord/types",
+    "version": "1.0.0",
+    "description": "TypeScript type definitions for the BetterDiscord plugin API (BdApi).",
+    "types": "index.d.ts",
+    "files": [
+        "index.d.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "keywords": [
+        "betterdiscord",
+        "bdapi",
+        "discord",
+        "types",
+        "typescript"
+    ],
+    "license": "Apache-2.0",
+    "homepage": "https://betterdiscord.app",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BetterDiscord/BetterDiscord.git",
+        "directory": "types"
+    },
+    "bugs": {
+        "url": "https://github.com/BetterDiscord/BetterDiscord/issues"
+    },
+    "dependencies": {
+        "@types/react": "^19.1.2",
+        "@types/react-dom": "^19.1.2",
+        "@types/react-reconciler": "^0.32.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

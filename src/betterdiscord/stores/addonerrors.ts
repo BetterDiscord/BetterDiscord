@@ -1,7 +1,7 @@
 import type AddonError from "@structs/addonerror";
 import Store from "./base";
 
-export default new class AddonErrorsStore extends Store {
+class AddonErrorsStore extends Store {
     pluginErrors: AddonError[] = [];
     themeErrors: AddonError[] = [];
 
@@ -20,4 +20,6 @@ export default new class AddonErrorsStore extends Store {
         this.themeErrors = [];
         this.emitChange();
     }
-};
+}
+
+export default new AddonErrorsStore();

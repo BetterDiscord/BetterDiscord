@@ -28,7 +28,7 @@ if (module.exports.default) {
     module.exports = module.exports.default;
 }`;
 
-export default new class PluginManager extends AddonManager<Plugin> {
+class PluginManager extends AddonManager<Plugin> {
     name = "PluginManager";
     extension = ".plugin.js";
     duplicatePattern = /\.plugin\s?\([0-9]+\)\.js/;
@@ -254,4 +254,6 @@ export default new class PluginManager extends AddonManager<Plugin> {
             catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err as Error);}
         }
     }
-};
+}
+
+export default new PluginManager();
