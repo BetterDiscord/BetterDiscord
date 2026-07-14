@@ -79,6 +79,16 @@ const SAFE_WEB_PREFERENCES: BrowserWindowConstructorOptions["webPreferences"] = 
 };
 
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {
+    try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+            return Promise.reject(new Error("Invalid protocol"));
+        }
+    }
+    catch {
+        return Promise.reject(new Error("Invalid URL"));
+    }
+
     return new Promise<void>(resolve => {
         const safeOptions: BrowserWindowConstructorOptions = {
             ...windowOptions,
