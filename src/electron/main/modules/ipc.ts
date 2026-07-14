@@ -63,9 +63,32 @@ const toggleDevTools = (event: IpcMainEvent) => {
     else closeDevTools(event);
 };
 
+/**
+ * Never let a renderer-supplied windowOptions weaken the security posture of the
+ * window we open. Discord's Electron fork already forces these safe values, but we
+ * don't want our own guarantees to depend on that so we force them here too, and
+ * never honor a caller-supplied preload.
+ */
+const SAFE_WEB_PREFERENCES: BrowserWindowConstructorOptions["webPreferences"] = {
+    nodeIntegration: false,
+    nodeIntegrationInWorker: false,
+    nodeIntegrationInSubFrames: false,
+    contextIsolation: true,
+    sandbox: true,
+    webviewTag: false
+};
+
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {
     return new Promise<void>(resolve => {
-        const windowInstance = new BrowserWindow(windowOptions);
+        const safeOptions: BrowserWindowConstructorOptions = {
+            ...windowOptions,
+            webPreferences: {
+                ...windowOptions?.webPreferences,
+                ...SAFE_WEB_PREFERENCES,
+                preload: undefined
+            }
+        };
+        const windowInstance = new BrowserWindow(safeOptions);
         windowInstance.webContents.on("did-navigate", (__, navUrl) => {
             if (navUrl != closeOnUrl) return;
             windowInstance.close();

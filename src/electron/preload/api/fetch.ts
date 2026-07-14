@@ -44,6 +44,14 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
     const timeout = ((t) => init.timeout === null || !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
 
     async function execute(uri: string) {
+        // Mirror the renderer's webhook block for BdApi.Net.fetch, which runs here over
+        // Node's https and never touches the renderer's window.fetch/XHR patches. Checked
+        // per hop so a redirect into a webhook URL is caught too.
+        if (uri.toLowerCase().includes("api/webhooks")) {
+            reject(new Error("Failed to fetch"));
+            return;
+        }
+
         const httpModule = uri.startsWith("http:") ? http : uri.startsWith("https:") ? https : null;
         if (!httpModule) {
             reject(new Error(`Unsupported protocol: ${uri.slice(0, uri.indexOf(":"))}:`));

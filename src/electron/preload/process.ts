@@ -10,4 +10,8 @@ newProcess.versions.nodejs = newProcess.versions.node;
 delete newProcess.versions.node;
 newProcess.isWeb = true;
 
+newProcess.getBuiltinModule = function (_module: string) {
+    return undefined;
+};
+
 export default newProcess;
