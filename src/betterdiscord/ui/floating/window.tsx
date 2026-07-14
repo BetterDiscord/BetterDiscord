@@ -175,7 +175,7 @@ export default function FloatingWindow({id, title, resizable, children, classNam
         if (newLeft < positioning.current.min.x) {
             const difference = positioning.current.min.x - newLeft;
             window.current!.style.left = positioning.current.min.x + "px";
-            window.current!.style.height = (width - difference) + "px";
+            window.current!.style.width = (width - difference) + "px";
         }
     }, [window, onResize]);
 

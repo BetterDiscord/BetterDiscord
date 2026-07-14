@@ -6,6 +6,7 @@ export const REACT_DEVTOOLS_ID = "fmkadmapgofadopljbjfkapdkoienihi";
 
 const findLatestVersion = (extensionPath: string) => {
     const versions = fs.readdirSync(extensionPath);
+    if (!versions.length) return "";
     return path.resolve(extensionPath, versions[versions.length - 1]);
 };
 
@@ -25,6 +26,11 @@ const findExtension = (dataPath: string) => {
     else if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME!, ".config/google-chrome");
     else if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME!, "Library/Application Support/Google/Chrome");
     else extensionPath = path.resolve(process.env.HOME!, ".config/chromium");
+
+    // No Chrome installation at all
+    if (!fs.existsSync(extensionPath)) {
+        return "";
+    }
 
     // If default profile doesn't exist
     if (!fs.existsSync(extensionPath + "/Default")) {

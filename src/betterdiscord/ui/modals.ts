@@ -67,7 +67,11 @@ export default class Modals {
                 </div>
             </div>`) as HTMLElement;
 
+        let isClosing = false;
         const handleClose = () => {
+            // Multiple handlers can trigger a close; only run it once so the queue isn't shifted repeatedly
+            if (isClosing) return;
+            isClosing = true;
             modal.classList.add("closing");
             setTimeout(() => {
                 modal.remove();
@@ -223,7 +227,7 @@ export default class Modals {
 
     static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign({}, options, props)));
         });
         return key;
     }

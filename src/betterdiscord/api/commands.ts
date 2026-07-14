@@ -117,7 +117,8 @@ class BoundCommandAPI {
 
 Object.freeze(CommandAPI);
 Object.freeze(CommandAPI.prototype);
-Object.freeze(CommandAPI.prototype.Types);
-Object.freeze(CommandAPI.constructor);
+Object.freeze(Types);
+Object.freeze(BoundCommandAPI);
+Object.freeze(BoundCommandAPI.prototype);
 
 export {CommandAPI, BoundCommandAPI};

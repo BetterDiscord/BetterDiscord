@@ -17,13 +17,15 @@ export default class EventEmitter {
     emit(event: string, ...args: any[]) {
         if (!this.events[event]) return;
 
-        for (const [index, listener] of this.events[event].entries()) {
+        let index = 0;
+        for (const listener of this.events[event]) {
             try {
                 listener(...args);
             }
             catch (error) {
                 Logger.error("Emitter", `Cannot fire listener for event ${event} at position ${index}:`, error);
             }
+            index++;
         }
     }
 

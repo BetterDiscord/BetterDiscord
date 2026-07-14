@@ -93,6 +93,7 @@ export default class Tooltip {
         if (!this.active) return;
         this.active = false;
         this.element.remove();
+        this.observer?.disconnect();
     }
 
     /** Shows the tooltip. Automatically called on mouseenter. Will attempt to flip if position was wrong. */
@@ -124,47 +125,51 @@ export default class Tooltip {
         }
 
         // Do not create a new observer each time if one already exists!
-        if (this.observer) return;
         // Use an observer in show otherwise you'll cause unclosable tooltips
-        this.observer = new MutationObserver((mutations) => {
+        this.observer ??= new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 const nodes = Array.from(mutation.removedNodes);
                 const directMatch = nodes.indexOf(this.node) > -1;
                 const parentMatch = nodes.some(parent => parent.contains(this.node));
                 if (directMatch || parentMatch) {
                     this.hide();
-                    this.observer?.disconnect();
                 }
             });
         });
 
+        // (Re)connect on every show; hide() disconnects it
         this.observer.observe(document.body, {subtree: true, childList: true});
+    }
+
+    #setSideClass(side: "top" | "bottom" | "left" | "right") {
+        this.tooltipElement.classList.remove("bd-tooltip-top", "bd-tooltip-bottom", "bd-tooltip-left", "bd-tooltip-right");
+        this.tooltipElement.classList.add(`bd-tooltip-${side}`);
     }
 
     /** Force showing the tooltip above the node. */
     showAbove() {
-        this.tooltipElement.classList.add("bd-tooltip-top");
+        this.#setSideClass("top");
         this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top - this.element.offsetHeight - 10));
         this.centerHorizontally();
     }
 
     /** Force showing the tooltip below the node. */
     showBelow() {
-        this.tooltipElement.classList.add("bd-tooltip-bottom");
+        this.#setSideClass("bottom");
         this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top + this.node.offsetHeight + 10));
         this.centerHorizontally();
     }
 
     /** Force showing the tooltip to the left of the node. */
     showLeft() {
-        this.tooltipElement.classList.add("bd-tooltip-left");
+        this.#setSideClass("left");
         this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left - this.element.offsetWidth - 10));
         this.centerVertically();
     }
 
     /** Force showing the tooltip to the right of the node. */
     showRight() {
-        this.tooltipElement.classList.add("bd-tooltip-right");
+        this.#setSideClass("right");
         this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left + this.node.offsetWidth + 10));
         this.centerVertically();
     }

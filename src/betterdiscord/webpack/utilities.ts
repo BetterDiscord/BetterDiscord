@@ -134,13 +134,13 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     let count = 0;
     const shouldExit = () => shouldExitEarly && count === queries.length;
 
-    // Check the firstId for each query
+    // Check the firstId for each query ("all" queries need the full scan below)
     for (let i = 0; i < queries.length; i++) {
-        const {firstId} = queries[i];
-        if (!firstId) continue;
+        const {firstId, all} = queries[i];
+        if (!firstId || all) continue;
 
         const module = webpackRequire.c[firstId];
-        if (!module) continue;
+        if (!module || shouldSkipModule(module.exports)) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
         if (matched) {
@@ -162,7 +162,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (!id) continue;
 
         const module = webpackRequire.c[id];
-        if (!module) continue;
+        if (!module || shouldSkipModule(module.exports)) continue;
 
         const matched = bulkGetMatched(module, queries[i]);
         if (matched) {

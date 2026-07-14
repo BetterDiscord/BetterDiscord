@@ -86,8 +86,9 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
     const checkAddons = useCallback(async (type: "plugins" | "themes") => {
         const updater = type === "plugins" ? pluginUpdater : themeUpdater;
         await updater.checkAll(false);
-        setUpdates({...updates, [type]: updater.pending.slice(0)});
-    }, [updates, pluginUpdater, themeUpdater]);
+        // Functional update so concurrent checks can't clobber each other with stale state
+        setUpdates(prev => ({...prev, [type]: updater.pending.slice(0)}));
+    }, [pluginUpdater, themeUpdater]);
 
     const update = useCallback(() => {
         checkAddons("plugins");
@@ -132,10 +133,7 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}:
     const updateAddon = useCallback(async (type: "plugins" | "themes", filename: string) => {
         const updater = type === "plugins" ? pluginUpdater : themeUpdater;
         await updater.updateAddon(filename);
-        setUpdates(prev => {
-            prev[type].splice(prev[type].indexOf(filename), 1);
-            return prev;
-        });
+        setUpdates(prev => ({...prev, [type]: prev[type].filter(f => f !== filename)}));
     }, [pluginUpdater, themeUpdater]);
 
     const updateAllAddons = useCallback(async (type: "plugins" | "themes") => {

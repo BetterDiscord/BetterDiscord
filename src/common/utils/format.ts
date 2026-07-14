@@ -14,7 +14,9 @@ export default function formatString(string: string, values: Record<string, stri
         if (replacement === null) replacement = "null";
         if (Array.isArray(replacement)) replacement = JSON.stringify(replacement);
         if (typeof (replacement) === "object" && replacement !== null) replacement = replacement.toString();
-        string = string.replace(new RegExp(`{{${val}}}`, "g"), replacement?.toString() ?? "null");
+        const replacementString = replacement?.toString() ?? "null";
+        // Use a replacer function so special patterns like $& in the value aren't interpreted
+        string = string.replace(new RegExp(`{{${val}}}`, "g"), () => replacementString);
     }
     return string;
 }

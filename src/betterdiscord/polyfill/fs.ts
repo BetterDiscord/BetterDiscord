@@ -13,13 +13,16 @@ function wrapFunctionWithCallback<
     return function (...args: [...Parameters<T>, C]) {
         const params = args.slice(0, -1) as Parameters<T>;
         const callback = args[args.length - 1] as C;
+        let result;
         try {
-            const result = func(...params);
-            callback(null, result);
+            result = func(...params);
         }
         catch (error) {
             callback(error as Error, null);
+            return;
         }
+        // Outside the try so an error thrown by the callback isn't fed back into it
+        callback(null, result);
     };
 }
 
@@ -68,11 +71,12 @@ export const writeFile = function (path: fs.PathOrFileDescriptor, data: string |
 
     try {
         Remote.filesystem.writeFile(path, data, options as WriteOptions);
-        callback?.(null);
     }
     catch (error) {
         callback?.(error as Error);
+        return;
     }
+    callback?.(null);
 };
 
 export const lstat = stat;

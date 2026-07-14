@@ -4,7 +4,7 @@ import type {RequestOptions} from "@common/types/ipc";
 import Remote from "./remote";
 
 
-export function get(url: string, options: null | RequestOptions | ((e: EventEmitter) => void) = {}, callback: (e: EventEmitter) => void) {
+export function get(url: string, options: null | RequestOptions | ((e: EventEmitter) => void) = {}, callback?: (e: EventEmitter) => void) {
     if (typeof (options) === "function") {
         callback = options;
         options = null;
@@ -12,7 +12,7 @@ export function get(url: string, options: null | RequestOptions | ((e: EventEmit
 
     const emitter = new EventEmitter();
 
-    callback(emitter);
+    callback?.(emitter);
 
     Remote.https.get(url, options ?? {}, (error: Error, res?: Record<string, any>, body?: Buffer | string) => {
         if (error) return emitter.emit("error", error);

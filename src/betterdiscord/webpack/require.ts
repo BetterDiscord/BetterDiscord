@@ -94,7 +94,8 @@ function onLoadEnd() {
 function patchModuleLoading(require: Webpack.Require) {
     Patcher.after("WebpackRequire", require, "e", (_, __, loadPromise) => {
         onLoadStart();
-        loadPromise.finally(onLoadEnd);
+        // then(fn, fn) instead of finally(fn) so a failed chunk load doesn't create an unhandled rejection
+        loadPromise.then(onLoadEnd, onLoadEnd);
     });
 
     Patcher.before("WebpackRequire", require, "l", (_, args) => {

@@ -41,7 +41,12 @@ const getJSON = (url: string) => {
             }
         }, (error: Error, _: Response, body: string) => {
             if (error) return resolve([]);
-            resolve(JSON.parse(body));
+            try {
+                resolve(JSON.parse(body));
+            }
+            catch {
+                resolve([]);
+            }
         });
     });
 };
@@ -123,6 +128,7 @@ export class CoreUpdater {
         });
 
         const data: Release = await resp.json();
+        if (typeof data?.tag_name !== "string") throw new Error(`Unexpected response checking for updates (status ${resp.status})`);
         const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
         this.hasUpdate = ignoreVersion || semverComparator(Config.get("version"), remoteVersion) > 0;
         this.remoteVersion = remoteVersion;
@@ -177,8 +183,15 @@ export class CoreUpdater {
          * But if the user is already on canary, then pass a
          * flag to ignore remove version.
          */
-        if (isCanaryEnabled) await this.checkForCanary(!isOnCanary);
-        else await this.checkForStable(isOnCanary);
+        try {
+            if (isCanaryEnabled) await this.checkForCanary(!isOnCanary);
+            else await this.checkForStable(isOnCanary);
+        }
+        catch (error) {
+            // Network failures and rate limits shouldn't produce unhandled rejections
+            Logger.warn("Updater", "Failed to check for core update", error);
+            return;
+        }
 
         if (!this.hasUpdate || !showNotice) return;
 
@@ -310,15 +323,21 @@ export class AddonUpdater {
             }
         }, (error: Error, response: {statusCode: number;}, body: string) => {
             if (error || response.statusCode !== 200) {
-                Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
+                Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error ?? new Error(`Status ${response.statusCode}`));
                 Toasts.error(t("Updater.addonUpdateFailed", {name: info.name, version: info.version}));
                 return;
             }
 
             const file = path.join(path.resolve(this.manager.addonFolder), filename);
-            fileSystem.writeFile(file, body.toString(), () => {
+            fileSystem.writeFile(file, body.toString(), (writeError) => {
+                if (writeError) {
+                    Logger.stacktrace("AddonUpdater", `Failed to write update for ${info.id}:`, writeError);
+                    Toasts.error(t("Updater.addonUpdateFailed", {name: info.name, version: info.version}));
+                    return;
+                }
                 Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
-                this.pending.splice(this.pending.indexOf(filename), 1);
+                const pendingIndex = this.pending.indexOf(filename);
+                if (pendingIndex >= 0) this.pending.splice(pendingIndex, 1);
             });
         });
     }

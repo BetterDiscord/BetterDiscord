@@ -73,7 +73,8 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
                 if (res.headers.location) {
                     let final;
                     try {
-                        final = new URL(res.headers.location);
+                        // Location headers may be relative to the requested url
+                        final = new URL(res.headers.location, uri);
                     }
                     catch (error) {
                         reject(error);

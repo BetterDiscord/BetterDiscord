@@ -55,7 +55,7 @@ function extractAddonLinks(text: string, max = Infinity) {
         // if <betterdiscord://addon/id> not betterdiscord://addon/id
         if (exec[0][0] === "h" && text[exec.index - 1] === "<") continue;
 
-        const endIndex = exec.index + exec.length;
+        const endIndex = exec.index + exec[0].length;
 
         let isInCodeblock = false;
         for (const [start, end] of codeblocks) {
@@ -133,11 +133,13 @@ export default new class AddonStoreBuiltin extends Builtin {
         }
     }
 
-    private linkOpener?: Generator;
+    private linkOpener?: [any, any];
     async patchLinkOpener() {
-        const [module, key] = this.linkOpener ??= getWithKey((m) => String(m).includes(".trackAnnouncementMessageLinkClicked("), {
+        // Cache the resolved [module, key] pair, not the generator — a generator can only be consumed once,
+        // which silently broke this patch when the builtin was re-enabled
+        const [module, key] = this.linkOpener ??= [...getWithKey((m) => String(m).includes(".trackAnnouncementMessageLinkClicked("), {
             target: await getLazyBySource([".trackAnnouncementMessageLinkClicked("])
-        });
+        })] as [any, any];
 
         this.before(module, key, (_, args) => {
             if (args[0].href) {
@@ -174,7 +176,13 @@ export default new class AddonStoreBuiltin extends Builtin {
             return includes.apply(this, args);
         };
 
-        link.parse(["", "link", "betterdiscord://foo/bar"]);
+        try {
+            link.parse(["", "link", "betterdiscord://foo/bar"]);
+        }
+        finally {
+            // Never leave the global patched if parse throws or the interception never triggers
+            Array.prototype.includes = includes;
+        }
 
         return this.protocolList = protocols;
     }
