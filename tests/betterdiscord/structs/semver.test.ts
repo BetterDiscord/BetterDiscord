@@ -1,5 +1,5 @@
 import {test, expect, describe} from "bun:test";
-import {regex, comparator} from "@structs/semver";
+import {regex, comparator} from "@common/semver";
 
 describe("Semver", () => {
     describe("regex", () => {
