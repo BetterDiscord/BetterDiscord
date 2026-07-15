@@ -223,7 +223,7 @@ export default class Modals {
 
     static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign({}, options, props)));
         });
         return key;
     }
@@ -323,6 +323,10 @@ export default class Modals {
         options.modalKey = generateKey(options.modalKey);
         Events.emit("open-modal", render, options);
         return options.modalKey;
+    }
+
+    static closeUserSettingsModal() {
+        this.ModalActions.closeModal("USER_SETTINGS_MODAL_MODAL_KEY");
     }
 }
 

@@ -20,7 +20,7 @@ export interface NativeRequestInit {
     signal?: AbortSignal | null;
 
     // Custom
-    timeout?: number;
+    timeout?: number | null;
     maxRedirects?: number;
     rejectUnauthorized?: boolean;
 }

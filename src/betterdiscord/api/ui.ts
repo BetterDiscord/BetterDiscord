@@ -13,6 +13,8 @@ import type {ChangelogProps} from "@ui/modals/changelog";
 import type {DialogOptions} from "@common/types/ipc";
 import type {Setting, SettingsCategory} from "@data/settings";
 import type {ConfirmationModalOptions} from "@ui/modals/confirmation";
+import type {FloatingWindowProps} from "@ui/floating/window";
+import FloatingWindows from "@ui/floatingwindows";
 
 export interface SettingsPanelProps {
     /** An array of settings to show */
@@ -203,11 +205,32 @@ class UI {
             return buildSetting({
                 ...setting,
                 onChange: (value: any) => {
-                    setting?.onChange?.(value);
+                    setting?.onChange?.(value as never);
                     onChange?.(null, setting.id, value);
                 }
             });
         }));
+    }
+
+    /**
+     * Open a floating window
+     *
+     * @param window
+     * @returns An utility object with small helpers
+     */
+    openFloatingWindow(window: FloatingWindowProps) {
+        if (typeof window.id !== "string") throw new Error("FLoating window requires id");
+
+        FloatingWindows.open(window);
+
+        return {
+            close() {
+                FloatingWindows.close(window.id);
+            },
+            isOpened() {
+                return FloatingWindows.isOpened(window.id);
+            }
+        };
     }
 };
 

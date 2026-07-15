@@ -18,8 +18,9 @@ export default new class EditorStore extends Store {
 
         this.listener();
 
-        RemoteAPI.editor.onLiveUpdateChange((state) => {
-            SettingsManager.set("settings", "customcss", "liveUpdate", state);
+        RemoteAPI.editor.onSettingsChange(({liveUpdate, alwaysOnTop}) => {
+            if (typeof liveUpdate === "boolean") SettingsManager.set("settings", "customcss", "liveUpdate", liveUpdate);
+            if (typeof alwaysOnTop === "boolean") SettingsManager.set("settings", "editor", "alwaysOnTop", alwaysOnTop);
         });
 
         RemoteAPI.addProtocolListener((url) => {
@@ -48,13 +49,14 @@ export default new class EditorStore extends Store {
         RemoteAPI.editor.updateSettings({
             options: this.getEditorOptions(),
             liveUpdate: SettingsManager.get("settings", "customcss", "liveUpdate"),
-            discordTheme: Stores.ThemeStore?.theme || "dark"
+            discordTheme: Stores.ThemeStore?.theme || "dark",
+            alwaysOnTop: SettingsManager.get<boolean>("settings", "editor", "alwaysOnTop")
         });
 
         this.emitChange();
     }
 
-    getEditorOptions() {
+    getEditorOptions(): import("monaco-editor").editor.IStandaloneEditorConstructionOptions {
         let theme = SettingsManager.get<"vs" | "vs-dark" | "hc-black" | "hc-light" | "system">("settings", "editor", "theme");
 
         if (theme === "system") {

@@ -96,9 +96,11 @@ export default class Editor {
                 }
             });
 
-            window.webContents.ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, (_, liveUpdate) => {
+            window.webContents.ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, (_, settings: Partial<import("../../../editor/preload").Settings>) => {
+                this.updateSettings(Object.assign({}, this.#settings, settings));
+
                 if (this._window) {
-                    this._window.webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, liveUpdate);
+                    this._window.webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
                 }
             });
 
@@ -115,7 +117,7 @@ export default class Editor {
                 };
 
                 this._window.once("closed", listener);
-                window.once("close", () => {
+                window.once("closed", () => {
                     this._window.off("closed", listener);
 
                     if (type === "custom-css") {
@@ -125,6 +127,10 @@ export default class Editor {
                         delete this.windows[type][filename!];
                     }
                 });
+            }
+
+            if (this.#settings.alwaysOnTop) {
+                window.setAlwaysOnTop(true);
             }
 
             if (type === "custom-css") {
@@ -146,16 +152,19 @@ export default class Editor {
         return item instanceof BrowserWindow && !item.isDestroyed();
     }
 
-    static #settings = {
+    static #settings: import("../../../editor/preload").Settings = {
         options: {theme: "vs-dark"},
         liveUpdate: false,
-        discordTheme: "dark"
+        discordTheme: "dark",
+        alwaysOnTop: false
     };
-    public static updateSettings(settings: any) {
+
+    public static updateSettings(settings: import("../../../editor/preload").Settings) {
         this.#settings = settings;
 
         if (this.isValidWindow(this.windows["custom-css"])) {
             this.windows["custom-css"].webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
+            this.windows["custom-css"].setAlwaysOnTop(settings.alwaysOnTop);
         }
 
         for (const type of ["theme", "plugin"] as const) {
@@ -165,11 +174,13 @@ export default class Editor {
 
                     if (this.isValidWindow(window)) {
                         window.webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
+                        window.setAlwaysOnTop(settings.alwaysOnTop);
                     }
                 }
             }
         }
     }
+
     public static getSettings() {
         return this.#settings;
     }

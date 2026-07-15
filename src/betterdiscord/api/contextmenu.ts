@@ -279,7 +279,7 @@ class MenuPatcher {
         // .colorDanger.focused:not(.checkboxContainer) path {fill: var(--text-feedback-critical)}
 
         DOMManager.injectStyle("bd-lucide-context-menu-fix", `
-            :where(.${menuClasses!.colorDefault}, ${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
+            :where(.${menuClasses!.colorDefault}, .${menuClasses!.colorDanger}).${menuClasses!.focused}:not(.${menuClasses!.checkboxContainer}) .lucide:not(.lucide-betterdiscord) path {
                 fill: revert;
             }
         `);

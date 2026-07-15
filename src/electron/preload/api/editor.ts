@@ -7,12 +7,12 @@ export function open(type: "custom-css" | "theme" | "plugin", filename?: string)
     ipcRenderer.invoke(IPCEvents.EDITOR_OPEN, type, filename);
 }
 
-export function updateSettings(settings: any) {
+export function updateSettings(settings: import("../../../editor/preload").Settings) {
     ipcRenderer.invoke(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
 }
 
-export function onLiveUpdateChange(listener: (state: boolean) => void) {
-    function callback(_: unknown, state: boolean) {
+export function onSettingsChange(listener: (state: Partial<import("../../../editor/preload").Settings>) => void) {
+    function callback(_: unknown, state: Partial<import("../../../editor/preload").Settings>) {
         listener(state);
     }
 

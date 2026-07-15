@@ -338,7 +338,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon: string | T, system?: "system" | "detached" | "external" | boolean) {
+    editAddon(idOrFileOrAddon: string | T, system?: "system" | "detached" | "external") {
         const addon = this.resolveAddon(idOrFileOrAddon);
         if (!addon) return;
 
@@ -357,14 +357,21 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         if (this.windows.has(fullPath)) return;
         this.windows.add(fullPath);
 
-        const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
+        const editorRef = React.createRef<{resize(): void; value: string, hasUnsavedChanges: boolean;}>();
         const editor = React.createElement(AddonEditor, {
             id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
             content: content,
             save: this.saveAddon.bind(this, addon),
-            openNative: this.editAddon.bind(this, addon, true),
-            language: this.language
+            openNative: () => {
+                FloatingWindows.close("bd-floating-window-" + addon.id);
+                this.editAddon(addon, "system");
+            },
+            language: this.language,
+            openDetached: () => {
+                FloatingWindows.close("bd-floating-window-" + addon.id);
+                RemoteAPI.editor.open(this.prefix, addon.filename);
+            }
         });
 
         FloatingWindows.open({

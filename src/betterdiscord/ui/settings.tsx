@@ -274,8 +274,9 @@ const SettingsRenderer = new class SettingsRenderer {
                             icon,
                             title: () => panel.label,
                             predicate: useCustomCSSViewable,
-                            useSearchTerms: () => [panel.label]
+                            useSearchTerms: () => [panel.label],
                         });
+
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
@@ -400,7 +401,7 @@ const SettingsRenderer = new class SettingsRenderer {
 
 const ContextMenu = new ContextMenuPatcher();
 
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
+const UserSettings = getByKeys<any>(["openUserSettings", "USER_SETTINGS_MODAL_KEY"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface PanelLayout {
     buildLayout(): [category: CategoryLayout];
@@ -480,9 +481,10 @@ type LayoutConstructor = {
 
 /** @description On true clicking open will open not open the page. On false will open the page */
 const useCustomCSSClickable = () => {
-    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"), []);
+    const isDetached = useStateFromStores(CustomCSS, () => CustomCSS.isDetached, []);
 
-    return ["detached", "external", "system"].includes(state);
+    return isDetached || ["detached", "external", "system"].includes(state);
 };
 const useCustomCSSViewable = () => !useCustomCSSClickable();
 

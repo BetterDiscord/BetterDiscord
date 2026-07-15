@@ -5,9 +5,9 @@ import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import CommandManager, {type Command} from "@modules/commandmanager";
+import Store from "@stores/base";
 
-export default class BuiltinModule {
-
+export default class BuiltinModule extends Store {
     initialized: boolean = false;
     #commands = new Set<() => void>();
     get name() {return "Unnamed Builtin";}
@@ -16,12 +16,19 @@ export default class BuiltinModule {
     get id() {return "None";}
 
     async initialize() {
-        if (Settings.get(this.collection, this.category, this.id)) await this.enable();
+        if (Settings.get(this.collection, this.category, this.id)) {
+            await this.enable();
+            this.emitChange();
+        }
+
         Events.on("setting-updated", (collection, category, id, enabled) => {
             if (collection != this.collection || category !== this.category || id !== this.id) return;
             if (enabled) this.enable();
             else this.disable();
+
+            this.emitChange();
         });
+
         this.initialized = true;
     }
 

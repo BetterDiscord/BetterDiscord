@@ -50,6 +50,33 @@
   display: flex;
 }
 
+.bd-custom-css-page-scroller {
+  overflow: hidden !important;
+	scrollbar-gutter: unset;
+	display: flex;
+}
+
+.bd-custom-css-page-panel {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	padding: 0;
+	max-height: unset;
+}
+
+.bd-custom-css-page-full {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+}
+
+.bd-custom-css-page-full .editor-wrapper {
+	flex: 1 0 auto;
+}
+
 .editor {
   box-sizing: border-box;
   height: calc(100vh - 250px);

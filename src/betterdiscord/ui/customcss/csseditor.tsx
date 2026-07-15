@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useLayoutEffect, type Ref} from "react";
 import {t} from "@common/i18n";
 import Events from "@modules/emitter";
 import Settings from "@stores/settings";
@@ -8,7 +8,7 @@ import Editor, {type Control, type EditorRef} from "./editor";
 import {RotateCwIcon, SaveIcon, PencilIcon, ExternalLinkIcon} from "lucide-react";
 
 
-const {useState, useCallback, useEffect, forwardRef, useImperativeHandle, useRef} = React;
+const {useState, useCallback, useEffect, useImperativeHandle, useRef} = React;
 
 interface CssEditorProps {
     css: string;
@@ -18,6 +18,8 @@ interface CssEditorProps {
     onChange: (css: string) => void;
     openDetached?: (css: string) => void;
     id?: string;
+    ref?: Ref<CssEditorRef>;
+    isSettingsPage?: boolean;
 }
 
 export interface CssEditorRef {
@@ -26,7 +28,7 @@ export interface CssEditorRef {
     hasUnsavedChanges: boolean;
 }
 
-export default forwardRef(function CssEditor({
+export default function CssEditor({
     css,
     openNative,
     update,
@@ -34,7 +36,9 @@ export default forwardRef(function CssEditor({
     openDetached,
     onChange: notifyParent,
     id = "bd-customcss-editor",
-}: CssEditorProps, ref) {
+    ref,
+    isSettingsPage
+}: CssEditorProps) {
     const editorRef = useRef<EditorRef>(null);
     const [hasUnsavedChanges, setUnsaved] = useState(false);
 
@@ -72,6 +76,19 @@ export default forwardRef(function CssEditor({
         setUnsaved(false);
     }, [save]);
 
+    useLayoutEffect(() => {
+        if (!editorRef.current?.node) return;
+
+        const panel = editorRef.current.node.closest("[class*=panel]");
+        const scroller = editorRef.current.node.closest("[class*=scroller]");
+
+        if (!panel || !scroller) return;
+
+        panel.classList.add("bd-custom-css-page-panel");
+        scroller.classList.add("bd-custom-css-page-scroller");
+
+        editorRef.current.node.classList.add("bd-custom-css-page-full");
+    }, [isSettingsPage]);
 
     return <Editor
         ref={editorRef}
@@ -86,4 +103,4 @@ export default forwardRef(function CssEditor({
         ].filter(c => c) as Control[]}
         value={css}
     />;
-});
+};
