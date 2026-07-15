@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 import type {RequestCallback, RequestOptions} from "@common/types/ipc";
+import {isWebhookUrl} from "./webhook";
 
 
 const methods = ["get", "put", "post", "delete", "head"] as const;
@@ -11,6 +12,12 @@ const dataToClone: Array<keyof http.IncomingMessage> = ["statusCode", "statusMes
 type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
 
 const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {
+    // Checked per hop (makeRequest recurses on redirects) so a redirect into a webhook URL is caught too.
+    if (isWebhookUrl(url)) {
+        callback(new Error("Failed to fetch"));
+        return;
+    }
+
     const req = https.request(url, Object.assign({method: "GET"}, options), res => {
         if (redirectCodes.has(res.statusCode ?? 0) && res.headers.location) {
             const final = new URL(res.headers.location);
