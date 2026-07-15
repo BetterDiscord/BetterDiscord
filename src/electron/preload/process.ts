@@ -10,4 +10,24 @@ newProcess.versions.nodejs = newProcess.versions.node;
 delete newProcess.versions.node;
 newProcess.isWeb = true;
 
+
+const noop = () => {};
+
+newProcess.dlopen = noop;
+// @ts-expect-error this is the point
+newProcess.getBuiltinModule = noop;
+// @ts-expect-error this is the point
+newProcess.execve = noop;
+// @ts-expect-error this is the point
+newProcess.binding = noop;
+// @ts-expect-error this is the point
+newProcess._linkedBinding = noop;
+// @ts-expect-error this is the point
+newProcess.kill = noop;
+// @ts-expect-error this is the point
+newProcess.exit = noop;
+// @ts-expect-error this is the point
+newProcess.abort = noop;
+
+
 export default newProcess;

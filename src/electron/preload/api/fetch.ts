@@ -1,6 +1,7 @@
 import https from "https";
 import http from "http";
 import {hydrateReadableStream, dryReadableStream, type DriedRequest, type DriedResponse} from "@common/native-fetch";
+import {isWebhookUrl} from "./webhook";
 
 const redirectCodes = new Set([301, 302, 307, 308]);
 const bodylessStatusCodes = new Set([101, 204, 205, 304]);
@@ -44,6 +45,15 @@ export function nativeFetch({url, signal: dryAbortSignal, body: dryBody, ...init
     const timeout = ((t) => init.timeout === null || !isFinite(t) ? undefined : t)(init.timeout ?? 3000);
 
     async function execute(uri: string) {
+        // Mirror the renderer's former webhook block for BdApi.Net.fetch, which runs here over
+        // Node's https and does not inherit the origin/referrer of Discord.com which Discord
+        // uses to block requests to webhooks by default. Checked per hop so a redirect into a
+        // webhook URL is caught too.
+        if (isWebhookUrl(uri)) {
+            reject(new Error("Failed to fetch"));
+            return;
+        }
+
         const httpModule = uri.startsWith("http:") ? http : uri.startsWith("https:") ? https : null;
         if (!httpModule) {
             reject(new Error(`Unsupported protocol: ${uri.slice(0, uri.indexOf(":"))}:`));
