@@ -29,7 +29,7 @@ function parseProperty(raw: string) {
     return out;
 }
 
-export default new class ThemeManager extends AddonManager<Theme> {
+class ThemeManager extends AddonManager<Theme> {
     name = "ThemeManager";
     extension = ".theme.css";
     duplicatePattern = /\.theme\s?\([0-9]+\)\.css/;
@@ -92,4 +92,6 @@ export default new class ThemeManager extends AddonManager<Theme> {
         }
         return out;
     }
-};
+}
+
+export default new ThemeManager();
