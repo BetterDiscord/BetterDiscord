@@ -30,9 +30,9 @@ jobs:
           bun-version: latest
 
       - name: Prepare Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v6 # v7 is available but just released yesterday and may have issues with the npm registry
         with:
-          node-version: 20
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
