@@ -219,7 +219,7 @@ class UI {
      * @returns An utility object with small helpers
      */
     openFloatingWindow(window: FloatingWindowProps) {
-        if (typeof window.id !== "string") throw new Error("FLoating window requires id");
+        if (typeof window.id !== "string") throw new Error("Floating window requires id");
 
         FloatingWindows.open(window);
 

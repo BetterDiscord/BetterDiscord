@@ -2,7 +2,7 @@ import {dryReadableStream, hydrateReadableStream, type DriedAbortSignal, type Dr
 import Remote from "../polyfill/remote";
 
 const MAX_DEFAULT_REDIRECTS = 20;
-const DEFAULT_TIMEOUT = 5_000;
+
 const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD", "CONNECT", "TRACE"]);
 
 function dryAbortSignal(signal: AbortSignal): DriedAbortSignal {
@@ -74,7 +74,7 @@ export async function fetch(input: string | URL | Request, init?: NativeRequestI
         redirect: request.redirect,
         signal: request.signal ? dryAbortSignal(request.signal) : null,
 
-        timeout: init?.timeout ?? DEFAULT_TIMEOUT,
+        timeout: init?.timeout,
         maxRedirects: init?.maxRedirects ?? MAX_DEFAULT_REDIRECTS,
         rejectUnauthorized: init?.rejectUnauthorized ?? true
     });
