@@ -1,6 +1,6 @@
 {
     "name": "@betterdiscord/types",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "TypeScript type definitions for the BetterDiscord plugin API (BdApi).",
     "types": "index.d.ts",
     "files": [

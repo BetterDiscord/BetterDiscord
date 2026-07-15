@@ -7,6 +7,10 @@ on:
       - "@betterdiscord/types@*"
   # Allow manual publishing from the Actions tab.
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. 1.2.3)"
+        required: true
 
 jobs:
   publish:
@@ -36,6 +40,19 @@ jobs:
 
       - name: Generate types
         run: bun run generate-types
+
+      # The committed types/package.json version is a 0.0.0 placeholder;
+      # the published version comes from the tag or the manual run input.
+      - name: Set package version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            version="$INPUT_VERSION"
+          else
+            version="${GITHUB_REF_NAME#@betterdiscord/types@}"
+          fi
+          npm pkg set version="$version" --prefix ./dist/types
 
       - name: Publish to npm
         run: npm publish ./dist/types --provenance --access public

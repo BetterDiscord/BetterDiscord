@@ -11,7 +11,7 @@ the `window.BdApi` augmentation, and the `BetterDiscord` namespace available to 
 npm install --save-dev @betterdiscord/types
 ```
 
-The package declares peer type packages (`@types/react`, `@types/react-dom`,
+The package declares related type packages (`@types/react`, `@types/react-dom`,
 `@types/react-reconciler`) as dependencies, so they will be installed alongside it.
 
 ## Usage

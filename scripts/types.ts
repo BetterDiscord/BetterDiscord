@@ -31,6 +31,7 @@ async function buildTypes() {
         })]
     });
 
+    await rm(outDir, {recursive: true, force: true});
     await mkdir(outDir, {recursive: true});
     await bundle.write({
         file: `${outDir}/index.d.ts`,
