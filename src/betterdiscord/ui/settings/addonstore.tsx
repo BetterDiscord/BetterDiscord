@@ -18,6 +18,7 @@ import Logger from "@common/logger";
 import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react";
 import type {AddonType} from "@typed/addon";
 import {useStateFromStores} from "@ui/hooks";
+import {shallowEqual} from "fast-equals";
 
 const {useState, useMemo, useCallback} = React;
 
@@ -140,7 +141,9 @@ interface AddonStorePageProps {
 }
 
 export default function AddonStorePage({type}: AddonStorePageProps) {
-    const {error, addons, loading} = useStateFromStores(AddonStore, () => AddonStore.getState(), [], true);
+    const {error, addons, loading} = useStateFromStores(AddonStore, () => AddonStore.getState(), [], (a, b) => {
+        return a.loading === b.loading && a.error === b.error && shallowEqual(a.addons, b.addons);
+    });
 
     const [page, setPage] = useState(0);
 

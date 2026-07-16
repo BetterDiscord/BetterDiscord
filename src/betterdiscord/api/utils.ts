@@ -74,7 +74,8 @@ class Utils {
      * Builds a classname string from any number of arguments. This includes arrays and objects.
      * When given an array all values from the array are added to the list.
      * When given an object they keys are added as the classnames if the value is truthy.
-     * Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+     *
+     * Re-export of {@link https://www.npmjs.com/package/clsx}
      *
      * @param argument Anything that should be used to add classnames
      * @returns Joined classname

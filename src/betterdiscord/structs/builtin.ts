@@ -53,18 +53,22 @@ export default class BuiltinModule extends Store {
         });
     }
 
-    get(collection: string, category: string, id: string) {
-        if (arguments.length == 2) {
+    get<T>(id: string): T;
+    get<T>(category: string, id: string): T;
+    get<T>(collection: string, category: string, id: string): T;
+    get<T>(collection: string, category?: string, id?: string): T {
+        if (arguments.length === 2) {
             collection = this.collection;
             category = arguments[0];
             id = arguments[1];
         }
-        else if (arguments.length == 1) {
+        else if (arguments.length === 1) {
             collection = this.collection;
             category = this.category;
             id = arguments[0];
         }
-        return Settings.get(collection, category, id);
+
+        return Settings.get<T>(collection, category!, id!);
     }
 
     async enable() {

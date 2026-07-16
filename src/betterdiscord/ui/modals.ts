@@ -324,11 +324,6 @@ export default class Modals {
         Events.emit("open-modal", render, options);
         return options.modalKey;
     }
-
-    static closeUserSettingsModal() {
-        this.ModalActions.closeModal("USER_SETTINGS_MODAL_MODAL_KEY");
-    }
 }
-
 
 Modals.makeStack();

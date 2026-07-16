@@ -19,7 +19,6 @@ import SettingsTitle from "@ui/settings/title";
 import {debounce, findInTree} from "@common/utils";
 import RemoteAPI from "@polyfill/remote";
 import {PencilIcon} from "lucide-react";
-import Modals from "@ui/modals";
 import Toasts from "@stores/toasts";
 
 export default new class CustomCSS extends Builtin {
@@ -50,28 +49,7 @@ export default new class CustomCSS extends Builtin {
         });
     }
 
-    Page = () => {
-        const set = React.useContext(SettingsTitleContext);
-
-        return [
-            set(React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")})),
-            React.createElement(CSSEditor, {
-                css: this.savedCss,
-                save: this.saveCSS.bind(this),
-                update: this.insertCSS.bind(this),
-                openNative: () => {
-                    this.openNative();
-
-                    Modals.closeUserSettingsModal();
-                },
-                openDetached: this.openDetached.bind(this),
-                onChange: this.onChange.bind(this),
-                isSettingsPage: true
-            })
-        ];
-    };
-
-    async enabled() {
+    async initialize() {
         SettingsStore.registerPanel(this.id, t("Panels.customcss"), {
             order: 2,
             icon: PencilIcon,
@@ -85,7 +63,30 @@ export default new class CustomCSS extends Builtin {
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
         });
+    }
 
+    Page = () => {
+        const set = React.useContext(SettingsTitleContext);
+
+        return [
+            set(React.createElement(SettingsTitle, {text: t("CustomCSS.editorTitle")})),
+            React.createElement(CSSEditor, {
+                css: this.savedCss,
+                save: this.saveCSS.bind(this),
+                update: this.insertCSS.bind(this),
+                openNative: () => {
+                    this.openNative();
+
+                    Settings.closeUserSettingsModal();
+                },
+                openDetached: this.openDetached.bind(this),
+                onChange: this.onChange.bind(this),
+                isSettingsPage: true
+            })
+        ];
+    };
+
+    async enabled() {
         this.loadCSS();
         this.insertCSS(this.savedCss);
         this.watchContent();
@@ -197,7 +198,10 @@ export default new class CustomCSS extends Builtin {
             css: currentCSS,
             save: this.saveCSS.bind(this),
             update: this.insertCSS.bind(this),
-            openNative: this.openNative.bind(this),
+            openNative: () => {
+                this.openNative();
+                FloatingWindows.close("floating-editor-window");
+            },
             onChange: debounce(this.onChange.bind(this), 500),
             openDetached: () => {
                 this.openExternal();
@@ -232,7 +236,7 @@ export default new class CustomCSS extends Builtin {
         this.isDetached = true;
         this.emitChange();
 
-        Modals.closeUserSettingsModal();
+        Settings.closeUserSettingsModal();
     }
 
     openExternal() {

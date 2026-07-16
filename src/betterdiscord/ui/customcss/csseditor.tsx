@@ -77,17 +77,25 @@ export default function CssEditor({
     }, [save]);
 
     useLayoutEffect(() => {
-        if (!editorRef.current?.node) return;
+        const node = editorRef.current?.node;
 
-        const panel = editorRef.current.node.closest("[class*=panel]");
-        const scroller = editorRef.current.node.closest("[class*=scroller]");
+        if (!node) return;
+
+        const panel = node.closest("[class*=panel]");
+        const scroller = node.closest("[class*=scroller]");
 
         if (!panel || !scroller) return;
 
         panel.classList.add("bd-custom-css-page-panel");
         scroller.classList.add("bd-custom-css-page-scroller");
 
-        editorRef.current.node.classList.add("bd-custom-css-page-full");
+        node.classList.add("bd-custom-css-page-full");
+
+        return () => {
+            panel.classList.remove("bd-custom-css-page-panel");
+            panel.classList.remove("bd-custom-css-page-scroller");
+            node.classList.remove("bd-custom-css-page-full");
+        };
     }, [isSettingsPage]);
 
     return <Editor

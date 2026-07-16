@@ -45,8 +45,8 @@ const DefaultSettings = [
         shown: false,
         settings: [
             {type: "switch", id: "customcss", value: true},
-            {type: "switch", id: "liveUpdate", value: true},
-            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}]},
+            {type: "switch", id: "liveUpdate", value: true, enableWith: "customcss"},
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}], enableWith: "customcss"},
         ]
     },
     {

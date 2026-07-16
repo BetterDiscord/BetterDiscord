@@ -349,7 +349,13 @@ export class Addon {
 }
 
 const addonStore = new class AddonStore extends Store {
-    private hasDoneFirstRequest = false;
+    public hasDoneFirstRequest = false;
+
+    #promise!: Promise<void>;
+
+    public get promise() {
+        return this.#promise;
+    }
 
     public initialize() {
         this._cache = (JsonStore.get("addon-store") as {addons: Record<string, BdWebAddon>; known: string[]; version: string;}) || {addons: {}, known: [], version: ""};
@@ -364,8 +370,24 @@ const addonStore = new class AddonStore extends Store {
 
         // window.AddonStore = this;
 
-        Settings.on("settings", "store", "bdAddonStore", (enabled) => {
-            if (enabled) {
+        const isEnabled = () => (
+            Settings.get<boolean>("settings", "store", "bdAddonStore")
+            || Settings.get<boolean>("settings", "addons", "checkForUpdates")
+        );
+
+        let wasEnabled = isEnabled();
+
+        const handle = () => {
+            const isNowEnabled = isEnabled();
+
+            if (wasEnabled === isNowEnabled) {
+                wasEnabled = isNowEnabled;
+                return;
+            }
+
+            wasEnabled = isNowEnabled;
+
+            if (isNowEnabled) {
                 this._useCache();
                 this.requestAddons(!this.hasDoneFirstRequest);
                 this.hasDoneFirstRequest = true;
@@ -374,12 +396,20 @@ const addonStore = new class AddonStore extends Store {
 
             if (this._setTimeout) clearTimeout(this._setTimeout);
             this._setTimeout = null;
-        });
 
-        if (Settings.get<boolean>("settings", "store", "bdAddonStore")) {
+            this.#promise = Promise.resolve();
+        };
+
+        Settings.on("settings", "store", "bdAddonStore", handle);
+        Settings.on("settings", "addons", "checkForUpdates", handle);
+
+        if (wasEnabled) {
             this._useCache();
             this.requestAddons(true);
             this.hasDoneFirstRequest = true;
+        }
+        else {
+            this.#promise = Promise.resolve();
         }
     }
 
@@ -417,13 +447,15 @@ const addonStore = new class AddonStore extends Store {
                     "Cache-Control": "no-cache",
                     "Pragma": "no-cache"
                 },
-                timeout: null
+                // timeout: 10_000
             })
                 .then(x => {
                     res = x;
                     return x.json();
                 })
                 .then((addon: BdWebAddon) => {
+                    if (!res!.ok) throw new Error((addon as unknown as {title: string;}).title);
+
                     this._singleAddonCache[addon.name] = this._singleAddonCache[idOrName];
                     this._singleAddonCache[addon.id] = this._singleAddonCache[idOrName];
 
@@ -456,7 +488,7 @@ const addonStore = new class AddonStore extends Store {
             if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
                 const addon = Addon.cache[key];
 
-                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
+                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.filename.toLowerCase() === decoded) return addon;
             }
         }
     }
@@ -497,7 +529,16 @@ const addonStore = new class AddonStore extends Store {
     };
 
     async requestAddons(firstRun = false) {
+        if (this.loading) {
+            Logger.debug("AddonStore", "Requested all addons but was already requesting them");
+            return this.#promise;
+        }
+
         Logger.debug("AddonStore", "Requesting all addons");
+
+        const {resolve, promise} = Promise.withResolvers<void>();
+
+        this.#promise = promise;
 
         if (!(firstRun && Object.keys(this._cache.addons).length)) {
             this.addons.length = 0;
@@ -628,10 +669,21 @@ const addonStore = new class AddonStore extends Store {
                     }
                 }
 
-                this._setTimeout = window.setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
+                if (Settings.get<boolean>("settings", "store", "bdAddonStore")) {
+                    const hours = Settings.get<number>("addons", "updateInterval");
+
+                    this._setTimeout = window.setTimeout(() => this.requestAddons(), hours * minutes * 60 * 1000);
+                }
+
+                resolve();
             });
     }
 
+    async updaterRequestAddons() {
+        await this.requestAddons(this.hasDoneFirstRequest);
+
+        this.hasDoneFirstRequest = true;
+    }
 
     private _setTimeout: number | null = null;
 

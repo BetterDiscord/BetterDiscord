@@ -280,8 +280,8 @@ export default new class SettingsManager extends Store {
         return this.onSettingChange(collection, category, id as string, value);
     }
 
-    on(collection: string, category: string, identifier: string, callback: (val: unknown) => void) {
-        const handler = (col: string, cat: string, id: string, value: unknown) => {
+    on<T>(collection: string, category: string, identifier: string, callback: (val: T) => void) {
+        const handler = (col: string, cat: string, id: string, value: T) => {
             if (col !== collection || cat !== category || id !== identifier) return;
             callback(value);
         };
