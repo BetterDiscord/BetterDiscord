@@ -177,7 +177,7 @@ export default new class SettingsManager extends Store {
                 }
 
                 // If the setting doesn't use enableWith XOR disableWith then move on
-                if (setting.hasOwnProperty("disabled")) continue;
+                if (Object.hasOwn(setting, "disabled")) continue;
                 if (!setting.enableWith && !setting.disableWith) continue;
                 const pathString = setting.enableWith ?? setting.disableWith;
                 const path = this.getPath(pathString!.split("."), collection.id, category.id);

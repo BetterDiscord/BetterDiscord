@@ -5,7 +5,7 @@ import Toasts, {type ToastOptions} from "@stores/toasts";
 import Notices, {type NoticeOptions} from "@ui/notices";
 import Tooltip, {type TooltipOptions} from "@ui/tooltip";
 import Group, {buildSetting, type ButtonSetting, type CustomSetting, type GroupOnChange} from "@ui/settings/group";
-import React, {type ReactElement} from "react";
+import React, {useState, type ReactElement} from "react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
 import NotificationUI, {type Notification} from "@ui/notifications";
@@ -25,6 +25,87 @@ export interface SettingsPanelProps {
     getDrawerState?: (categoryId: string, defaultShown: boolean) => boolean;
     /** Optionally used to save drawer states */
     onDrawerToggle?: (categoryId: string, shown: boolean) => void;
+}
+
+function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}: SettingsPanelProps) {
+    const [switchStates, setSwitchStates] = useState(() => {
+        const state: Record<string, boolean | Record<string, boolean>> = {};
+
+        for (let index = 0; index < settings.length; index++) {
+            const setting = settings[index];
+
+            if (setting.type === "switch") state[setting.id] = setting.value;
+            if (setting.type === "category") {
+                const parent: Record<string, boolean> = state[setting.id] = {};
+
+                for (let i = 0; i < setting.settings.length; i++) {
+                    const element = setting.settings[i];
+
+                    if (element.type === "switch") parent[element.id] = element.value;
+                }
+            }
+        }
+
+        return state;
+    });
+
+    return React.createElement(ErrorBoundary, {
+        id: "buildSettingsPanel",
+        name: "BdApi.UI"
+    }, settings.map((setting) => {
+        if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
+
+        if (setting.type === "category") {
+            const shownByDefault = Object.hasOwn(setting, "shown") ? setting.shown : true;
+
+            return React.createElement(Group, {
+                ...setting,
+                settings: setting.settings.map((x) => {
+                    let disabled = false;
+                    if (typeof x.disabled === "boolean") disabled = x.disabled;
+                    if (x.enableWith) disabled = (switchStates[setting.id] as Record<string, boolean>)[x.enableWith];
+                    if (x.disableWith) disabled = !(switchStates[setting.id] as Record<string, boolean>)[x.disableWith];
+
+                    return {
+                        ...x,
+                        onChange(value: any) {
+                            if (x.type === "switch") {
+                                setSwitchStates(v => ({
+                                    ...v,
+                                    [setting.id]: {
+                                        ...v[setting.id] as Record<string, boolean>,
+                                        [x.id]: value
+                                    }
+                                }));
+                            }
+
+                            x.onChange?.(value as never);
+                        },
+                        disabled
+                    };
+                }),
+                onChange: onChange as GroupOnChange,
+                onDrawerToggle: (state: any) => onDrawerToggle?.(setting.id, state),
+                shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
+            });
+        }
+
+        let disabled = false;
+        if (typeof setting.disabled === "boolean") disabled = setting.disabled;
+        if (setting.enableWith) disabled = !switchStates[setting.enableWith];
+        if (setting.disableWith) disabled = !!switchStates[setting.disableWith];
+
+        return buildSetting({
+            ...setting,
+            disabled,
+            onChange: (value: any) => {
+                if (setting.type === "switch") setSwitchStates(v => ({...v, [setting.id]: value}));
+
+                setting?.onChange?.(value as never);
+                onChange?.(null, setting.id, value);
+            }
+        });
+    }));
 }
 
 /**
@@ -185,31 +266,7 @@ class UI {
     buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}: SettingsPanelProps) {
         if (!settings?.length) throw new Error("No settings provided!");
 
-        return React.createElement(ErrorBoundary, {
-            id: "buildSettingsPanel",
-            name: "BdApi.UI"
-        }, settings.map((setting) => {
-            if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
-
-            if (setting.type === "category") {
-                const shownByDefault = setting.hasOwnProperty("shown") ? setting.shown : true;
-
-                return React.createElement(Group, {
-                    ...setting,
-                    onChange: onChange as GroupOnChange,
-                    onDrawerToggle: (state: any) => onDrawerToggle?.(setting.id, state),
-                    shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
-                });
-            }
-
-            return buildSetting({
-                ...setting,
-                onChange: (value: any) => {
-                    setting?.onChange?.(value as never);
-                    onChange?.(null, setting.id, value);
-                }
-            });
-        }));
+        return React.createElement(SettingsBuilderUI, {settings, onChange, onDrawerToggle, getDrawerState});
     }
 
     /**
