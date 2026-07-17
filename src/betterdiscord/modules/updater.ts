@@ -260,7 +260,6 @@ export class AddonUpdater {
         if (this.pending.includes(filename)) return;
 
         const info = AddonStore.getAddon(path.basename(filename));
-        Logger.debug("AddonUpdater", {filename, currentVersion, info});
         if (!info) return;
 
         let hasUpdate = info.version > currentVersion;
@@ -268,8 +267,6 @@ export class AddonUpdater {
         if (semverRegex.test(info.version) && semverRegex.test(currentVersion)) {
             hasUpdate = semverComparator(currentVersion, info.version) > 0;
         }
-
-        Logger.debug("AddonUpdater", {hasUpdate, filename, currentVersion, info});
 
         if (!hasUpdate) return;
 

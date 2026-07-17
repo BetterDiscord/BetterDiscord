@@ -61,23 +61,25 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
             return React.createElement(Group, {
                 ...setting,
                 settings: setting.settings.map((x) => {
+                    const subgroup = switchStates[setting.id] as Record<string, boolean>;
+
                     let disabled = false;
                     if (typeof x.disabled === "boolean") disabled = x.disabled;
-                    if (x.enableWith) disabled = (switchStates[setting.id] as Record<string, boolean>)[x.enableWith];
-                    if (x.disableWith) disabled = !(switchStates[setting.id] as Record<string, boolean>)[x.disableWith];
+                    if (x.enableWith) disabled = subgroup[x.enableWith];
+                    if (x.disableWith) disabled = !subgroup[x.disableWith];
+
+                    if (x.type !== "switch") return {...x, disabled};
 
                     return {
                         ...x,
                         onChange(value: any) {
-                            if (x.type === "switch") {
-                                setSwitchStates(v => ({
-                                    ...v,
-                                    [setting.id]: {
-                                        ...v[setting.id] as Record<string, boolean>,
-                                        [x.id]: value
-                                    }
-                                }));
-                            }
+                            setSwitchStates(v => ({
+                                ...v,
+                                [setting.id]: {
+                                    ...v[setting.id] as Record<string, boolean>,
+                                    [x.id]: value
+                                }
+                            }));
 
                             x.onChange?.(value as never);
                         },
@@ -95,11 +97,13 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
         if (setting.enableWith) disabled = !switchStates[setting.enableWith];
         if (setting.disableWith) disabled = !!switchStates[setting.disableWith];
 
+        if (setting.type !== "switch") return buildSetting({...setting, disabled});
+
         return buildSetting({
             ...setting,
             disabled,
             onChange: (value: any) => {
-                if (setting.type === "switch") setSwitchStates(v => ({...v, [setting.id]: value}));
+                setSwitchStates(v => ({...v, [setting.id]: value}));
 
                 setting?.onChange?.(value as never);
                 onChange?.(null, setting.id, value);
