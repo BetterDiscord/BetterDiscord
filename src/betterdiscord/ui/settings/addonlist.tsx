@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, type ChangeEvent, type MouseEvent, type ReactNode} from "react";
+import React, {useState, useCallback, useMemo, type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";

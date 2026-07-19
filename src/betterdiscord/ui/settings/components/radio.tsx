@@ -1,7 +1,6 @@
 import React, {useMemo} from "react";
 import {useItemProps, type BaseSettingProps} from "./utils";
 
-
 export interface RadioOption {
     name: string;
     value: any;
@@ -14,7 +13,7 @@ interface BaseRadioProps {
     options: RadioOption[];
 }
 
-export type RadioProps = BaseRadioProps & BaseSettingProps<RadioOption[]>;
+export type RadioProps = BaseRadioProps & BaseSettingProps<any>;
 
 function RadioIndicator({checked}: {checked: boolean;}) {
     return <svg className="bd-radio-indicator" width="24" height="24" viewBox="0 0 24 24">

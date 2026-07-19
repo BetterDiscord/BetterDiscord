@@ -1,8 +1,9 @@
-import React, {useEffect, useEffectEvent, useRef, useState, type MouseEvent} from "react";
+import React, {useCallback, useEffect, useRef, useState, type MouseEvent} from "react";
 
 import Button from "@ui/base/button";
 import {KeyboardIcon, XIcon} from "lucide-react";
 import {useItemProps, type BaseSettingProps} from "./utils";
+import {useCallbackRef} from "@ui/hooks";
 
 interface BaseKeybindProps {
     onChange?(newValue: string[]): void;
@@ -20,7 +21,7 @@ export default function Keybind(props: KeybindProps) {
     const [isRecording, setRecording] = useState(false);
     const accum = useRef<string[]>([]);
 
-    const dispatch = useEffectEvent(() => {
+    const dispatch = useCallback(() => {
         setRecording(false);
 
         try {
@@ -29,9 +30,9 @@ export default function Keybind(props: KeybindProps) {
         finally {
             accum.current.length = 0;
         }
-    });
+    }, [setState]);
 
-    const keyDownHandler = useEffectEvent((event: KeyboardEvent) => {
+    const keyDownHandler = useCallbackRef((event: KeyboardEvent) => {
         if (!isRecording) return;
 
         event.stopImmediatePropagation();
@@ -45,7 +46,7 @@ export default function Keybind(props: KeybindProps) {
         if (accum.current.length >= max) dispatch();
     });
 
-    const keyUpHandler = useEffectEvent((event: KeyboardEvent) => {
+    const keyUpHandler = useCallbackRef((event: KeyboardEvent) => {
         if (!isRecording) return;
 
         event.stopImmediatePropagation();
@@ -63,24 +64,24 @@ export default function Keybind(props: KeybindProps) {
             window.removeEventListener("keydown", keyDownHandler, true);
             window.removeEventListener("keyup", keyUpHandler, true);
         };
-    }, []);
+    }, [keyDownHandler, keyUpHandler]);
 
-    const clearKeybind = useEffectEvent((event: MouseEvent) => {
+    const clearKeybind = useCallback((event: MouseEvent) => {
         event.stopPropagation();
         event.preventDefault();
 
         if (disabled) return;
 
         dispatch();
-    });
+    }, [disabled, dispatch]);
 
-    const onClick = useEffectEvent((e: MouseEvent) => {
+    const onClick = useCallback((e: MouseEvent) => {
         if (disabled) return;
         if (e.currentTarget?.className?.includes?.("bd-keybind-clear") || e.currentTarget?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
 
         accum.current.length = 0;
         setRecording(v => !v);
-    });
+    }, [disabled, clearKeybind]);
 
     const displayValue = !state.length ? "" : state.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
     return (

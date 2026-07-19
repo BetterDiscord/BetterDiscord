@@ -20,7 +20,7 @@ interface CheckboxPropsBase {
 export type CheckboxProps = CheckboxPropsBase & BaseSettingProps<boolean>;
 
 export default function CheckBox(props: CheckboxProps) {
-    const {state, setState: toggle, disabled} = useItemProps<boolean, React.MouseEvent>(props, (_, state) => !state);
+    const {state, setState: toggle, disabled} = useItemProps<boolean, React.MouseEvent>(props, (_, bool) => !bool);
 
     return (
         <Flex

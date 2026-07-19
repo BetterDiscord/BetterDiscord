@@ -1,7 +1,8 @@
-import React, {useEffectEvent, useLayoutEffect, useRef, useState} from "react";
+import React, {useLayoutEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
 import {useItemProps, type BaseSettingProps} from "./utils";
+import {useCallbackRef} from "@ui/hooks";
 
 export interface SelectOption {
     id?: string;
@@ -30,7 +31,7 @@ export default function Select(props: SelectProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const change = useEffectEvent((val: any) => {
+    const change = useCallbackRef((val: any) => {
         setState(val);
         optionsRef.current?.togglePopover(false);
     });
@@ -88,6 +89,7 @@ export default function Select(props: SelectProps) {
                         ref={selected.value == opt.value ? selectedRef : null}
                         className={clsx("bd-select-option", selected.value == opt.value && "selected")}
                         role="option"
+
                         onClick={() => change(opt.value)}
                     >
                         {opt.label}

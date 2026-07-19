@@ -48,14 +48,15 @@ interface ColorpickerPropsBase {
     onChange?(newValue: HexString): void;
     colors?: ColorType[];
     disabled?: boolean;
+    defaultColor?: ColorType;
 }
 
 export type ColorpickerProps = ColorpickerPropsBase & BaseSettingProps<ColorType>;
 
 export default function ColorPicker(props: ColorpickerProps) {
-    const {colors = defaultColors, defaultValue} = props;
+    const {colors = defaultColors, defaultColor} = props;
 
-    const {state, setState, disabled, original} = useItemProps<ColorType, ColorType | React.ChangeEvent<HTMLInputElement>>(props, (e) => {
+    const {state, setState, disabled} = useItemProps<ColorType, ColorType | React.ChangeEvent<HTMLInputElement>>(props, (e) => {
         if (typeof e === "object") return resolveColor(e.currentTarget.value as ColorType);
         return resolveColor(e);
     });
@@ -65,11 +66,11 @@ export default function ColorPicker(props: ColorpickerProps) {
 
     return <div className={`bd-color-picker-container${disabled ? " bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
-            {defaultValue && <DiscordModules.Tooltip text="Default" position="bottom">
+            {defaultColor && <DiscordModules.Tooltip text="Default" position="bottom">
                 {tooltipProps => (
-                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => setState(original)}>
-                        {intValue === resolveColor(defaultValue, false)
-                            ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultValue, true))} />
+                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultColor)}} onClick={() => setState(defaultColor)}>
+                        {intValue === resolveColor(defaultColor, false)
+                            ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultColor, true))} />
                             : null
                         }
                     </div>

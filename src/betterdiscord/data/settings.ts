@@ -152,7 +152,7 @@ if (config.isDevelopment) {
                     stickToMarkers: false
                 },
                 {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
-                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
+                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultColor: "#ffffff"},
             ]
         } as SettingsCategory
     );

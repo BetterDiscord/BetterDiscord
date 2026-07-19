@@ -28,7 +28,7 @@
         "@react-spring/web": "^10.0.1",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",
-        "@types/react": "19.2",
+        "@types/react": "19.1",
         "@types/react-dom": "^19.1.2",
         "@types/react-reconciler": "^0.32.0",
         "bun-style-loader": "^0.4.0",
@@ -36,7 +36,6 @@
         "dpdm": "^3.14.0",
         "electron": "^36.2.1",
         "esbuild": "^0.24.2",
-        "eslint": "^9.19.0",
         "eslint-plugin-react": "^7.37.4",
         "eslint-plugin-react-hooks": "^7.1.1",
         "globals": "^15.14.0",
@@ -49,6 +48,7 @@
     "dependencies": {
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
+        "eslint": "^9.19.0",
         "fast-equals": "^5.2.2",
         "lucide-react": "^0.474.0",
         "monaco-editor": "0.52.2"

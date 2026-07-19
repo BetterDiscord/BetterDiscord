@@ -14,7 +14,7 @@ export type TextboxProps = BaseTextboxProps & BaseSettingProps<string>;
 export default function Textbox(props: TextboxProps) {
     const {maxLength, placeholder, onKeyDown} = props;
 
-    const {state, setState, disabled} = useItemProps<string, ChangeEvent<HTMLInputElement>>(props);
+    const {state, setState, disabled} = useItemProps<string, ChangeEvent<HTMLInputElement>>(props, e => e.currentTarget.value);
 
     return (
         <input

@@ -46,7 +46,7 @@ export default function Slider(props: SliderProps) {
         inputRef.current!.value = newValue.toString();
 
         setState(inputRef.current!.valueAsNumber);
-    }, [max, min, inputRef]);
+    }, [max, min, setState]);
 
     return <div className={`bd-slider-wrap ${disabled ? "bd-slider-disabled" : ""} ${markers.length > 0 ? "bd-slider-markers" : ""}`}>
         <input onChange={setState} type="range" className="bd-slider-input" min={min} max={max} step={step} value={state} disabled={disabled} ref={inputRef} />

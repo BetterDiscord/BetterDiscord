@@ -73,16 +73,16 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
                     return {
                         ...x,
                         defaultValue: value,
-                        onChange(value: any) {
+                        onChange(newValue: any) {
                             setSwitchStates(v => ({
                                 ...v,
                                 [setting.id]: {
                                     ...v[setting.id] as Record<string, boolean>,
-                                    [x.id]: value
+                                    [x.id]: newValue
                                 }
                             }));
 
-                            x.onChange?.(value as never);
+                            x.onChange?.(newValue as never);
                         },
                         disabled
                     };
@@ -100,19 +100,19 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
 
         const {value, ...x} = setting;
 
-        // @ts-expect-error
+        // @ts-expect-error ts is annoying
         if (setting.type !== "switch") return buildSetting({...x, defaultValue: value, disabled});
 
-        // @ts-expect-error
+        // @ts-expect-error ts is annoying
         return buildSetting({
             ...x,
             disabled,
             defaultValue: value,
-            onChange: (value: any) => {
-                setSwitchStates(v => ({...v, [setting.id]: value}));
+            onChange: (newValue: any) => {
+                setSwitchStates(v => ({...v, [setting.id]: newValue}));
 
-                setting?.onChange?.(value as never);
-                onChange?.(null, setting.id, value);
+                setting?.onChange?.(newValue as never);
+                onChange?.(null, setting.id, newValue);
             }
         });
     }));

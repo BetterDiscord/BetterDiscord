@@ -29,7 +29,7 @@ export default function Search(props: SearchProps) {
         setState("");
 
         input.current?.focus();
-    }, [disabled]);
+    }, [disabled, setState]);
 
     useEffect(() => {
         if (!disabled) input.current?.focus();

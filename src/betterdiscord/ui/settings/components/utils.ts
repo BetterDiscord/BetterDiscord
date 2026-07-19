@@ -1,5 +1,6 @@
 import {useSettingsContext} from "@ui/contexts";
-import {useEffectEvent, useState} from "react";
+import {useCallbackRef} from "@ui/hooks";
+import {useState} from "react";
 
 export type BaseSettingProps<T> = ({
     value: T;
@@ -26,7 +27,7 @@ export function useItemProps<T, V extends any = T>(props: BaseSettingProps<T>, c
 
     const [original] = useState(() => (ctx.fail ? usesDefaultValue ? props.defaultValue : props.value : ctx.value) as T);
 
-    const change = useEffectEvent<HandledValue<T, V>["setState"]>((value, stateOnly) => {
+    const change = useCallbackRef<HandledValue<T, V>["setState"]>((value, stateOnly) => {
         if (ctx.disabled || props.disabled) return;
 
         const out = convertValue(value, ctx.fail ? (usesDefaultValue ? internalState : props.value) as T : ctx.value);
@@ -36,17 +37,21 @@ export function useItemProps<T, V extends any = T>(props: BaseSettingProps<T>, c
         setState(out);
     });
 
-    if (!ctx.fail) return {
-        original: original,
-        disabled: ctx.disabled,
-        state: ctx.value,
-        setState: change
-    };
+    if (!ctx.fail) {
+        return {
+            original: original,
+            disabled: ctx.disabled,
+            state: ctx.value,
+
+            setState: change
+        };
+    }
 
     return {
         original: original,
         disabled: props.disabled,
         state: (usesDefaultValue ? internalState : props.value) as T,
+
         setState: change
     };
 }

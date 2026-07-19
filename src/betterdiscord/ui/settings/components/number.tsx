@@ -1,4 +1,4 @@
-import React, {useEffectEvent} from "react";
+import React, {useCallback} from "react";
 import Button from "@ui/base/button";
 import {Plus, Minus} from "lucide-react";
 import {useItemProps, type BaseSettingProps} from "./utils";
@@ -19,23 +19,23 @@ export default function Number(props: NumberInputProps) {
         return newValue;
     });
 
-    const increment = useEffectEvent(() => {
+    const increment = useCallback(() => {
         const currentValue = typeof state === "number" ? state : parseFloat(state);
         const incrementedValue = currentValue + step;
 
         if (max !== undefined && incrementedValue > max) return;
 
         setState(incrementedValue);
-    });
+    }, [max, setState, state, step]);
 
-    const decrement = useEffectEvent(() => {
+    const decrement = useCallback(() => {
         const currentValue = typeof state === "number" ? state : parseFloat(state);
-        const incrementedValue = currentValue - step;
+        const decrementedValue = currentValue - step;
 
-        if (max !== undefined && incrementedValue < max) return;
+        if (max !== undefined && decrementedValue < max) return;
 
-        setState(incrementedValue);
-    });
+        setState(decrementedValue);
+    }, [state, step, max, setState]);
 
     return (
         <div className={`bd-number-input-wrapper${disabled ? " bd-number-input-disabled" : ""}`}>

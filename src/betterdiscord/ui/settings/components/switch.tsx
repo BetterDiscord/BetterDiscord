@@ -12,7 +12,7 @@ interface SwitchPropsBase {
 export type SwitchProps = SwitchPropsBase & BaseSettingProps<boolean>;
 
 export default function Switch(props: SwitchProps) {
-    const {state, setState: toggle, disabled} = useItemProps<boolean, unknown>(props, (_, state) => !state);
+    const {state, setState: toggle, disabled} = useItemProps<boolean, unknown>(props, (_, bool) => !bool);
 
     return (
         <div
