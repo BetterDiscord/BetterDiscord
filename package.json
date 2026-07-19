@@ -17,7 +17,10 @@
         "dist": "bun run build:production && bun scripts/pack.js",
         "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
         "translations": "bun -r dotenv/config scripts/translations.js",
-        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js"
+        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js",
+        "typecheck": "tsc",
+        "generate-types": "bun scripts/types",
+        "publish-types": "bun run generate-types && npm publish ./dist/types"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
@@ -37,6 +40,8 @@
         "eslint-plugin-react": "^7.37.4",
         "eslint-plugin-react-hooks": "^5.2.0-canary-9ff42a87-20250130",
         "globals": "^15.14.0",
+        "rollup": "^4.60.1",
+        "rollup-plugin-dts": "^6.4.1",
         "stylelint": "^14.16.1",
         "stylelint-config-standard": "^24.0.0",
         "typescript-eslint": "^8.22.0"

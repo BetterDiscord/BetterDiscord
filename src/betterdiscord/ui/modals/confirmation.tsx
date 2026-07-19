@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 
 import Root from "./root";
@@ -8,25 +8,36 @@ import Content from "./content";
 
 import Text from "../base/text";
 import Button from "../base/button";
-import type {PropsWithChildren} from "react";
 
 const {useRef, useEffect, useLayoutEffect} = React;
 
-
-export type ConfirmationModalOptions = PropsWithChildren<{
-    onClose?(): void;
-    onConfirm?(): void;
-    onCancel?(): void;
-    onCloseCallback?(): void;
+export interface ConfirmationModalOptions {
     transitionState?: number;
+    /** A callback to run when exiting the modal */
+    onClose?(): void;
+    /** A callback to run when clicking the submit button */
+    onConfirm?(): void;
+    /** A callback to run when clicking the cancel button */
+    onCancel?(): void;
+    /** Called immediately on render */
+    onCloseCallback?(): void;
+    /** The size of the modal */
     size?: typeof Root.Sizes[keyof typeof Root.Sizes];
+    /** Classes to apply to the modal */
     className?: string;
+    /** Text to show at the top of the modal */
     header?: string;
+    /** Text for the confirmation/submit button */
     confirmText?: string;
+    /** Text for the cancel button */
     cancelText?: string | null;
+    /** Whether the main button should be red or not */
     danger?: boolean;
+    /** A unique key for the modal */
     key?: string | number;
-}>;
+    /** The contents of the modal */
+    children?: React.ReactNode;
+};
 
 export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = t("Modals.cancel"), confirmText = t("Modals.okay")}: ConfirmationModalOptions) {
 

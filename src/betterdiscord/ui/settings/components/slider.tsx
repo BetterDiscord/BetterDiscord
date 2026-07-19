@@ -1,6 +1,5 @@
-import React from "@modules/react";
+import React, {type ChangeEvent, type MouseEvent} from "react";
 import {none, SettingsContext} from "@ui/contexts";
-import type {ChangeEvent, MouseEvent} from "react";
 
 const {useState, useCallback, useMemo, useRef, useContext} = React;
 
@@ -21,7 +20,8 @@ export interface SliderProps {
     markers?: Array<number | SliderMarker>;
 }
 
-export default function Slider({value: initialValue, min, max, step, onChange, disabled, units = "", markers = []}: SliderProps) {
+export default function Slider(props: SliderProps) {
+    const {value: initialValue, min, max, step, onChange, disabled, units = "", markers = []} = props;
     const [internalValue, setValue] = useState(initialValue);
     const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
 
@@ -81,7 +81,7 @@ export default function Slider({value: initialValue, min, max, step, onChange, d
 
 
 
-/**
+/*
  * label offset left:
  *
  * value - min

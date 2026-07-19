@@ -25,7 +25,6 @@ import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
-// import NotificationUI from "@ui/notifications";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 import {allModulesLoaded, getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
@@ -49,9 +48,6 @@ export default new class Core {
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
-        Logger.log("Startup", "Initializing AddonStore");
-        AddonStore.initialize();
-
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
@@ -59,14 +55,11 @@ export default new class Core {
         Settings.initialize();
         SettingsRenderer.initialize();
 
-        Logger.log("Startup", "Initializing DOMManager");
-        DOMManager.initialize();
+        Logger.log("Startup", "Initializing AddonStore");
+        AddonStore.initialize();
 
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
-
-        // Logger.log("Startup", "Initializing NotificationUI");
-        // NotificationUI.initialize();
 
         Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
@@ -87,11 +80,11 @@ export default new class Core {
 
         Logger.log("Startup", "Loading Plugins");
         PluginManager.initialize();
-        PluginManager.loadAddons("connection");
+        PluginManager.startAddons("connection");
 
         Logger.log("Startup", "Loading Themes");
         ThemeManager.initialize();
-        ThemeManager.loadAddons();
+        ThemeManager.startAddons();
 
         Logger.log("Startup", "Initializing Updater");
         Updater.initialize();
@@ -105,7 +98,7 @@ export default new class Core {
             JsonStore.set("misc", "version", Config.get("version"));
         }
 
-        allModulesLoaded.then(() => PluginManager.loadAddons("idle"));
+        allModulesLoaded.then(() => PluginManager.startAddons("idle"));
     }
 
     waitForConnection() {

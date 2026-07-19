@@ -1,5 +1,5 @@
-import {ReactDOM} from "@modules/react";
-import Button, {type ButtonProps, Colors, Looks} from "@ui/base/button";
+import ReactDOM from "@modules/reactdom";
+import Button, {type ButtonProps, ButtonColors, ButtonLooks} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";
 import Text from "@ui/base/text";
@@ -13,7 +13,6 @@ import ErrorBoundary from "@ui/errorboundary";
 
 const spring = DiscordModules.ReactSpring;
 
-// TODO: let arven fix this
 export type NotificationType = "warning" | "error" | "info" | "success";
 
 interface ButtonActions extends ButtonProps {
@@ -23,18 +22,25 @@ interface ButtonActions extends ButtonProps {
 }
 
 export interface Notification {
+    /** A unique id for the notification, will not be shown if another notification with the same id is already being shown */
     id: string;
+    /** The title of the notification */
     title?: string;
+    /** The content of the notification */
     content?: string | ReactNode;
+    /** The type of the notification which changes the color and icon */
     type?: NotificationType;
+    /** How long the notification should be shown in milliseconds */
     duration?: number;
+    /** An array of button actions to add to the notification */
     actions?: ButtonActions[];
+    /** A React component to use as a custom icon for the notification */
+    icon?: React.ComponentType<any>;
 
+    /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
 
-    onClick?(): void;
-
-    icon?: React.ComponentType<any>;
+    [key: symbol]: boolean;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -85,7 +91,7 @@ class NotificationUI {
             this.upsertNotification(notificationData!);
         }
 
-        const kSelf = Reflect.ownKeys(notificationData!).at(-1);
+        const kSelf = Reflect.ownKeys(notificationData!).at(-1) as symbol;
 
         return {
             id: notificationData!.id,
@@ -151,6 +157,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
 
     const [isPaused, setIsPaused] = React.useState(false);
 
+    // @ts-expect-error Discord may use a different version of react-spring
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
@@ -161,7 +168,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
                 handleClose();
             }
         },
-    });
+    }) as {width: string;};
 
     const handleClose = () => {
         NotificationUIInstance.hide(id);
@@ -210,14 +217,14 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             {actions.length > 0 && (
                 <div className="bd-notification-footer">
                     {actions.map((action, index) => {
-                        const color = Colors[action?.color?.toUpperCase()] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
-                        const look = Looks[action?.look?.toUpperCase()] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
+                        const color = ButtonColors[action?.color?.toUpperCase() as keyof typeof ButtonColors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
+                        const look = ButtonLooks[action?.look?.toUpperCase() as keyof typeof ButtonLooks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
 
                         return <Button
                             {...action}
                             key={index}
-                            color={color}
-                            look={look}
+                            color={color as typeof ButtonColors[keyof typeof ButtonColors]}
+                            look={look as typeof ButtonLooks[keyof typeof ButtonLooks]}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 action.onClick?.(e);

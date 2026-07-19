@@ -1,7 +1,8 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
 
-import AddonManager, {type Addon} from "./addonmanager";
+import AddonManager from "./addonmanager";
+import {type Addon} from "@typed/addon";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 
@@ -28,7 +29,7 @@ function parseProperty(raw: string) {
     return out;
 }
 
-export default new class ThemeManager extends AddonManager<Theme> {
+class ThemeManager extends AddonManager<Theme> {
     name = "ThemeManager";
     extension = ".theme.css";
     duplicatePattern = /\.theme\s?\([0-9]+\)\.css/;
@@ -37,40 +38,49 @@ export default new class ThemeManager extends AddonManager<Theme> {
     language = "css";
     order = 4;
 
-    loadAddons() {
-        for (const addon of this.addonInfo) {
-            this.loadAddon(addon);
+    startAddons() {
+        for (const addon of this.addonList) {
+            if (!this.state[addon.id]) continue;
+            this.startAddon(addon);
         }
 
         this.finishInit();
     }
 
-    initAddon(addon: Addon) {
-        const theme = addon as Theme;
+    initAddon(theme: Theme) {
         theme.css = theme.fileContent!;
         delete theme.fileContent;
 
         // Set the custom properties
         const properties = this.extractCustomProperties(theme.css);
         theme.properties = properties;
-        return theme;
+        return true;
     }
 
     startAddon(idOrAddon: string | Theme) {
         const theme = this.resolveAddon(idOrAddon);
-        if (!theme) return;
+        if (!theme) return false;
+
+        if (!theme.css) {
+            const loaded = this.loadAddon(theme);
+            if (!loaded) return false;
+        }
 
         DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
         else this.initialAddonsLoaded++;
+
+        return true;
     }
 
     stopAddon(idOrAddon: string | Theme) {
         const theme = this.resolveAddon(idOrAddon);
-        if (!theme) return;
+        if (!theme) return false;
 
         DOMManager.removeTheme(theme.slug + "-theme-container");
         Toasts.error(t("Addons.disabled", {name: theme.name, version: theme.version}));
+
+        return true;
     }
 
     extractCustomProperties(css: string) {
@@ -82,4 +92,6 @@ export default new class ThemeManager extends AddonManager<Theme> {
         }
         return out;
     }
-};
+}
+
+export default new ThemeManager();

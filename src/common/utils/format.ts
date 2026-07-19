@@ -2,9 +2,9 @@
  * Format strings with placeholders (`{{placeholder}}`) into full strings.
  * Quick example: `PluginUtilities.formatString("Hello, {{user}}", {user: "Zerebos"})`
  * would return "Hello, Zerebos".
- * @param string - string to format
- * @param values - object literal of placeholders to replacements
- * @returns the properly formatted string
+ * @param string String to format
+ * @param values Object literal of placeholders to replacements
+ * @returns The formatted string
  */
 export default function formatString(string: string, values: Record<string, string | object | number | (() => string) | undefined | null>) {
     for (const val in values) {

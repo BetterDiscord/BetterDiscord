@@ -1,9 +1,8 @@
-import React from "@modules/react";
+import React, {type MouseEvent} from "react";
 
 import Button from "../../base/button";
 import {KeyboardIcon, XIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
-import type {MouseEvent} from "react";
 
 const {useState, useCallback, useEffect, useContext} = React;
 
@@ -16,7 +15,9 @@ export interface KeybindProps {
     disabled?: boolean;
 }
 
-export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, disabled}: KeybindProps) {
+export default function Keybind(props: KeybindProps) {
+    const {value: initialValue, onChange, max = 4, clearable = false, disabled} = props;
+
     // TODO: make these their own states
     const [state, setState] = useState<{isRecording: boolean; accum: string[];}>({isRecording: false, accum: []});
 

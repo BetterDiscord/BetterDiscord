@@ -1,5 +1,5 @@
 import CustomCSS from "@builtins/customcss";
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@stores/settings";
 
@@ -56,4 +56,4 @@ export default {
            return {content: "Unable to attach your Custom CSS as a file. Please report this issue to BetterDiscord's [GitHub](https://github.com/BetterDiscord/BetterDiscord) if no one else has already done so!"};
         }
     }
-};
+} satisfies Command;

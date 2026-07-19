@@ -1,26 +1,15 @@
-import React from "@modules/react";
+import React, {useState, type ReactNode} from "react";
 import AddonStore from "@modules/addonstore";
 
 import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Spinner from "@ui/spinner";
-import type {ReactNode} from "react";
+import {useStateFromStores} from "@ui/hooks";
 
-const {useState, useEffect} = React;
+export default function AddonEmbed({id, original}: {id: string; original?: ReactNode;}) {
+    const addon = useStateFromStores(AddonStore, () => AddonStore.getAddon(id), [id], true);
+    const loading = useStateFromStores(AddonStore, () => AddonStore.loading, []);
 
-export default function AddonEmbed({id, original}: {id: string; original: ReactNode;}) {
-    const [addon, setAddon] = useState(() => AddonStore.getAddon(id));
-    const [loading, setLoading] = useState(() => true);
-    const [tags, setTags] = useState({});
-
-    useEffect(() => {
-        setAddon(AddonStore.getAddon(id));
-        setLoading(AddonStore.loading);
-
-        return AddonStore.addChangeListener(() => {
-            setAddon(AddonStore.getAddon(id));
-            setLoading(AddonStore.loading);
-        });
-    }, [id]);
+    const [tags, setTags] = useState<Record<string, boolean>>({});
 
     if (!addon) {
         // 404 don't show
@@ -33,7 +22,6 @@ export default function AddonEmbed({id, original}: {id: string; original: ReactN
         );
     }
 
-    // TODO: doggy, fix the type errors below
     return (
         <TagContext.Provider
             value={[

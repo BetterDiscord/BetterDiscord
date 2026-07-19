@@ -1,3 +1,4 @@
+import type {Command} from "@modules/commandmanager";
 import Modals from "@ui/modals";
 
 
@@ -9,4 +10,4 @@ export default {
     execute: async () => {
         Modals.showGuildJoinModal("rC8b2H6SCt");
     }
-};
+} satisfies Command;

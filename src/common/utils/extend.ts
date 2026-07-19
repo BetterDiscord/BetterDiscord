@@ -22,14 +22,6 @@ function shouldSkip(obj: any) {
     if (Array.isArray(obj)) return true;
 }
 
-/**
- * Deep extends an object with a set of other objects. Objects later in the list
- * of `extenders` have priority, that is to say if one sets a key to be a primitive,
- * it will be overwritten with the next one with the same key. If it is an object,
- * and the keys match, the object is extended. This happens recursively.
- * @param target target object for extension
- * @param extenders series of objects to use for extension
- */
 export default function extend(target: object, ...extenders: object[]): object;
 export default function extend<T extends Record<string | number | symbol, any>>(target: T, ...extenders: object[]): T {
     if (extenders.length < 1) throw new Error("Needs at least 1 extenders");

@@ -1,4 +1,4 @@
-import type {Webpack} from "discord";
+import type {Webpack} from "@typed/discord";
 import Logger from "@common/logger";
 import type {RawModule} from "../types/discord/webpack";
 import Patcher from "@modules/patcher";

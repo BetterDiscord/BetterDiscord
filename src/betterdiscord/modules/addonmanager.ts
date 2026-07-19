@@ -20,31 +20,7 @@ import type {SystemError} from "bun";
 import RemoteAPI from "@polyfill/remote";
 import {parseJsDoc} from "@common/utils";
 import Modals from "@ui/modals";
-
-export interface Addon {
-    added: number;
-    author: string;
-    authorId?: string;
-    authorLink?: string;
-    description: string;
-    donate?: string;
-    fileContent?: string;
-    filename: string;
-    format: string;
-    id: string;
-    invite?: string;
-    modified: number;
-    name: string;
-    partial?: boolean;
-    patreon?: string;
-    size: number;
-    slug: string;
-    source?: string;
-    version: string;
-    website?: string;
-    runAt?: string;
-    icon?: string;
-}
+import type {Addon, AddonType} from "@typed/addon";
 
 export default abstract class AddonManager<T extends Addon = Addon> extends Store {
     abstract name: string;
@@ -52,11 +28,10 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     abstract duplicatePattern: RegExp;
     abstract addonFolder: string;
     abstract language: string;
-    abstract prefix: string;
+    abstract prefix: AddonType;
     abstract order: number;
 
     addonList: T[] = [];
-    addonInfo: Addon[] = [];
 
     trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
@@ -81,15 +56,14 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
     }
 
     finishInit() {
-        this.addonInfo = [];
         this.hasInitialized = true;
-
         if (this.initialAddonsLoaded === 0) return;
+
         Toasts.show(t("Addons.manyEnabled", {count: this.initialAddonsLoaded, context: this.prefix}));
     }
 
-    abstract startAddon(idOrAddon: string | T): void;
-    abstract stopAddon(idOrAddon: string | T): void;
+    abstract startAddon(idOrAddon: string | T): boolean;
+    abstract stopAddon(idOrAddon: string | T): boolean;
 
     loadState() {
         const saved = JsonStore.get(`${this.prefix}s` as Files);
@@ -202,14 +176,13 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
 
             this.timeCache[filename] = stats.mtimeMs;
 
-            const addon = this.readAddon(filename);
-            if (addon) this.addonInfo.push(addon);
+            this.readAddon(filename);
         }
 
         this.saveState();
     }
 
-    readAddon(filename: string, loadAfter?: boolean) {
+    readAddon(filename: string, startAfter?: boolean) {
         const filePath = path.resolve(this.addonFolder, filename);
         let fileContent = fs.readFileSync(filePath, "utf8");
 
@@ -227,7 +200,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
                 message: "",
                 stack: fileContent
             }, this.prefix));
-            return null;
+            return;
         }
 
         const stats = fs.statSync(filePath);
@@ -248,32 +221,29 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         addon.size = stats.size;
         addon.fileContent = fileContent;
 
-        if (loadAfter) this.loadAddon(addon as Addon);
-        return addon as Addon;
+        this.addonList.push(addon as T);
+        this.trigger("read", addon);
+
+        if (startAfter && this.state[addon.id]) this.startAddon(addon as T);
     }
 
-    abstract initAddon(addon: Addon): T | null;
+    abstract initAddon(addon: T): boolean;
 
-    loadAddon(addon: Addon) {
+    loadAddon(addon: T) {
         const initialized = this.initAddon(addon);
 
         // Make the addon partial if it failed to initialize
         if (!initialized) {
             this.state[addon.id] = false;
             addon.partial = true;
-            this.addonList.push(addon as T);
             this.trigger("loaded", addon);
-            return;
+            return false;
         }
 
-        this.addonList.push(initialized);
-        this.trigger("loaded", initialized);
+        this.trigger("loaded", addon);
         if (this.hasInitialized) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
 
-        // Start the addon if it's enabled
-        if (this.state[initialized.id]) {
-            this.startAddon(initialized);
-        }
+        return true;
     }
 
     unloadAddon(idOrFileOrAddon: string | T, isReload = false) {
@@ -322,9 +292,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = true;
         this.trigger("enabled", addon);
 
-        const err = this.startAddon(addon);
+        const succeeded = this.startAddon(addon);
         this.saveState();
-        return err;
+        return succeeded;
     }
 
     enableAllAddons() {
@@ -339,9 +309,9 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         this.state[addon.id] = false;
         this.trigger("disabled", addon);
 
-        const err = this.stopAddon(addon);
+        const succeeded = this.stopAddon(addon);
         this.saveState();
-        return err;
+        return succeeded;
     }
 
     disableAllAddons() {
@@ -368,7 +338,7 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon: string | T, system?: "system" | "detached" | "external" | boolean) {
+    editAddon(idOrFileOrAddon: string | T, system?: "system" | "detached" | "external") {
         const addon = this.resolveAddon(idOrFileOrAddon);
         if (!addon) return;
 
@@ -387,14 +357,21 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
         if (this.windows.has(fullPath)) return;
         this.windows.add(fullPath);
 
-        const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
+        const editorRef = React.createRef<{resize(): void; value: string, hasUnsavedChanges: boolean;}>();
         const editor = React.createElement(AddonEditor, {
             id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
             content: content,
             save: this.saveAddon.bind(this, addon),
-            openNative: this.editAddon.bind(this, addon, true),
-            language: this.language
+            openNative: () => {
+                FloatingWindows.close("bd-floating-window-" + addon.id);
+                this.editAddon(addon, "system");
+            },
+            language: this.language,
+            openDetached: () => {
+                FloatingWindows.close("bd-floating-window-" + addon.id);
+                RemoteAPI.editor.open(this.prefix, addon.filename);
+            }
         });
 
         FloatingWindows.open({

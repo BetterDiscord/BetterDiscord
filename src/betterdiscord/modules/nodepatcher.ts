@@ -1,8 +1,6 @@
 import React from "react";
-import ReactUtils from "@api/reactutils";
+import {getType} from "@utils/react";
 
-// type FunctionPatch<P> = (props: P, res: React.ReactNode) => React.ReactNode;
-// type ClassPatch<P> = (props: P, res: React.ReactNode, instance: React.Component<P>) => React.ReactNode;
 type UnknownPatch<P> = (props: P, res: React.ReactNode, instance?: React.Component<P>) => React.ReactNode;
 
 // This does not allow 2 different things to patch 1 thing!
@@ -53,7 +51,7 @@ export default class NodePatcher {
             return;
         }
 
-        const FC = ReactUtils.getType<React.FunctionComponent<P>, P>(type as React.FunctionComponent<P>);
+        const FC = getType<React.FunctionComponent<P>, P>(type as React.FunctionComponent<P>);
 
         function FunctionType(...args: [props: P]) {
             const res = FC(...args);

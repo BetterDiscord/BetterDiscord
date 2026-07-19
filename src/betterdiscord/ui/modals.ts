@@ -1,7 +1,5 @@
-import FormattableString from "@structs/string";
-
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React, {type ComponentType, type ReactElement, type ReactNode, type RefObject} from "react";
 import ReactDOM from "@modules/reactdom";
 import {t} from "@common/i18n";
 import Settings from "@stores/settings";
@@ -14,17 +12,12 @@ import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
 import ModalRoot from "./modals/root";
-// import ModalHeader from "./modals/header";
-// import ModalContent from "./modals/content";
-// import ModalFooter from "./modals/footer";
 
 import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
-// import Button from "./base/button";
 import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled} from "@webpack";
-import type {ComponentType, ReactElement, ReactNode, RefObject} from "react";
 import AddonError from "@structs/addonerror";
 import AddonErrorsStore from "@stores/addonerrors";
 import SimpleMarkdownExt from "@structs/markdown";
@@ -56,7 +49,7 @@ export default class Modals {
         }) as ModalActions;
     }
 
-    static default(title: string, content: string | ReactElement | ReactElement[] | HTMLElement | Array<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
+    static default(title: string, content: string | ReactElement | readonly ReactElement[] | HTMLElement | ReadonlyArray<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
@@ -149,27 +142,17 @@ export default class Modals {
         }
     }
 
-    static alert(title: string, content: (string | ReactElement | Array<string | ReactElement>)) {
+    static alert(title: string, content: (string | ReactElement | ReadonlyArray<string | ReactElement>)) {
         this.showConfirmationModal(title, content, {cancelText: null});
     }
 
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
-     * @param {string} title - title of the modal
-     * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
-     * @param {object} [options] - options to modify the modal
-     * @param {boolean} [options.danger=false] - whether the main button should be red or not
-     * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
-     * @param {string|null} [options.cancelText=Cancel] - text for the cancel button
-     * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
-     * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
-     * @param {callable} [options.onClose=NOOP] - callback to occur when exiting the modal
-     * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
-     * @returns {string} - the key used for this modal
+     * @param title The title of the modal
+     * @param content A single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
+     * @returns The key used for this modal
      */
-    static showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options: ConfirmationModalOptions = {}) {
-        if (content instanceof FormattableString) content = content.toString();
-
+    static showConfirmationModal(title: string, content: (string | ReactElement | ReadonlyArray<string | ReactElement>), options: ConfirmationModalOptions = {}) {
         const emptyFunction = () => {};
         const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = t("Modals.okay"), cancelText = t("Modals.cancel"), danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
@@ -180,15 +163,15 @@ export default class Modals {
             ].filter(Boolean) as any);
         }
 
-        if (!Array.isArray(content)) content = [content];
-        content = content.map(c => typeof (c) === "string" ? SimpleMarkdownExt.parseToReact(c) : c);
+        let contentArray = Array.isArray(content) ? content : [content];
+        contentArray = contentArray.map(c => typeof (c) === "string" ? SimpleMarkdownExt.parseToReact(c) : c);
 
         const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
                         this.ModalActions.closeModal(modalKey);
-                        this.default(title, content, [
+                        this.default(title, contentArray, [
                             confirmText && {label: confirmText, action: onConfirm},
                             cancelText && {label: cancelText, action: onCancel, danger}
                         ].filter(Boolean) as any);
@@ -205,7 +188,7 @@ export default class Modals {
                 onCloseCallback: () => {
                     if (props?.transitionState === 2) onClose?.();
                 }
-            }, props), React.createElement(ErrorBoundary, {id: "showConfirmationModal", name: "Modals"}, content)));
+            }, props), React.createElement(ErrorBoundary, {id: "showConfirmationModal", name: "Modals"}, contentArray)));
         }, {modalKey: key});
         return modalKey;
     }
@@ -238,17 +221,15 @@ export default class Modals {
         });
     }
 
-    // TODO: move typing to changelog after converting
     static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign({}, options, props)));
         });
         return key;
     }
 
     /**
-     * Shows the guild join modal, to join invites
-     * @param {string} code
+     * Shows the guild join modal, to join invites.
      */
     static async showGuildJoinModal(code: string) {
         const tester = /\.gg\/(.*)$/;
@@ -344,6 +325,5 @@ export default class Modals {
         return options.modalKey;
     }
 }
-
 
 Modals.makeStack();

@@ -1,29 +1,14 @@
-import React from "@modules/react";
-import Events from "@modules/emitter";
+import React from "react";
 
-import FloatingWindow, {type FloatingWindowProps} from "./window";
-
-const {useState, useCallback, useEffect} = React;
+import FloatingWindow from "./window";
+import {useStateFromStores} from "@ui/hooks";
+import FloatingWindows from "@ui/floatingwindows";
 
 export default function FloatingWindowContainer() {
-    const [windows, setWindows] = useState<FloatingWindowProps[]>([]);
-    const open = useCallback((window: FloatingWindowProps) => {
-        setWindows(wins => [...wins, window]);
-    }, []);
-    const close = useCallback((id: string) => {
-        setWindows(windows.filter(w => {
-            if (w.id === id && w.onClose) w.onClose();
-            return w.id !== id;
-        }));
-    }, [windows]);
-
-    useEffect(() => {
-        Events.on("open-window", open);
-        return () => void Events.off("open-window", open);
-    }, [open]);
+    const windows = useStateFromStores(FloatingWindows, () => FloatingWindows.windows, [], true);
 
     return windows.map(window =>
-        <FloatingWindow {...window} onClose={() => close(window.id)} key={window.id}>
+        <FloatingWindow {...window} onClose={() => FloatingWindows.close(window.id)} key={window.id}>
             {window.children}
         </FloatingWindow>
     );

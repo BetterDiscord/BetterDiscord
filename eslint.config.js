@@ -79,7 +79,7 @@ export default ts.config(
             "no-unneeded-ternary": "error",
             "no-useless-call": "error",
             "no-useless-computed-key": "error",
-            "no-useless-constructor": "error",
+            "no-useless-constructor": "off",
             "no-useless-rename": "error",
             "no-var": "error",
             "no-whitespace-before-property": "error",

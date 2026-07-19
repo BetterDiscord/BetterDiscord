@@ -1,4 +1,4 @@
-import electron, {type BrowserWindowConstructorOptions} from "electron";
+import electron, {type BrowserWindowConstructorOptions, type HandlerDetails} from "electron";
 import path from "path";
 
 import BetterDiscord from "./betterdiscord";
@@ -20,13 +20,10 @@ function maybeHasOtherClientMod() {
 }
 
 class BrowserWindow extends electron.BrowserWindow {
-    private __originalPreload?: string;
+    public __originalPreload?: string;
 
-    /**
-     * @param {import("electron").BrowserWindowConstructorOptions} options
-     * @returns
-     */
     constructor(options: BrowserWindowConstructorOptions) {
+        // @ts-expect-error super's type returns undefined for some reason
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
 
         if (maybeHasOtherClientMod() && BetterDiscord.clientModCompatibility.shouldShow()) {
@@ -66,9 +63,10 @@ class BrowserWindow extends electron.BrowserWindow {
         }
 
         const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
+        options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
 
-        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
-        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
+        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame.toString();
+        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights.toString();
 
         if (inAppTrafficLights) {
             delete options.titleBarStyle;
@@ -94,29 +92,7 @@ class BrowserWindow extends electron.BrowserWindow {
             apply(target, thisArg, argArray) {
                 const handler = argArray[0];
 
-                /**
-                 *
-                 * @type {(details: import("electron").HandlerDetails) => import("electron").WindowOpenHandlerResponse} callback
-                 */
-                argArray[0] = function (details) {
-                    // const match = details.url.match(EDITOR_URL_REGEX);
-                    // if (match) {
-                    //     const isCustomCSS = match[1] === undefined;
-
-                    //     return {
-                    //         action: "allow",
-                    //         createWindow(opts) {
-                    //             Editor._options = opts;
-
-                    //             const webContents = isCustomCSS ? Editor.open("custom-css") : Editor.open(match[1], match[2]);
-
-                    //             webContents.toggleDevTools();
-
-                    //             return webContents;
-                    //         }
-                    //     };
-                    // }
-
+                argArray[0] = function (details: HandlerDetails) {
                     // Just like chat make it only be on this client
                     if (details.url.startsWith("betterdiscord://")) {
                         self.webContents.send(IPCEvents.HANDLE_PROTOCOL, details.url);
@@ -144,6 +120,8 @@ Object.defineProperty(BrowserWindow, "name", {value: "BrowserWindow", configurab
 export default class {
     static patchBrowserWindow() {
         const electronPath = require.resolve("electron");
+
+        if (!require.cache[electronPath]) return;
         delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
         require.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }

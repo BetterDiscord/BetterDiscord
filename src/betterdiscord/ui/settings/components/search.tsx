@@ -1,7 +1,6 @@
-import React from "@modules/react";
+import React, {type ChangeEvent, type KeyboardEvent} from "react";
 import Button from "@ui/base/button";
 import {SearchIcon, XIcon} from "lucide-react";
-import type {ChangeEvent, KeyboardEvent} from "react";
 
 const {useState, useEffect, useCallback, useRef} = React;
 
@@ -13,7 +12,8 @@ export interface SearchProps {
     onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
 }
 
-export default function Search({onChange, className, onKeyDown, placeholder}: SearchProps) {
+export default function Search(props: SearchProps) {
+    const {onChange, className, onKeyDown, placeholder} = props;
     const input = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState("");
 

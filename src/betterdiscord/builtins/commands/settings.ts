@@ -1,4 +1,4 @@
-import {OptionTypes} from "@modules/commandmanager";
+import {OptionTypes, type Command} from "@modules/commandmanager";
 import Settings from "@stores/settings";
 
 
@@ -24,8 +24,8 @@ export default {
             required: true,
             get choices() {
                 return Settings.collections[0].settings.map(c => {
-                    const switches = c.settings.filter(s => s.type === "switch");
-                    return switches.map(s => ({name: s.name, value: `${c.id}-${s.id}-${s.name}`}));
+                    const switches = c.settings.filter(s => s.type === "switch" && s.name);
+                    return switches.map(s => ({name: s.name!, value: `${c.id}-${s.id}-${s.name}`}));
                 }).flat();
             }
         }
@@ -52,4 +52,4 @@ export default {
             return {content: `${name} has been disabled!`};
         }
     }
-};
+} satisfies Command;

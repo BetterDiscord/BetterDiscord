@@ -8,7 +8,7 @@ import {useInsertionEffect, useState} from "react";
 
 export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
 
-export default new class JsonStore extends Store {
+class JsonStore extends Store {
     private cache: Record<Files, Record<string, unknown> | undefined> = {
         "settings": undefined,
         "plugins": undefined,
@@ -252,3 +252,5 @@ export default new class JsonStore extends Store {
         listeners.all.delete(callback);
     }
 };
+
+export default new JsonStore();

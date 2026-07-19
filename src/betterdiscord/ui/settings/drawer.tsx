@@ -1,9 +1,8 @@
-import React from "@modules/react";
+import React, {type PropsWithChildren, type ReactNode} from "react";
 
 import Title from "./title";
 
 import Divider from "@ui/divider";
-import type {PropsWithChildren, ReactNode} from "react";
 
 const {useState, useCallback, useRef} = React;
 

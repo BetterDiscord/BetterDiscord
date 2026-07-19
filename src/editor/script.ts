@@ -27,39 +27,39 @@ Object.defineProperty(window, "MonacoEnvironment", {
 
 amdLoader.config({paths: {vs: `${baseUrl}/vs`}});
 
-const {options, liveUpdate: defaultLiveUpdate, discordTheme} = window.Editor.settings.get();
+const {options, liveUpdate: defaultLiveUpdate, discordTheme, alwaysOnTop} = window.Editor.settings.get();
 
 const loader = document.getElementById("loader")!;
 
 function setLoaderTheme(theme: string) {
-    // --background-primary
+    // var(--background-base-low)
     let background: string;
-    // --background-seconday-alt
+    // var(--background-base-lower)
     let backgroundAlt: string;
-    // --text-normal
+    // var(--text-default)
     let color: string;
 
     switch (theme) {
         case "light":
-            background = "oklab(0.988044 0.0000450313 0.0000197887)";
-            backgroundAlt = "oklab(0.940553 0.00079456 -0.00254363)";
-            color = "oklab(0.335195 0.00285903 -0.0100273)";
+            background = "color-mix(in oklab,hsl(0 calc(1*0%) 98.431%/1) 100%,#000 0%)";
+            backgroundAlt = "color-mix(in oklab,hsl(0 calc(1*0%) 98.431%/1) 100%,#000 0%)";
+            color = "color-mix(in oklab,hsl(240 calc(1*6.122%) 19.216%/1) 100%,#000 0%)";
             break;
         case "darker":
-            background = "oklab(0.245196 0.00206329 -0.00723176)";
-            backgroundAlt = "oklab(0.351123 0.00328721 -0.0115818)";
-            color = "oklab(0.952331 0.000418991 -0.00125992)";
+            background = "color-mix(in oklab,hsl(240 calc(1*5.882%) 13.333%/1) 100%,#000 0%)";
+            backgroundAlt = "color-mix(in oklab,hsl(240 calc(1*7.143%) 10.98%/1) 100%,#000 0%)";
+            color = "color-mix(in oklab,hsl(240 calc(1*6.667%) 94.118%/1) 100%,#000 0%)";
             break;
         case "midnight":
-            background = "oklab(0.155263 0.00116055 -0.00404651)";
-            backgroundAlt = "oklab(0.303553 0.00292034 -0.0103036)";
-            color = "oklab(0.894999 0.000801653 -0.00257665)";
+            background = "color-mix(in oklab,hsl(240 calc(1*7.692%) 5.098%/1) 100%,#000 0%)";
+            backgroundAlt = "color-mix(in oklab,hsl(240 calc(1*12.5%) 3.137%/1) 100%,#000 0%)";
+            color = "color-mix(in oklab,hsl(240 calc(1*4.478%) 86.863%/1) 100%,#000 0%)";
             break;
-        // case "dark":
+        case "dark":
         default:
-            background = "oklab(0.323409 0.00288205 -0.0101295)";
-            backgroundAlt = "oklab(0.262384 0.00252247 -0.00889932)";
-            color = "oklab(0.883042 0.00118408 -0.00389016)";
+            background = "color-mix(in oklab,hsl(232.5 calc(1*6.897%) 22.745%/1) 100%,#000 0%)";
+            backgroundAlt = "color-mix(in oklab,hsl(231.429 calc(1*6.542%) 20.98%/1) 100%,#000 0%)";
+            color = "color-mix(in oklab,hsl(240 calc(1*4.348%) 95.49%/1) 100%,#000 0%)";
             break;
     }
 
@@ -67,6 +67,8 @@ function setLoaderTheme(theme: string) {
     document.body.style.setProperty("--discord-background-alt", backgroundAlt);
     document.body.style.setProperty("--discord-color", color);
 }
+
+if (alwaysOnTop) document.body.classList.add("pinned");
 
 setLoaderTheme(discordTheme);
 window.Editor.settings.subscribe(({discordTheme: theme}) => setLoaderTheme(theme));
@@ -118,7 +120,7 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
     else {
         liveUpdateNode.checked = liveUpdate = defaultLiveUpdate;
         liveUpdateNode.addEventListener("change", () => {
-            window.Editor.settings.setLiveUpdate(liveUpdate = liveUpdateNode.checked);
+            window.Editor.settings.set({liveUpdate: liveUpdate = liveUpdateNode.checked});
 
             if (liveUpdate) {
                 save();
@@ -127,7 +129,7 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
     }
 
     tabSize.textContent = `${options.insertSpaces ? "Spaces" : "Tabs"}: ${options.tabSize}`;
-    window.Editor.settings.subscribe(({options: newOptions, liveUpdate: newLiveUpdate}) => {
+    window.Editor.settings.subscribe(({options: newOptions, liveUpdate: newLiveUpdate, alwaysOnTop: newAlwaysOnTop}) => {
         editor.updateOptions(newOptions);
         tabSize.textContent = `${newOptions.insertSpaces ? "Spaces" : "Tabs"}: ${newOptions.tabSize}`;
 
@@ -135,6 +137,9 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
         if (window.Editor.type === "custom-css" && liveUpdate) {
             save();
         }
+
+        if (newAlwaysOnTop) document.body.classList.add("pinned");
+        else document.body.classList.remove("pinned");
     });
 
     const height = (node: HTMLElement) => Math.max(node.clientHeight, node.offsetHeight);
@@ -198,5 +203,14 @@ amdLoader(["vs/editor/editor.main"], (monaco) => {
 
             save();
         }
+    });
+
+    document.getElementById("wndow-unpinned")!.addEventListener("click", () => {
+        document.body.classList.add("pinned");
+        window.Editor.settings.set({alwaysOnTop: true});
+    });
+    document.getElementById("wndow-pinned")!.addEventListener("click", () => {
+        document.body.classList.remove("pinned");
+        window.Editor.settings.set({alwaysOnTop: false});
     });
 });

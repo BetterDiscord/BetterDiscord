@@ -1,132 +1,116 @@
 import JsonStore from "@stores/json";
 
-type BaseArgs<Bounded extends boolean> = [
-    ...(Bounded extends false ? [pluginName: string] : []),
-    key: string
-];
-
-type SaveArgs<Bounded extends boolean, T> = [
-    ...BaseArgs<Bounded>,
-    data: T
-];
-
-// type OnChangeArgs<Bounded extends boolean, T> = [
-//     ...(Bounded extends false ? [pluginName: string] : []),
-//     key: string,
-//     onChange: (value?: T) => void
-// ] | [
-//     ...(Bounded extends false ? [pluginName: string] : []),
-//     onChange: (key: string, value?: T) => void
-// ];
-
 /**
  * `Data` is a simple utility class for the management of plugin data. An instance is available on {@link BdApi}.
- * @type Data
- * @summary {@link Data} is a simple utility class for the management of plugin data.
- * @name Data
  */
-class Data<Bounded extends boolean> {
-    #pluginName = "";
+class Data {
+    /** @ignore */
+    constructor() {};
 
-    constructor(pluginName?: string) {
-        if (!pluginName) return;
+    /**
+     * Saves JSON-serializable data.
+     *
+     * @param pluginName Name of the plugin saving data
+     * @param key Which piece of data to store
+     * @param data The data to be saved
+     */
+    public save(pluginName: string, key: string, data: any) {
+        JsonStore.setData(pluginName, key, data);
+    }
+
+    /**
+     * Loads previously stored data.
+     *
+     * @param pluginName Name of the plugin loading data
+     * @param key Which piece of data to load
+     * @returns The stored data
+     */
+    public load(pluginName: string, key: string) {
+        return JsonStore.getData(pluginName, key);
+    }
+
+    /**
+     * Recaches JSON-serializable save file.
+     *
+     * @param pluginName Name of the plugin saving data
+     * @returns Whether the data successfully recached
+     *
+     * ⚠️ **Use of recaching is discouraged!**
+     *
+     * Recache loads can block the filesystem and significantly degrade performance.
+     * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
+     */
+    public async recache(pluginName: string) {
+        return JsonStore.recache(pluginName);
+    }
+
+    /**
+     * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
+     *
+     * @param pluginName Name of the plugin deleting data
+     * @param key Which piece of data to delete.
+     */
+    public delete(pluginName: string, key: string) {
+        JsonStore.deleteData(pluginName, key);
+    }
+}
+
+/**
+ * `BoundData` is a simple utility class for the management of plugin data, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ */
+class BoundData {
+    #pluginName: string;
+
+    /** @ignore */
+    constructor(pluginName: string) {
         this.#pluginName = pluginName;
     }
 
     /**
      * Saves JSON-serializable data.
      *
-     * @param {string} pluginName Name of the plugin saving data
-     * @param {string} key Which piece of data to store
-     * @param {any} data The data to be saved
+     * @param key Which piece of data to store
+     * @param data The data to be saved
      */
-    public save<T>(...args: SaveArgs<Bounded, T>) {
-        if (this.#pluginName) {
-            return JsonStore.setData(this.#pluginName, ...(args as unknown as SaveArgs<true, T>));
-        }
-
-        return JsonStore.setData(...(args as unknown as SaveArgs<false, T>));
+    public save(key: string, data: any) {
+        JsonStore.setData(this.#pluginName, key, data);
     }
 
     /**
      * Loads previously stored data.
      *
-     * @param {string} pluginName Name of the plugin loading data
-     * @param {string} key Which piece of data to load
-     * @returns {any} The stored data
+     * @param key Which piece of data to load
+     * @returns The stored data
      */
-    public load<T>(...args: BaseArgs<Bounded>): T {
-        if (this.#pluginName) {
-            return JsonStore.getData(this.#pluginName, args[0]);
-        }
-
-        return JsonStore.getData(args[0], args[1]);
+    public load<T>(key: string): T {
+        return JsonStore.getData(this.#pluginName, key);
     }
 
     /**
      * Recaches JSON-serializable save file.
      *
-     * @param {string} pluginName Name of the plugin saving data
-     * @return {boolean} success Did the data recache
+     * @returns Whether the data successfully recached
      *
-     * @warning ⚠️ **Use of the recaching is discouraged!**
+     * ⚠️ **Use of recaching is discouraged!**
      *
      * Recache loads can block the filesystem and significantly degrade performance.
      * Use this method only for **debugging or testing purposes**. Avoid frequent recaching in production environments.
      */
-    public async recache(...args: Bounded extends true ? [] : [pluginName: string]) {
-        const pluginName = this.#pluginName || args[0];
-        return JsonStore.recache(pluginName!);
+    public async recache() {
+        return JsonStore.recache(this.#pluginName);
     }
 
     /**
      * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
      *
-     * @param {string} pluginName Name of the plugin deleting data
-     * @param {string} key Which piece of data to delete.
+     * @param key Which piece of data to delete.
      */
-    public delete(...args: BaseArgs<Bounded>) {
-        if (this.#pluginName) {
-            return JsonStore.deleteData(this.#pluginName, args[0]);
-        }
-
-        return JsonStore.deleteData(args[0], args[1]);
+    public delete(key: string) {
+        return JsonStore.deleteData(this.#pluginName, key);
     }
-
-    // public on<T>(...args: OnChangeArgs<Bounded, T>) {
-    //     if (this.#pluginName) {
-    //         if (typeof args[0] === "function") {
-    //             return JsonStore.addPluginChangeListener(this.#pluginName, args[0]);
-    //         }
-
-    //         return JsonStore.addPluginChangeListener(this.#pluginName, args[1], args[0]);
-    //     }
-
-    //     if (typeof args[1] === "function") {
-    //         return JsonStore.addPluginChangeListener(args[0] as string, args[1]);
-    //     }
-
-    //     return JsonStore.addPluginChangeListener(args[0] as string, args[2], args[1]);
-    // }
-
-    // public off(...args: OnChangeArgs<Bounded, unknown>) {
-    //     if (this.#pluginName) {
-    //         if (typeof args[0] === "function") {
-    //             return JsonStore.removePluginChangeListener(this.#pluginName, args[0]);
-    //         }
-
-    //         return JsonStore.removePluginChangeListener(this.#pluginName, args[1], args[0]);
-    //     }
-
-    //     if (typeof args[1] === "function") {
-    //         return JsonStore.removePluginChangeListener(args[0] as string, args[1]);
-    //     }
-
-    //     return JsonStore.removePluginChangeListener(args[0] as string, args[2], args[1]);
-    // }
 }
 
 Object.freeze(Data);
 Object.freeze(Data.prototype);
-
-export default Data;
+export {Data, BoundData};

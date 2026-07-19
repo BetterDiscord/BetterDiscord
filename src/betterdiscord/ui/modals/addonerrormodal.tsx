@@ -1,4 +1,4 @@
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 
 import Text from "@ui/base/text";
@@ -66,11 +66,6 @@ export interface AddonErrorModalProps {
     onClose?(): void;
 }
 
-/**
- *
- * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
- * @returns
- */
 export default function AddonErrorModal({transitionState, onClose}: AddonErrorModalProps) {
     const pluginErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.pluginErrors]);
     const themeErrors = useStateFromStores(AddonErrorsStore, () => [...AddonErrorsStore.themeErrors]);

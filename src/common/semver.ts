@@ -1,7 +1,6 @@
 // "Official" regex from https://semver.org/
 export const regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/;
 
-
 // Some of the code here adapted from https://github.com/npm/node-semver
 const numeric = /^[0-9]+$/;
 function compare(a: string | number, b: string | number) {
@@ -53,13 +52,6 @@ function preCompare(a: string, b: string) {
     return compareTokens(a, b);
 }
 
-/**
- * This works on semantic versioning e.g. "1.0.0".
- *
- * @param {string} currentVersion
- * @param {string} remoteVersion
- * @returns {-1 | 0 | 1} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
- */
 export function comparator(currentVersion: string, remoteVersion: string) {
     const current = regex.exec(currentVersion);
     const remote = regex.exec(remoteVersion);

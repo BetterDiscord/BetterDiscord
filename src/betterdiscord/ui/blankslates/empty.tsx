@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import SimpleMarkdown from "@structs/markdown";
 
-import React from "@modules/react";
+import React, {type PropsWithChildren} from "react";
 import {t} from "@common/i18n";
-import type {PropsWithChildren} from "react";
 
 
 function EmptyImage() {

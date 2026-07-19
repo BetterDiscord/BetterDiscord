@@ -1,8 +1,7 @@
 import Builtin from "@structs/builtin";
 
 import AddonStore from "@modules/addonstore";
-import React from "@modules/react";
-import ReactUtils from "@api/reactutils";
+import React from "react";
 import Settings from "@stores/settings";
 
 import AddonEmbed from "@ui/misc/storeembed";
@@ -11,10 +10,9 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getLazy, getLazyBySource, getWithKey} from "@webpack";
+import {Filters, getBySource, getLazy, getLazyBySource, getWithKey} from "@webpack";
 import {findInTree} from "@common/utils";
-import DiscordModules from "@modules/discordmodules";
-
+import {getInternalInstance, getOwnerInstance} from "@utils/react";
 
 let MessageAccessories;
 
@@ -30,28 +28,26 @@ const ADDON_REGEX = new RegExp([
 
 const CODEBLOCK_REGEX = /(`+)([\s\S]*?[^`])\1(?!`)/g;
 
+interface Match {
+    id: string;
+    match: string;
+    index: number;
+}
+
 /**
  * Extract all bd addon links
- * @param {string} text
- * @param {number} max
- * @return {{ id: string, match: string, index: number }[]}
  */
-function extractAddonLinks(text, max = Infinity) {
+function extractAddonLinks(text: string, max = Infinity) {
     ADDON_REGEX.lastIndex = 0;
 
-    const matches = [];
-
+    const matches: Match[] = [];
     if (max <= 0) return matches;
 
-    /**
-     * @type {[ start: number, stop: number ]}
-     */
     const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [
         match.index, match.index + match[0].length
     ]);
 
-    /** @type {RegExpExecArray} */
-    let exec;
+    let exec: RegExpExecArray | null;
     while ((exec = ADDON_REGEX.exec(text))) {
         // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
         // if <betterdiscord://addon/id> not betterdiscord://addon/id
@@ -114,10 +110,10 @@ export default new class AddonStoreBuiltin extends Builtin {
         this.extractDiscordProtocolList().push("betterdiscord:");
     }
 
-    /** The patches are slightly late sometimes, so this will upate chat */
+    /** The patches are slightly late sometimes, so this will update chat */
     forceUpdateChat() {
         for (const message of document.querySelectorAll("[id^=chat-messages-]")) {
-            const instance = ReactUtils.getInternalInstance(message);
+            const instance = getInternalInstance(message);
 
             const child = findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
                 walkable: ["child"]
@@ -130,7 +126,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
             // Update forward messages
             for (const forward of message.querySelectorAll("[id^=\"message-accessories-\"] [id^=\"message-accessories-\"]")) {
-                ReactUtils.getOwnerInstance(forward).forceUpdate();
+                getOwnerInstance(forward).forceUpdate();
             }
         }
     }
@@ -160,25 +156,10 @@ export default new class AddonStoreBuiltin extends Builtin {
     private extractDiscordProtocolList() {
         if (this.protocolList) return this.protocolList;
 
-        let protocols: string[] = [];
-
-        const link = DiscordModules.LinkParser;
-
-        const includes = Array.prototype.includes;
-        Array.prototype.includes = function (...args) {
-            if (includes.call(this, "discord:")) {
-                Array.prototype.includes = includes;
-                protocols = this as string[];
-
-                return false;
-            }
-
-            return includes.apply(this, args);
-        };
-
-        link.parse(["", "link", "betterdiscord://foo/bar"]);
-
-        return this.protocolList = protocols;
+        return this.protocolList = getBySource(["discord:", "mailto:"], {
+            searchDefault: false,
+            declarationFilter: x => Array.isArray(x) && x.includes("discord:")
+        }) || [];
     }
 
     async patchEmbeds() {
