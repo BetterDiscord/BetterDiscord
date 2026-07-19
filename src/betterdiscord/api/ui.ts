@@ -60,7 +60,7 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
 
             return React.createElement(Group, {
                 ...setting,
-                settings: setting.settings.map(({value, ...x}) => {
+                settings: setting.settings.map((x) => {
                     const subgroup = switchStates[setting.id] as Record<string, boolean>;
 
                     let disabled = false;
@@ -68,11 +68,10 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
                     if (x.enableWith) disabled = subgroup[x.enableWith];
                     if (x.disableWith) disabled = !subgroup[x.disableWith];
 
-                    if (x.type !== "switch") return {...x, defaultValue: value, disabled};
+                    if (x.type !== "switch") return {...x, disabled};
 
                     return {
                         ...x,
-                        defaultValue: value,
                         onChange(value: any) {
                             setSwitchStates(v => ({
                                 ...v,
@@ -98,16 +97,11 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
         if (setting.enableWith) disabled = !switchStates[setting.enableWith];
         if (setting.disableWith) disabled = !!switchStates[setting.disableWith];
 
-        const {value, ...x} = setting;
+        if (setting.type !== "switch") return buildSetting({...setting, disabled});
 
-        // @ts-expect-error
-        if (setting.type !== "switch") return buildSetting({...x, defaultValue: value, disabled});
-
-        // @ts-expect-error
         return buildSetting({
-            ...x,
+            ...setting,
             disabled,
-            defaultValue: value,
             onChange: (value: any) => {
                 setSwitchStates(v => ({...v, [setting.id]: value}));
 

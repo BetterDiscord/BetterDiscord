@@ -19,7 +19,8 @@
         "translations": "bun -r dotenv/config scripts/translations.js",
         "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js",
         "typecheck": "tsc",
-        "generate-types": "bun scripts/types"
+        "generate-types": "bun scripts/types",
+        "publish-types": "bun run generate-types && npm publish ./dist/types"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",

@@ -5,7 +5,7 @@ import RemoteAPI from "@polyfill/remote";
 
 const EDITOR_URL_REGEX = /^betterdiscord:\/\/editor\/(?:custom-css|(theme|plugin)\/([^/]+))\/?/;
 
-export default new class EditorStore extends Store {
+class EditorStore extends Store {
     constructor() {
         super();
 
@@ -80,4 +80,6 @@ export default new class EditorStore extends Store {
             renderWhitespace: SettingsManager.get("settings", "editor", "renderWhitespace")
         };
     }
-};
+}
+
+export default new EditorStore();
