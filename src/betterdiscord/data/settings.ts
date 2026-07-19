@@ -34,8 +34,8 @@ const DefaultSettings = [
         shown: false,
         settings: [
             {type: "switch", id: "bdAddonStore", value: true},
-            {type: "switch", id: "alwaysEnable", value: false},
-            {type: "switch", id: "addonEmbeds", value: true}
+            {type: "switch", id: "alwaysEnable", value: false, enableWith: "bdAddonStore"},
+            {type: "switch", id: "addonEmbeds", value: true, enableWith: "bdAddonStore"}
         ]
     },
     {
@@ -45,8 +45,8 @@ const DefaultSettings = [
         shown: false,
         settings: [
             {type: "switch", id: "customcss", value: true},
-            {type: "switch", id: "liveUpdate", value: false},
-            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}]},
+            {type: "switch", id: "liveUpdate", value: true, enableWith: "customcss"},
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}], enableWith: "customcss"},
         ]
     },
     {
@@ -63,7 +63,8 @@ const DefaultSettings = [
             {type: "switch", id: "insertSpaces", value: false},
             {type: "number", id: "tabSize", min: 1, value: 4},
             {type: "number", id: "fontSize", min: 2, value: 14},
-            {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]}
+            {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]},
+            {type: "switch", id: "alwaysOnTop", value: false}
         ]
     },
     {

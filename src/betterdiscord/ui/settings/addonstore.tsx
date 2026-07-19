@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import AddonStore from "@modules/addonstore";
 import {t} from "@common/i18n";
 import ipc from "@modules/ipc";
@@ -17,6 +17,8 @@ import Paginator from "@ui/misc/paginator";
 import Logger from "@common/logger";
 import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react";
 import type {AddonType} from "@typed/addon";
+import {useStateFromStores} from "@ui/hooks";
+import {shallowEqual} from "fast-equals";
 
 const {useState, useMemo, useCallback} = React;
 
@@ -35,16 +37,16 @@ const MAX_AMOUNT_OF_CARDS = 30;
 
 interface StoreContentProps {
     content: React.JSX.Element[];
-    refToScroller: any;
     page: number;
     setPage(page: number): void;
 }
 
-function StoreContent({content, refToScroller, page, setPage}: StoreContentProps) {
+function StoreContent({content, page, setPage}: StoreContentProps) {
+    const ref = useRef<HTMLDivElement>(null);
     const cards = useMemo(() => content.slice(page * MAX_AMOUNT_OF_CARDS, (page + 1) * MAX_AMOUNT_OF_CARDS), [content, page]);
 
     return (
-        <div className="bd-addon-store-wrapper">
+        <div className="bd-addon-store-wrapper" ref={ref}>
             <div className="bd-addon-store">
                 {cards}
             </div>
@@ -56,10 +58,9 @@ function StoreContent({content, refToScroller, page, setPage}: StoreContentProps
                 onPageChange={($page) => {
                     setPage($page);
 
-                    const node = refToScroller?.current?.getScrollerNode();
-                    if (!node) return;
-
-                    node.scrollTo({top: 0, behavior: "smooth"});
+                    ref.current
+                        ?.closest(":where([dir], [class*=scroll])")
+                        ?.scrollTo({top: 0, behavior: "smooth"});
                 }}
             />
         </div>
@@ -137,11 +138,12 @@ function TagDropdown({type, selected, onChange}: TagDropdownProps) {
 
 interface AddonStorePageProps {
     type: AddonType;
-    refToScroller?: any;
 }
 
-export default function AddonStorePage({type, refToScroller}: AddonStorePageProps) {
-    const {error, addons, loading} = AddonStore.useState();
+export default function AddonStorePage({type}: AddonStorePageProps) {
+    const {error, addons, loading} = useStateFromStores(AddonStore, () => AddonStore.getState(), [], (a, b) => {
+        return a.loading === b.loading && a.error === b.error && shallowEqual(a.addons, b.addons);
+    });
 
     const [page, setPage] = useState(0);
 
@@ -240,8 +242,8 @@ export default function AddonStorePage({type, refToScroller}: AddonStorePageProp
             <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));
 
-        return <StoreContent content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
-    }, [filtered, ascending, sort, setPage, page, refToScroller, loading]);
+        return <StoreContent content={cards} setPage={setPage} page={page} />;
+    }, [filtered, ascending, sort, setPage, page, loading]);
 
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
 

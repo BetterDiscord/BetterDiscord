@@ -5,9 +5,9 @@ import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import CommandManager, {type Command} from "@modules/commandmanager";
+import Store from "@stores/base";
 
-export default class BuiltinModule {
-
+export default class BuiltinModule extends Store {
     initialized: boolean = false;
     #commands = new Set<() => void>();
     get name() {return "Unnamed Builtin";}
@@ -16,12 +16,19 @@ export default class BuiltinModule {
     get id() {return "None";}
 
     async initialize() {
-        if (Settings.get(this.collection, this.category, this.id)) await this.enable();
+        if (Settings.get(this.collection, this.category, this.id)) {
+            await this.enable();
+            this.emitChange();
+        }
+
         Events.on("setting-updated", (collection, category, id, enabled) => {
             if (collection != this.collection || category !== this.category || id !== this.id) return;
             if (enabled) this.enable();
             else this.disable();
+
+            this.emitChange();
         });
+
         this.initialized = true;
     }
 
@@ -46,18 +53,22 @@ export default class BuiltinModule {
         });
     }
 
-    get(collection: string, category: string, id: string) {
-        if (arguments.length == 2) {
+    get<T>(id: string): T;
+    get<T>(category: string, id: string): T;
+    get<T>(collection: string, category: string, id: string): T;
+    get<T>(collection: string, category?: string, id?: string): T {
+        if (arguments.length === 2) {
             collection = this.collection;
             category = arguments[0];
             id = arguments[1];
         }
-        else if (arguments.length == 1) {
+        else if (arguments.length === 1) {
             collection = this.collection;
             category = this.category;
             id = arguments[0];
         }
-        return Settings.get(collection, category, id);
+
+        return Settings.get<T>(collection, category!, id!);
     }
 
     async enable() {

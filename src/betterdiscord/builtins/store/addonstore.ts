@@ -10,11 +10,9 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getLazy, getLazyBySource, getWithKey} from "@webpack";
+import {Filters, getBySource, getLazy, getLazyBySource, getWithKey} from "@webpack";
 import {findInTree} from "@common/utils";
-import DiscordModules from "@modules/discordmodules";
 import {getInternalInstance, getOwnerInstance} from "@utils/react";
-
 
 let MessageAccessories;
 
@@ -158,25 +156,10 @@ export default new class AddonStoreBuiltin extends Builtin {
     private extractDiscordProtocolList() {
         if (this.protocolList) return this.protocolList;
 
-        let protocols: string[] = [];
-
-        const link = DiscordModules.LinkParser;
-
-        const includes = Array.prototype.includes;
-        Array.prototype.includes = function (...args) {
-            if (includes.call(this, "discord:")) {
-                Array.prototype.includes = includes;
-                protocols = this as string[];
-
-                return false;
-            }
-
-            return includes.apply(this, args);
-        };
-
-        link.parse(["", "link", "betterdiscord://foo/bar"]);
-
-        return this.protocolList = protocols;
+        return this.protocolList = getBySource(["discord:", "mailto:"], {
+            searchDefault: false,
+            declarationFilter: x => Array.isArray(x) && x.includes("discord:")
+        }) || [];
     }
 
     async patchEmbeds() {

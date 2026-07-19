@@ -1,6 +1,4 @@
-// @ts-expect-error this is an internal package not yet converted to TS
-import request from "request";
-import fileSystem from "fs";
+import fs from "fs";
 import path from "path";
 
 import Logger from "@common/logger";
@@ -26,31 +24,11 @@ import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
 import type AddonManager from "./addonmanager";
 import type {Release} from "@typed/github";
-import type {BdWebAddon} from "@typed/betterdiscordweb";
 import {Logo} from "@ui/logo";
 import {RefreshCcwIcon} from "lucide-react";
 import type {AddonType} from "@typed/addon";
-
-const getJSON = (url: string) => {
-    return new Promise(resolve => {
-        request({
-            url: url,
-            headers: {
-                "Cache-Control": "no-cache",
-                "Pragma": "no-cache"
-            }
-        }, (error: Error, _: Response, body: string) => {
-            if (error) return resolve([]);
-            resolve(JSON.parse(body));
-        });
-    });
-};
-
-const reducer = (acc: Record<string, {name: string; version: string; id: number;}> | Record<string, never>, addon: BdWebAddon) => {
-    if (addon.version === "Unknown") return acc;
-    acc[addon.file_name] = {name: addon.name, version: addon.version, id: addon.id};
-    return acc;
-};
+import {fetch} from "./net";
+import AddonStore from "./addonstore";
 
 export default class Updater {
     static updateCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -92,7 +70,7 @@ export default class Updater {
         if (!SettingsStore.get("addons", "checkForUpdates")) return;
 
         const hours = SettingsStore.get<number>("addons", "updateInterval");
-        this.updateCheckInterval = setInterval(() => {
+        this.updateCheckInterval = setInterval(async () => {
             CoreUpdater.checkForUpdate();
             PluginUpdater.checkAll();
             ThemeUpdater.checkAll();
@@ -100,9 +78,7 @@ export default class Updater {
     }
 }
 
-
 export class CoreUpdater {
-
     static hasUpdate = false;
     static apiData: Release;
     static remoteVersion = "";
@@ -202,22 +178,26 @@ export class CoreUpdater {
             const asar = this.apiData.assets.find(a => a.name === "betterdiscord.asar");
             if (!asar) return;
 
-            const buff = await new Promise((resolve, reject) =>
-                request(asar.url, {
-                    headers: {
-                        "Content-Type": "application/octet-stream",
-                        "User-Agent": "BetterDiscord Updater",
-                        "Accept": "application/octet-stream"
-                    }
-                }, (err: Error, resp: {statusCode: number; statusMessage: string;}, body: string) => {
-                    if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
-                    return resolve(body);
-                }));
+            const res = await fetch(asar.url, {
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                    "User-Agent": "BetterDiscord Updater",
+                    "Accept": "application/octet-stream"
+                },
+                // Larger request so do not timeout
+                timeout: null
+            });
+
+            if (!res.ok) {
+                throw new Error(`${res.status} ${res.statusText}`);
+            }
+
+            const buffer = Buffer.from(await res.arrayBuffer());
 
             const asarPath = path.join(Config.get("dataPath"), "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const fs = require("original-fs");
-            fs.writeFileSync(asarPath, buff);
+            const ofs: typeof import("original-fs") = require("original-fs");
+            ofs.writeFileSync(asarPath, buffer);
 
             this.hasUpdate = false;
 
@@ -241,23 +221,19 @@ export class CoreUpdater {
     }
 }
 
-
-
 export class AddonUpdater {
     manager: AddonManager;
     type: AddonType;
-    cache: Record<string, {name: string; version: string; id: number;}> | Record<string, never>;
     pending: string[];
 
     constructor(type: AddonType) {
         this.manager = type === "plugin" ? PluginManager : ThemeManager;
         this.type = type;
-        this.cache = {};
         this.pending = [];
     }
 
     async initialize() {
-        await this.updateCache();
+        AddonStore.getAddons();
         if (SettingsStore.get("addons", "checkForUpdates")) this.checkAll();
 
         Events.on(`${this.type}-read`, addon => {
@@ -271,63 +247,58 @@ export class AddonUpdater {
         });
     }
 
-    async updateCache() {
-        this.cache = {};
-        this.pending.length = 0;
-        const addonData = (await getJSON(Web.store[(this.type + "s") as keyof typeof Web.store] as string)) as BdWebAddon[];
-        addonData.reduce(reducer, this.cache as Record<string, never>);
-    }
-
-    clearPending() {
-        this.pending.splice(0, this.pending.length);
-    }
-
     async checkAll(showNotice = true) {
-        await this.updateCache();
+        this.pending.length = 0;
+
+        await AddonStore.updaterRequestAddons();
+
         for (const addon of this.manager.addonList) this.checkForUpdate(addon.filename, addon.version);
         if (showNotice) this.showUpdateNotice();
     }
 
     checkForUpdate(filename: string, currentVersion: string) {
         if (this.pending.includes(filename)) return;
-        const info = this.cache[path.basename(filename)];
+
+        const info = AddonStore.getAddon(path.basename(filename));
         if (!info) return;
+
         let hasUpdate = info.version > currentVersion;
+
         if (semverRegex.test(info.version) && semverRegex.test(currentVersion)) {
             hasUpdate = semverComparator(currentVersion, info.version) > 0;
         }
+
         if (!hasUpdate) return;
+
         this.pending.push(filename);
     }
 
     async updateAddon(filename: string) {
-        const info = this.cache[filename];
-        request({
-            url: Web.redirects.github(info.id.toString()),
-            headers: {
-                "Cache-Control": "no-cache",
-                "Pragma": "no-cache"
-            }
-        }, (error: Error, response: {statusCode: number;}, body: string) => {
-            if (error || response.statusCode !== 200) {
-                Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
-                Toasts.error(t("Updater.addonUpdateFailed", {name: info.name, version: info.version}));
-                return;
-            }
+        const info = AddonStore.getAddon(filename);
 
-            const file = path.join(path.resolve(this.manager.addonFolder), filename);
-            fileSystem.writeFile(file, body.toString(), () => {
-                Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
-                this.pending.splice(this.pending.indexOf(filename), 1);
-            });
-        });
+        if (!info) return;
+
+        const request = await fetch(Web.redirects.github(info.id.toString()));
+
+        if (!request.ok) {
+            Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}`, request as never);
+            Toasts.error(t("Updater.addonUpdateFailed", {name: info.name, version: info.version}));
+            return;
+        }
+
+        const file = path.join(path.resolve(this.manager.addonFolder), filename);
+        fs.writeFileSync(file, await request.text());
+
+        Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
+        this.pending.splice(this.pending.indexOf(filename), 1);
     }
 
     showUpdateNotice() {
         if (!this.pending.length) return;
 
         const addonDetails = this.pending.map(filename => {
-            const info = this.cache[path.basename(filename)];
+            const info = AddonStore.getAddon(path.basename(filename));
+
             return {
                 name: info ? info.name : filename,
                 version: info ? info.version : ""

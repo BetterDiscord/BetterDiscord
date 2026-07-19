@@ -18,6 +18,8 @@ import AddonManager from "./addonmanager";
 import type {BdWebGuild, BdWebAddon} from "../types/betterdiscordweb";
 import {parseJsDoc} from "@common/utils";
 import type {Addon as AddonType} from "@typed/addon";
+import Store from "@stores/base";
+import {fetch} from "./net";
 
 
 function showConfirmDelete(addon: AddonType) {
@@ -32,7 +34,6 @@ function showConfirmDelete(addon: AddonType) {
 }
 
 export class Guild {
-
     name: string;
     id: string;
     invite: string;
@@ -81,7 +82,6 @@ export class Guild {
 }
 
 export class Addon {
-
     id: number;
     name: string;
     avatar: string;
@@ -348,8 +348,16 @@ export class Addon {
     }
 }
 
-const addonStore = new class AddonStore {
-    initialize() {
+const addonStore = new class AddonStore extends Store {
+    public hasDoneFirstRequest = false;
+
+    #promise!: Promise<void>;
+
+    public get promise() {
+        return this.#promise;
+    }
+
+    public initialize() {
         this._cache = (JsonStore.get("addon-store") as {addons: Record<string, BdWebAddon>; known: string[]; version: string;}) || {addons: {}, known: [], version: ""};
 
         if (this._cache.version !== Web.API_VERSION) {
@@ -362,12 +370,51 @@ const addonStore = new class AddonStore {
 
         // window.AddonStore = this;
 
-        this._useCache();
-        this.requestAddons(true);
+        const isEnabled = () => (
+            Settings.get<boolean>("settings", "store", "bdAddonStore")
+            || Settings.get<boolean>("settings", "addons", "checkForUpdates")
+        );
+
+        let wasEnabled = isEnabled();
+
+        const handle = () => {
+            const isNowEnabled = isEnabled();
+
+            if (wasEnabled === isNowEnabled) {
+                wasEnabled = isNowEnabled;
+                return;
+            }
+
+            wasEnabled = isNowEnabled;
+
+            if (isNowEnabled) {
+                this._useCache();
+                this.requestAddons(!this.hasDoneFirstRequest);
+                this.hasDoneFirstRequest = true;
+                return;
+            }
+
+            if (this._setTimeout) clearTimeout(this._setTimeout);
+            this._setTimeout = null;
+
+            this.#promise = Promise.resolve();
+        };
+
+        Settings.on("settings", "store", "bdAddonStore", handle);
+        Settings.on("settings", "addons", "checkForUpdates", handle);
+
+        if (wasEnabled) {
+            this._useCache();
+            this.requestAddons(true);
+            this.hasDoneFirstRequest = true;
+        }
+        else {
+            this.#promise = Promise.resolve();
+        }
     }
 
     // Caching stuff
-    _cache: {addons: Record<string, BdWebAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
+    private _cache: {addons: Record<string, BdWebAddon>; known: string[]; version: string;} = {addons: {}, known: [], version: ""};
     private _useCache() {
         for (const key in this._cache.addons) {
             if (Object.prototype.hasOwnProperty.call(this._cache.addons, key)) {
@@ -392,31 +439,29 @@ const addonStore = new class AddonStore {
         const cache = this.getAddon(idOrName);
         if (typeof cache === "object") return Promise.resolve(cache);
 
-        return this._singleAddonCache[idOrName] ??= new Promise<Addon>((resolve, reject) => {
-            request(Web.store.addon(idOrName), {
+        let res: Response | undefined;
+
+        return this._singleAddonCache[idOrName] ??= (
+            fetch(Web.store.addon(idOrName), {
                 headers: {
                     "Cache-Control": "no-cache",
                     "Pragma": "no-cache"
-                }
-                // TODO: fix typing when converting request polyfill
-            }, (err: Error, req: {aborted: boolean, statusMessage: string; ok: boolean; statusCode: number;}, body: string) => {
-                try {
-                    if (err || req.aborted || req.statusMessage !== "OK") {
-                        throw err || req;
-                    }
+                },
+                // timeout: 10_000
+            })
+                .then(x => {
+                    res = x;
+                    return x.json();
+                })
+                .then((addon: BdWebAddon) => {
+                    if (!res!.ok) throw new Error((addon as unknown as {title: string;}).title);
 
-                    const data = JSON.parse(body);
+                    this._singleAddonCache[addon.name] = this._singleAddonCache[idOrName];
+                    this._singleAddonCache[addon.id] = this._singleAddonCache[idOrName];
 
-                    if (!req.ok || data.status === 404) {
-                        throw new Error(data.title);
-                    }
-
-                    this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
-                    this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
-
-                    resolve(Addon.from(data as BdWebAddon));
-                }
-                catch (error) {
+                    return Addon.from(addon);
+                })
+                .catch((error) => {
                     Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error as Error);
 
                     Toasts.show(t("Addons.failedToFetch"), {
@@ -426,12 +471,11 @@ const addonStore = new class AddonStore {
                     // To allow future fetches
                     delete this._singleAddonCache[idOrName];
 
-                    reject(
-                        error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`)
+                    throw (
+                        error instanceof Error ? error : new Error(`Failed to request addons: Status ${res?.status || "Unknown"}`)
                     );
-                }
-            });
-        });
+                })
+        );
     }
 
     /**
@@ -444,7 +488,7 @@ const addonStore = new class AddonStore {
             if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
                 const addon = Addon.cache[key];
 
-                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
+                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.filename.toLowerCase() === decoded) return addon;
             }
         }
     }
@@ -485,7 +529,16 @@ const addonStore = new class AddonStore {
     };
 
     async requestAddons(firstRun = false) {
+        if (this.loading) {
+            Logger.debug("AddonStore", "Requested all addons but was already requesting them");
+            return this.#promise;
+        }
+
         Logger.debug("AddonStore", "Requesting all addons");
+
+        const {resolve, promise} = Promise.withResolvers<void>();
+
+        this.#promise = promise;
 
         if (!(firstRun && Object.keys(this._cache.addons).length)) {
             this.addons.length = 0;
@@ -496,7 +549,7 @@ const addonStore = new class AddonStore {
         if (this._setTimeout) window.clearTimeout(this._setTimeout);
         this._setTimeout = null;
 
-        this._emitChange();
+        this.emitChange();
 
         // If the user goes offline it will silent error
         // This is to go around that, so the store wont get stuck "loading" forever
@@ -521,7 +574,7 @@ const addonStore = new class AddonStore {
 
             this._useCache();
 
-            this._emitChange();
+            this.emitChange();
         };
 
         if (window.navigator.onLine) {
@@ -532,22 +585,30 @@ const addonStore = new class AddonStore {
             return;
         }
 
-        request(Web.store.addons, {
+        let res: Response | undefined;
+
+        fetch(Web.store.addons, {
             headers: {
                 "Cache-Control": "no-cache",
                 "Pragma": "no-cache"
-            }
-            // TODO: fix typing when converting request polyfill
-        }, (err: Error, req: {aborted: boolean, statusMessage: string; ok: boolean; statusCode: number;}, body: string) => {
-            window.removeEventListener("offline", offLineListener);
-            if (failed) return;
-
-            try {
-                if (err || req.aborted || req.statusMessage !== "OK") {
-                    throw err || req;
-                }
-
-                const json = JSON.parse(body) as BdWebAddon[];
+            },
+            timeout: null
+        })
+            .then((x) => {
+                res = x;
+                return x.json();
+            })
+            .then((x) => {
+                window.removeEventListener("offline", offLineListener);
+                if (failed) return;
+                return x;
+            }, (x) => {
+                window.removeEventListener("offline", offLineListener);
+                if (failed) return;
+                throw x;
+            })
+            .then((json: BdWebAddon[] | undefined) => {
+                if (!json) return;
 
                 const isFirstRun = this._cache.known.length === 0 && Object.keys(this._cache.addons).length === 0;
 
@@ -571,90 +632,70 @@ const addonStore = new class AddonStore {
                 this._writeCache(data);
 
                 this.error = null;
-            }
-            catch (error) {
+            })
+            .catch((error) => {
                 Logger.stacktrace("AddonStore", "Failed to request addons", error as Error);
 
                 Toasts.show(t("Addons.failedToFetch"), {
                     type: "error"
                 });
 
-                this.error = error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`);
+                this.error = error instanceof Error ? error : new Error(`Failed to request addons: Status ${res?.status || "Unknown"}`);
 
                 this._useCache();
-            }
+            })
+            .finally(() => {
+                this.loading = false;
 
-            this.loading = false;
+                this.emitChange();
 
-            this._emitChange();
+                let minutes = 60;
 
-            let minutes = 60;
+                if (this.error) {
+                    minutes = 5;
 
-            if (this.error) {
-                minutes = 5;
+                    // Do it way sooner
+                    if ("code" in this.error && (this.error as ErrnoException).code === "ECONNRESET") {
+                        minutes = 0.5;
+                    }
 
-                // If the user is not online, just wait until the user is online
-                if (this.error.message.startsWith("getaddrinfo ENOTFOUND") && !window.navigator.onLine) {
-                    Logger.debug("AddonStore", "User is offline waiting for connection...");
+                    // If the user is not online, just wait until the user is online
+                    if (this.error.message.startsWith("getaddrinfo ENOTFOUND") && !window.navigator.onLine) {
+                        Logger.debug("AddonStore", "User is offline waiting for connection...");
 
-                    window.removeEventListener("online", this._onLineListener);
-                    window.addEventListener("online", this._onLineListener);
-                    return;
+                        window.removeEventListener("online", this._onLineListener);
+                        window.addEventListener("online", this._onLineListener);
+                        return;
+                    }
                 }
-            }
 
-            this._setTimeout = window.setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
-        });
+                if (Settings.get<boolean>("settings", "store", "bdAddonStore")) {
+                    const hours = Settings.get<number>("addons", "updateInterval");
+
+                    this._setTimeout = window.setTimeout(() => this.requestAddons(), hours * minutes * 60 * 1000);
+                }
+
+                resolve();
+            });
     }
 
+    async updaterRequestAddons() {
+        await this.requestAddons(this.hasDoneFirstRequest);
+
+        this.hasDoneFirstRequest = true;
+    }
 
     private _setTimeout: number | null = null;
-
-    // Listener stuff
-    private _subscribers = new Set<() => void>();
-    private _emitChange() {
-        for (const subscriber of this._subscribers) {
-            subscriber();
-        }
-    }
 
     /**
      * get important data from the store to use in the ui
      */
-    private getState() {
+    public getState() {
         return {
             error: this.error,
             addons: this.getAddons(),
             loading: this.loading
         };
-    }
-
-    /**
-     * A react hook for {@link getState}
-     */
-    public useState() {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const [state, setState] = React.useState(() => this.getState());
-
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        React.useEffect(() => {
-            setState(this.getState());
-
-            const callback = () => setState(this.getState());
-
-            this._subscribers.add(callback);
-            return () => void this._subscribers.delete(callback);
-        }, []);
-
-        return state;
-    }
-
-    /**
-     * Add a listener to subscribe when the store changes
-     */
-    public addChangeListener(listener: () => void) {
-        this._subscribers.add(listener);
-        return () => void this._subscribers.delete(listener);
     }
 };
 

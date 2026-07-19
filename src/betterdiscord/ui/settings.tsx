@@ -9,7 +9,6 @@ import AddonPage from "@ui/settings/addonpage";
 
 import type {SettingsCategory} from "@data/settings";
 import VersionInfo from "./misc/versioninfo";
-import {findInTree} from "@common/utils";
 import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
@@ -27,7 +26,10 @@ import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
 import type {GroupOnChange} from "./settings/group";
-import {getInternalInstance} from "@utils/react";
+
+const ContextMenu = new ContextMenuPatcher();
+
+const UserSettings = getByKeys<any>(["openUserSettings", "USER_SETTINGS_MODAL_KEY"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -49,25 +51,12 @@ const SettingsRenderer = new class SettingsRenderer {
         return drawerStates[collection][group];
     }
 
-    onChange(onChange: GroupOnChange): GroupOnChange {
-        return (...args: Parameters<GroupOnChange>) => {
-            onChange(...args);
-
-            // Delay until after switch animation
-            // customcss is here to let the tab show/hide
-            // since that component is out of our control/scope
-            if (args.length >= 3 && args[1] === "customcss") {
-                setTimeout(this.forceUpdate.bind(this), 250);
-            }
-        };
-    }
-
     buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: GroupOnChange) {
         return React.createElement(SettingsPanel, {
             id,
             title,
             groups,
-            onChange: this.onChange(onChange).bind(this),
+            onChange: onChange.bind(this),
             onDrawerToggle: this.onDrawerToggle.bind(this),
             getDrawerState: this.getDrawerState.bind(this)
         });
@@ -273,13 +262,14 @@ const SettingsRenderer = new class SettingsRenderer {
                             ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSViewable,
-                            useSearchTerms: () => [panel.label]
+                            predicate: checkAll(useCustomCSSEnabled, () => !useCustomCSSClickable()),
+                            useSearchTerms: () => [panel.label],
                         });
+
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSClickable,
+                            predicate: checkAll(useCustomCSSEnabled, useCustomCSSClickable),
                             onClick: () => CustomCSS.open(),
                             useSearchTerms: () => [panel.label]
                         });
@@ -373,12 +363,14 @@ const SettingsRenderer = new class SettingsRenderer {
     async patchVersionInformation() {
         const versionDisplayModule = await getMangledLazy<{
             versionDisplay: React.FC;
-        }>(["copyValue", "RELEASE_CHANNEL"], {
-            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL")
+        }>(["copyValue", "RELEASE_CHANNEL", "Build Override"], {
+            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
         }, {
             searchDefault: false,
             mapDeclarations: true
         });
+
+        if (typeof versionDisplayModule.versionDisplay !== "function") return;
 
         Patcher.instead("SettingsManager", versionDisplayModule, "versionDisplay", () => <VersionInfo />);
     }
@@ -389,18 +381,12 @@ const SettingsRenderer = new class SettingsRenderer {
         });
     }
 
-    forceUpdate() {
-        const viewClass = DiscordModules.ViewClasses?.standardSidebarView.split(" ")[0];
-        const node = document.querySelector(`.${viewClass}`);
-        if (!node) return;
-        const stateNode = findInTree(getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
-        if (stateNode) stateNode.forceUpdate();
+    private readonly DISCORD_USER_SETTINGS_MODAL_KEY: string = typeof UserSettings?.USER_SETTINGS_MODAL_KEY === "string" ? UserSettings.USER_SETTINGS_MODAL_KEY : "USER_SETTINGS_MODAL_MODAL_KEY";
+
+    public closeUserSettingsModal() {
+        Modals.ModalActions.closeModal(this.DISCORD_USER_SETTINGS_MODAL_KEY);
     }
 };
-
-const ContextMenu = new ContextMenuPatcher();
-
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface PanelLayout {
     buildLayout(): [category: CategoryLayout];
@@ -478,13 +464,17 @@ type LayoutConstructor = {
     onClick(): void;
 });
 
+const checkAll = (...hooks: Array<() => boolean>) => () => hooks.map(hook => hook()).every(x => x);
+
+const useCustomCSSEnabled = () => useStateFromStores(Settings, () => Settings.get<boolean>("settings", "customcss", "customcss"), []);
+
 /** @description On true clicking open will open not open the page. On false will open the page */
 const useCustomCSSClickable = () => {
-    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"), []);
+    const isDetached = useStateFromStores(CustomCSS, () => CustomCSS.isDetached, []);
 
-    return ["detached", "external", "system"].includes(state);
+    return isDetached || ["detached", "external", "system"].includes(state);
 };
-const useCustomCSSViewable = () => !useCustomCSSClickable();
 
 function LayerSettingTitle() {
     const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();

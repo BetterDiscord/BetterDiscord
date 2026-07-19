@@ -34,13 +34,13 @@ const makeRequest = (url: string, options: RequestOptions, callback: RequestCall
 
         setReq(res, req);
 
-        res.addListener("error", err => {error = err;});
+        res.on("error", err => {error = err;});
 
-        res.addListener("data", chunk => {
+        res.on("data", chunk => {
             chunks.push(chunk);
         });
 
-        res.addListener("end", () => {
+        res.on("end", () => {
             const data = Object.fromEntries(dataToClone.map(h => [h, res[h]]));
 
             callback(error as Error, data, Buffer.concat(chunks));
@@ -87,9 +87,9 @@ const request = function (url: string, options: RequestOptions, callback: Reques
     };
 };
 
-type HttpsModule = { request: typeof request } & {
+type HttpsModule = {request: typeof request;} & {
     [M in typeof methods[number]]: typeof request;
-}
+};
 
 export default Object.assign({request},
     Object.fromEntries(methods.map(method => [

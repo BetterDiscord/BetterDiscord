@@ -9,7 +9,6 @@ import DiscordModules from "./discordmodules";
 import {getByKeys} from "@webpack";
 import type {StringKeys} from "@typed/util";
 
-
 export interface GenericPatch {
     name: string;
     module: object;
@@ -260,7 +259,12 @@ export default class Patcher {
             id: patch.counter,
             callback,
             unpatch: () => {
-                patch.children.splice(patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type), 1);
+                const index = patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type);
+
+                if (index === -1) return;
+
+                patch.children.splice(index, 1);
+
                 if (patch.children.length <= 0) {
                     const patchNum = this.patches.findIndex(p => p.module == module && p.functionName == functionName);
                     if (patchNum < 0) return;

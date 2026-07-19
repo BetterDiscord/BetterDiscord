@@ -56,7 +56,7 @@ export default class Web {
         const [, user, repo, commit, filePath] = match;
         const jsdelivr = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
 
-        return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
+        return `https://gibbu.github.io/ThemePreview/?file=${encodeURIComponent(jsdelivr)}`;
     }
 
     /**

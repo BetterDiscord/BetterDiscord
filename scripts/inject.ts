@@ -37,7 +37,7 @@ const resources = await (async function () {
         .filter(x => x.startsWith("app-"));
 
     if (dirs.length === 0) {
-        throw new Error("Discord requires the new updater. Please update Dicord.");
+        throw new Error("Discord requires the new updater. Please update Discord.");
     }
 
     const latest = dirs

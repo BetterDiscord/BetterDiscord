@@ -14,7 +14,6 @@ import Modals from "@ui/modals";
 import {findInTree} from "@common/utils";
 import type {Rule} from "@typed/discord/modules";
 
-
 class InstallCSS {
     static activeNotifications = new Map();
 

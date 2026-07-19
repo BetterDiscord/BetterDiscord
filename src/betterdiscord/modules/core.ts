@@ -48,15 +48,15 @@ export default new class Core {
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
-        Logger.log("Startup", "Initializing AddonStore");
-        AddonStore.initialize();
-
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
         SettingsRenderer.initialize();
+
+        Logger.log("Startup", "Initializing AddonStore");
+        AddonStore.initialize();
 
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();

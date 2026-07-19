@@ -205,6 +205,10 @@
                         "none": "Never",
                         "selection": "Selection"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "Always On Top",
+                    "note": "Make the editor window always be on top"
                 }
             }
         }
@@ -354,7 +358,8 @@
         "cssInstallError": "CSS failed to be added into CustomCSS.",
         "cssReverted": "CSS was reverted.",
         "cssReverting": "Changes will be reverted in 10 seconds",
-        "cssKept": "CSS changes kept permanently"
+        "cssKept": "CSS changes kept permanently",
+        "cssIsDetached": "Editor is detached"
     },
     "Modals": {
         "confirmAction": "Are You Sure?",

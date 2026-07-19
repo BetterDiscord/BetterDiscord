@@ -54,12 +54,14 @@ class SettingsManager extends Store {
         });
         this.setupCollection(id);
         this.loadCollection(id);
+        this.emitChange();
     }
 
     removeCollection(id: string) {
         const location = this.collections.findIndex(c => c.id == id);
         if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.collections.splice(location, 1);
+        this.emitChange();
     }
 
     registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager; icon?: LucideIcon; searchable?(): string[];}) {
@@ -78,6 +80,7 @@ class SettingsManager extends Store {
         if (onClick) section.clickListener = onClick;
         if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof (element) == "function" ? element : () => element;
         this.panels.push(section);
+        this.emitChange();
     }
 
     registerAddonPanel(manager: AddonManager) {
@@ -97,6 +100,7 @@ class SettingsManager extends Store {
         const location = this.panels.findIndex(c => c.id == id);
         if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.panels.splice(location, 1);
+        this.emitChange();
     }
 
     getPath(path: string[], collectionId = "", categoryId = "") {
@@ -173,7 +177,7 @@ class SettingsManager extends Store {
                 }
 
                 // If the setting doesn't use enableWith XOR disableWith then move on
-                if (setting.hasOwnProperty("disabled")) continue;
+                if (Object.hasOwn(setting, "disabled")) continue;
                 if (!setting.enableWith && !setting.disableWith) continue;
                 const pathString = setting.enableWith ?? setting.disableWith;
                 const path = this.getPath(pathString!.split("."), collection.id, category.id);
@@ -276,8 +280,8 @@ class SettingsManager extends Store {
         return this.onSettingChange(collection, category, id as string, value);
     }
 
-    on(collection: string, category: string, identifier: string, callback: (val: unknown) => void) {
-        const handler = (col: string, cat: string, id: string, value: unknown) => {
+    on<T>(collection: string, category: string, identifier: string, callback: (val: T) => void) {
+        const handler = (col: string, cat: string, id: string, value: T) => {
             if (col !== collection || cat !== category || id !== identifier) return;
             callback(value);
         };

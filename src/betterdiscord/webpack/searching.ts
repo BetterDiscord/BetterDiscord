@@ -28,8 +28,8 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Modul
 
         if (filter(exported, module, module.id)) {
             if (options.declarationFilter) return getDeclaration(module, options.declarationFilter);
-            if (!defaultExport && defaultKey === key) return module.exports;
             if (raw) return module as T;
+            if (!defaultExport && defaultKey === key) return module.exports;
             return exported;
         }
     }

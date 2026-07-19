@@ -223,7 +223,7 @@ export default class Modals {
 
     static showChangelogModal(options: ChangelogProps = {}) {
         const key = this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign({}, options, props)));
         });
         return key;
     }
@@ -325,6 +325,5 @@ export default class Modals {
         return options.modalKey;
     }
 }
-
 
 Modals.makeStack();

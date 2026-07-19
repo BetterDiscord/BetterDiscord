@@ -14,6 +14,7 @@ import SettingsTitle from "@ui/settings/title";
 import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 import type {CoreUpdater, ThemeUpdater, PluginUpdater, AddonUpdater} from "@modules/updater";
 import {SettingsTitleContext} from "./settings";
+import addonStore from "@modules/addonstore";
 
 
 const {useState, useCallback, useEffect} = React;
@@ -65,14 +66,14 @@ function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll
         collapsible={true}
         titleChildren={filenames.length > 1 ? makeButton(t("Updater.updateAll"), <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
         {!filenames.length && <NoUpdates type={type} />}
-        {filenames.map(f => {
-            const info = updater.cache[f];
-            const addon = updater.manager.addonList.find(a => a.filename === f)!;
+        {filenames.map(filename => {
+            const info = addonStore.getAddon(filename);
+            const addon = updater.manager.addonList.find(a => a.filename === filename)!;
 
             if (!info) return null;
 
             return <SettingItem key={addon.filename} name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
-                {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, f))}
+                {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, filename))}
                 {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{t("Updater.updateButton")}</Button> */}
             </SettingItem>;
         })}
