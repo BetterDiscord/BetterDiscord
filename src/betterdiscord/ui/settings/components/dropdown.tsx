@@ -1,10 +1,7 @@
-import React from "react";
-import {none, SettingsContext} from "@ui/contexts";
+import React, {useEffectEvent, useLayoutEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import {ChevronDown} from "lucide-react";
-
-const {useState, useCallback, useContext, useEffect, useLayoutEffect, useRef} = React;
-
+import {useItemProps, type BaseSettingProps} from "./utils";
 
 export interface SelectOption {
     id?: string;
@@ -12,7 +9,7 @@ export interface SelectOption {
     label: string;
 }
 
-export interface SelectProps {
+interface BaseSelectProps {
     value?: any;
     options: SelectOption[];
     style?: "transparent" | "default";
@@ -20,26 +17,25 @@ export interface SelectProps {
     disabled?: boolean;
 }
 
-export default function Select(props: SelectProps) {
-    const {value: initialValue, options, style, onChange, disabled} = props;
-    const [internalValue, setValue] = useState(initialValue ?? options[0].value);
-    const [isOpen, setIsOpen] = useState(false);
-    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
+export type SelectProps = BaseSelectProps & BaseSettingProps<any>;
 
-    const value = contextValue !== none ? contextValue : internalValue;
-    const isDisabled = contextValue !== none ? contextDisabled : disabled;
+export default function Select(props: SelectProps) {
+    const {options, style} = props;
+
+    const {state, setState, disabled} = useItemProps(props);
 
     const selectRef = useRef<HTMLButtonElement>(null);
     const optionsRef = useRef<HTMLUListElement>(null);
     const selectedRef = useRef<HTMLLIElement>(null);
 
-    const change = useCallback((val: any) => {
-        onChange?.(val);
-        setValue(val);
-        optionsRef.current?.togglePopover(false);
-    }, [onChange]);
+    const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
+    const change = useEffectEvent((val: any) => {
+        setState(val);
+        optionsRef.current?.togglePopover(false);
+    });
+
+    useLayoutEffect(() => {
         const selectButton = selectRef.current;
         const optionsPopover = optionsRef.current;
 
@@ -67,14 +63,15 @@ export default function Select(props: SelectProps) {
     }, [isOpen]);
 
     // ?? options[0] provides a double failsafe
-    const selected = options.find(o => o.value == value) ?? options[0];
+    const selected = options.find(o => o.value == state) ?? options[0];
+
     return (
         <>
             <button
                 ref={selectRef}
                 type="button"
-                className={clsx("bd-select", isDisabled && "bd-select-disabled", style == "transparent" && "bd-select-transparent")}
-                disabled={isDisabled}
+                className={clsx("bd-select", disabled && "bd-select-disabled", style == "transparent" && "bd-select-transparent")}
+                disabled={disabled}
             >
                 <span className="bd-select-value">{selected.label}</span>
                 <ChevronDown size="16px" className="bd-select-arrow" />

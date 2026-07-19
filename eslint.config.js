@@ -146,7 +146,9 @@ export default ts.config(
         files: ["src/betterdiscord/**/*"],
         settings: {
             react: {
-                version: "18.3"
+                // We lie
+                // for useEffectEvent polyfill
+                version: "19.2"
             }
         },
         languageOptions: {

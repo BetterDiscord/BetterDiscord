@@ -1,7 +1,6 @@
 import React from "react";
 import Divider from "@ui/divider";
 
-
 export interface SettingItemProps {
     id: string;
     name?: string;

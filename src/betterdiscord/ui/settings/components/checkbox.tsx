@@ -2,10 +2,10 @@ import clsx from "clsx";
 import React from "react";
 import Flex from "@ui/base/flex";
 import {CheckIcon} from "lucide-react";
+import {useItemProps, type BaseSettingProps} from "./utils";
 
-
-export interface CheckboxProps {
-    value: boolean,
+interface CheckboxPropsBase {
+    defaultValue?: boolean,
     onChange(newState: boolean): void,
     className?: string,
     inputClassName?: string,
@@ -17,24 +17,17 @@ export interface CheckboxProps {
     reverse?: boolean;
 }
 
+export type CheckboxProps = CheckboxPropsBase & BaseSettingProps<boolean>;
+
 export default function CheckBox(props: CheckboxProps) {
-    const [state, setState] = React.useState(props.value);
-
-    const onChange = React.useCallback(() => {
-        if (props.disabled) return;
-        setState((value) => {
-            props.onChange?.(!value);
-
-            return !value;
-        });
-    }, [props]);
+    const {state, setState: toggle, disabled} = useItemProps<boolean, React.MouseEvent>(props, (_, state) => !state);
 
     return (
         <Flex
-            className={clsx("bd-checkbox", props.className, {"bd-checkbox-disabled": props.disabled, "bd-checkbox-has-label": props.label, "bd-checkbox-reverse": props.reverse})}
+            className={clsx("bd-checkbox", props.className, {"bd-checkbox-disabled": disabled, "bd-checkbox-has-label": props.label, "bd-checkbox-reverse": props.reverse})}
             align={Flex.Align.CENTER}
             direction={props.reverse ? Flex.Direction.HORIZONTAL_REVERSE : Flex.Direction.HORIZONTAL}
-            onClick={onChange}
+            onClick={toggle}
         >
             <input
                 type="checkbox"

@@ -60,7 +60,7 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
 
             return React.createElement(Group, {
                 ...setting,
-                settings: setting.settings.map((x) => {
+                settings: setting.settings.map(({value, ...x}) => {
                     const subgroup = switchStates[setting.id] as Record<string, boolean>;
 
                     let disabled = false;
@@ -68,10 +68,11 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
                     if (x.enableWith) disabled = subgroup[x.enableWith];
                     if (x.disableWith) disabled = !subgroup[x.disableWith];
 
-                    if (x.type !== "switch") return {...x, disabled};
+                    if (x.type !== "switch") return {...x, defaultValue: value, disabled};
 
                     return {
                         ...x,
+                        defaultValue: value,
                         onChange(value: any) {
                             setSwitchStates(v => ({
                                 ...v,
@@ -97,11 +98,16 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
         if (setting.enableWith) disabled = !switchStates[setting.enableWith];
         if (setting.disableWith) disabled = !!switchStates[setting.disableWith];
 
-        if (setting.type !== "switch") return buildSetting({...setting, disabled});
+        const {value, ...x} = setting;
 
+        // @ts-expect-error
+        if (setting.type !== "switch") return buildSetting({...x, defaultValue: value, disabled});
+
+        // @ts-expect-error
         return buildSetting({
-            ...setting,
+            ...x,
             disabled,
+            defaultValue: value,
             onChange: (value: any) => {
                 setSwitchStates(v => ({...v, [setting.id]: value}));
 
@@ -244,7 +250,11 @@ class UI {
      * @returns A SettingItem with a an input as the child
      */
     buildSettingItem(setting: Setting | CustomSetting | ButtonSetting) {
-        return buildSetting(setting);
+        // @ts-expect-error idk how to type
+        const {value, ...x} = setting;
+
+        // @ts-expect-error Idk how to type
+        return buildSetting({...x, defaultValue: value});
     }
 
     /**
