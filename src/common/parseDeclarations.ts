@@ -24,7 +24,8 @@ const enum CharCodes {
     Underscore = 95,
     Dollar = 36,
     Space = 32,
-    Exclamation = 33
+    Exclamation = 33,
+    Period = 46
 }
 
 const singleDeclarations = ["function ", "async function ", "class "];
@@ -156,10 +157,15 @@ function getVariableName(moduleString: string, startIndex: number): [string, num
         else {
             isFirstCharacter = false;
 
-            // If we're at a colon the variable is being renamed in an object destructure
             if (code === CharCodes.Colon) {
+                // If we're at a colon the variable is being renamed in an object destructure
                 startIndex = i + 1;
                 isFirstCharacter = true;
+            }
+            else if(moduleString.startsWith("...", i)) {
+                // The variable is a rest prop, skip the dots
+                startIndex = i + 3;
+                i += 2;
             }
             else if (!isVariableCharacter(code)) {
                 return [moduleString.slice(startIndex, i), destructuredAmount, i - initialStart];
