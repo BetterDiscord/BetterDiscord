@@ -161,7 +161,7 @@ function getVariableName(moduleString: string, startIndex: number): [string, num
                 startIndex = i + 1;
                 isFirstCharacter = true;
             }
-            else if(moduleString.startsWith("...", i)) {
+            else if (moduleString.startsWith("...", i)) {
                 // The variable is a rest prop, skip the dots
                 startIndex = i + 3;
                 i += 2;
