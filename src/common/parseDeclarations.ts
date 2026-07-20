@@ -24,8 +24,7 @@ const enum CharCodes {
     Underscore = 95,
     Dollar = 36,
     Space = 32,
-    Exclamation = 33,
-    Period = 46
+    Exclamation = 33
 }
 
 const singleDeclarations = ["function ", "async function ", "class "];
