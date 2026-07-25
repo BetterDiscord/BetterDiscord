@@ -39,26 +39,28 @@ function RadioIndicator({checked}: {checked: boolean;}) {
 export default function Radio(props: RadioProps) {
     const {name, options} = props;
 
-    const {state, setState, disabled} = useItemProps<RadioOption[], React.ChangeEvent<HTMLInputElement>>(props, (index) => (
-        options[index.currentTarget.valueAsNumber].value
-    ));
+    const {state, setState, disabled} = useItemProps<any>(props);
 
     const index = useMemo(() => options.findIndex(o => o.value === state), [state, options]);
 
-    function renderOption(opt: RadioOption, i: number) {
-        const isSelected = index === i;
+    return (
+        <div className={`bd-radio-group${disabled ? " bd-radio-disabled" : ""}`}>
+            {options.map((opt, i) => {
+                const isSelected = index === i;
 
-        return (
-            <label key={i} className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
-                <input onChange={setState} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
-                <RadioIndicator checked={isSelected} />
-                <div className="bd-radio-label-wrap">
-                    <div className="bd-radio-label">{opt.name}</div>
-                    <div className="bd-radio-description">{opt.description}</div>
-                </div>
-            </label>
-        );
-    }
+                return (
+                    <label key={i} className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
+                        <input onChange={setState.bind(null, opt.value, false)} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
 
-    return <div className={`bd-radio-group${disabled ? " bd-radio-disabled" : ""}`}>{options.map(renderOption)}</div>;
+                        <RadioIndicator checked={isSelected} />
+
+                        <div className="bd-radio-label-wrap">
+                            <div className="bd-radio-label">{opt.name}</div>
+                            <div className="bd-radio-description">{opt.description}</div>
+                        </div>
+                    </label>
+                );
+            })}
+        </div>
+    );
 }

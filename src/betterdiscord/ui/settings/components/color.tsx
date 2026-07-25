@@ -45,9 +45,7 @@ const getContrastColor = (color: HexString | number[]) => {
 };
 
 interface ColorpickerPropsBase {
-    onChange?(newValue: HexString): void;
     colors?: ColorType[];
-    disabled?: boolean;
     defaultColor?: ColorType;
 }
 
