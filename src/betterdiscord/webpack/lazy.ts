@@ -1,7 +1,7 @@
 import type {Webpack} from "@typed/discord";
 import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
-import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
+import {getDeclaration, getDefaultKey, makeException, shouldSkipModule, wrapModuleFilter} from "./shared";
 import {getBulk} from "./utilities";
 import Logger from "@common/logger.ts";
 
@@ -13,10 +13,11 @@ const LazyChunkRegex = /Promise\.all\(\[((?:\w\.e\("?\d+"?\),?)+)\]\)\.then\(\w(
 
 interface LazyQueue<T = any> {
     query: Webpack.BulkQueries;
+
     resolve(value: QueueResolvedState<T>): void;
 }
 
-type QueueResolvedState<T> = {state: "aborted";} | {state: "resolved", value: T;};
+type QueueResolvedState<T> = { state: "aborted"; } | { state: "resolved", value: T; };
 
 const queue = {
     /** @private */
@@ -102,7 +103,15 @@ const queue = {
 };
 
 export async function getLazy<T>(filter: Webpack.ModuleFilter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
-    const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false, declarationFilter} = options;
+    const {
+        signal: abortSignal,
+        defaultExport = true,
+        searchDefault = true,
+        searchExports = false,
+        raw = false,
+        fatal = false,
+        declarationFilter
+    } = options;
     if (!options.cacheId) options.cacheId = null;
 
     const state = await queue.enqueue<T>(filter, options);
@@ -235,7 +244,8 @@ export async function loadEntry(string: NOOP | string) {
                 if (/importScripts\(|self\.postMessage/.test(content)) return;
 
                 await webpackRequire.e(id);
-            } catch (e) {
+            }
+            catch (e) {
                 Logger.error(e);
             }
         })).then(() => {
