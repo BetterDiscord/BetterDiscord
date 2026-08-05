@@ -229,7 +229,7 @@ export async function loadEntry(string: NOOP | string) {
     const chunks = end.matchAll(LazyChunkRegex);
     if (!chunks) return null;
 
-    const entries: string[] | number[] = [];
+    const entries: string[] = [];
 
     for (const [, rawChunkIds, entryPoint] of chunks) {
         const chunkIds = Array.from(rawChunkIds.matchAll(ChunkIdRegex), m => m[1]);
@@ -246,7 +246,7 @@ export async function loadEntry(string: NOOP | string) {
                 await webpackRequire.e(id);
             }
             catch (e) {
-                Logger.error(e);
+                Logger.error((e as string));
             }
         })).then(() => {
             if (webpackRequire.m[entryPoint]) {
