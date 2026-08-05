@@ -3,10 +3,13 @@ import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
 import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
 import {getBulk} from "./utilities";
+import Logger from "@common/logger.ts";
 
 const ChunkIdRegex = /.{1}\.e\("(\d+)"\)/g;
 const FinalModuleIdRegex = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/g;
 const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1}\.bind\(.{1},\s*(\d+)\)\)/g;
+
+const LazyChunkRegex = /Promise\.all\(\[((?:\w\.e\("?\d+"?\),?)+)\]\)\.then\(\w(?:\.\w)?\.bind\(\w,\s*"?(\d+)"?\)\)/g;
 
 interface LazyQueue<T = any> {
     query: Webpack.BulkQueries;
@@ -200,4 +203,48 @@ export async function forceLoad(id: string | number): Promise<any[]> {
     }
 
     return loadedModules;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+type NOOP = () => any | Function;
+const strip = (str: string) => str.replace(/\s+/g, "");
+
+export async function loadEntry(string: NOOP | string) {
+    if (!string) return null;
+
+    const start = String(string);
+    if (!start) return null;
+
+    const end = strip(start);
+
+    const chunks = end.matchAll(LazyChunkRegex);
+    if (!chunks) return null;
+
+    const entries: string[] | number[] = [];
+
+    for (const [, rawChunkIds, entryPoint] of chunks) {
+        const chunkIds = Array.from(rawChunkIds.matchAll(ChunkIdRegex), m => m[1]);
+        if (chunkIds.length === 0) continue;
+
+        await Promise.all(chunkIds.map(async id => {
+            const path = webpackRequire.u(id);
+            if (path == null || path.includes("undefined.js")) return;
+
+            try {
+                const content = await fetch(webpackRequire.p + path).then(r => r.text());
+                if (/importScripts\(|self\.postMessage/.test(content)) return;
+
+                await webpackRequire.e(id);
+            } catch (e) {
+                Logger.error(e);
+            }
+        })).then(() => {
+            if (webpackRequire.m[entryPoint]) {
+                webpackRequire(entryPoint);
+                entries.push(entryPoint);
+            }
+        });
+    }
+
+    return entries.map(x => webpackRequire(x));
 }

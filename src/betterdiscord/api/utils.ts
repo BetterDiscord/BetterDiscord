@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import {comparator} from "@common/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
-import {forceLoad} from "@webpack";
+import {forceLoad, loadEntry} from "@webpack";
 import Store from "@stores/base";
 import {mapObject} from "@utils/object";
 import cache from "@common/utils/cache";
@@ -27,9 +27,17 @@ class Utils {
      * Loads the module ids within a chunk
      *
      * @param id Module with the chunk id.
-     * @returns Resolved chunk module
+     * @returns Resolved chunk modules
      */
     forceLoad = forceLoad;
+
+    /**
+     * Loads the entry ids of a method.
+     *
+     * @param string Function source.
+     * @returns Resolved chumk module
+     */
+    loadEntry = loadEntry;
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
