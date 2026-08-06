@@ -45,7 +45,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           archive: false
-          files: |
+          path: |
             dist/betterdiscord.asar
             dist/checksum.txt
 
@@ -68,6 +68,6 @@ jobs:
           body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
           tag_name: canary
           fail_on_unmatched_files: true
-          files: |
+          path: |
             dist/betterdiscord.asar
             dist/checksum.txt
