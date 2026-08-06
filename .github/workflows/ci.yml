@@ -44,7 +44,7 @@ jobs:
         with:
           if-no-files-found: error
           retention-days: 30
-          archive: false
+          archive: true
           path: |
             dist/betterdiscord.asar
             dist/checksum.txt
