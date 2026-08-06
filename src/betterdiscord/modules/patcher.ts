@@ -93,7 +93,7 @@ export default class Patcher {
 
     static makeOverride<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         return function BDPatcher(this: any, ...args: any[]) {
-            let returnValue: ReturnType<M[K] extends (...params: unknown[]) => unknown ? M[K] : () => any> | undefined;
+            let returnValue: unknown;
 
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, args);
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
@@ -110,7 +110,14 @@ export default class Patcher {
             else {
                 const getPatch = (index: number) => {
                     const insteadPatch = insteads[index];
-                    if (!insteadPatch) return patch.originalFunction.bind(this);
+                    if (!insteadPatch) {
+                        // Why eslint? It is `this` why care if its duplicated
+                        // eslint-disable-next-line no-shadow
+                        return function (this: any, ...innerArgs: any[]) {
+                            if (typeof returnValue === "undefined") return returnValue = patch.originalFunction.apply(this, innerArgs);
+                            return patch.originalFunction.apply(this, innerArgs);
+                        };
+                    }
 
                     // Why eslint? It is `this` why care if its duplicated
                     // eslint-disable-next-line no-shadow
