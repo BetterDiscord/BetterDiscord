@@ -111,9 +111,11 @@ export default class Patcher {
                     const insteadPatch = insteads[index];
                     if (!insteadPatch) return patch.originalFunction.bind(this);
 
-                    return function (this: any, ...args: any[]) {
+                    // Why eslint? It is `this` why care if its duplicated
+                    // eslint-disable-next-line no-shadow
+                    return function (this: any, ...innerArgs: any[]) {
                         try {
-                            const tempReturn = insteadPatch.callback(this, args, getPatch(index + 1));
+                            const tempReturn = insteadPatch.callback(this, innerArgs, getPatch(index + 1));
                             if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
                         }
                         catch (err) {
