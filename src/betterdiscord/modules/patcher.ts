@@ -107,15 +107,22 @@ export default class Patcher {
             const insteads = patch.children.filter(c => c.type === "instead");
             if (!insteads.length) {returnValue = patch.originalFunction.apply(this, args);}
             else {
-                for (const insteadPatch of insteads) {
-                    try {
-                        const tempReturn = insteadPatch.callback(this, args, patch.originalFunction.bind(this));
-                        if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
-                    }
-                    catch (err) {
-                        Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
-                    }
-                }
+                const getPatch = (index: number) => {
+                    const insteadPatch = insteads[index];
+                    if (!insteadPatch) return patch.originalFunction.bind(this);
+
+                    return function (this: any, ...args: any[]) {
+                        try {
+                            const tempReturn = insteadPatch.callback(this, args, getPatch(index + 1));
+                            if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
+                        }
+                        catch (err) {
+                            Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
+                        }
+                    };
+                };
+
+                getPatch(0).apply(this, args);
             }
 
             for (const slavePatch of patch.children.filter(c => c.type === "after")) {
