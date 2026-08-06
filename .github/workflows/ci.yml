@@ -44,10 +44,18 @@ jobs:
         with:
           if-no-files-found: error
           retention-days: 30
-          archive: true
-          path: |
-            dist/betterdiscord.asar
-            dist/checksum.txt
+          archive: false
+          files: dist/betterdiscord.asar
+
+      # Only upload artifact on PR, otherwise it gets pushed to canary
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        if: ${{github.event_name == 'pull_request'}}
+        with:
+          if-no-files-found: error
+          retention-days: 30
+          archive: false
+          files: dist/checksum.txt
 
       # Update the canary tag on push to development
       - name: Update tag
