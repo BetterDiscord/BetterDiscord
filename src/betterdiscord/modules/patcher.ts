@@ -93,7 +93,8 @@ export default class Patcher {
 
     static makeOverride<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         return function BDPatcher(this: any, ...args: any[]) {
-            let returnValue;
+            let returnValue: ReturnType<M[K] extends (...params: unknown[]) => unknown ? M[K] : () => any> | undefined;
+
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, args);
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
                 try {
@@ -121,6 +122,8 @@ export default class Patcher {
                         catch (err) {
                             Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
                         }
+
+                        return returnValue;
                     };
                 };
 
