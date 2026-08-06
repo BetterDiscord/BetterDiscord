@@ -45,7 +45,9 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           archive: false
-          path: dist/betterdiscord.asar
+          files: |
+            dist/betterdiscord.asar
+            dist/checksum.txt
 
       # Update the canary tag on push to development
       - name: Update tag
@@ -66,4 +68,6 @@ jobs:
           body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
           tag_name: canary
           fail_on_unmatched_files: true
-          files: dist/betterdiscord.asar
+          files: |
+            dist/betterdiscord.asar
+            dist/checksum.txt
