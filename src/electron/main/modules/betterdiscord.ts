@@ -16,6 +16,8 @@ if (process.platform === "win32" || process.platform === "darwin") bdFolder = pa
 else bdFolder = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"); // This will help with snap packages eventually
 bdFolder = path.join(bdFolder, "BetterDiscord") + "/";
 
+const BD_ACCENT_COLOR = "#3E82E5";
+
 let hasCrashed = false;
 export default class BetterDiscord {
     static _settings: Record<string, Record<string, any>>;
@@ -125,13 +127,14 @@ export default class BetterDiscord {
 
         try {
             const hex = systemPreferences.getAccentColor();
+            if (!hex) return BD_ACCENT_COLOR;
 
             // Docs state this doesnt return with # but it does (for me?)
             if (hex[0] === "#") return hex;
             return `#${hex}`;
         }
         catch {
-            return "#3E82E5";
+            return BD_ACCENT_COLOR;
         }
     }
 
