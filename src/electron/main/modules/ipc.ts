@@ -1,5 +1,5 @@
 import {spawn} from "child_process";
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
+import {ipcMain as ipc, BrowserWindow, app, dialog, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
@@ -128,12 +128,6 @@ const setWindowSize = (event: IpcMainEvent, width: number, height: number) => {
     window?.setSize(width, height);
 };
 
-const getAccentColor = () => {
-    // intentionally left blank so that fallback colors will be used
-    return ((process.platform == "win32" || process.platform == "darwin")
-        && systemPreferences.getAccentColor()) || "";
-};
-
 const stopDevtoolsWarning = (event: IpcMainEvent) => event.sender.removeAllListeners("devtools-opened");
 
 
@@ -220,7 +214,6 @@ export default class IPCMain {
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
             ipc.on(IPCEvents.EDITOR_SETTINGS_GET, getSettings);
-            ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);

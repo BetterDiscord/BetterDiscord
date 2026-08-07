@@ -15,7 +15,6 @@ import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
 import DiscordModules from "./discordmodules";
 
-import IPC from "./ipc";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
@@ -39,8 +38,6 @@ export default new class Core {
     async startup() {
         if (this.hasStarted) return;
         this.hasStarted = true;
-
-        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
         this.trustBetterDiscordProtocol();
 

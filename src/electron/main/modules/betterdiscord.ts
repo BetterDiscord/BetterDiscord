@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import electron, {BrowserWindow} from "electron";
+import electron, {BrowserWindow, systemPreferences} from "electron";
 import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
@@ -120,8 +120,22 @@ export default class BetterDiscord {
         if (!success) return; // TODO: cut a fatal log
     }
 
-    static setup(browserWindow: BrowserWindow) {
+    private static getAccentColor() {
+        if (process.env.BD_ACCENT_COLOR) return process.env.BD_ACCENT_COLOR;
 
+        try {
+            const hex = systemPreferences.getAccentColor();
+
+            // Docs state this doesnt return with # but it does (for me?)
+            if (hex[0] === "#") return hex;
+            return `#${hex}`;
+        }
+        catch {
+            return "#3E82E5";
+        }
+    }
+
+    static setup(browserWindow: BrowserWindow) {
         // Setup some useful vars to avoid blocking IPC calls
         try {
             // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -137,10 +151,30 @@ export default class BetterDiscord {
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
         process.env.BETTERDISCORD_DATA_PATH = bdFolder;
 
+        let promise: Promise<string>;
+        let isAwaiting = false;
+
+        const onChange = async () => {
+            if (isAwaiting) return;
+
+            isAwaiting = true;
+
+            await browserWindow.webContents.removeInsertedCSS(await promise);
+
+            isAwaiting = false;
+
+            promise = browserWindow.webContents.insertCSS(`:root { --os-accent-color: ${this.getAccentColor()}; }`);
+        };
+
+        systemPreferences.on("accent-color-changed", onChange);
+        browserWindow.once("closed", () => systemPreferences.off("accent-color-changed", onChange));
+
         // When DOM is available, pass the renderer over the wall
         browserWindow.webContents.on("dom-ready", () => {
-            // Temporary fix for new canary/ptb changes
-            if (!hasCrashed) return;
+            if (!hasCrashed) {
+                promise = browserWindow.webContents.insertCSS(`:root { --os-accent-color: ${this.getAccentColor()}; }`);
+                return;
+            }
 
             // If a previous crash was detected, show a message explaining why BD isn't there
             electron.dialog.showMessageBox({
