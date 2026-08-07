@@ -47,7 +47,7 @@ jobs:
           archive: false
           path: dist/betterdiscord.asar
 
-      # Only upload checksum artifact on PR, otherwise it gets pushed to canary
+      # Only upload checksums artifact on PR, otherwise it gets pushed to canary
       - name: Upload checksum artifact
         uses: actions/upload-artifact@v7
         if: ${{github.event_name == 'pull_request'}}
@@ -55,7 +55,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           archive: false
-          path: dist/checksum.txt
+          path: dist/checksums.txt
 
       # Update the canary tag on push to development
       - name: Update tag
@@ -78,4 +78,4 @@ jobs:
           fail_on_unmatched_files: true
           path: |
             dist/betterdiscord.asar
-            dist/checksum.txt
+            dist/checksums.txt

@@ -9,7 +9,7 @@ import buildPackage from "./helpers/package";
 
 const dist = path.resolve(__dirname, "..", "dist");
 const bundleFile = path.join(dist, "betterdiscord.asar");
-const checksumFile = path.join(dist, "checksum.txt");
+const checksumsFile = path.join(dist, "checksums.txt");
 
 const files = [
     "dist/main.js",
@@ -36,11 +36,11 @@ const makeHash = () => {
             arr[index] = `${sha256}  ${fp.slice(5)}`;
         }
 
-        fs.writeFileSync(checksumFile, arr.join("\n"));
-        console.log(`    ✅ Successfully created checksum ${checksumFile}`);
+        fs.writeFileSync(checksumsFile, arr.join("\n"));
+        console.log(`    ✅ Successfully created checksums ${checksumsFile}`);
     }
     catch (err) {
-        console.log(`    ❌ Could not create checksum: ${err instanceof Error ? err.message : String(err)}`);
+        console.log(`    ❌ Could not create checksums: ${err instanceof Error ? err.message : String(err)}`);
     }
 };
 
