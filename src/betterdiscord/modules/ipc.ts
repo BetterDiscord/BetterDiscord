@@ -58,10 +58,6 @@ export default new class IPCRenderer {
         return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
     }
 
-    getSystemAccentColor(): Promise<string> {
-        return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
-    }
-
     openPath(path: string) {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
