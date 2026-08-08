@@ -76,6 +76,6 @@ jobs:
           body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
           tag_name: canary
           fail_on_unmatched_files: true
-          path: |
+          files: |
             dist/betterdiscord.asar
             dist/checksums.txt
