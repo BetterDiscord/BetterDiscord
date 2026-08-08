@@ -214,8 +214,7 @@ export async function forceLoad(id: string | number): Promise<any[]> {
     return loadedModules;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-type NOOP = () => any | Function;
+type NOOP = (...args: unknown[]) => unknown;
 const strip = (str: string) => str.replace(/\s+/g, "");
 
 export async function loadEntry(string: NOOP | string) {
