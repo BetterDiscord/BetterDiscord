@@ -19,6 +19,8 @@ interface LazyQueue<T = any> {
 
 type QueueResolvedState<T> = { state: "aborted"; } | { state: "resolved", value: T; };
 
+const ContentCache = new Map();
+
 const queue = {
     /** @private */
     _scheduled: false,
@@ -225,35 +227,37 @@ export async function loadEntry(string: NOOP | string) {
 
     const end = strip(start);
 
-    const chunks = end.matchAll(LazyChunkRegex);
-    if (!chunks) return null;
+    const chunks = Array.from(end.matchAll(LazyChunkRegex));
+    if (chunks.length === 0) return null;
 
     const entries: string[] = [];
 
-    for (const [, rawChunkIds, entryPoint] of chunks) {
+    await Promise.all(chunks.map(async ([, rawChunkIds, entryPoint]) => {
         const chunkIds = Array.from(rawChunkIds.matchAll(ChunkIdRegex), m => m[1]);
-        if (chunkIds.length === 0) continue;
+        if (chunkIds.length === 0) return;
 
         await Promise.all(chunkIds.map(async id => {
             const path = webpackRequire.u(id);
             if (path == null || path.includes("undefined.js")) return;
 
             try {
-                const content = await fetch(webpackRequire.p + path).then(r => r.text());
+                const content = ContentCache.has(id) ? ContentCache.get(id) : await fetch(webpackRequire.p + path).then(r => r.text());
                 if (/importScripts\(|self\.postMessage/.test(content)) return;
+
+                ContentCache.set(id, content);
 
                 await webpackRequire.e(id);
             }
             catch (e) {
                 Logger.error((e as string));
             }
-        })).then(() => {
-            if (webpackRequire.m[entryPoint]) {
-                webpackRequire(entryPoint);
-                entries.push(entryPoint);
-            }
-        });
-    }
+        }));
+
+        if (webpackRequire.m[entryPoint]) {
+            webpackRequire(entryPoint);
+            entries.push(entryPoint);
+        }
+    }));
 
     return entries.map(x => webpackRequire(x));
 }
