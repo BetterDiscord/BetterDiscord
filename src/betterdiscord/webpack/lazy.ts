@@ -241,10 +241,8 @@ export async function loadEntry(string: NOOP | string) {
             if (path == null || path.includes("undefined.js")) return;
 
             try {
-                const content = ContentCache.has(id) ? ContentCache.get(id) : await fetch(webpackRequire.p + path).then(r => r.text());
+                const content = await (ContentCache.get(id) ?? ContentCache.set(id, fetch(webpackRequire.p + path).then(r => r.text())).get(id));
                 if (/importScripts\(|self\.postMessage/.test(content)) return;
-
-                ContentCache.set(id, content);
 
                 await webpackRequire.e(id);
             }
