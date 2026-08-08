@@ -37,8 +37,8 @@ jobs:
           BRANCH_NAME: ${{github.head_ref || github.ref_name}}
           COMMIT_HASH: ${{github.sha}}
 
-      # Only upload artifact on PR, otherwise it gets pushed to canary
-      - name: Upload artifact
+      # Only upload asar artifact on PR, otherwise it gets pushed to canary
+      - name: Upload asar artifact
         uses: actions/upload-artifact@v7
         if: ${{github.event_name == 'pull_request'}}
         with:
@@ -46,6 +46,16 @@ jobs:
           retention-days: 30
           archive: false
           path: dist/betterdiscord.asar
+
+      # Only upload checksums artifact on PR, otherwise it gets pushed to canary
+      - name: Upload checksum artifact
+        uses: actions/upload-artifact@v7
+        if: ${{github.event_name == 'pull_request'}}
+        with:
+          if-no-files-found: error
+          retention-days: 30
+          archive: false
+          path: dist/checksums.txt
 
       # Update the canary tag on push to development
       - name: Update tag
@@ -66,4 +76,6 @@ jobs:
           body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
           tag_name: canary
           fail_on_unmatched_files: true
-          files: dist/betterdiscord.asar
+          path: |
+            dist/betterdiscord.asar
+            dist/checksums.txt
