@@ -58,12 +58,6 @@ interface BrowserClipboardServiceType {
         readText: (t?: string) => string | Promise<string>;
     };
 }
-interface TextAreaInputControllerType {
-    prototype: {
-        _actual: HTMLElement;
-        setSelectionRange(this: TextAreaInputControllerType["prototype"]): void;
-    };
-}
 
 export default new class Editor {
     initPromise: Promise<void> | null = null;
