@@ -85,7 +85,7 @@ Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", (that, args, or
         return;
     }
 
-    if ((that as HTMLElement).matches("textarea.monaco-mouse-cursor-text")) {
+    if ((that as HTMLElement).closest(".monaco-editor")) {
         shouldSkipNextFocus = true;
     }
 
