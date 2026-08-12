@@ -200,12 +200,12 @@ export default function CodeEditor({
 
             // This is so bad...
             node.addEventListener("click", () => Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", () => {}), {
-                passive: true
+                passive: true,
+                capture: true
             });
 
             node.addEventListener("click", () => Patcher.unpatchAll("monaco~editor"), {
-                passive: true,
-                capture: true
+                passive: true
             });
 
             setEditor(monacoEditor);
