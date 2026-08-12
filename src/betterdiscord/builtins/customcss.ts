@@ -95,7 +95,6 @@ export default new class CustomCSS extends Builtin {
     }
 
     async disabled() {
-        SettingsStore.removePanel(this.id);
         this.unwatchContent();
         this.insertCSS("");
     }
