@@ -50,6 +50,8 @@ export default new class CustomCSS extends Builtin {
     }
 
     async initialize() {
+        super.initialize();
+
         SettingsStore.registerPanel(this.id, t("Panels.customcss"), {
             order: 2,
             icon: PencilIcon,
