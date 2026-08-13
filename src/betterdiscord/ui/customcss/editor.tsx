@@ -78,6 +78,20 @@ export interface EditorRef {
     node: HTMLDivElement | null;
 }
 
+let shouldSkipNextFocus = false;
+Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", (that, args, original) => {
+    if (shouldSkipNextFocus) {
+        shouldSkipNextFocus = false;
+        return;
+    }
+
+    if ((that as HTMLElement).closest(".monaco-editor")) {
+        shouldSkipNextFocus = true;
+    }
+
+    return original.apply(that, args);
+});
+
 export default function CodeEditor({
     value,
     language: requestedLang = "css",
@@ -197,17 +211,6 @@ export default function CodeEditor({
             });
 
             const monacoEditor = window.monaco.editor.create(node, getOptions());
-
-            // This is so bad...
-            node.addEventListener("click", () => Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", () => {}), {
-                passive: true
-            });
-
-            node.addEventListener("click", () => Patcher.unpatchAll("monaco~editor"), {
-                passive: true,
-                capture: true
-            });
-
             setEditor(monacoEditor);
 
             monacoEditor.onDidChangeCursorSelection(() => {

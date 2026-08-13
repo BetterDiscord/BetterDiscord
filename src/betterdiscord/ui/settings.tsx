@@ -295,8 +295,7 @@ const SettingsRenderer = new class SettingsRenderer {
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (_, __, res) => {
-            let index = res.findIndex((layout) => (layout as any).key === "activity_section") + 1;
-            if (index === -1) index = res.length;
+            const index = res.findIndex((layout) => (layout as any).key === "games_and_apps_section") + 1;
 
             res.splice(index, 0, section);
         });

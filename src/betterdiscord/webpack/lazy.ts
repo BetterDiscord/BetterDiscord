@@ -1,19 +1,25 @@
 import type {Webpack} from "@typed/discord";
 import {getModule} from "./searching";
 import {lazyListeners, webpackRequire} from "./require";
-import {shouldSkipModule, getDefaultKey, wrapModuleFilter, makeException, getDeclaration} from "./shared";
+import {getDeclaration, getDefaultKey, makeException, shouldSkipModule, wrapModuleFilter} from "./shared";
 import {getBulk} from "./utilities";
+import Logger from "@common/logger.ts";
 
 const ChunkIdRegex = /.{1}\.e\("(\d+)"\)/g;
 const FinalModuleIdRegex = /.{1}\.bind\(.{1},\s*(\d+)\s*\)/g;
 const CreatePromiseId = /createPromise:\s*\(\)\s*=>\s*([^}]+)\.then\(.{1}\.bind\(.{1},\s*(\d+)\)\)/g;
 
+const LazyChunkRegex = /Promise\.all\(\[((?:\w\.e\("?\d+"?\),?)+)\]\)\.then\(\w(?:\.\w)?\.bind\(\w,\s*"?(\d+)"?\)\)/g;
+
 interface LazyQueue<T = any> {
     query: Webpack.BulkQueries;
+
     resolve(value: QueueResolvedState<T>): void;
 }
 
-type QueueResolvedState<T> = {state: "aborted";} | {state: "resolved", value: T;};
+type QueueResolvedState<T> = { state: "aborted"; } | { state: "resolved", value: T; };
+
+const ContentCache = new Map();
 
 const queue = {
     /** @private */
@@ -99,7 +105,15 @@ const queue = {
 };
 
 export async function getLazy<T>(filter: Webpack.ModuleFilter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
-    const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false, fatal = false, declarationFilter} = options;
+    const {
+        signal: abortSignal,
+        defaultExport = true,
+        searchDefault = true,
+        searchExports = false,
+        raw = false,
+        fatal = false,
+        declarationFilter
+    } = options;
     if (!options.cacheId) options.cacheId = null;
 
     const state = await queue.enqueue<T>(filter, options);
@@ -200,4 +214,53 @@ export async function forceLoad(id: string | number): Promise<any[]> {
     }
 
     return loadedModules;
+}
+
+type NOOP = (...args: unknown[]) => unknown;
+const strip = (str: string) => str.replace(/\s+/g, "");
+
+export async function loadEntry(string: NOOP | string) {
+    if (!string) return null;
+
+    const start = String(string);
+    if (!start) return null;
+
+    const end = strip(start);
+
+    const chunks = Array.from(end.matchAll(LazyChunkRegex));
+    if (chunks.length === 0) return null;
+
+    const entries: string[] = [];
+
+    await Promise.all(chunks.map(async ([, rawChunkIds, entryPoint]) => {
+        const chunkIds = Array.from(rawChunkIds.matchAll(ChunkIdRegex), m => m[1]);
+        if (chunkIds.length === 0) return;
+
+        await Promise.all(chunkIds.map(async id => {
+            const path = webpackRequire.u(id);
+            if (path == null || path.includes("undefined.js")) return;
+
+            try {
+                const isWorker = await ContentCache.getOrInsertComputed(id, () => {
+                    return fetch(webpackRequire.p + path)
+                        .then(r => r.text())
+                        .then(text => /importScripts\(|self\.postMessage/.test(text));
+                });
+
+                if (isWorker) return;
+
+                await webpackRequire.e(id);
+            }
+            catch (e) {
+                Logger.error((e as string));
+            }
+        }));
+
+        if (webpackRequire.m[entryPoint]) {
+            webpackRequire(entryPoint);
+            entries.push(entryPoint);
+        }
+    }));
+
+    return entries.map(x => webpackRequire(x));
 }

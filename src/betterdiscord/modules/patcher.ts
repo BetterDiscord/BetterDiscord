@@ -93,7 +93,8 @@ export default class Patcher {
 
     static makeOverride<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         return function BDPatcher(this: any, ...args: any[]) {
-            let returnValue;
+            let returnValue: unknown;
+
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, args);
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
                 try {
@@ -107,15 +108,33 @@ export default class Patcher {
             const insteads = patch.children.filter(c => c.type === "instead");
             if (!insteads.length) {returnValue = patch.originalFunction.apply(this, args);}
             else {
-                for (const insteadPatch of insteads) {
-                    try {
-                        const tempReturn = insteadPatch.callback(this, args, patch.originalFunction.bind(this));
-                        if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
+                const getPatch = (index: number) => {
+                    const insteadPatch = insteads[index];
+                    if (!insteadPatch) {
+                        // Why eslint? It is `this` why care if its duplicated
+                        // eslint-disable-next-line no-shadow
+                        return function (this: any, ...innerArgs: any[]) {
+                            if (typeof returnValue === "undefined") return returnValue = patch.originalFunction.apply(this, innerArgs);
+                            return patch.originalFunction.apply(this, innerArgs);
+                        };
                     }
-                    catch (err) {
-                        Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
-                    }
-                }
+
+                    // Why eslint? It is `this` why care if its duplicated
+                    // eslint-disable-next-line no-shadow
+                    return function (this: any, ...innerArgs: any[]) {
+                        try {
+                            const tempReturn = insteadPatch.callback(this, innerArgs, getPatch(index + 1));
+                            if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
+                        }
+                        catch (err) {
+                            Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
+                        }
+
+                        return returnValue;
+                    };
+                };
+
+                getPatch(0).apply(this, args);
             }
 
             for (const slavePatch of patch.children.filter(c => c.type === "after")) {

@@ -3,6 +3,12 @@ export default function () {
     Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
         get: function (...args: any[]) {
             const contentWindow = Reflect.apply(contentWindowGetter, this, args);
+
+            // Fix for discord activities
+            if (new URL(this.src, location.href).host.endsWith(".discordsays.com")) {
+                return contentWindow;
+            }
+
             return new Proxy(contentWindow, {
                 getOwnPropertyDescriptor: function (obj, prop) {
                     if (prop === "localStorage") return undefined;
