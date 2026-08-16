@@ -93,11 +93,11 @@ If you want to help translate BetterDiscord, please see [CONTRIBUTING.md](/CONTR
 # Star History
 
 <p align="center">
-  <a href="https://star-history.dera.page/#betterdiscord/betterdiscord&Date">
-   <picture>
-     <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=betterdiscord/betterdiscord&type=Date&theme=dark" />
-     <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=betterdiscord/betterdiscord&type=Date" />
-     <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=betterdiscord/betterdiscord&type=Date" />
-   </picture>
+  <a href="https://www.star-history.com/?repos=betterdiscord%2Fbetterdiscord&type=date&legend=top-left">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&theme=dark&legend=top-left&sealed_token=fZR6LwmO4-8l4YmJTNMFrGyLgFQEwFZgJLMjntNVwXg38IejSGCTXt6VFkQqrmKcw0_uvM09MaftOzm-l5hwancI8ZLiinEKaxwI75joap1Lu2IvXsXIaw" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&legend=top-left&sealed_token=fZR6LwmO4-8l4YmJTNMFrGyLgFQEwFZgJLMjntNVwXg38IejSGCTXt6VFkQqrmKcw0_uvM09MaftOzm-l5hwancI8ZLiinEKaxwI75joap1Lu2IvXsXIaw" />
+      <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&legend=top-left&sealed_token=fZR6LwmO4-8l4YmJTNMFrGyLgFQEwFZgJLMjntNVwXg38IejSGCTXt6VFkQqrmKcw0_uvM09MaftOzm-l5hwancI8ZLiinEKaxwI75joap1Lu2IvXsXIaw" />
+    </picture>
   </a>
 </p>
