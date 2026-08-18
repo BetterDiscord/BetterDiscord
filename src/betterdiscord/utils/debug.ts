@@ -77,7 +77,7 @@ export function getAddonCounts(manager: AddonManager) {
 }
 
 export function getAddonList(manager: AddonManager) {
-    return manager.addonList.map(a => `- ${a.name}${manager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n");
+    return manager.addonList.map(a => `- ${a.name} (${a.version}) ${manager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n");
 }
 
 export function getCoreInfo() {
