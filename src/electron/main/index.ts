@@ -7,6 +7,7 @@ import CSP from "./modules/csp";
 import "./migrator";
 
 import inspector from "node:inspector";
+import path from "path";
 
 // lazy fix for --inspect not working
 if (process.argv.find(x => x.startsWith("--inspect"))) {
@@ -42,4 +43,20 @@ if (!process.argv.includes("--vanilla")) {
     const BetterDiscord = require("./modules/betterdiscord").default;
     BetterDiscord.disableMediaKeys();
     BetterDiscord.ensureDirectories();
+}
+
+if (!app.isReady()) {
+    const asar = path.join(app.getAppPath(), "..", "betterdiscord.app.asar");
+    // @ts-expect-error This is real https://github.com/electron/electron/blob/22035ac61206010aec7593d929165268475ed9a4/shell/browser/api/electron_api_app.cc#L1996
+    app.setAppPath(asar);
+
+    if (require.main) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const pkg = require(path.join(asar, "package.json"));
+
+            require.main.filename = path.resolve(asar, pkg.main);
+        }
+        catch {/* empty */}
+    }
 }
