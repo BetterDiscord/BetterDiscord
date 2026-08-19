@@ -1,12 +1,9 @@
-import React, {type ChangeEvent} from "react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import {CheckIcon, PipetteIcon} from "lucide-react";
-import {none, SettingsContext} from "@ui/contexts";
 import type {Color as ColorType, HexString} from "@data/settings";
-
-const {useState, useCallback, useContext} = React;
-
+import {useItemProps, type BaseSettingProps} from "./utils";
 
 const defaultColors = [1752220, 3066993, 3447003, 10181046, 15277667, 15844367, 15105570, 15158332, 9807270, 6323595, 1146986, 2067276, 2123412, 7419530, 11342935, 12745742, 11027200, 10038562, 9936031, 5533306];
 
@@ -47,37 +44,31 @@ const getContrastColor = (color: HexString | number[]) => {
     return (luma(color) >= 150) ? "#000" : "#fff";
 };
 
-export interface ColorpickerProps {
-    value: ColorType;
-    onChange?(newValue: HexString): void;
+interface ColorpickerPropsBase {
     colors?: ColorType[];
-    defaultValue?: ColorType;
-    disabled?: boolean;
+    defaultColor?: ColorType;
 }
 
+export type ColorpickerProps = ColorpickerPropsBase & BaseSettingProps<ColorType>;
+
 export default function ColorPicker(props: ColorpickerProps) {
-    const {value: initialValue, onChange, colors = defaultColors, defaultValue, disabled} = props;
-    const [internalValue, setValue] = useState(initialValue);
-    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
+    const {colors = defaultColors, defaultColor} = props;
 
-    const value = (contextValue !== none ? contextValue : internalValue) as ColorType;
-    const isDisabled = contextValue !== none ? contextDisabled : disabled;
+    const {state, setState, disabled} = useItemProps<ColorType, ColorType | React.ChangeEvent<HTMLInputElement>>(props, (e) => {
+        if (typeof e === "object") return resolveColor(e.currentTarget.value as ColorType);
+        return resolveColor(e);
+    });
 
-    const change = useCallback((e: ChangeEvent<HTMLInputElement> | {target: {value: ColorType;};}) => {
-        if (isDisabled) return;
-        const color = resolveColor(e.target.value as ColorType);
-        onChange?.(color);
-        setValue(color);
-    }, [onChange, isDisabled]);
+    const intValue: number = resolveColor(state, false);
+    const hexValue: HexString = resolveColor(state, true);
 
-    const intValue: number = resolveColor(value, false);
-    return <div className={`bd-color-picker-container ${isDisabled ? "bd-color-picker-disabled" : ""}`}>
+    return <div className={`bd-color-picker-container${disabled ? " bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
-            {defaultValue && <DiscordModules.Tooltip text="Default" position="bottom">
+            {defaultColor && <DiscordModules.Tooltip text="Default" position="bottom">
                 {tooltipProps => (
-                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => change({target: {value: defaultValue}})}>
-                        {intValue === resolveColor(defaultValue, false)
-                            ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultValue, true))} />
+                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultColor)}} onClick={() => setState(defaultColor)}>
+                        {intValue === resolveColor(defaultColor, false)
+                            ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultColor, true))} />
                             : null
                         }
                     </div>
@@ -86,8 +77,8 @@ export default function ColorPicker(props: ColorpickerProps) {
             <DiscordModules.Tooltip text={t("Settings.customColor")} position="bottom">
                 {tooltipProps => (
                     <div className="bd-color-picker-custom">
-                        <PipetteIcon size="14px" color={getContrastColor(resolveColor(value, true))} />
-                        <input {...tooltipProps} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} disabled={disabled} />
+                        <PipetteIcon size="14px" color={getContrastColor(hexValue)} />
+                        <input {...tooltipProps} style={{backgroundColor: hexValue}} type="color" className="bd-color-picker" value={hexValue} onChange={setState} disabled={disabled} />
                     </div>
                 )}
             </DiscordModules.Tooltip>
@@ -95,9 +86,9 @@ export default function ColorPicker(props: ColorpickerProps) {
         {colors?.length > 0 && <div className="bd-color-picker-swatch">
             {
                 colors.map((int, index) => (
-                    <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => change({target: {value: int}})}>
+                    <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => setState(int)}>
                         {intValue === int
-                            ? <CheckIcon size="16px" color={getContrastColor(resolveColor(value, true))} />
+                            ? <CheckIcon size="16px" color={getContrastColor(hexValue)} />
                             : null
                         }
                     </div>

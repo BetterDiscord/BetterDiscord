@@ -1,4 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
+
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
 import SettingItem from "@ui/settings/components/item";

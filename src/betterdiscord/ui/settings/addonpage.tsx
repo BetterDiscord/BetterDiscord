@@ -16,9 +16,9 @@ export default function AddonPage(props: {title: string; store: AddonManager;}) 
     return (
         <addonContext.Provider value={{toggleStore, showingStore: showStore, ...props}}>
             {showStore ? (
-                <AddonStorePage {...props} type={props.store.prefix} />
+                <AddonStorePage key="store" {...props} type={props.store.prefix} />
             ) : (
-                <AddonList {...props} />
+                <AddonList key="list" {...props} />
             )}
         </addonContext.Provider>
     );

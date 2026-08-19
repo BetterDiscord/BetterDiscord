@@ -152,7 +152,7 @@ if (config.isDevelopment) {
                     stickToMarkers: false
                 },
                 {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
-                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
+                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultColor: "#ffffff"},
             ]
         } as SettingsCategory
     );
@@ -222,8 +222,6 @@ export interface RadioOption<T> {
     value: T;
     description?: string;
     color?: string;
-    /** @deprecated */
-    desc?: string;
 }
 
 export interface RadioSetting<T> extends ValueSettingItem<T> {
@@ -279,7 +277,11 @@ export interface MultipleFileSetting extends ValueSettingItem<string[]> {
 
 export type FileSetting = SingleFileSetting | MultipleFileSetting;
 
-export type Setting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
+type BaseSetting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
+
+export type Setting<T = any> = Omit<BaseSetting<T>, "defaultValue"> & {
+    defaultValue?: never | unknown | any | T;
+};
 
 export interface SettingsCategory {
     type: "category";

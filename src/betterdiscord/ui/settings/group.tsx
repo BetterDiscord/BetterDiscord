@@ -1,4 +1,4 @@
-import React, {type PropsWithChildren, type ReactNode} from "react";
+import React, {useCallback, type PropsWithChildren, type ReactNode} from "react";
 
 import Drawer from "./drawer";
 import Switch from "./components/switch";
@@ -18,11 +18,8 @@ import {useStateFromStores} from "@ui/hooks";
 import SettingsStore from "@stores/settings";
 import type {Setting, BaseSettingItem} from "@data/settings";
 
-const {useCallback} = React;
-
-
 function SettingsProvider({collection, category, id, children}: PropsWithChildren<{collection: string; category: string; id: string;}>) {
-    const getSettingState = React.useCallback(() => {
+    const getSettingState = useCallback(() => {
         const setting = SettingsStore.getSetting(collection, category, id);
         return {
             value: SettingsStore.get(collection, category, id),
@@ -35,7 +32,7 @@ function SettingsProvider({collection, category, id, children}: PropsWithChildre
     // Only recreate context value when data actually changes
     const context = React.useMemo(() => settingState, [settingState]);
 
-    return <SettingsContext.Provider value={context}>{children}</SettingsContext.Provider>;
+    return <SettingsContext value={context}>{children}</SettingsContext>;
 }
 
 export type GroupOnChange =
@@ -88,26 +85,29 @@ export interface ButtonSetting extends ButtonProps, BaseSettingItem {
 }
 
 export function buildSetting(setting: Setting | CustomSetting | ButtonSetting) {
+    const $setting: any = setting;
+
     let children = null;
-    if (setting.type === "dropdown") children = <Dropdown {...setting} />;
-    if (setting.type === "number") children = <Number {...setting} />;
-    if (setting.type === "switch") children = <Switch {...setting} />;
-    if (setting.type === "text") children = <Textbox {...setting} />;
-    if (setting.type === "file") children = <Filepicker {...setting} />;
-    if (setting.type === "slider") children = <Slider {...setting} />;
-    if (setting.type === "radio") children = <Radio {...setting} />;
-    if (setting.type === "keybind") children = <Keybind {...setting} />;
-    if (setting.type === "color") children = <ColorPicker {...setting} />;
-    if (setting.type === "button") children = <Button {...setting} />;
-    if (setting.type === "position") children = <Position {...setting} />;
-    if (setting.type === "custom") children = setting.children;
+    if ($setting.type === "dropdown") children = <Dropdown {...$setting} />;
+    if ($setting.type === "number") children = <Number {...$setting} />;
+    if ($setting.type === "switch") children = <Switch {...$setting} />;
+    if ($setting.type === "text") children = <Textbox {...$setting} />;
+    if ($setting.type === "file") children = <Filepicker {...$setting} />;
+    if ($setting.type === "slider") children = <Slider {...$setting} />;
+    if ($setting.type === "radio") children = <Radio {...$setting} />;
+    if ($setting.type === "keybind") children = <Keybind {...$setting} />;
+    if ($setting.type === "color") children = <ColorPicker {...$setting} />;
+    if ($setting.type === "button") children = <Button {...$setting} />;
+    if ($setting.type === "position") children = <Position {...$setting} />;
+    if ($setting.type === "custom") children = $setting.children;
     if (!children) return null;
+
     return <Item
-        id={setting.id}
-        inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio"}
-        key={setting.id}
-        name={setting.name}
-        note={setting.note}>
+        id={$setting.id}
+        inline={$setting.hasOwnProperty("inline") ? $setting.inline : $setting.type !== "radio"}
+        key={$setting.id}
+        name={$setting.name}
+        note={$setting.note}>
         {children}
     </Item>;
 }

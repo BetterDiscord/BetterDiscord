@@ -47,8 +47,7 @@ export default function Filepicker({multiple, accept, clearable, onChange, disab
     }, [onChange, multiple]);
 
     useEffect(() => {
-        if (!actions) return;
-        actions.clear = clear;
+        if (!actions) return; actions.clear = clear;
     }, [clear, actions]);
 
     const onClick = useCallback(() => {

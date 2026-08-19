@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, type ChangeEvent, type MouseEvent, type ReactNode} from "react";
+import React, {useState, useCallback, useMemo, type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
@@ -150,7 +150,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
         setSort(value);
     }, [store.prefix]);
 
-    const search = useCallback((e: ChangeEvent<HTMLInputElement>) => setQuery(e.currentTarget.value.toLocaleLowerCase()), []);
+    const search = useCallback((value: string) => setQuery(value.toLocaleLowerCase()), []);
     const triggerEdit = useCallback((id: string) => store.editAddon?.(id), [store]);
     const triggerDelete = useCallback(async (id: string) => {
         const addon = addonList.find(a => a.id == id)!;
@@ -201,7 +201,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
 
     return [
         <AddonHeader count={renderedCards.length} searching={isSearching}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {count: renderedCards.length, context: store.prefix})}...`} />
+            <Search value={query} onChange={search} placeholder={`${t("Addons.search", {count: renderedCards.length, context: store.prefix})}...`} />
         </AddonHeader>,
         <div className={"bd-controls bd-addon-controls"}>
             <div className="bd-controls-basic">

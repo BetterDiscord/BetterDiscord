@@ -160,8 +160,8 @@ export default function AddonStorePage({type}: AddonStorePageProps) {
 
     const [query, setQuery] = useState("");
 
-    const search = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(event.target.value.toLocaleLowerCase());
+    const search = useCallback((value: string) => {
+        setQuery(value.toLocaleLowerCase());
         setPage(0);
     }, []);
 
@@ -249,7 +249,7 @@ export default function AddonStorePage({type}: AddonStorePageProps) {
 
     return [
         <AddonHeader key="title" count={filtered.length} searching={query.length !== 0}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {count: filtered.length, context: type})}...`} />
+            <Search value={query} onChange={search} placeholder={`${t("Addons.search", {count: filtered.length, context: type})}...`} />
         </AddonHeader>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
