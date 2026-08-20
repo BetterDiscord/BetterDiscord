@@ -165,19 +165,22 @@ const SettingsRenderer = new class SettingsRenderer {
                 };
 
                 const makeSettingsPanelProvider = (children: React.ReactNode) => {
-                    const ref: {
-                        current: {
-                            text?: React.ReactNode;
-                            children?: React.ReactNode;
-                        };
-                    } = {
-                        current: {}
+                    const listeners = new Set<() => void>();
+                    let items = {
+                        text: null as React.ReactNode,
+                        children: null as React.ReactNode
                     };
 
-                    let forceUpdate: () => void;
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
-                        forceUpdate = useForceUpdate()[1];
+                        const {text, children} = items;
+
+                        const [, forceUpdate] = useForceUpdate();
+
+                        React.useLayoutEffect(() => {
+                            listeners.add(forceUpdate);
+                            return listeners.delete.bind(listeners, forceUpdate) as unknown as ReturnType<React.EffectCallback>;
+                        }, [forceUpdate]);
 
                         return (
                             <>
@@ -201,12 +204,12 @@ const SettingsRenderer = new class SettingsRenderer {
                                         return () => setNode(undefined);
                                     }}
                                 >
-                                    {ref.current.text}
+                                    {text}
                                 </div>
 
                                 {node && (
                                     ReactDOM.createPortal(
-                                        <div className="bd-settings-page-title-children">{ref.current.children}</div>,
+                                        <div className="bd-settings-page-title-children">{children}</div>,
                                         node
                                     )
                                 )}
@@ -219,8 +222,13 @@ const SettingsRenderer = new class SettingsRenderer {
                         render: () => (
                             <SettingsTitleContext
                                 value={(value) => {
-                                    ref.current = (value as {props: typeof ref["current"];}).props;
-                                    forceUpdate();
+                                    items = {
+                                        children: (value as React.ReactElement<{children: React.ReactNode;}>).props.children,
+                                        text: (value as React.ReactElement<{text: React.ReactNode;}>).props.text
+                                    };
+
+                                    listeners.forEach(listener => listener());
+
                                     return null;
                                 }}
                             >
