@@ -2,6 +2,31 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+1.14.0
+### Added
+- BetterDiscord now has official types [@betterdiscord/types](https://www.npmjs.com/package/@betterdiscord/types)
+- `BdApi.UI.openFloatingWindow` to open a floating window like the addon editor
+- `BdApi.Utils.loadEntry` to load lazy Discord chunks and modules
+- `BdApi.Webpack.getProxy` / `BdApi.Webpack.getMangledProxy` for a delayed getModule / getMangled
+- `BdApi.Utils.cache` / `BdApi.Utils.cache.proxy` for caching
+- sha256 checksums file on release
+
+### Removed
+
+### Changed
+- Switched to app.asar injection style
+- The Custom CSS editor now fills the settings page
+- The floating and popout editors have received additional features
+- The addon store and addon updater now share the same backend
+- Changed accent color to change color without needing to reload and add linux support
+- Addons do not run when disabled
+
+### Fixed
+- Discord Activities are fixed
+- BetterDiscord's location in settings is now fixed
+- Made the Patcher not rerun the original function for each instead patch
+- Fixed theme attributes
+
 1.13.14
 ### Improvements
 - Improved start up times
