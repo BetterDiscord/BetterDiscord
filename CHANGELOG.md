@@ -18,13 +18,13 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - The Custom CSS editor now fills the settings page
 - The floating and popout editors have received additional features
 - The addon store and addon updater now share the same backend
-- Changed accent color to change color without needing to reload and add linux support
+- Changed accent color to change color without needing to reload and add Linux support
 - Addons do not run when disabled
 
 ### Fixed
 - Discord Activities are fixed
 - BetterDiscord's location in settings is now fixed
-- Made the Patcher not rerun the original function for each instead patch
+- Made the Patcher not rerun the original function for each `instead` patch
 - Fixed theme attributes
 
 1.13.14

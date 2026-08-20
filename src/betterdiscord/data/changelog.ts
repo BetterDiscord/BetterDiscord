@@ -15,7 +15,7 @@ export default {
             title: "New Injection Style",
             items: [
                 "Windows and Linux users should not have to ever re-inject BetterDiscord",
-                "macOS users will have to re-inject BetterDiscord less frequantly"
+                "macOS users will have to re-inject BetterDiscord less frequently"
             ]
         },
         {
@@ -39,7 +39,7 @@ export default {
             type: "improved",
             title: "Disabled Plugins Stay Disabled",
             items: [
-                "Plugins now never run unless they get enabled"
+                "Plugins never run unless enabled"
             ]
         },
         {
