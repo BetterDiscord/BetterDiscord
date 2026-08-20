@@ -2,7 +2,8 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
-1.14.0
+### 1.14.0
+
 ### Added
 - BetterDiscord now has official types [@betterdiscord/types](https://www.npmjs.com/package/@betterdiscord/types)
 - `BdApi.UI.openFloatingWindow` to open a floating window like the addon editor
@@ -27,7 +28,8 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Made the Patcher not rerun the original function for each `instead` patch
 - Fixed theme attributes
 
-1.13.14
+### 1.13.14
+
 ### Improvements
 - Improved start up times
 
@@ -41,16 +43,19 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### Added
 - Added declarationFilter to waitForModule / getLazy
 
-1.13.13
+### 1.13.13
+
 ### Added
 - New system for exposing top-level module declarations
 - New `@runAt` meta tag to work around issues caused by lazy loading
 
-1.13.12
+### 1.13.12
+
 ### Fixed
 - BetterDiscord now loads
 
-1.13.11
+### 1.13.11
+
 ### Improvements
 - Dropdowns now close after selecting an option
 - Dropdowns do not display the scrollbar when its not needed
@@ -59,11 +64,13 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### Fixed
 - Fix for lazy listeners firing before class modules get interpolated
 
-1.13.10
+### 1.13.10
+
 ### Fixed
 - Fixed crashing when trying to view BetterDiscord's custom setting tabs
 
-1.13.9
+### 1.13.9
+
 ### Fixed
 - Fixes BD's items in the settings cog context-menu
 - The changelog button was at the bottom of the bd section
@@ -71,7 +78,8 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Fixes Net.fetch from removing forbidden headers like User-Agent because of `new Request
 - Possible fix for addon store indefinitely loading - please report if you still have this issue
 
-1.13.8
+### 1.13.8
+
 ### Fixed
 - BetterDiscord now loads on macOS and Linux.
 
@@ -80,7 +88,8 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Added a bunch of new theme attributes to messages.
 - Added an utility for developers to easily patch react elements.
 
-1.13.7
+### 1.13.7
+
 ### Added
 - New Webpack cache system for faster loading times; you will see much faster loading times after the first launch with this update.
 
@@ -93,7 +102,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### Improvements
 - Dropdowns now automatically scroll to the selected option when opened
 
-1.13.6
+### 1.13.6
 
 ### Fixed
 - Fixed BetterDiscord not appearing in the `Settings Cog` context menu (right click menu)
@@ -105,7 +114,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - ContextMenu API Rework
 - Rewrite Native Fetch
 
-1.13.5
+### 1.13.5
 
 ### Added
 - Added `data-speaking` attribute to VoiceUser in ThemeAttributes
@@ -121,20 +130,20 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 
 ### Removed
 
-1.13.4
+### 1.13.4
 
 ### Fixed:
 - Fixed styles breaking in certain areas.
 - Fixed theme attributes from causing a bunch of lag.
 
-1.13.3
+### 1.13.3
 
 ### Fixed:
 - BetterDiscord Settings section now appears correctly in the settings menu
 - Fixed css to match Discord's latest changes
 - Context Menu patches fixed
 
-1.13.2
+### 1.13.2
 
 ### Fixed:
 - BetterDiscord Settings section now appears correctly in the settings menu
@@ -142,7 +151,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Context Menu patches fixed
 
 
-1.13.1
+### 1.13.1
 
 ### Fixed:
 - Navigating to Plugins, Themes, or Settings from the context menu now correctly opens the intended page
