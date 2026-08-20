@@ -236,7 +236,7 @@ export class Addon {
             return;
         }
 
-        const install = (shouldEnable: boolean) => new Promise<void>((resolve, reject) => {
+        const install = (shouldEnable: boolean) => new Promise<void>((resolve) => {
             request(Web.redirects.github(this.id.toString()), {
                 headers: {
                     "X-Store-Download": this.name,
@@ -277,8 +277,6 @@ export class Addon {
                     Toasts.show(t("Addons.failedToDownload", {context: this.type, name: this.name}), {
                         type: "error"
                     });
-
-                    reject(error);
                 }
                 finally {
                     resolve();
