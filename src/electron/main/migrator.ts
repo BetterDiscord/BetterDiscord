@@ -17,7 +17,7 @@ function migrate() {
     const uuid = randomUUID();
 
     const log = (content: string) => {
-        if (process.env.__BRANCH__ === "production") return;
+        if (process.env.__BUILD__ === "production") return;
         fs.appendFileSync(logPath, `[id=${uuid},time=${Date.now()}]: ${content}\n`);
     };
 

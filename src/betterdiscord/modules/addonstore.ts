@@ -236,7 +236,7 @@ export class Addon {
             return;
         }
 
-        const install = (shouldEnable: boolean) => new Promise<void>((resolve, reject) => {
+        const install = (shouldEnable: boolean) => new Promise<void>((resolve) => {
             request(Web.redirects.github(this.id.toString()), {
                 headers: {
                     "X-Store-Download": this.name,
@@ -277,8 +277,6 @@ export class Addon {
                     Toasts.show(t("Addons.failedToDownload", {context: this.type, name: this.name}), {
                         type: "error"
                     });
-
-                    reject(error);
                 }
                 finally {
                     resolve();
@@ -299,9 +297,10 @@ export class Addon {
             const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
                 ...props,
                 addon: this,
-                install: (shouldEnable: boolean) => {
+                install: async (shouldEnable: boolean) => {
                     installing = true;
-                    return install(shouldEnable);
+                    await install(shouldEnable);
+                    Modals.ModalActions.closeModal(key);
                 }
             }), {
                 onCloseCallback: onFinish,
