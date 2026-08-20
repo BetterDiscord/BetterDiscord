@@ -299,9 +299,10 @@ export class Addon {
             const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
                 ...props,
                 addon: this,
-                install: (shouldEnable: boolean) => {
+                install: async (shouldEnable: boolean) => {
                     installing = true;
-                    return install(shouldEnable);
+                    await install(shouldEnable);
+                    Modals.ModalActions.closeModal(key);
                 }
             }), {
                 onCloseCallback: onFinish,
