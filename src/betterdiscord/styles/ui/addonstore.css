@@ -263,11 +263,6 @@ button.bd-addon-store-card-button {
   background-color: var(--bg-surface-raised);
 }
 
-img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="https://betterdiscord.app/resources/ui/content_thumbnail.svg"]
-{
-  object-fit: contain;
-}
-
 .bd-addon-store-card:last-child:nth-child(odd):not(.bd-addon-store-card-embed) {
   margin-left: calc(50% + 10px);
 }

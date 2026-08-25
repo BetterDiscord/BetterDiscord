@@ -44,7 +44,6 @@ const releaseChannels = {
     ]
 };
 
-// Theres 2 empty/missing thumbnails, the one the site uses and a empty store one
 const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
 export default class Web {
