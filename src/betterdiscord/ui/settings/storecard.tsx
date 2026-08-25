@@ -103,7 +103,7 @@ export default function AddonCard({addon, isEmbed}: AddonCardProps) {
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img
-                        src={addon.thumbnail ?? undefined}
+                        src={addon.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();

@@ -115,7 +115,7 @@ export default function InstallModal({addon, transitionState, install, onClose}:
             <div className="bd-install-modal-splash">
                 <div className="bd-install-modal-preview">
                     <img
-                        src={addon.thumbnail ?? undefined}
+                        src={addon.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();

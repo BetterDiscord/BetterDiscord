@@ -1,3 +1,15 @@
+import {Stores} from "@webpack";
+import missingDarkText from "@assets/svgs/missing_dark.svg";
+import missingLightText from "@assets/svgs/missing_light.svg";
+
+const missingDark = URL.createObjectURL(
+    new Blob([missingDarkText], {type: "image/svg+xml"})
+);
+
+const missingLight = URL.createObjectURL(
+    new Blob([missingLightText], {type: "image/svg+xml"})
+);
+
 const HOSTNAME = "betterdiscord.app";
 /**
  * The current API version to use
@@ -31,9 +43,6 @@ const releaseChannels = {
         "781600250858700870"
     ]
 };
-
-// Theres 2 empty/missing thumbnails, the one the site uses and a empty store one
-const EMPTY_USE_STORE = true;
 
 const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
@@ -96,8 +105,7 @@ export default class Web {
         developer: makePage("/developer")
     };
     static resources = {
-        EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
-        thumbnail: (thumbnail?: string) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
+        thumbnail: (thumbnail?: string | null) => thumbnail ? join(thumbnail) : Stores.ThemeStore?.theme === "light" ? missingLight : missingDark
     };
 
     static store = {

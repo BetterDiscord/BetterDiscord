@@ -93,7 +93,7 @@ export class Addon {
     likes: number;
     downloads: number;
     tags: string[];
-    thumbnail: string | null;
+    private thumbnailURL: string | null | undefined;
     releaseDate: Date;
     lastModified: Date;
     guild: Guild | null;
@@ -124,7 +124,7 @@ export class Addon {
             cached.version = addon.version;
             cached.description = addon.description;
             cached.tags = addon.tags;
-            cached.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
+            cached.thumbnailURL = addon.thumbnail_url;
 
             cached._addon = addon;
 
@@ -146,7 +146,7 @@ export class Addon {
 
         this.type = addon.type;
 
-        this.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
+        this.thumbnailURL = addon.thumbnail_url;
         this.avatar = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
         this.author = addon.author.display_name;
 
@@ -171,6 +171,10 @@ export class Addon {
         this._addon = addon;
 
         Addon.cache[addon.id] = this;
+    }
+
+    public get thumbnail() {
+        return Web.resources.thumbnail(this.thumbnailURL);
     }
 
     /**
