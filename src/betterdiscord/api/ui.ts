@@ -101,15 +101,12 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
         const {value, ...x} = setting;
 
         // @ts-expect-error ts is annoying
-        if (setting.type !== "switch") return buildSetting({...x, defaultValue: value, disabled});
-
-        // @ts-expect-error ts is annoying
         return buildSetting({
             ...x,
             disabled,
             defaultValue: value,
             onChange: (newValue: any) => {
-                setSwitchStates(v => ({...v, [setting.id]: newValue}));
+                if (setting.type === "switch") setSwitchStates(v => ({...v, [setting.id]: newValue}));
 
                 setting?.onChange?.(newValue as never);
                 onChange?.(null, setting.id, newValue);
