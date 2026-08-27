@@ -68,13 +68,11 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
                     if (x.enableWith) disabled = subgroup[x.enableWith];
                     if (x.disableWith) disabled = !subgroup[x.disableWith];
 
-                    if (x.type !== "switch") return {...x, defaultValue: value, disabled};
-
                     return {
                         ...x,
                         defaultValue: value,
                         onChange(newValue: any) {
-                            setSwitchStates(v => ({
+                            if (x.type === "switch") setSwitchStates(v => ({
                                 ...v,
                                 [setting.id]: {
                                     ...v[setting.id] as Record<string, boolean>,
