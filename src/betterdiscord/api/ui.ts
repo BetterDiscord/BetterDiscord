@@ -72,15 +72,18 @@ function SettingsBuilderUI({settings, onChange, onDrawerToggle, getDrawerState}:
                         ...x,
                         defaultValue: value,
                         onChange(newValue: any) {
-                            if (x.type === "switch") setSwitchStates(v => ({
-                                ...v,
-                                [setting.id]: {
-                                    ...v[setting.id] as Record<string, boolean>,
-                                    [x.id]: newValue
-                                }
-                            }));
+                            if (x.type === "switch") {
+                                setSwitchStates(v => ({
+                                    ...v,
+                                    [setting.id]: {
+                                        ...v[setting.id] as Record<string, boolean>,
+                                        [x.id]: newValue
+                                    }
+                                }));
+                            }
 
                             x.onChange?.(newValue as never);
+                            onChange?.(setting.id, x.id, newValue);
                         },
                         disabled
                     };
