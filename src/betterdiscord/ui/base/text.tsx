@@ -1,9 +1,8 @@
 import clsx from "clsx";
-import React from "@modules/react";
-import type {CSSProperties, ElementType, HTMLAttributes, PropsWithChildren} from "react";
+import React, {type CSSProperties, type ElementType, type HTMLAttributes} from "react";
 
 
-export const Colors = Object.freeze({
+export const TextColors = Object.freeze({
     STANDARD: "bd-text-normal",
     MUTED: "bd-text-muted",
     ERROR: "bd-text-error",
@@ -19,7 +18,7 @@ export const Colors = Object.freeze({
 });
 
 
-export const Sizes = Object.freeze({
+export const TextSizes = Object.freeze({
     SIZE_10: "bd-text-10",
     SIZE_12: "bd-text-12",
     SIZE_14: "bd-text-14",
@@ -30,17 +29,21 @@ export const Sizes = Object.freeze({
 });
 
 
-type TextProps = PropsWithChildren<{
+interface TextProps {
     tag?: ElementType<HTMLAttributes<HTMLElement>>;
     className?: string;
-    color?: typeof Colors[keyof typeof Colors];
-    size?: typeof Sizes[keyof typeof Sizes];
+    color?: typeof TextColors[keyof typeof TextColors];
+    size?: typeof TextSizes[keyof typeof TextSizes];
     selectable?: boolean;
     strong?: boolean;
     style?: CSSProperties;
+    children?: React.ReactNode;
     [other: string]: any;
-}>;
-export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style, ...props}: TextProps) {
+};
+
+export default function Text(props: TextProps) {
+    const {tag: Tag = "div", className = "", children = null, color = TextColors.STANDARD, size = TextSizes.SIZE_14, selectable, strong, style, ...rest} = props;
+
     return <Tag
         className={
             clsx(
@@ -51,17 +54,11 @@ export default function Text({tag: Tag = "div", className = "", children = null,
                 }
             )}
         style={style}
-        {...props}
+        {...rest}
     >
         {children}
     </Tag>;
 }
 
-Text.Colors = Colors;
-Text.Sizes = Sizes;
-
-// te = WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors)
-// foo = []
-// for (const color in te.Colors) foo.push(BdApi.React.createElement(te, {color: te.Colors[color]}, color))
-// for (const size in te.Sizes) foo.push(BdApi.React.createElement(te, {size: te.Sizes[size]}, size))
-// BdApi.showConfirmationModal("Text Elements", foo)
+Text.Colors = TextColors;
+Text.Sizes = TextSizes;

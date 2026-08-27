@@ -9,6 +9,11 @@ interface AnimationOptions {
     duration: number;
 }
 
+type CreateElementOptions = Partial<HTMLElementTagNameMap[keyof HTMLElementTagNameMap]> & {
+    /** @deprecated */
+    target?: string | Element;
+};
+
 // TODO: revamp the "manager" part
 export default class DOMManager {
 
@@ -24,18 +29,6 @@ export default class DOMManager {
     static get bdStyles() {return this.getElement("bd-styles")!;}
     static get bdThemes() {return this.getElement("bd-themes")!;}
     static get bdCustomCSS() {return this.getElement("style#customcss")!;}
-    // static get bdTooltips() {return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody);}
-    // static get bdModals() {return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody);}
-    // static get bdToasts() {return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody);}
-
-    static initialize() {
-        // this.createElement("bd-head", {target: document.head});
-        // this.createElement("bd-body", {target: document.body});
-        // this.createElement("bd-scripts", {target: this.bdHead});
-        // this.createElement("bd-styles", {target: this.bdHead});
-        // this.createElement("bd-themes", {target: this.bdHead});
-        // this.createElement("style", {id: "customcss", target: this.bdHead});
-    }
 
     static escapeID(id: string) {
         return CSS.escape(id);
@@ -52,8 +45,8 @@ export default class DOMManager {
     /**
      * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
-    */
-    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<DeepArray<Node | string>>) {
+     */
+    static createElement(type: string, options: CreateElementOptions = {}, ...children: Array<DeepArray<Node | string>>) {
         const element = document.createElement(type);
 
         Object.assign(element, options);
@@ -71,7 +64,7 @@ export default class DOMManager {
 
     /**
      * Parses a string of HTML and returns the results. If the second parameter is true,
-     * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
+     * the parsed HTML will be returned as a document fragment [document fragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment).
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
      *
      * If the second parameter is false, then the return value will be the list of parsed
@@ -172,8 +165,8 @@ export default class DOMManager {
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
      * The callback is given the matching element.
-     * @param {string} selector - node to wait for
-     * @param {callable} callback - function to be performed on event
+     * @param selector Node to wait for
+     * @param callback Function to be performed on event
      */
     static onAdded(selector: string, callback: (e: Element) => void) {
         if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector)!);
@@ -201,8 +194,8 @@ export default class DOMManager {
     /**
      * Adds a listener for when the node is removed from the document body.
      * The listener is automatically removed upon firing.
-     * @param {HTMLElement} node - node to wait for
-     * @param {callable} callback - function to be performed on event
+     * @param node Node to wait for
+     * @param callback Function to be performed on event
      */
     static onRemoved(node: Node, callback: () => void) {
         const observer = new MutationObserver((mutations) => {

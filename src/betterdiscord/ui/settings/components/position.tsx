@@ -1,6 +1,6 @@
-import React, {useContext, useState} from "@modules/react";
+import React from "react";
 import Text from "@ui/base/text";
-import {none, SettingsContext} from "@ui/contexts";
+import {useItemProps, type BaseSettingProps} from "./utils";
 
 
 const positions: Position[] = [
@@ -11,52 +11,39 @@ const positions: Position[] = [
 ];
 
 export type Position = "top-left" | "top-right" | "bottom-left" | "bottom-right";
-export interface PositionProps {
-    value: Position;
-    onChange?(newValue: Position): void;
-    disabled?: boolean;
-}
 
-const Position = ({value: initialValue, onChange, disabled}: PositionProps) => {
-    const [internalValue, setValue] = useState(initialValue);
-    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
+export type PositionProps = BaseSettingProps<Position>;
 
-    const value = (contextValue !== none ? contextValue : internalValue) as Position;
-    const isDisabled = contextValue !== none ? contextDisabled : disabled;
-
-    const handlePositionChange = (position: Position) => {
-        if (isDisabled) return;
-        onChange?.(position);
-        setValue(position);
-    };
+const Position = (props: PositionProps) => {
+    const {state, setState, disabled} = useItemProps(props);
 
     const getBoxClassName = (position: Position) => {
-        return `bd-box${isDisabled ? "-disabled" : ""} ${position} ${value === position ? "selected" : ""}`;
+        return `bd-box${disabled ? "-disabled" : ""} ${position} ${state === position ? "selected" : ""}`;
     };
 
     return (
         <div className="position-wrapper">
-            <div className={`bd-container${isDisabled ? "-disabled" : ""}`}>
+            <div className={`bd-container${disabled ? "-disabled" : ""}`}>
                 {positions.map((position) => (
                     <button
                         key={position}
                         className={getBoxClassName(position)}
-                        onClick={() => handlePositionChange(position)}
+                        onClick={() => setState(position)}
                         role="radio"
-                        aria-checked={value === position}
+                        aria-checked={state === position}
                         aria-label={`Select ${position} position`}
-                        disabled={isDisabled}
-                        tabIndex={isDisabled ? -1 : 0}
+                        disabled={disabled}
+                        tabIndex={disabled ? -1 : 0}
                     />
                 ))}
             </div>
 
             <div className="bd-position-info">
-                {value ? (
+                {state ? (
                     <>
                         <Text>Selected Position:</Text>
                         <Text>
-                            {value.replace(/-/g, " ").toUpperCase()}
+                            {state.replace(/-/g, " ").toUpperCase()}
                         </Text>
                     </>
                 ) : (

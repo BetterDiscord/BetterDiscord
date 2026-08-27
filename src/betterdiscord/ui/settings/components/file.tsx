@@ -1,8 +1,7 @@
 import {webUtils} from "electron";
-import React from "@modules/react";
+import React, {type ChangeEvent} from "react";
 import Button from "@ui/base/button";
 import {XIcon} from "lucide-react";
-import type {ChangeEvent} from "react";
 
 const {useRef, useCallback, useEffect} = React;
 
@@ -48,8 +47,7 @@ export default function Filepicker({multiple, accept, clearable, onChange, disab
     }, [onChange, multiple]);
 
     useEffect(() => {
-        if (!actions) return;
-        actions.clear = clear;
+        if (!actions) return; actions.clear = clear;
     }, [clear, actions]);
 
     const onClick = useCallback(() => {

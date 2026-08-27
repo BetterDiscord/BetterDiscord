@@ -1,7 +1,6 @@
-import React from "@modules/react";
+import React, {type MouseEvent, type PropsWithChildren} from "react";
 
 import Button from "../base/button";
-import type {MouseEvent, PropsWithChildren} from "react";
 
 const {useCallback} = React;
 
@@ -14,7 +13,7 @@ export type SettingsTitleProps = PropsWithChildren<{
     className?: string;
     button?: {title: string; onClick(e: MouseEvent): void;};
     onClick?(): void;
-    text?: string;
+    text?: React.ReactNode;
 }>;
 
 export default function SettingsTitle({isGroup = false, className = "", button = undefined, onClick = undefined, text, children = []}: SettingsTitleProps) {

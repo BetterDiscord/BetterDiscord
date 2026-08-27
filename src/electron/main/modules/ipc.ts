@@ -1,9 +1,10 @@
 import {spawn} from "child_process";
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
+import {ipcMain as ipc, BrowserWindow, app, dialog, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
 import BetterDiscord from "./betterdiscord";
+import type {DialogOptions} from "@common/types/ipc";
 
 const getPath = (event: IpcMainEvent, pathReq: string) => {
     let returnPath;
@@ -62,9 +63,44 @@ const toggleDevTools = (event: IpcMainEvent) => {
     else closeDevTools(event);
 };
 
+/**
+ * Never let a renderer-supplied windowOptions weaken the security posture of the
+ * window we open. Discord's Electron fork already forces these safe values, but we
+ * don't want our own guarantees to depend on that so we force them here too, and
+ * never honor a caller-supplied preload.
+ */
+const SAFE_WEB_PREFERENCES: BrowserWindowConstructorOptions["webPreferences"] = {
+    nodeIntegration: false,
+    nodeIntegrationInWorker: false,
+    nodeIntegrationInSubFrames: false,
+    contextIsolation: true,
+    sandbox: true,
+    webviewTag: false,
+    webSecurity: true,
+    allowRunningInsecureContent: false,
+};
+
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {
+    try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+            return Promise.reject(new Error("Invalid protocol"));
+        }
+    }
+    catch {
+        return Promise.reject(new Error("Invalid URL"));
+    }
+
     return new Promise<void>(resolve => {
-        const windowInstance = new BrowserWindow(windowOptions);
+        const safeOptions: BrowserWindowConstructorOptions = {
+            ...windowOptions,
+            webPreferences: {
+                ...windowOptions?.webPreferences,
+                ...SAFE_WEB_PREFERENCES,
+                preload: undefined
+            }
+        };
+        const windowInstance = new BrowserWindow(safeOptions);
         windowInstance.webContents.on("did-navigate", (__, navUrl) => {
             if (navUrl != closeOnUrl) return;
             windowInstance.close();
@@ -92,30 +128,8 @@ const setWindowSize = (event: IpcMainEvent, width: number, height: number) => {
     window?.setSize(width, height);
 };
 
-const getAccentColor = () => {
-    // intentionally left blank so that fallback colors will be used
-    return ((process.platform == "win32" || process.platform == "darwin")
-        && systemPreferences.getAccentColor()) || "";
-};
-
 const stopDevtoolsWarning = (event: IpcMainEvent) => event.sender.removeAllListeners("devtools-opened");
 
-
-// TODO: make type usable across processes
-interface DialogOptions {
-    mode: "open" | "save";
-    defaultPath: string;
-    filters: Array<Record<string, string[]>>;
-    title: string;
-    message: string;
-    showOverwriteConfirmation: boolean;
-    showHiddenFiles: boolean;
-    promptToCreate: boolean;
-    openDirectory: boolean;
-    openFile: boolean;
-    multiSelections: boolean;
-    modal: boolean;
-}
 
 const openDialog = (event: IpcMainInvokeEvent, options: Partial<DialogOptions> = {}) => {
     const {
@@ -200,7 +214,6 @@ export default class IPCMain {
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
             ipc.on(IPCEvents.EDITOR_SETTINGS_GET, getSettings);
-            ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);

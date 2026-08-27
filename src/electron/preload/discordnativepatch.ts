@@ -27,10 +27,9 @@ function getSetting(category: string, key: string) {
 const {exposeInMainWorld} = electron.contextBridge;
 
 // Hold the listeners
-let /** @type {Function} */ onOpened: () => void, /** @type {Function} */ onClosed: () => void;
+let onOpened: () => void, onClosed: () => void;
 
 let isOpen = false;
-/** @type {boolean} */
 let patchDevtoolsCallbacks: boolean = getSetting("developer", "devToolsWarning");
 if (typeof patchDevtoolsCallbacks !== "boolean") patchDevtoolsCallbacks = false;
 

@@ -1,10 +1,9 @@
-import React from "@modules/react";
+import React, {useLayoutEffect} from "react";
 import {t} from "@common/i18n";
 
 import Modals from "@ui/modals";
 
 import {XIcon, MaximizeIcon} from "lucide-react";
-import {useLayoutEffect} from "react";
 
 const {useState, useCallback, useEffect, useRef} = React;
 
@@ -176,7 +175,7 @@ export default function FloatingWindow({id, title, resizable, children, classNam
         if (newLeft < positioning.current.min.x) {
             const difference = positioning.current.min.x - newLeft;
             window.current!.style.left = positioning.current.min.x + "px";
-            window.current!.style.height = (width - difference) + "px";
+            window.current!.style.width = (width - difference) + "px";
         }
     }, [window, onResize]);
 
@@ -209,9 +208,11 @@ export default function FloatingWindow({id, title, resizable, children, classNam
         <div className="floating-window-titlebar" ref={titlebar}>
             <span className="title">{title}</span>
             <div className="floating-window-buttons">
-                <div className="button maximize-button" onClick={maximize}>
-                    <MaximizeIcon size="16px" />
-                </div>
+                {resizable && (
+                    <div className="button maximize-button" onClick={maximize}>
+                        <MaximizeIcon size="16px" />
+                    </div>
+                )}
                 <div className="button close-button" onClick={close}>
                     <XIcon size="16px" />
                 </div>

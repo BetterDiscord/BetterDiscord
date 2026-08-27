@@ -1,16 +1,14 @@
-import React, {ReactDOM} from "@modules/react";
+import ReactDOM from "@modules/reactdom";
+import React from "react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
 import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
-import ReactUtils from "@api/reactutils";
-
 import AddonPage from "@ui/settings/addonpage";
 
 import type {SettingsCategory} from "@data/settings";
 import VersionInfo from "./misc/versioninfo";
-import {findInTree} from "@common/utils";
 import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
@@ -27,6 +25,11 @@ import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
+import type {GroupOnChange} from "./settings/group";
+
+const ContextMenu = new ContextMenuPatcher();
+
+const UserSettings = getByKeys<any>(["openUserSettings", "USER_SETTINGS_MODAL_KEY"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -48,24 +51,18 @@ const SettingsRenderer = new class SettingsRenderer {
         return drawerStates[collection][group];
     }
 
-    onChange(onChange: (c: string, s: string, v: unknown) => void) {
-        return (categoryId: string, settingId: string, value: unknown) => {
-            onChange(categoryId, settingId, value);
-
-            // Delay until after switch animation
-            // customcss is here to let the tab show/hide
-            // since that component is out of our control/scope
-            if (settingId === "customcss") {
-                setTimeout(this.forceUpdate.bind(this), 250);
-            }
-        };
+    buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: GroupOnChange) {
+        return React.createElement(SettingsPanel, {
+            id,
+            title,
+            groups,
+            onChange: onChange.bind(this),
+            onDrawerToggle: this.onDrawerToggle.bind(this),
+            getDrawerState: this.getDrawerState.bind(this)
+        });
     }
 
-    buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: (c: string, s: string, v: unknown) => void) {
-        return React.createElement(SettingsPanel, {id, title, groups, onChange: this.onChange(onChange).bind(this), onDrawerToggle: this.onDrawerToggle.bind(this), getDrawerState: this.getDrawerState.bind(this)});
-    }
-
-    getAddonPanel(title: string, options = {}) {
+    getAddonPanel(title: string, options: {store: AddonManager;}) {
         return (props: any) => {
             return React.createElement(AddonPage, Object.assign({}, {
                 title: title,
@@ -168,19 +165,22 @@ const SettingsRenderer = new class SettingsRenderer {
                 };
 
                 const makeSettingsPanelProvider = (children: React.ReactNode) => {
-                    const ref: {
-                        current: {
-                            text?: React.ReactNode;
-                            children?: React.ReactNode;
-                        };
-                    } = {
-                        current: {}
+                    const listeners = new Set<() => void>();
+                    let items = {
+                        text: null as React.ReactNode,
+                        children: null as React.ReactNode
                     };
 
-                    let forceUpdate: () => void;
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
-                        forceUpdate = useForceUpdate()[1];
+                        const {text, children} = items;
+
+                        const [, forceUpdate] = useForceUpdate();
+
+                        React.useLayoutEffect(() => {
+                            listeners.add(forceUpdate);
+                            return listeners.delete.bind(listeners, forceUpdate) as unknown as ReturnType<React.EffectCallback>;
+                        }, [forceUpdate]);
 
                         return (
                             <>
@@ -204,12 +204,12 @@ const SettingsRenderer = new class SettingsRenderer {
                                         return () => setNode(undefined);
                                     }}
                                 >
-                                    {ref.current.text}
+                                    {text}
                                 </div>
 
                                 {node && (
                                     ReactDOM.createPortal(
-                                        <div className="bd-settings-page-title-children">{ref.current.children}</div>,
+                                        <div className="bd-settings-page-title-children">{children}</div>,
                                         node
                                     )
                                 )}
@@ -222,8 +222,13 @@ const SettingsRenderer = new class SettingsRenderer {
                         render: () => (
                             <SettingsTitleContext
                                 value={(value) => {
-                                    ref.current = (value as {props: typeof ref["current"];}).props;
-                                    forceUpdate();
+                                    items = {
+                                        children: (value as React.ReactElement<{children: React.ReactNode;}>).props.children,
+                                        text: (value as React.ReactElement<{text: React.ReactNode;}>).props.text
+                                    };
+
+                                    listeners.forEach(listener => listener());
+
                                     return null;
                                 }}
                             >
@@ -234,11 +239,17 @@ const SettingsRenderer = new class SettingsRenderer {
                 };
 
                 for (const collection of Settings.collections) {
-                    // if (collection.disabled) continue;
                     const items = collection.settings.map(m => [m.name, m.settings.map(setting => setting.name)]).flat(2) as string[];
 
                     insert(collection.id, {
-                        ...makeSettingsPanelProvider(this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.onSettingChange.bind(Settings, collection.id))),
+                        ...makeSettingsPanelProvider(
+                            this.buildSettingsPanel(
+                                collection.id,
+                                collection.name,
+                                collection.settings,
+                                Settings.onSettingChange.bind(Settings, collection.id) as GroupOnChange
+                            )
+                        ),
                         icon: Logo.Discord,
                         title: () => collection.name,
                         useMenu: () => useCollectionMenu(collection),
@@ -250,9 +261,7 @@ const SettingsRenderer = new class SettingsRenderer {
                 }
 
                 for (const panel of Settings.panels.sort((a, b) => a.order > b.order ? 1 : -1)) {
-                    // if (panel.clickListener) panel.onClick = () => panel.clickListener?.(thisObject);
-                    // if (!panel.className) panel.className = `bd-${panel.id}-tab`;
-                    if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager});
+                    if (panel.type === "addon" && !panel.element) panel.element = this.getAddonPanel(panel.label, {store: panel.manager!});
 
                     const icon = panel.icon ? lucideToDiscordIcon(panel.icon) : () => panel.id;
 
@@ -261,13 +270,14 @@ const SettingsRenderer = new class SettingsRenderer {
                             ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSViewable,
-                            useSearchTerms: () => [panel.label]
+                            predicate: checkAll(useCustomCSSEnabled, () => !useCustomCSSClickable()),
+                            useSearchTerms: () => [panel.label],
                         });
+
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSClickable,
+                            predicate: checkAll(useCustomCSSEnabled, useCustomCSSClickable),
                             onClick: () => CustomCSS.open(),
                             useSearchTerms: () => [panel.label]
                         });
@@ -292,9 +302,8 @@ const SettingsRenderer = new class SettingsRenderer {
             useTitle: () => Object.assign(<LayerSettingTitle />, {toString: () => "BetterDiscord"}),
         });
 
-        Patcher.after("SettingsManager", rootLayout, "buildLayout", (that, args, res) => {
-            let index = res.findIndex((layout) => (layout as any).key === "activity_section") + 1;
-            if (index === -1) index = res.length;
+        Patcher.after("SettingsManager", rootLayout, "buildLayout", (_, __, res) => {
+            const index = res.findIndex((layout) => (layout as any).key === "games_and_apps_section") + 1;
 
             res.splice(index, 0, section);
         });
@@ -307,7 +316,7 @@ const SettingsRenderer = new class SettingsRenderer {
             search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
         }, {cacheId: "core-settings-search"});
 
-        Patcher.after("SettingsManager", search, "search", (that, args, res) => {
+        Patcher.after("SettingsManager", search, "search", (_, __, res) => {
             res = {...res}; // Discord freezes the object
 
             function insert(key: string, item: {
@@ -361,12 +370,14 @@ const SettingsRenderer = new class SettingsRenderer {
     async patchVersionInformation() {
         const versionDisplayModule = await getMangledLazy<{
             versionDisplay: React.FC;
-        }>(["copyValue", "RELEASE_CHANNEL"], {
-            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL")
+        }>(["copyValue", "RELEASE_CHANNEL", "Build Override"], {
+            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
         }, {
             searchDefault: false,
             mapDeclarations: true
         });
+
+        if (typeof versionDisplayModule.versionDisplay !== "function") return;
 
         Patcher.instead("SettingsManager", versionDisplayModule, "versionDisplay", () => <VersionInfo />);
     }
@@ -377,18 +388,12 @@ const SettingsRenderer = new class SettingsRenderer {
         });
     }
 
-    forceUpdate() {
-        const viewClass = DiscordModules.ViewClasses?.standardSidebarView.split(" ")[0];
-        const node = document.querySelector(`.${viewClass}`);
-        if (!node) return;
-        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
-        if (stateNode) stateNode.forceUpdate();
+    private readonly DISCORD_USER_SETTINGS_MODAL_KEY: string = typeof UserSettings?.USER_SETTINGS_MODAL_KEY === "string" ? UserSettings.USER_SETTINGS_MODAL_KEY : "USER_SETTINGS_MODAL_MODAL_KEY";
+
+    public closeUserSettingsModal() {
+        Modals.ModalActions.closeModal(this.DISCORD_USER_SETTINGS_MODAL_KEY);
     }
 };
-
-const ContextMenu = new ContextMenuPatcher();
-
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface PanelLayout {
     buildLayout(): [category: CategoryLayout];
@@ -418,7 +423,7 @@ interface SidebarItemLayout {
     useSearchTerms(): string[];
 
     /**
-     * @warning You cannot have page with onClick!
+     * ⚠️ You cannot have page with onClick!
      */
     onClick?(): void;
 
@@ -466,13 +471,17 @@ type LayoutConstructor = {
     onClick(): void;
 });
 
+const checkAll = (...hooks: Array<() => boolean>) => () => hooks.map(hook => hook()).every(x => x);
+
+const useCustomCSSEnabled = () => useStateFromStores(Settings, () => Settings.get<boolean>("settings", "customcss", "customcss"), []);
+
 /** @description On true clicking open will open not open the page. On false will open the page */
 const useCustomCSSClickable = () => {
-    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"), []);
+    const isDetached = useStateFromStores(CustomCSS, () => CustomCSS.isDetached, []);
 
-    return ["detached", "external", "system"].includes(state);
+    return isDetached || ["detached", "external", "system"].includes(state);
 };
-const useCustomCSSViewable = () => !useCustomCSSClickable();
 
 function LayerSettingTitle() {
     const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();
@@ -501,7 +510,7 @@ function LayerSettingTitle() {
             >
                 BetterDiscord
             </div>
-            {node && ReactDOM.createPortal(
+            {!!node && ReactDOM.createPortal(
                 <DiscordModules.Tooltip color="primary" position="top" text={t("Modals.changelog")}>
                     {props =>
                         <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(changelog)}>
@@ -531,7 +540,7 @@ function useCollectionMenu(collection: SettingsCollection) {
                 id: setting.id,
                 label: setting.name!,
                 disabled: setting.disabled,
-                checked: Settings.get(collection.id, category.id, setting.id),
+                checked: Settings.get<boolean>(collection.id, category.id, setting.id),
                 action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
             }))
         }));
@@ -566,7 +575,7 @@ function useAddonMenu(manager: AddonManager) {
             checked={enabled}
             key={`bd.${manager.prefix}.${name}`}
             disabled={addon?.partial}
-            action={(e: MouseEvent) => {
+            action={(e: React.MouseEvent) => {
                 if (!e.shiftKey) {
                     manager.toggleAddon(name);
                     return;
@@ -595,7 +604,7 @@ function useAddonMenu(manager: AddonManager) {
             <ContextMenu.Group key={`bd.${manager.prefix}.installed`}>
                 {toggles}
             </ContextMenu.Group>
-            {addonStoreIsEnabled && (
+            {!!addonStoreIsEnabled && (
                 <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
                     <ContextMenu.Item
                         label={t("Addons.openStore", {context: manager.prefix})}

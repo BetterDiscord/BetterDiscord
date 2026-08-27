@@ -1,17 +1,23 @@
 import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
+import type {RequestCallback, RequestOptions} from "@common/types/ipc";
+import {isWebhookUrl} from "./webhook";
 
 
-const methods = ["get", "put", "post", "delete", "head"];
+const methods = ["get", "put", "post", "delete", "head"] as const;
 const redirectCodes = new Set([301, 302, 307, 308]);
 const dataToClone: Array<keyof http.IncomingMessage> = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders"];
 
-type RequestOptions = https.RequestOptions & {formData?: Buffer | string;};
-type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer | string) => void;
 type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
 
 const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {
+    // Checked per hop (makeRequest recurses on redirects) so a redirect into a webhook URL is caught too.
+    if (isWebhookUrl(url)) {
+        callback(new Error("Failed to fetch"));
+        return;
+    }
+
     const req = https.request(url, Object.assign({method: "GET"}, options), res => {
         if (redirectCodes.has(res.statusCode ?? 0) && res.headers.location) {
             const final = new URL(res.headers.location);
@@ -28,13 +34,13 @@ const makeRequest = (url: string, options: RequestOptions, callback: RequestCall
 
         setReq(res, req);
 
-        res.addListener("error", err => {error = err;});
+        res.on("error", err => {error = err;});
 
-        res.addListener("data", chunk => {
+        res.on("data", chunk => {
             chunks.push(chunk);
         });
 
-        res.addListener("end", () => {
+        res.on("end", () => {
             const data = Object.fromEntries(dataToClone.map(h => [h, res[h]]));
 
             callback(error as Error, data, Buffer.concat(chunks));
@@ -81,15 +87,18 @@ const request = function (url: string, options: RequestOptions, callback: Reques
     };
 };
 
+type HttpsModule = {request: typeof request;} & {
+    [M in typeof methods[number]]: typeof request;
+};
+
 export default Object.assign({request},
     Object.fromEntries(methods.map(method => [
         method,
-        function (this: typeof https["get"], ...args: any[]) {
+        function (this: HttpsModule, ...args: any[]) {
             args[1] ??= {};
-
             args[1].method ??= method.toUpperCase();
 
             return Reflect.apply(request, this, args);
         }
     ]))
-);
+) as HttpsModule;

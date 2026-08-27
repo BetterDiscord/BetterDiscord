@@ -1,7 +1,7 @@
 import Store from "@stores/base.ts";
 import type {Notification} from "@ui/notifications.tsx";
 
-export default new class Notifications extends Store {
+class Notifications extends Store {
     private notificationsArray: Notification[] = [];
 
     setNotifications(notifications: Notification[]) {
@@ -23,3 +23,5 @@ export default new class Notifications extends Store {
         return this.notificationsArray;
     }
 };
+
+export default new Notifications();

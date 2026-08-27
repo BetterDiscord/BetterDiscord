@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import type {LucideIcon, LucideProps} from "lucide-react";
 
-export type DiscordProps = {
+export type DiscordIconProps = {
     color?: string;
     className?: string;
 } & ({
@@ -12,9 +12,8 @@ export type DiscordProps = {
     height: React.CSSProperties["height"];
 });
 
-export type DiscordIcon = React.ComponentType<DiscordProps>;
+export type DiscordIcon = React.ComponentType<DiscordIconProps>;
 
-// BdApi.Webpack.getModule(m => m.refresh_sm);
 const sizes = <const>{
     xxs: 12,
     xs: 16,
@@ -25,8 +24,8 @@ const sizes = <const>{
     refresh_sm: 20
 };
 
-type LucideMiddleware = (props: LucideProps, passedProps: DiscordProps) => LucideProps;
-type DiscordMiddleware = (props: DiscordProps, passedProps: LucideProps) => DiscordProps;
+type LucideMiddleware = (props: LucideProps, passedProps: DiscordIconProps) => LucideProps;
+type DiscordMiddleware = (props: DiscordIconProps, passedProps: LucideProps) => DiscordIconProps;
 
 type LucideToDiscord = (lucide: LucideIcon, middleWare?: LucideMiddleware) => DiscordIcon;
 type DiscordToLucide = (lucide: DiscordIcon, middleWare?: DiscordMiddleware) => LucideIcon;

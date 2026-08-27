@@ -1,12 +1,7 @@
-import React from "@modules/react";
-import {none, SettingsContext} from "@ui/contexts";
-import type {ChangeEvent, KeyboardEvent} from "react";
+import React, {type ChangeEvent, type KeyboardEvent} from "react";
+import {useItemProps, type BaseSettingProps} from "./utils";
 
-const {useState, useCallback, useContext} = React;
-
-
-export interface TextboxProps {
-    value: string;
+interface BaseTextboxProps {
     maxLength?: number;
     placeholder?: string;
     onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
@@ -14,18 +9,23 @@ export interface TextboxProps {
     disabled?: boolean;
 }
 
-export default function Textbox({value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled}: TextboxProps) {
-    const [internalValue, setValue] = useState(initialValue);
-    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
+export type TextboxProps = BaseTextboxProps & BaseSettingProps<string>;
 
-    const value = (contextValue !== none ? contextValue : internalValue) as string;
-    const isDisabled = contextValue !== none ? contextDisabled : disabled;
+export default function Textbox(props: TextboxProps) {
+    const {maxLength, placeholder, onKeyDown} = props;
 
-    const change = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (isDisabled) return;
-        onChange?.(e.currentTarget.value);
-        setValue(e.currentTarget.value);
-    }, [onChange, isDisabled]);
+    const {state, setState, disabled} = useItemProps<string, ChangeEvent<HTMLInputElement>>(props, e => e.currentTarget.value);
 
-    return <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-text-input" placeholder={placeholder} maxLength={maxLength} value={value} disabled={isDisabled} />;
+    return (
+        <input
+            onChange={setState}
+            onKeyDown={onKeyDown}
+            type="text"
+            className="bd-text-input"
+            placeholder={placeholder}
+            maxLength={maxLength}
+            value={state}
+            disabled={disabled}
+        />
+    );
 }

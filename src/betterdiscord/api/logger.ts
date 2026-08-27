@@ -1,16 +1,8 @@
-/**
- * Simple logger for the lib and plugins.
- *
- * @module Logger
- * @version 0.1.0
- */
-
 /* eslint-disable no-console */
 
 /**
  * List of logging types.
  */
-
 const LogTypes = {
     error: "error",
     debug: "debug",
@@ -21,112 +13,153 @@ const LogTypes = {
 
 const parseType = (type: string) => (LogTypes[type as keyof typeof LogTypes] || "log") as keyof typeof LogTypes;
 
-type LogArgs<Bounded extends boolean> = [
-    ...(Bounded extends false ? [name: string] : []),
-    ...message: any[]
-];
-
 /**
  * `Logger` is a helper class to log data in a nice and consistent way. An instance is available on {@link BdApi}.
- * @type Logger
- * @summary {@link Logger} is a simple utility for logging information.
- * @name Logger
  */
-class Logger<Bounded extends boolean> {
-
-    #pluginName = "";
+class Logger {
     #nameStyle = "color: #3a71c1; font-weight: 700;";
     #messageStyle = "";
 
-    /**
-     * @param {string} pluginName - Name of the plugin
-     * @param {string} nameStyle - CSS to style the plugin name
-     * @param {string} messageStyle - CSS to style the main message
-     * @returns
-     */
-    constructor(pluginName?: string, nameStyle?: string, messageStyle?: string) {
-        if (!pluginName) return;
-        this.#pluginName = pluginName;
-        if (nameStyle) this.#nameStyle = nameStyle;
-        if (messageStyle) this.#messageStyle = messageStyle;
-    }
+    /** @ignore */
+    constructor() {};
 
     /**
      * Logs an error using a collapsed error group with stacktrace.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {string} message - Message or error to have logged.
-     * @param {Error} error - Error object to log with the message.
+     * @param pluginName Name of the calling module
+     * @param message Message or error to log
+     * @param error Error object to log with the message
      */
     stacktrace(pluginName: string, message: any, error: Error) {
-        if (this.#pluginName) {
-            error = message;
-            message = pluginName;
-            pluginName = this.#pluginName;
-        }
         console.error(`%c[${pluginName}]%c ${message}\n\n%c`, this.#nameStyle, "color: red; font-weight: 700;", "color: red;", error);
     }
 
     /**
      * Logs an error message.
      *
-     * @param {string} pluginName Name of the calling module
-     * @param  {...any} message Messages to have logged.
+     * @param pluginName Name of the calling module
+     * @param messages Messages to log
      */
-    error(...messages: LogArgs<Bounded>) {this.#_log(messages, "error");}
+    error(pluginName: string, ...messages: any[]) {this.#_log(pluginName, messages, "error");}
 
     /**
      * Logs a warning message.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName Name of the calling module
+     * @param messages Messages to log
      */
-    warn(...messages: LogArgs<Bounded>) {this.#_log(messages, "warn");}
+    warn(pluginName: string, ...messages: any[]) {this.#_log(pluginName, messages, "warn");}
 
     /**
      * Logs an informational message.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName Name of the calling module
+     * @param messages Messages to log
      */
-    info(...messages: LogArgs<Bounded>) {this.#_log(messages, "info");}
+    info(pluginName: string, ...messages: any[]) {this.#_log(pluginName, messages, "info");}
 
     /**
-     * Logs used for debugging purposes.
+     * Logs a message used for debugging purposes.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName Name of the calling module.
+     * @param messages Messages to log
      */
-    debug(...args: LogArgs<Bounded>) {this.#_log(args, "debug");}
+    debug(pluginName: string, ...messages: any[]) {this.#_log(pluginName, messages, "debug");}
 
     /**
-     * Logs used for basic loggin.
+     * Logs a basic message.
      *
-     * @param {string} pluginName - Name of the calling module.
-     * @param {...any} message - Messages to have logged.
+     * @param pluginName Name of the calling module.
+     * @param messages Messages to log
      */
-    log(...messages: LogArgs<Bounded>) {this.#_log(messages);}
+    log(pluginName: string, ...messages: any[]) {this.#_log(pluginName, messages);}
 
     /**
      * Logs strings using different console levels and a module label.
      *
-     * @param {string} module - Name of the calling module.
-     * @param {any|Array<any>} message - Messages to have logged.
-     * @param {module:Logger.LogTypes} type - Type of log to use in console.
+     * @param pluginName Name of the calling module
+     * @param messages Messages to log
+     * @param type Type of log to use in console
      */
-    #_log(messages: LogArgs<Bounded>, type: keyof typeof LogTypes = "log") {
+    #_log(pluginName: string, messages: any[], type: keyof typeof LogTypes = "log") {
         type = parseType(type);
-
-        let pluginName = this.#pluginName;
-        if (!this.#pluginName) {
-            pluginName = messages.shift() as string;
-        }
-
         console[type](`%c[${pluginName}]%c`, this.#nameStyle, this.#messageStyle, ...messages);
+    }
+}
+
+/**
+ * `BoundLogger` is a helper class to log data in a nice and consistent way, with plugin scoping automatically supplied.
+ * An instance is available on instances of {@link BdApi}.
+ */
+class BoundLogger {
+    #pluginName = "";
+    #nameStyle = "color: #3a71c1; font-weight: 700;";
+    #messageStyle = "";
+
+    /** @ignore */
+    constructor(pluginName: string) {
+        this.#pluginName = pluginName;
+    }
+
+    /**
+     * Logs an error using a collapsed error group with stacktrace.
+     *
+     * @param message Message or error to log
+     * @param error Error object to log with the message
+     */
+    stacktrace(message: any, error: Error) {
+        console.error(`%c[${this.#pluginName}]%c ${message}\n\n%c`, this.#nameStyle, "color: red; font-weight: 700;", "color: red;", error);
+    }
+
+    /**
+     * Logs an error message.
+     *
+     * @param messages Messages to log
+     */
+    error(...messages: any[]) {this.#_log(messages, "error");}
+
+    /**
+     * Logs a warning message.
+     *
+     * @param messages Messages to log
+     */
+    warn(...messages: any[]) {this.#_log(messages, "warn");}
+
+    /**
+     * Logs an informational message.
+     *
+     * @param messages Messages to log
+     */
+    info(...messages: any[]) {this.#_log(messages, "info");}
+
+    /**
+     * Logs a message used for debugging purposes.
+     *
+     * @param messages Messages to log
+     */
+    debug(...messages: any[]) {this.#_log(messages, "debug");}
+
+    /**
+     * Logs a basic message.
+     *
+     * @param messages Messages to log
+     */
+    log(...messages: any[]) {this.#_log(messages);}
+
+    /**
+     * Logs strings using different console levels and a module label.
+     *
+     * @param messages Messages to log
+     * @param type Type of log to use in console
+     */
+    #_log(messages: any[], type: keyof typeof LogTypes = "log") {
+        type = parseType(type);
+        console[type](`%c[${this.#pluginName}]%c`, this.#nameStyle, this.#messageStyle, ...messages);
     }
 }
 
 
 Object.freeze(Logger);
 Object.freeze(Logger.prototype);
-export default Logger;
+
+export {Logger, BoundLogger};

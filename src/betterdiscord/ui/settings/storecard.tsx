@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import Web from "@data/web";
 
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
@@ -9,13 +9,18 @@ import Events from "@modules/emitter";
 import Button from "@ui/base/button";
 import {FlowerStar} from "./addonshared";
 import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
+import type {Addon} from "@modules/addonstore";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
-// TODO: let doggy fix these
-export const TagContext = createContext();
+type TagContext = [
+    (tag: string) => boolean,
+    (tag: string, state?: boolean) => void
+];
 
-function formatNumberWithSuffix(value) {
+export const TagContext = createContext<TagContext>([() => false, () => {}]);
+
+function formatNumberWithSuffix(value: number | string) {
     value = Number(value);
     if (value === 0) return "0";
 
@@ -29,19 +34,21 @@ function formatNumberWithSuffix(value) {
     return `${formattedValue}${suffixes[index]}`;
 }
 
-/**
- * @param {{ addon: import("@modules/addonstore").Addon, isEmbed?: boolean }} props
- */
-export default function AddonCard({addon, isEmbed}) {
+interface AddonCardProps {
+    addon: Addon;
+    isEmbed?: boolean;
+}
+
+export default function AddonCard({addon, isEmbed}: AddonCardProps) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);
     const [downloadCount, setDownloads] = useState(addon.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
+    const triggerDelete = useCallback((event: React.MouseEvent) => addon.delete(event.shiftKey), [addon]);
 
-    const installAddon = useCallback(async (event) => {
+    const installAddon = useCallback(async (event: React.MouseEvent) => {
         setDisabled(true);
 
         await addon.download(event.shiftKey);
@@ -51,7 +58,7 @@ export default function AddonCard({addon, isEmbed}) {
         setDisabled(false);
     }, [addon]);
 
-    const acceptInvite = useCallback(() => addon.guild.join(), [addon]);
+    const acceptInvite = useCallback(() => addon.guild?.join(), [addon]);
     const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
     const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
     const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);
@@ -64,11 +71,11 @@ export default function AddonCard({addon, isEmbed}) {
 
         listener();
 
-        Events.on(`${addon.manager.prefix}-loaded`, listener);
+        Events.on(`${addon.manager.prefix}-read`, listener);
         Events.on(`${addon.manager.prefix}-unloaded`, listener);
 
         return () => {
-            Events.off(`${addon.manager.prefix}-loaded`, listener);
+            Events.off(`${addon.manager.prefix}-read`, listener);
             Events.off(`${addon.manager.prefix}-unloaded`, listener);
         };
     }, [addon]);

@@ -4,7 +4,7 @@ import Toasts from "@stores/toasts";
 
 import SimpleMarkdown from "@structs/markdown";
 
-import React from "@modules/react";
+import React, {type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
@@ -14,8 +14,8 @@ import Modals from "@ui/modals";
 
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 import {getByKeys} from "@webpack";
-import type {MouseEvent, ReactNode} from "react";
-import type {default as AddonManager, Addon} from "@modules/addonmanager";
+import type {default as AddonManager} from "@modules/addonmanager";
+import type {Addon, AddonType} from "@typed/addon";
 
 const {useCallback, useMemo} = React;
 
@@ -87,7 +87,7 @@ function buildLink(type: keyof typeof LinkIcons, url?: string) {
 export interface AddonCardProps {
     addon: Addon;
     enabled: boolean;
-    type: "plugin" | "theme";
+    type: AddonType;
     disabled?: boolean;
     onChange(id: string): void;
     hasSettings: boolean;
@@ -165,7 +165,7 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         <div className="bd-addon-header">
             {type === "plugin" ? <PlugIcon size="20px" className="bd-icon" /> : <PaletteIcon size="20px" className="bd-icon" />}
             <div className="bd-title">{title}</div>
-            <Switch internalState={false} disabled={disabled} value={enabled} onChange={onChange} />
+            <Switch disabled={disabled} value={enabled} onChange={onChange} />
         </div>
         <div className="bd-description-wrap">
             {disabled && <div className="banner banner-danger"><ShieldAlertIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}

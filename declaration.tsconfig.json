@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationDir": "./dist/declarations"
+    },
+    "include": [
+        "./src/betterdiscord/api/index.ts",
+        "./src/betterdiscord/types/declaration/*.ts"
+    ]
+}

@@ -35,7 +35,7 @@ export interface SettingsPanel {
 
 type State = Record<string, Record<string, any>>;
 
-export default new class SettingsManager extends Store {
+class SettingsManager extends Store {
     state: State = {};
     collections: SettingsCollection[] = [];
     panels: SettingsPanel[] = [];
@@ -54,12 +54,14 @@ export default new class SettingsManager extends Store {
         });
         this.setupCollection(id);
         this.loadCollection(id);
+        this.emitChange();
     }
 
     removeCollection(id: string) {
         const location = this.collections.findIndex(c => c.id == id);
         if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.collections.splice(location, 1);
+        this.emitChange();
     }
 
     registerPanel(id: string, name: string, options: {onClick?: (o: any) => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager; icon?: LucideIcon; searchable?(): string[];}) {
@@ -78,6 +80,7 @@ export default new class SettingsManager extends Store {
         if (onClick) section.clickListener = onClick;
         if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof (element) == "function" ? element : () => element;
         this.panels.push(section);
+        this.emitChange();
     }
 
     registerAddonPanel(manager: AddonManager) {
@@ -97,6 +100,7 @@ export default new class SettingsManager extends Store {
         const location = this.panels.findIndex(c => c.id == id);
         if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.panels.splice(location, 1);
+        this.emitChange();
     }
 
     getPath(path: string[], collectionId = "", categoryId = "") {
@@ -173,7 +177,7 @@ export default new class SettingsManager extends Store {
                 }
 
                 // If the setting doesn't use enableWith XOR disableWith then move on
-                if (setting.hasOwnProperty("disabled")) continue;
+                if (Object.hasOwn(setting, "disabled")) continue;
                 if (!setting.enableWith && !setting.disableWith) continue;
                 const pathString = setting.enableWith ?? setting.disableWith;
                 const path = this.getPath(pathString!.split("."), collection.id, category.id);
@@ -266,7 +270,7 @@ export default new class SettingsManager extends Store {
         return this.state[collection][category][id!] as T;
     }
 
-    set(collection: string, category: string, id: string | unknown, value?: unknown): any {
+    set(collection: string, category: string, id: string | unknown, value?: unknown) {
         if (arguments.length == 3) {
             value = id;
             id = category;
@@ -276,12 +280,14 @@ export default new class SettingsManager extends Store {
         return this.onSettingChange(collection, category, id as string, value);
     }
 
-    on(collection: string, category: string, identifier: string, callback: (val: unknown) => void) {
-        const handler = (col: string, cat: string, id: string, value: unknown) => {
+    on<T>(collection: string, category: string, identifier: string, callback: (val: T) => void) {
+        const handler = (col: string, cat: string, id: string, value: T) => {
             if (col !== collection || cat !== category || id !== identifier) return;
             callback(value);
         };
         Events.on("setting-updated", handler);
         return () => {Events.off("setting-updated", handler);};
     }
-};
+}
+
+export default new SettingsManager();

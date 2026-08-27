@@ -4,11 +4,10 @@ import Logger from "@common/logger";
 import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
-import CommandManager from "@modules/commandmanager";
+import CommandManager, {type Command} from "@modules/commandmanager";
+import Store from "@stores/base";
 
-
-export default class BuiltinModule {
-
+export default class BuiltinModule extends Store {
     initialized: boolean = false;
     #commands = new Set<() => void>();
     get name() {return "Unnamed Builtin";}
@@ -17,12 +16,19 @@ export default class BuiltinModule {
     get id() {return "None";}
 
     async initialize() {
-        if (Settings.get(this.collection, this.category, this.id)) await this.enable();
+        if (Settings.get(this.collection, this.category, this.id)) {
+            await this.enable();
+            this.emitChange();
+        }
+
         Events.on("setting-updated", (collection, category, id, enabled) => {
             if (collection != this.collection || category !== this.category || id !== this.id) return;
             if (enabled) this.enable();
             else this.disable();
+
+            this.emitChange();
         });
+
         this.initialized = true;
     }
 
@@ -47,18 +53,22 @@ export default class BuiltinModule {
         });
     }
 
-    get(collection: string, category: string, id: string) {
-        if (arguments.length == 2) {
+    get<T>(id: string): T;
+    get<T>(category: string, id: string): T;
+    get<T>(collection: string, category: string, id: string): T;
+    get<T>(collection: string, category?: string, id?: string): T {
+        if (arguments.length === 2) {
             collection = this.collection;
             category = arguments[0];
             id = arguments[1];
         }
-        else if (arguments.length == 1) {
+        else if (arguments.length === 1) {
             collection = this.collection;
             category = this.category;
             id = arguments[0];
         }
-        return Settings.get(collection, category, id);
+
+        return Settings.get<T>(collection, category!, id!);
     }
 
     async enable() {
@@ -76,15 +86,15 @@ export default class BuiltinModule {
     async enabled() {}
     async disabled() {}
 
-    log(...message: string[]) {
+    log(...message: any[]) {
         Logger.log(this.name, ...message);
     }
 
-    warn(...message: string[]) {
+    warn(...message: any[]) {
         Logger.warn(this.name, ...message);
     }
 
-    error(...message: string[]) {
+    error(...message: any[]) {
         Logger.err(this.name, ...message);
     }
 
@@ -100,7 +110,8 @@ export default class BuiltinModule {
         return Patcher.instead(this.name, object, func as keyof typeof object, callback);
     }
 
-    after(object: object, func: string, callback: (t: object, a: any[], r: any) => void) {
+    after(object: object | undefined, func: string, callback: (t: object, a: any[], r: any) => void) {
+        if (!object) return;
         return Patcher.after(this.name, object, func as keyof typeof object, callback);
     }
 
@@ -108,8 +119,7 @@ export default class BuiltinModule {
         return Patcher.unpatchAll(this.name);
     }
 
-    // TODO: fix type when commands are properly TS
-    addCommands(...commands: object[]) {
+    addCommands(...commands: Command[]) {
         for (const command of commands) {
             const unregister = CommandManager.registerCommand("BetterDiscord", command);
             this.#commands.add(unregister);

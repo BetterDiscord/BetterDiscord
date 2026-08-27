@@ -20,7 +20,7 @@ export interface NativeRequestInit {
     signal?: AbortSignal | null;
 
     // Custom
-    timeout?: number;
+    timeout?: number | null;
     maxRedirects?: number;
     rejectUnauthorized?: boolean;
 }
@@ -49,7 +49,7 @@ export interface DriedResponse {
     redirected: boolean;
 }
 
-export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBuffer>>): DryReadableStream {
+export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBufferLike>>): DryReadableStream {
     // If type is not "bytes" throw error
     const $stream = new Response(stream).body!;
 
@@ -62,7 +62,7 @@ export function dryReadableStream(stream: ReadableStream<Uint8Array<ArrayBuffer>
     };
 }
 
-export function hydrateReadableStream(stream: DryReadableStream): ReadableStream<Uint8Array<ArrayBuffer>> {
+export function hydrateReadableStream(stream: DryReadableStream) {
     return new ReadableStream({
         async start(controller) {
             while (true) {
@@ -80,5 +80,5 @@ export function hydrateReadableStream(stream: DryReadableStream): ReadableStream
             }
         },
         type: "bytes"
-    });
+    }) as ReadableStream<Uint8Array<ArrayBuffer>>;
 }

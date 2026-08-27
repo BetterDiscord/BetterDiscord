@@ -1,6 +1,6 @@
 import DiscordModules from "@modules/discordmodules";
 import pluginmanager from "@modules/pluginmanager";
-import React from "@modules/react";
+import React from "react";
 import {t} from "@common/i18n";
 import thememanager from "@modules/thememanager";
 import settings from "@stores/settings";

@@ -1,20 +1,11 @@
 import clsx from "clsx";
-import React from "@modules/react";
+import React from "react";
 import DiscordModules from "@modules/discordmodules";
 
 
 const AccessibilityContext = DiscordModules.AccessibilityContext || React.createContext({
     reducedMotion: {enabled: false}
 });
-
-/**
- * @typedef {Object} SpinnerProps
- * @property {SpinnerType} [type] Type of the spinner
- * @property {boolean} [animated] Should the spinner be animated
- * @property {string} [className] Classes to pass to the spinner
- * @property {string} [itemClassName] Classes for the motion items in the spinner
- * @property {string} [aria-label]
- */
 
 export const SpinnerType = Spinner.Type = Object.freeze({
     WANDERING_CUBES: "wandering-cubes",
@@ -36,14 +27,13 @@ export interface SpinnerProps {
 }
 
 /**
- * Clone of Discord's builtin spinner, acts 100% the same
+ * Clone of Discord's builtin spinner, acts 100% the same.
  */
 function Spinner(props: SpinnerProps) {
     const {reducedMotion} = React.useContext(AccessibilityContext);
 
     const {animated = true} = props;
 
-    /** @type {SpinnerTypes} */
     const type = React.useMemo(() => {
         const spinnerType = props.type || SpinnerType.WANDERING_CUBES;
         if (!reducedMotion?.enabled) return spinnerType;
@@ -57,7 +47,6 @@ function Spinner(props: SpinnerProps) {
         }
     }, [props.type, reducedMotion?.enabled]);
 
-    /** @type {string} */
     const className = React.useMemo(() => {
         return clsx({
             "bd-spinner-stopAnimation": !animated

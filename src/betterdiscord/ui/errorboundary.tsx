@@ -1,27 +1,25 @@
 import Logger from "@common/logger";
-import React from "@modules/react";
+import React, {type PropsWithChildren, type ReactNode} from "react";
 import IPC from "@modules/ipc";
-import type {PropsWithChildren, ReactNode} from "react";
 
 
 export type ErrorBoundaryProps = PropsWithChildren<{
+    /** An optional id for debugging purposes */
     id?: string;
+    /** An optional name for debugging purposes */
     name?: string;
+    /** Whether to hide the default error message in the ui (never shown if there is a fallback) */
     hideError?: boolean;
+    /** A fallback to show on error */
     fallback?: ReactNode;
+    /** A callback called with the error when it happens */
     onError?(e: Error): void;
 }>;
 
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, {hasError: boolean;}> {
     /**
      * Creates an error boundary with optional fallbacks and debug info.
-     * @param {object} props
-     * @param {ReactElement[]} [props.children] - An optional id for debugging purposes
-     * @param {string} [props.id="Unknown"] - An optional id for debugging purposes
-     * @param {string} [props.name="Unknown"] - An optional name for debugging purposes
-     * @param {boolean} [props.hideError=false] - Whether to hide the default error message in the ui (never shown if there is a fallback)
-     * @param {ReactElement} [props.fallback] - A fallback to show on error
-     * @param {function} [props.onError] - A callback called with the error when it happens
+     * @param props
      */
     constructor(props: ErrorBoundaryProps) {
         super(props);

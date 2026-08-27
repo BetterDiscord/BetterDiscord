@@ -3,6 +3,7 @@ import {ipcRenderer as ipc} from "electron";
 import * as IPCEvents from "@common/constants/ipcevents";
 
 import Events from "./emitter";
+import type {DialogOptions} from "@common/types/ipc";
 
 
 export default new class IPCRenderer {
@@ -53,13 +54,8 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.DEVTOOLS_WARNING);
     }
 
-    // TODO: merge dialog options type with main process
-    openDialog(options: object) {
+    openDialog(options: Partial<DialogOptions>) {
         return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
-    }
-
-    getSystemAccentColor(): Promise<string> {
-        return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
     }
 
     openPath(path: string) {

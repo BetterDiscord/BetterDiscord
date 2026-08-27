@@ -1,29 +1,21 @@
-import React from "@modules/react";
-import {none, SettingsContext} from "@ui/contexts";
-
-import type {ChangeEvent} from "react";
-
-const {useState, useCallback, useContext} = React;
-
+import React, {useMemo} from "react";
+import {useItemProps, type BaseSettingProps} from "./utils";
 
 export interface RadioOption {
     name: string;
     value: any;
     color?: string;
     description?: string;
-    /** @deprecated */
-    desc?: string;
 }
 
-export interface RadioProps {
+interface BaseRadioProps {
     name?: string;
-    value: any;
     options: RadioOption[];
-    onChange?(newValue: any): void;
-    disabled?: boolean;
 }
 
-function RadioIndicator({checked} : {checked: boolean}) {
+export type RadioProps = BaseRadioProps & BaseSettingProps<any>;
+
+function RadioIndicator({checked}: {checked: boolean;}) {
     return <svg className="bd-radio-indicator" width="24" height="24" viewBox="0 0 24 24">
         <circle
             cx="12"
@@ -44,31 +36,31 @@ function RadioIndicator({checked} : {checked: boolean}) {
     </svg>;
 }
 
-export default function Radio({name, value: initialValue, options, onChange, disabled}: RadioProps) {
-    const {value: contextValue, disabled: contextDisabled} = useContext(SettingsContext);
-    const value = contextValue !== none ? contextValue : initialValue;
-    const isDisabled = contextValue !== none ? contextDisabled : disabled;
-    const [index, setIndex] = useState(options.findIndex(o => o.value === value));
+export default function Radio(props: RadioProps) {
+    const {name, options} = props;
 
-    const change = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        if (isDisabled) return;
-        const newIndex = parseInt(e.target.value);
-        const newValue = options[newIndex].value;
-        onChange?.(newValue);
-        setIndex(newIndex);
-    }, [options, onChange, isDisabled]);
+    const {state, setState, disabled} = useItemProps<any>(props);
 
-    function renderOption(opt: RadioOption, i: number) {
-        const isSelected = index === i;
-        return <label className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
-            <input onChange={change} type="radio" name={name} checked={isSelected} value={i} disabled={isDisabled} />
-            <RadioIndicator checked={isSelected} />
-            <div className="bd-radio-label-wrap">
-                <div className="bd-radio-label">{opt.name}</div>
-                <div className="bd-radio-description">{opt.desc || opt.description}</div>
-            </div>
-        </label>;
-    }
+    const index = useMemo(() => options.findIndex(o => o.value === state), [state, options]);
 
-    return <div className={`bd-radio-group ${isDisabled ? "bd-radio-disabled" : ""}`}>{options.map(renderOption)}</div>;
+    return (
+        <div className={`bd-radio-group${disabled ? " bd-radio-disabled" : ""}`}>
+            {options.map((opt, i) => {
+                const isSelected = index === i;
+
+                return (
+                    <label key={i} className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
+                        <input onChange={setState.bind(null, opt.value, false)} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
+
+                        <RadioIndicator checked={isSelected} />
+
+                        <div className="bd-radio-label-wrap">
+                            <div className="bd-radio-label">{opt.name}</div>
+                            <div className="bd-radio-description">{opt.description}</div>
+                        </div>
+                    </label>
+                );
+            })}
+        </div>
+    );
 }

@@ -1,18 +1,17 @@
-import {useInsertionEffect, useReducer, useRef} from "@modules/react";
+import {useInsertionEffect, useMemo, useReducer, useRef} from "react";
 import type Store from "../stores/base";
-import type React from "react";
 import {shallowEqual} from "fast-equals";
-import type {FluxStore} from "discord/modules";
+import type {FluxStore} from "@typed/discord/modules";
 
 type StoreType = Store | FluxStore;
 
-export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: () => T, deps?: React.DependencyList, areStateEqual: true | ((oldState: T, newState: T) => boolean) = (oldState, newState) => oldState === newState): T {
+export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: () => T, deps?: React.DependencyList, isStateEqual: true | ((oldState: T, newState: T) => boolean) = (oldState, newState) => oldState === newState): T {
     const [, forceUpdate] = useForceUpdate();
     const state = useRef(undefined as T);
     const factoryRef = useRef(undefined as unknown as () => T);
 
     const compareStates = useRef(null as unknown as (oldState: T, newState: T) => boolean);
-    compareStates.current = areStateEqual === true ? shallowEqual : areStateEqual;
+    compareStates.current = isStateEqual === true ? shallowEqual : isStateEqual;
 
     if (factoryRef.current === undefined) {
         factoryRef.current = factory;
@@ -75,3 +74,28 @@ export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: 
 export function useForceUpdate() {
     return useReducer<number, any>((num) => num + 1, 0);
 }
+
+type AnyFN = (...args: any[]) => any;
+
+export function useCallbackRef<T extends AnyFN>(callback: T): T {
+    const ref = useRef(callback);
+
+    ref.current = callback;
+
+    return useMemo(() => {
+        const handler: ProxyHandler<typeof ref.current> = {
+            get [Symbol.for("callback")]() {
+                return ref.current;
+            }
+        };
+
+        for (const key of Reflect.ownKeys(Reflect) as Array<keyof typeof Reflect>) {
+            if (typeof Reflect[key] !== "function") continue;
+
+            // @ts-expect-error TS Sucks
+            handler[key] = (_, ...args) => Reflect[key](ref.current, ...args);
+        }
+
+        return new Proxy(ref.current, handler);
+    }, []);
+};

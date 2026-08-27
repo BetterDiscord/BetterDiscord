@@ -43,12 +43,13 @@ function buildOptions() {
         alias: {
             react: "@modules/react",
         },
-        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os", "url", "util/types"],
+        external: ["fs", "node:inspector", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os", "url", "util/types"],
         target: ["chrome128", "node20"],
         loader: {
             ".js": "jsx",
             ".css": "css",
-            ".html": "copy"
+            ".html": "copy",
+            ".svg": "text"
         },
         plugins: [styleLoader() as unknown as esbuild.Plugin],
         logLevel: "info",
