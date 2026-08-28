@@ -5,6 +5,17 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### 1.14.0
 
 ### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed global setting onChange listener from not running
+
+### 1.14.0
+
+### Added
 - BetterDiscord now has official types [@betterdiscord/types](https://www.npmjs.com/package/@betterdiscord/types)
 - `BdApi.UI.openFloatingWindow` to open a floating window like the addon editor
 - `BdApi.Utils.loadEntry` to load lazy Discord chunks and modules
