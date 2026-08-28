@@ -23,7 +23,8 @@ export default {
             title: "Fixes",
             items: [
                 "Discord Activities are fixed",
-                "BetterDiscord's location in settings is now fixed"
+                "BetterDiscord's location in settings is now fixed",
+                "Plugin settings are now fixed"
             ]
         },
         {
