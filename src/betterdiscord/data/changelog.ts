@@ -24,7 +24,7 @@ export default {
             items: [
                 "Discord Activities are fixed",
                 "BetterDiscord's location in settings is now fixed",
-                "Fixed plugin settings"
+                "Plugin settings are now fixed"
             ]
         },
         {
