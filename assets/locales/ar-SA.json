@@ -262,16 +262,28 @@
         },
         "search": {
             "plugin": {
+                "zero": "Search {{count}} plugins",
                 "one": "Search one plugin",
+                "two": "Search {{count}} plugins",
+                "few": "Search {{count}} plugins",
+                "many": "Search {{count}} plugins",
                 "other": "Search {{count}} plugins"
             },
             "theme": {
+                "zero": "Search {{count}} themes",
                 "one": "Search one theme",
+                "two": "Search {{count}} themes",
+                "few": "Search {{count}} themes",
+                "many": "Search {{count}} themes",
                 "other": "Search {{count}} themes"
             }
         },
         "results": {
+            "zero": "{{count}} Results",
             "one": "{{count}} Result",
+            "two": "{{count}} Results",
+            "few": "{{count}} Results",
+            "many": "{{count}} Results",
             "other": "{{count}} Results"
         },
         "editAddon": "Edit",
@@ -319,11 +331,19 @@
         "new": "New",
         "updated": "Updated",
         "downloadCount": {
+            "zero": "{{count}} Downloads",
             "one": "{{count}} Download",
+            "two": "{{count}} Downloads",
+            "few": "{{count}} Downloads",
+            "many": "{{count}} Downloads",
             "other": "{{count}} Downloads"
         },
         "likeCount": {
+            "zero": "{{count}} Likes",
             "one": "{{count}} Like",
+            "two": "{{count}} Likes",
+            "few": "{{count}} Likes",
+            "many": "{{count}} Likes",
             "other": "{{count}} Likes"
         },
         "tags": "Tags",
@@ -331,11 +351,19 @@
         "official": "Official",
         "manyEnabled": {
             "plugin": {
+                "zero": "{{count}} plugins have been enabled.",
                 "one": "One plugin has been enabled.",
+                "two": "{{count}} plugins have been enabled.",
+                "few": "{{count}} plugins have been enabled.",
+                "many": "{{count}} plugins have been enabled.",
                 "other": "{{count}} plugins have been enabled."
             },
             "theme": {
+                "zero": "{{count}} themes have been enabled.",
                 "one": "One theme has been enabled.",
+                "two": "{{count}} themes have been enabled.",
+                "few": "{{count}} themes have been enabled.",
+                "many": "{{count}} themes have been enabled.",
                 "other": "{{count}} themes have been enabled."
             }
         }
@@ -399,11 +427,19 @@
         "addonUpdaterNotificationTitle": "Addon Updater",
         "addonUpdatesAvailable": {
             "plugin": {
+                "zero": "{{count}} plugins have updates!",
                 "one": "One plugin has an update!",
+                "two": "{{count}} plugins have updates!",
+                "few": "{{count}} plugins have updates!",
+                "many": "{{count}} plugins have updates!",
                 "other": "{{count}} plugins have updates!"
             },
             "theme": {
+                "zero": "{{count}} themes have updates!",
                 "one": "One theme has an update!",
+                "two": "{{count}} themes have updates!",
+                "few": "{{count}} themes have updates!",
+                "many": "{{count}} themes have updates!",
                 "other": "{{count}} themes have updates!"
             }
         },
