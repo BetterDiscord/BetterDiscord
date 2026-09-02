@@ -38,7 +38,7 @@ export interface Notification {
     icon?: React.ComponentType<any>;
 
     /** A ReactNode that will render instead of BetterDiscords custom notification component */
-    render: React.ReactNode;
+    render?: React.ReactNode;
 
     /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
