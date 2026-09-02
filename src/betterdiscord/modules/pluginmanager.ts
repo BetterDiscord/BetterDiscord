@@ -42,7 +42,11 @@ class PluginManager extends AddonManager<Plugin> {
     constructor() {
         super();
         this.onSwitch = this.onSwitch.bind(this);
+        // Maybe future we capture .observer instead and create the observer if 1 or more plugins use it
         this.observer = new MutationObserver((mutations) => {
+            // Possible speed increase
+            if (!this.addonList.length) return;
+
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
                 this.onMutation(mutations[i]);
             }
@@ -124,10 +128,6 @@ class PluginManager extends AddonManager<Plugin> {
             }
 
             plugin.instance = instance;
-            plugin.name = instance.getName ? instance.getName() : plugin.name;
-            plugin.author = instance.getAuthor ? instance.getAuthor() : plugin.author;
-            plugin.description = instance.getDescription ? instance.getDescription() : plugin.description;
-            plugin.version = instance.getVersion ? instance.getVersion() : plugin.version;
 
             // Confirm required fields are present
             if (!plugin.name || !plugin.author || !plugin.description || !plugin.version) {
@@ -138,19 +138,7 @@ class PluginManager extends AddonManager<Plugin> {
                 return false;
             }
 
-            // Run the plugin's load function
-            try {
-                if (typeof instance.load === "function") instance.load();
-                return true;
-            }
-            catch (err) {
-                this.state[plugin.id] = false;
-                this.showAddonError(plugin, t("Addons.methodError", {method: "load()"}), {
-                    message: (err as Error).message,
-                    stack: (err as Error).stack
-                });
-                return false;
-            }
+            return true;
         }
         catch (err) {
             this.showAddonError(plugin, t("Addons.methodError", {method: "Plugin constructor()"}), {
