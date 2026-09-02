@@ -23,7 +23,7 @@ interface ButtonActions extends ButtonProps {
 
 export interface Notification {
     /** A unique id for the notification, will not be shown if another notification with the same id is already being shown */
-    id: string;
+    id?: string;
     /** The title of the notification */
     title?: string;
     /** The content of the notification */
@@ -39,8 +39,6 @@ export interface Notification {
 
     /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
-
-    [key: symbol]: boolean;
 }
 
 const Icon = ({type}: {type: NotificationType;}) => {
@@ -57,72 +55,6 @@ const Icon = ({type}: {type: NotificationType;}) => {
             return null;
     }
 };
-
-class NotificationUI {
-    static container: HTMLDivElement | null = null;
-
-    constructor() {
-        const containerId = "bd-notifications-container";
-        let container = document.getElementById(containerId) as HTMLDivElement;
-        if (!container) {
-            container = document.createElement("div");
-            container.id = containerId;
-            DOMManager.bdBody.appendChild(container);
-        }
-        NotificationUI.container = container;
-
-        ReactDOM.createRoot(container).render(<PersistentNotificationContainer />);
-    }
-
-    show(notif: Notification) {
-        // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
-        // Or duplicate notifications.
-
-        let notificationData = Notifications.notifications.find(notification => notification.id === notif.id);
-
-        if (!notificationData) {
-            const kSelf = Symbol("kSelf");
-
-            notificationData = {
-                ...notif,
-                [kSelf]: true
-            };
-
-            this.upsertNotification(notificationData!);
-        }
-
-        const kSelf = Reflect.ownKeys(notificationData!).at(-1) as symbol;
-
-        return {
-            id: notificationData!.id,
-            isVisible: () => {
-                const currentNotifications = Notifications.notifications;
-                return currentNotifications.findIndex(notification => notification[kSelf]) !== -1;
-            },
-            close: () => {
-                const currentNotifications = Notifications.notifications;
-                const notificationIndex = currentNotifications.findIndex(notification => notification[kSelf]);
-
-                if (notificationIndex !== -1) {
-                    this.hide(notificationData!.id);
-                }
-            }
-        };
-    }
-
-    upsertNotification(notificationData: Notification) {
-        Notifications.addNotification(notificationData);
-    }
-
-    hide(id: string) {
-        const currentNotifications = Notifications.notifications;
-        const notificationIndex = currentNotifications.findIndex((n: Notification) => n.id === id);
-
-        if (notificationIndex !== -1) {
-            Notifications.removeNotification(currentNotifications[notificationIndex].id);
-        }
-    }
-}
 
 const PersistentNotificationContainer = () => {
     const notifications = useStateFromStores<Notification[]>(Notifications, () => Notifications.notifications.concat(), [], true);
@@ -143,11 +75,8 @@ const PersistentNotificationContainer = () => {
     );
 };
 
-const NotificationUIInstance = new NotificationUI();
-
 const NotificationItem = ({notification}: {notification: Notification;}) => {
     const {
-        id,
         title = "",
         content = "",
         type = "info",
@@ -171,7 +100,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
     }) as {width: string;};
 
     const handleClose = () => {
-        NotificationUIInstance.hide(id);
+        Notifications.hide(notification);
         notification.onClose?.();
     };
 
@@ -264,4 +193,14 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
     );
 };
 
-export default NotificationUIInstance;
+export function initNotificationUI() {
+    const containerId = "bd-notifications-container";
+    let container = document.getElementById(containerId) as HTMLDivElement;
+    if (!container) {
+        container = document.createElement("div");
+        container.id = containerId;
+        DOMManager.bdBody.appendChild(container);
+    }
+
+    ReactDOM.createRoot(container).render(<PersistentNotificationContainer />);
+}

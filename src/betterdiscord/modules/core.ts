@@ -27,6 +27,7 @@ import CommandManager from "./commandmanager";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 import {allModulesLoaded, getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
+import {initNotificationUI} from "@ui/notifications";
 
 export default new class Core {
     hasStarted = false;
@@ -88,6 +89,8 @@ export default new class Core {
 
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
+
+        initNotificationUI();
 
         const previousVersion = JsonStore.get("misc", "version");
         if (Config.get("version") !== previousVersion) {

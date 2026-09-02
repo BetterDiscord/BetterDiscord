@@ -18,7 +18,7 @@ import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 
 import Toasts from "@stores/toasts";
-import Notifications from "@ui/notifications";
+import Notifications from "@stores/notifications";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
