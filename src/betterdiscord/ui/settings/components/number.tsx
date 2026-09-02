@@ -32,7 +32,7 @@ export default function Number(props: NumberInputProps) {
         const currentValue = typeof state === "number" ? state : parseFloat(state);
         const decrementedValue = currentValue - step;
 
-        if (max !== undefined && decrementedValue < min) return;
+        if (min !== undefined && decrementedValue < min) return;
 
         setState(decrementedValue);
     }, [state, step, min, setState]);
