@@ -160,19 +160,6 @@ class PluginManager extends AddonManager<Plugin> {
             if (!loaded) return false;
         }
 
-        if (plugin.hasObserver) {
-            this.observerRef++;
-
-            if (typeof this.observer === "undefined") {
-                this.observer = new MutationObserver(this.onObserverMutations);
-
-                this.observer.observe(document, {
-                    childList: true,
-                    subtree: true
-                });
-            }
-        }
-
         try {
             plugin.instance.start();
         }
@@ -191,6 +178,19 @@ class PluginManager extends AddonManager<Plugin> {
             return false;
         }
 
+        if (plugin.hasObserver) {
+            this.observerRef++;
+
+            if (typeof this.observer === "undefined") {
+                this.observer = new MutationObserver(this.onObserverMutations);
+
+                this.observer.observe(document, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        }
+
         this.trigger("started", plugin.id);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: plugin.name, version: plugin.version}));
         else this.initialAddonsLoaded++;
@@ -202,9 +202,13 @@ class PluginManager extends AddonManager<Plugin> {
         const plugin = this.resolveAddon(idOrAddon);
         if (!plugin) return false;
 
-        if (plugin.hasObserver && !this.observerRef--) {
-            this.observer?.disconnect();
-            this.observer = undefined;
+        if (plugin.hasObserver) {
+            this.observerRef = this.observerRef <= 0 ? -1 : this.observerRef - 1;
+
+            if (this.observerRef === -1) {
+                this.observer?.disconnect();
+                this.observer = undefined;
+            }
         }
 
         try {
