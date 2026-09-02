@@ -21,6 +21,7 @@ export interface Plugin extends Addon {
         getSettingsPanel?(): any;
         onSwitch?(): void;
     };
+    hasObserver: boolean;
 }
 
 const normalizeExports = `
@@ -37,20 +38,20 @@ class PluginManager extends AddonManager<Plugin> {
     language = "javascript";
     order = 3;
 
-    observer: MutationObserver;
+    private observerRef = -1;
+    private observer: MutationObserver | undefined;
+    private onObserverMutations: MutationCallback = (mutations) => {
+        // Possible speed increase
+        if (!this.addonList.length) return;
+
+        for (let i = 0, mlen = mutations.length; i < mlen; i++) {
+            this.onMutation(mutations[i]);
+        }
+    };
 
     constructor() {
         super();
         this.onSwitch = this.onSwitch.bind(this);
-        // Maybe in the future we capture .observer instead and create the observer if 1 or more plugins use it
-        this.observer = new MutationObserver((mutations) => {
-            // Possible speed increase
-            if (!this.addonList.length) return;
-
-            for (let i = 0, mlen = mutations.length; i < mlen; i++) {
-                this.onMutation(mutations[i]);
-            }
-        });
     }
 
     initialize() {
@@ -128,6 +129,7 @@ class PluginManager extends AddonManager<Plugin> {
             }
 
             plugin.instance = instance;
+            plugin.hasObserver = typeof instance.observer === "function";
 
             // Confirm required fields are present
             if (!plugin.name || !plugin.author || !plugin.description || !plugin.version) {
@@ -156,6 +158,19 @@ class PluginManager extends AddonManager<Plugin> {
         if (!plugin.instance) {
             const loaded = this.loadAddon(plugin);
             if (!loaded) return false;
+        }
+
+        if (plugin.hasObserver) {
+            this.observerRef++;
+
+            if (typeof this.observer === "undefined") {
+                this.observer = new MutationObserver(this.onObserverMutations);
+
+                this.observer.observe(document, {
+                    childList: true,
+                    subtree: true
+                });
+            }
         }
 
         try {
@@ -187,6 +202,11 @@ class PluginManager extends AddonManager<Plugin> {
         const plugin = this.resolveAddon(idOrAddon);
         if (!plugin) return false;
 
+        if (plugin.hasObserver && !this.observerRef--) {
+            this.observer?.disconnect();
+            this.observer = undefined;
+        }
+
         try {
             plugin.instance?.stop();
         }
@@ -211,10 +231,6 @@ class PluginManager extends AddonManager<Plugin> {
 
     setupFunctions() {
         Events.on("navigate", this.onSwitch);
-        this.observer.observe(document, {
-            childList: true,
-            subtree: true
-        });
     }
 
     onSwitch() {
