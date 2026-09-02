@@ -37,8 +37,8 @@ export interface Notification {
     /** A React component to use as a custom icon for the notification */
     icon?: React.ComponentType<any>;
 
-    /** A ReactNode that will render instead of BetterDiscords custom notification component */
-    render?: React.ReactNode;
+    /** A React component that will render instead of BetterDiscords custom notification component */
+    render?: React.ComponentType<any>;
 
     /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
@@ -114,7 +114,10 @@ const NotificationItem = ({notification}: { notification: Notification; }) => {
             onMouseLeave={() => setIsPaused(false)}
             className={`bd-notification bd-notification-${type}`}
         >
-            {notification.render ? notification.render
+            {notification.render
+                ? <ErrorBoundary>
+                    <notification.render notification={notification}/>
+                </ErrorBoundary>
                 : <>
                     <div className={"bd-notification-content"}>
                         <div className="bd-notification-header">
