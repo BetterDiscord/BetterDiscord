@@ -10,7 +10,6 @@ import React, {Children, type MouseEvent, type ReactNode} from "react";
 import {useStateFromStores} from "@ui/hooks";
 import SimpleMarkdownExt from "@structs/markdown";
 import ErrorBoundary from "@ui/errorboundary";
-import notifications from "@stores/notifications";
 
 const spring = DiscordModules.ReactSpring;
 
@@ -101,7 +100,7 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
     }) as {width: string;};
 
     const handleClose = () => {
-        notifications.hide(notification);
+        Notifications.hide(notification);
         notification.onClose?.();
     };
 

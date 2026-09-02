@@ -173,7 +173,7 @@ const SettingsRenderer = new class SettingsRenderer {
 
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
-                        const {text, children} = items;
+                        const {text, children: child} = items;
 
                         const [, forceUpdate] = useForceUpdate();
 
@@ -209,7 +209,7 @@ const SettingsRenderer = new class SettingsRenderer {
 
                                 {node && (
                                     ReactDOM.createPortal(
-                                        <div className="bd-settings-page-title-children">{children}</div>,
+                                        <div className="bd-settings-page-title-children">{child}</div>,
                                         node
                                     )
                                 )}

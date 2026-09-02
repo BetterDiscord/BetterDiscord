@@ -7,7 +7,7 @@ class Notifications extends Store {
     private notificationsArray: Notification[] = [];
 
     show(notification: Notification) {
-        let notificationData = typeof notification.id === "string" ? this.notificationsArray.find(notification => notification.id === notification.id) : undefined;
+        let notificationData = typeof notification.id === "string" ? this.notificationsArray.find(notif => notif.id === notification.id) : undefined;
 
         if (!notificationData) {
             notificationData = notification;
@@ -25,10 +25,10 @@ class Notifications extends Store {
         return {
             id: notificationData!.id,
             isVisible: () => {
-                return this.notifications.findIndex(notification => notificationMetaData.get(notification!)! === unique) !== -1;
+                return this.notifications.findIndex(notif => notificationMetaData.get(notif!)! === unique) !== -1;
             },
             close: () => {
-                const index = this.notifications.findIndex(notification => notificationMetaData.get(notification!)! === unique);
+                const index = this.notifications.findIndex(notif => notificationMetaData.get(notif!)! === unique);
 
                 if (index !== -1) {
                     this.notificationsArray = this.notificationsArray.toSpliced(index, 1);
@@ -40,7 +40,7 @@ class Notifications extends Store {
     hide(notification: Notification | string) {
         let notificationData: Notification | undefined;
         if (typeof notification === "string") {
-            notificationData = this.notificationsArray.find(notification => notification.id === notification.id);
+            notificationData = this.notificationsArray.find(notif => notif.id === notification);
         }
         else {
             notificationData = notification;
@@ -50,11 +50,12 @@ class Notifications extends Store {
 
         const unique = notificationMetaData.get(notificationData);
 
-        const index = this.notifications.findIndex(notification => notificationMetaData.get(notification!)! === unique);
+        const index = this.notifications.findIndex(notif => notificationMetaData.get(notif!)! === unique);
 
         if (index !== -1) {
             this.notificationsArray = this.notificationsArray.toSpliced(index, 1);
             this.emitChange();
+
         }
     }
 
