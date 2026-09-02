@@ -42,7 +42,7 @@ class PluginManager extends AddonManager<Plugin> {
     constructor() {
         super();
         this.onSwitch = this.onSwitch.bind(this);
-        // Maybe future we capture .observer instead and create the observer if 1 or more plugins use it
+        // Maybe in the future we capture .observer instead and create the observer if 1 or more plugins use it
         this.observer = new MutationObserver((mutations) => {
             // Possible speed increase
             if (!this.addonList.length) return;
