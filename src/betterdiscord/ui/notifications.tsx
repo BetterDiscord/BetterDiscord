@@ -1,5 +1,5 @@
 import ReactDOM from "@modules/reactdom";
-import Button, {type ButtonProps, ButtonColors, ButtonLooks} from "@ui/base/button";
+import Button, {ButtonColors, ButtonLooks, type ButtonProps} from "@ui/base/button";
 import Settings from "@stores/settings";
 import Notifications from "@stores/notifications";
 import Text from "@ui/base/text";
@@ -23,7 +23,7 @@ interface ButtonActions extends ButtonProps {
 
 export interface Notification {
     /** A unique id for the notification, will not be shown if another notification with the same id is already being shown */
-    id: string;
+    id?: string;
     /** The title of the notification */
     title?: string;
     /** The content of the notification */
@@ -37,92 +37,27 @@ export interface Notification {
     /** A React component to use as a custom icon for the notification */
     icon?: React.ComponentType<any>;
 
+    /** A React component that will render instead of BetterDiscords custom notification component */
+    render?: React.ComponentType<any>;
+
     /** A callback which is run when the notification is closed manually or automatically */
     onClose?(): void;
-
-    [key: symbol]: boolean;
 }
 
-const Icon = ({type}: {type: NotificationType;}) => {
+const Icon = ({type}: { type: NotificationType; }) => {
     switch (type) {
         case "warning":
-            return <TriangleAlertIcon color="var(--status-warning)" size="18px" />;
+            return <TriangleAlertIcon color="var(--status-warning)" size="18px"/>;
         case "error":
-            return <CircleAlertIcon color="var(--status-danger)" size="18px" />;
+            return <CircleAlertIcon color="var(--status-danger)" size="18px"/>;
         case "info":
-            return <InfoIcon color="#3B82F6" size="18px" />;
+            return <InfoIcon color="#3B82F6" size="18px"/>;
         case "success":
-            return <CircleCheckIcon color="var(--status-positive)" size="18px" />;
+            return <CircleCheckIcon color="var(--status-positive)" size="18px"/>;
         default:
             return null;
     }
 };
-
-class NotificationUI {
-    static container: HTMLDivElement | null = null;
-
-    constructor() {
-        const containerId = "bd-notifications-container";
-        let container = document.getElementById(containerId) as HTMLDivElement;
-        if (!container) {
-            container = document.createElement("div");
-            container.id = containerId;
-            DOMManager.bdBody.appendChild(container);
-        }
-        NotificationUI.container = container;
-
-        ReactDOM.createRoot(container).render(<PersistentNotificationContainer />);
-    }
-
-    show(notif: Notification) {
-        // If there are many notifications of one ID. This will cause eccentric issues like notifications not closing.
-        // Or duplicate notifications.
-
-        let notificationData = Notifications.notifications.find(notification => notification.id === notif.id);
-
-        if (!notificationData) {
-            const kSelf = Symbol("kSelf");
-
-            notificationData = {
-                ...notif,
-                [kSelf]: true
-            };
-
-            this.upsertNotification(notificationData!);
-        }
-
-        const kSelf = Reflect.ownKeys(notificationData!).at(-1) as symbol;
-
-        return {
-            id: notificationData!.id,
-            isVisible: () => {
-                const currentNotifications = Notifications.notifications;
-                return currentNotifications.findIndex(notification => notification[kSelf]) !== -1;
-            },
-            close: () => {
-                const currentNotifications = Notifications.notifications;
-                const notificationIndex = currentNotifications.findIndex(notification => notification[kSelf]);
-
-                if (notificationIndex !== -1) {
-                    this.hide(notificationData!.id);
-                }
-            }
-        };
-    }
-
-    upsertNotification(notificationData: Notification) {
-        Notifications.addNotification(notificationData);
-    }
-
-    hide(id: string) {
-        const currentNotifications = Notifications.notifications;
-        const notificationIndex = currentNotifications.findIndex((n: Notification) => n.id === id);
-
-        if (notificationIndex !== -1) {
-            Notifications.removeNotification(currentNotifications[notificationIndex].id);
-        }
-    }
-}
 
 const PersistentNotificationContainer = () => {
     const notifications = useStateFromStores<Notification[]>(Notifications, () => Notifications.notifications.concat(), [], true);
@@ -143,11 +78,8 @@ const PersistentNotificationContainer = () => {
     );
 };
 
-const NotificationUIInstance = new NotificationUI();
-
-const NotificationItem = ({notification}: {notification: Notification;}) => {
+const NotificationItem = ({notification}: { notification: Notification; }) => {
     const {
-        id,
         title = "",
         content = "",
         type = "info",
@@ -156,22 +88,23 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
     } = notification;
 
     const [isPaused, setIsPaused] = React.useState(false);
+    const isCustom = !!notification.render;
 
     // @ts-expect-error Discord may use a different version of react-spring
     const progressProps = spring.useSpring({
         width: "0%",
         from: {width: "100%"},
         config: {duration},
-        pause: isPaused,
-        onChange: ({width}: {width: string;}) => {
+        pause: isPaused || isCustom,
+        onChange: ({width}: { width: string; }) => {
             if (width === "0%") {
                 handleClose();
             }
         },
-    }) as {width: string;};
+    }) as { width: string; };
 
     const handleClose = () => {
-        NotificationUIInstance.hide(id);
+        Notifications.hide(notification);
         notification.onClose?.();
     };
 
@@ -181,87 +114,104 @@ const NotificationItem = ({notification}: {notification: Notification;}) => {
             onMouseLeave={() => setIsPaused(false)}
             className={`bd-notification bd-notification-${type}`}
         >
-            <div className={"bd-notification-content"}>
-                <div className="bd-notification-header">
-                    <div className="bd-notification-icon">
-                        <div className="bd-notification-icon">
-                            {notification.icon ? (
-                                <ErrorBoundary>
-                                    <notification.icon />
-                                </ErrorBoundary>
-                            ) : (
-                                <Icon type={type} />
-                            )}
-                        </div>
-                    </div>
-                    {title && <div className="bd-notification-title">{title}</div>}
-                </div>
-                {content && (
-                    <div className="bd-notification-body">
-                        <div className="bd-notification-content-text">
-                            {content && (
-                                <div className="bd-notification-body">
-                                    <div className="bd-notification-content-text">
+            {notification.render
+                ? <ErrorBoundary>
+                    <notification.render notification={notification}/>
+                </ErrorBoundary>
+                : <>
+                    <div className={"bd-notification-content"}>
+                        <div className="bd-notification-header">
+                            <div className="bd-notification-icon">
+                                <div className="bd-notification-icon">
+                                    {notification.icon ? (
                                         <ErrorBoundary>
-                                            {Children.map(content, (child) => (
-                                                typeof child === "string" ? SimpleMarkdownExt.parseToReact(child as string) : child
-                                            ))}
+                                            <notification.icon/>
                                         </ErrorBoundary>
-                                    </div>
+                                    ) : (
+                                        <Icon type={type}/>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+                            {title && <div className="bd-notification-title">{title}</div>}
                         </div>
+                        {content && (
+                            <div className="bd-notification-body">
+                                <div className="bd-notification-content-text">
+                                    {content && (
+                                        <div className="bd-notification-body">
+                                            <div className="bd-notification-content-text">
+                                                <ErrorBoundary>
+                                                    {Children.map(content, (child) => (
+                                                        typeof child === "string" ? SimpleMarkdownExt.parseToReact(child as string) : child
+                                                    ))}
+                                                </ErrorBoundary>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
-            {actions.length > 0 && (
-                <div className="bd-notification-footer">
-                    {actions.map((action, index) => {
-                        const color = ButtonColors[action?.color?.toUpperCase() as keyof typeof ButtonColors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
-                        const look = ButtonLooks[action?.look?.toUpperCase() as keyof typeof ButtonLooks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
+                    {actions.length > 0 && (
+                        <div className="bd-notification-footer">
+                            {actions.map((action, index) => {
+                                const color = ButtonColors[action?.color?.toUpperCase() as keyof typeof ButtonColors] ? `bd-button-color-${action?.color}` : Button.Colors.PRIMARY;
+                                const look = ButtonLooks[action?.look?.toUpperCase() as keyof typeof ButtonLooks] ? `bd-button-${action?.look}` : Button.Looks.FILLED;
 
-                        return <Button
-                            {...action}
-                            key={index}
-                            color={color as typeof ButtonColors[keyof typeof ButtonColors]}
-                            look={look as typeof ButtonLooks[keyof typeof ButtonLooks]}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                action.onClick?.(e);
-                                if (!action.dontClose && !(action.dontCloseOnActionIfHoldingShiftKey && e.shiftKey)) {
-                                    handleClose();
-                                }
-                            }}
-                            className="bd-notification-action"
-                        >
-                            {action?.label}
-                        </Button>;
-                    })}
-                </div>
-            )}
-            <Text
-                onClick={(e: MouseEvent) => {
-                    e.stopPropagation();
-                    handleClose();
-                }}
-                className="bd-notification-close"
-            >
-                ✕
-            </Text>
-            <spring.animated.div
-                className="bd-notification-progress"
-                style={{
-                    ...progressProps,
-                    backgroundColor: {
-                        success: "var(--status-positive)",
-                        error: "var(--status-danger)",
-                        warning: "var(--status-warning)",
-                        info: "var(--bd-brand)"
-                    }[type]
-                }}
-            />
+                                return <Button
+                                    {...action}
+                                    key={index}
+                                    color={color as typeof ButtonColors[keyof typeof ButtonColors]}
+                                    look={look as typeof ButtonLooks[keyof typeof ButtonLooks]}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        action.onClick?.(e);
+                                        if (!action.dontClose && !(action.dontCloseOnActionIfHoldingShiftKey && e.shiftKey)) {
+                                            handleClose();
+                                        }
+                                    }}
+                                    className="bd-notification-action"
+                                >
+                                    {action?.label}
+                                </Button>;
+                            })}
+                        </div>
+                    )}
+                    <Text
+                        onClick={(e: MouseEvent) => {
+                            e.stopPropagation();
+                            handleClose();
+                        }}
+                        className="bd-notification-close"
+                    >
+                        ✕
+                    </Text>
+                    <spring.animated.div
+                        className="bd-notification-progress"
+                        style={{
+                            ...(!isCustom ? progressProps : null),
+                            backgroundColor: {
+                                success: "var(--status-positive)",
+                                error: "var(--status-danger)",
+                                warning: "var(--status-warning)",
+                                info: "var(--bd-brand)"
+                            }[type]
+                        }}
+                    />
+                </>
+            }
         </spring.animated.div>
     );
 };
 
-export default NotificationUIInstance;
+export function initNotificationUI() {
+    const containerId = "bd-notifications-container";
+    let container = document.getElementById(containerId) as HTMLDivElement;
+    if (!container) {
+        container = document.createElement("div");
+        container.id = containerId;
+        DOMManager.bdBody.appendChild(container);
+    }
+
+    ReactDOM.createRoot(container).render(<PersistentNotificationContainer/>);
+}
