@@ -1,232 +1,443 @@
 {
-    "Panels": {
-        "plugins": "プラグイン",
-        "themes": "テーマ",
-        "customcss": "カスタムCSS",
-        "updates": "アップデート"
-    },
-    "Collections": {
-        "settings": {
-            "name": "設定",
-            "general": {
-                "name": "全般",
-                "voiceDisconnect": {
-                    "name": "ボイスチャンネルの切断",
-                    "note": "Discordを終了すると自動的にボイスチャンネルから切断されます。"
-                },
-                "showToasts": {
-                    "name": "トースト表示",
-                    "note": "重要な情報を小さな通知で表示します。"
-                },
-                "mediaKeys": {
-                    "name": "メディアキー無効化",
-                    "note": "ビデオ再生後にDiscordがメディアキーを乗っ取るのを防ぎます。"
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "最小サイズ削除",
-                    "note": "Discordの最小ウィンドウサイズである940x500を強制的に解除します。"
-                },
-                "name": "ウィンドウ設定",
-                "transparency": {
-                    "name": "透過を有効",
-                    "note": "Discordのメインウィンドウを透過します(要再起動)。"
-                },
-                "frame": {
-                    "name": "ウィンドウフレームの表示",
-                    "note": "メインウィンドウにOSごとのウィンドウフレームを追加します。"
-                }
-            },
-            "addons": {
-                "name": "アドオンマネージャー",
-                "addonErrors": {
-                    "name": "アドオンエラーの表示",
-                    "note": "プラグイン/テーマのエラーを表示します。"
-                },
-                "editAction": {
-                    "name": "アドオンの編集",
-                    "note": "プラグインとテーマの編集時の表示位置。",
-                    "options": {
-                        "detached": "Discord内で開く",
-                        "system": "外部エディタで開く"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "カスタムCSS",
-                "customcss": {
-                    "name": "カスタムCSS",
-                    "note": "カスタムCSSタブを有効にします。"
-                },
-                "liveUpdate": {
-                    "name": "自動リアルタイム更新",
-                    "note": "入力と同時に自動でCSSを更新"
-                },
-                "startDetached": {
-                    "name": "ウィンドウ表示",
-                    "note": "カスタムCSSタブをクリックすると、エディターが別ウィンドウで表示されます"
-                },
-                "nativeOpen": {
-                    "name": "外部エディタを起動",
-                    "note": "カスタムCSSを外部のエディタで起動します"
-                },
-                "openAction": {
-                    "name": "エディター",
-                    "note": "カスタムCSSがデフォルトで開かれる場所",
-                    "options": {
-                        "settings": "設定メニュー",
-                        "detached": "内部エディター",
-                        "system": "システム既定のエディター"
-                    }
-                }
-            },
-            "developer": {
-                "name": "開発者設定",
-                "debuggerHotkey": {
-                    "name": "デバッグ用ホットキー",
-                    "note": "デベロッパーツールを開いた状態でF8キーを押すとデバッガが起動します。"
-                },
-                "reactDevTools": {
-                    "name": "React開発者向けツール",
-                    "note": "ローカルにインストールしたReact Developer ToolsをDiscordに挿入します。"
-                },
-                "inspectElement": {
-                    "name": "インスペクト・エレメント・ホットキー",
-                    "note": "ほとんどのブラウザで一般的なinspect要素のホットキー(Ctrl + Shift + C)を有効にします。"
-                },
-                "devToolsWarning": {
-                    "name": "DevToolsの警告を停止",
-                    "note": "Discordの \"Hold Up!\"メッセージの表示を停止します。"
-                },
-                "debugLogs": {
-                    "name": "デバッグログ",
-                    "note": "コンソールからBetterDiscordフォルダのdebug.logファイルに全てを出力します。"
-                },
-                "devTools": {
-                    "name": "デベロッパーツール",
-                    "note": "ctrl+shift+iでデベロッパーツールの切り替えができます。"
-                }
-            },
-            "editor": {
-                "name": "エディターの設定",
-                "lineNumbers": {
-                    "name": "行番号",
-                    "note": "エディターの横に行番号を表示します。"
-                },
-                "fontSize": {
-                    "name": "フォントサイズ",
-                    "note": "エディターで使用するフォントの大きさ(pt)を変更する。"
-                },
-                "minimap": {
-                    "name": "ミニマップ",
-                    "note": "エディター横にコード用のミニマップを表示します。"
-                },
-                "hover": {
-                    "name": "参照用ツールチップ",
-                    "note": "ルールやセレクタをホバーしたときに、参照用のツールチップを表示します。"
-                },
-                "quickSuggestions": {
-                    "name": "入力補助",
-                    "note": "入力中にオートコンプリートの候補を表示します。"
-                },
-                "renderWhitespace": {
-                    "name": "空白を表示",
-                    "note": "エディターで空白を表示する場合",
-                    "options": {
-                        "all": "常時",
-                        "none": "無し",
-                        "selection": "選択"
-                    }
-                }
-            }
+  "Panels": {
+    "plugins": "プラグイン",
+    "themes": "テーマ",
+    "customcss": "カスタムCSS",
+    "updates": "アップデート"
+  },
+  "Collections": {
+    "settings": {
+      "name": "設定",
+      "general": {
+        "name": "全般",
+        "voiceDisconnect": {
+          "name": "ボイスチャンネルの切断",
+          "note": "Discordを終了すると自動的にボイスチャンネルから切断されます。"
+        },
+        "showToasts": {
+          "name": "トースト表示",
+          "note": "重要な情報を小さな通知で表示します。"
+        },
+        "mediaKeys": {
+          "name": "メディアキー無効化",
+          "note": "ビデオ再生後にDiscordがメディアキーを乗っ取るのを防ぎます。"
+        },
+        "themeAttributes": {
+          "name": "テーマ属性",
+          "note": "テーマ作成を支援するために各種要素に属性を追加します。"
+        },
+        "notificationPosition": {
+          "name": "通知",
+          "note": "通知をポップアップ表示する位置を選択できます。"
+        },
+        "notificationEnabled": {
+          "name": "通知を表示",
+          "note": "画面上への通知の表示・非表示を切り替えます。"
         }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} by {{author}}",
-        "byline": "by {{author}}",
-        "reload": "リロード",
-        "addonSettings": "設定",
-        "website": "ウェブサイト",
-        "source": "ソース",
-        "invite": "サポートサーバー",
-        "donate": "寄付",
-        "patreon": "Patreon",
-        "name": "名称",
-        "author": "作者",
-        "version": "バージョン",
-        "added": "追加日",
-        "modified": "更新日",
-        "editAddon": "編集",
-        "deleteAddon": "削除",
-        "confirmDelete": "本当に{{name}}を削除しますか？",
-        "confirmationText": "{{name}}に未保存のデータがあります。このウィンドウを閉じると、それらの変更はすべて失われます。",
-        "enabled": "{{name}}を有効化しました。",
-        "disabled": "{{name}}を無効化しました。",
-        "couldNotEnable": "{{name}}を有効化できませんでした。",
-        "couldNotDisable": "{{name}}を無効化できませんでした。",
-        "couldNotStart": "{{name}}を起動できませんでした。",
-        "couldNotStop": "{{name}}を停止できませんでした。",
-        "settingsError": "{{name}}の設定を開けませんでした。",
-        "methodError": "{{method}}を起動できませんでした。",
-        "unknownAuthor": "作者不明",
-        "noDescription": "説明はありません。",
-        "metaError": "METAを解析できませんでした。",
-        "missingNameData": "METAの名前データがありません。",
-        "metaNotFound": "METAが見つかりませんでした。",
-        "compileError": "コンパイルできませんでした。詳しくはコンソールをご覧ください。",
-        "wasUnloaded": "{{name}}が解除されました。",
-        "isEnabled": "有効",
-        "wasLoaded": "{{name}}のv{{version}}が読み込まれました。"
-    },
-    "CustomCSS": {
-        "confirmationText": "カスタムCSSに未保存のデータがあります。このウィンドウを閉じると、これらの変更はすべて失われます。",
-        "update": "アップデート",
-        "save": "保存",
-        "openNative": "外部エディタで開く",
-        "openDetached": "別ウィンドウで開く",
-        "settings": "エディター設定",
-        "editorTitle": "カスタムCSSエディター"
-    },
-    "Modals": {
-        "confirmAction": "本当によろしいですか？",
-        "okay": "はい",
-        "done": "Done",
-        "cancel": "いいえ",
-        "nevermind": "Nevermind",
-        "close": "Close",
-        "name": "名前",
-        "message": "メッセージ",
-        "error": "エラー",
-        "addonErrors": "アドオンエラー",
-        "restartRequired": "再起動が必要",
-        "restartNow": "今すぐ再起動",
-        "restartLater": "後で再起動",
-        "additionalInfo": "その他の情報",
-        "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
-    },
-    "Sorting": {
-        "sortBy": "並び順",
-        "order": "順序",
-        "ascending": "昇順",
-        "descending": "降順"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
-        "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
-    },
-    "Updater": {
-        "updateFailed": "アップデートに失敗しました！",
-        "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https://betterdiscord.app/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
-        "updateSuccessful": "アップデートに成功しました！",
-        "updateAvailable": "BetterDiscordに新しいアップデート(v{{version}})があります。",
-        "addonUpdated": "{{name}}がバージョン{{version}}にアップデートされました！",
-        "checking": "アップデートを確認",
-        "finishedChecking": "アップデートの確認が終了しました！",
-        "checkForUpdates": "アップデートを確認",
-        "updateAll": "全てアップデート",
-        "noUpdatesAvailable": "アップデートはありません。",
-        "versionAvailable": "バージョン{{version}}を公開しました。",
-        "updateButton": "アップデート"
+      },
+      "store": {
+        "name": "アドオンストア",
+        "bdAddonStore": {
+          "name": "アドオンストアを有効化",
+          "note": "BetterDiscord アドオンストアを有効にします。"
+        },
+        "alwaysEnable": {
+          "name": "常に有効化",
+          "note": "有効にすると、アドオンストアからダウンロードしたアドオンがデフォルトで有効化されます。"
+        },
+        "addonEmbeds": {
+          "name": "アドオンの埋め込み",
+          "note": "アドオンストアのカードをチャット内に埋め込み表示します。"
+        }
+      },
+      "window": {
+        "name": "ウィンドウ設定",
+        "removeMinimumSize": {
+          "name": "最小サイズ削除",
+          "note": "Discordの最小ウィンドウサイズである940x500を強制的に解除します。"
+        },
+        "transparency": {
+          "name": "透過を有効",
+          "note": "Discordのメインウィンドウを透過します(要再起動)。"
+        },
+        "frame": {
+          "name": "ウィンドウフレームの表示",
+          "note": "メインウィンドウにOSごとのウィンドウフレームを追加します。"
+        },
+        "inAppTrafficLights": {
+          "name": "アプリ内ウィンドウコントロールを使用",
+          "note": "OS標準のコントロールの代わりにアプリ内のウィンドウボタンを使用します。"
+        }
+      },
+      "addons": {
+        "name": "アドオンマネージャー",
+        "addonErrors": {
+          "name": "アドオンエラーの表示",
+          "note": "プラグイン/テーマのエラーを表示します。"
+        },
+        "editAction": {
+          "name": "アドオンの編集",
+          "note": "プラグインとテーマの編集時の表示位置。",
+          "options": {
+            "detached": "Discord内で開く",
+            "external": "外部ウィンドウ",
+            "system": "外部エディタで開く"
+          }
+        },
+        "checkForUpdates": {
+          "name": "自動で更新を確認",
+          "note": "アドオンおよびBetterDiscord本体の更新を定期的に確認します。"
+        },
+        "updateInterval": {
+          "name": "更新確認の間隔",
+          "note": "アドオンや本体の更新を確認する頻度を指定します。"
+        }
+      },
+      "customcss": {
+        "name": "カスタムCSS",
+        "customcss": {
+          "name": "カスタムCSS",
+          "note": "カスタムCSSタブを有効にします。"
+        },
+        "liveUpdate": {
+          "name": "自動リアルタイム更新",
+          "note": "入力と同時に自動でCSSを更新"
+        },
+        "startDetached": {
+          "name": "ウィンドウ表示",
+          "note": "カスタムCSSタブをクリックすると、エディターが別ウィンドウで表示されます"
+        },
+        "nativeOpen": {
+          "name": "外部エディタを起動",
+          "note": "カスタムCSSを外部のエディタで起動します"
+        },
+        "openAction": {
+          "name": "エディター",
+          "note": "カスタムCSSがデフォルトで開かれる場所",
+          "options": {
+            "settings": "設定メニュー",
+            "detached": "内部エディター",
+            "external": "外部ウィンドウ",
+            "system": "システム既定のエディター"
+          }
+        }
+      },
+      "developer": {
+        "name": "開発者設定",
+        "debuggerHotkey": {
+          "name": "デバッグ用ホットキー",
+          "note": "デベロッパーツールを開いた状態でF8キーを押すとデバッガが起動します。"
+        },
+        "reactDevTools": {
+          "name": "React開発者向けツール",
+          "note": "ローカルにインストールしたReact Developer ToolsをDiscordに挿入します。"
+        },
+        "inspectElement": {
+          "name": "インスペクト・エレメント・ホットキー",
+          "note": "ほとんどのブラウザで一般的なinspect要素のホットキー(Ctrl + Shift + C)を有効にします。"
+        },
+        "devToolsWarning": {
+          "name": "DevToolsの警告を停止",
+          "note": "Discordの \"Hold Up!\"メッセージの表示を停止します。"
+        },
+        "debugLogs": {
+          "name": "デバッグログ",
+          "note": "コンソールからBetterDiscordフォルダのdebug.logファイルに全てを出力します。"
+        },
+        "devTools": {
+          "name": "デベロッパーツール",
+          "note": "ctrl+shift+iでデベロッパーツールの切り替えができます。"
+        },
+        "recovery": {
+          "name": "リカバリー",
+          "note": "リロードせずにDiscordの復旧を試みる機能を有効にします。",
+          "button": "Discordの復旧を試みる",
+          "report": "GitHubで報告",
+          "safeMode": "セーフモードで再起動"
+        }
+      },
+      "editor": {
+        "name": "エディターの設定",
+        "theme": {
+          "name": "テーマ",
+          "note": "コードエディターのテーマ設定",
+          "options": {
+            "system": "システム標準",
+            "vs-dark": "ダーク",
+            "vs": "ライト",
+            "hc-black": "ハイコントラスト（ブラック）",
+            "hc-light": "ハイコントラスト（ライト）"
+          }
+        },
+        "lineNumbers": {
+          "name": "行番号",
+          "note": "エディターの横に行番号を表示します。"
+        },
+        "fontSize": {
+          "name": "フォントサイズ",
+          "note": "エディターで使用するフォントの大きさ(pt)を変更する。"
+        },
+        "minimap": {
+          "name": "ミニマップ",
+          "note": "エディター横にコード用のミニマップを表示します。"
+        },
+        "hover": {
+          "name": "参照用ツールチップ",
+          "note": "ルールやセレクタをホバーしたときに、参照用のツールチップを表示します。"
+        },
+        "quickSuggestions": {
+          "name": "入力補助",
+          "note": "入力中にオートコンプリートの候補を表示します。"
+        },
+        "insertSpaces": {
+          "name": "スペースを挿入",
+          "note": "タブの代わりにスペースを挿入します。"
+        },
+        "tabSize": {
+          "name": "タブサイズ",
+          "note": "タブ1つに相当するスペースの数"
+        },
+        "renderWhitespace": {
+          "name": "空白を表示",
+          "note": "エディターで空白を表示する場合",
+          "options": {
+            "all": "常時",
+            "none": "無し",
+            "selection": "選択"
+          }
+        },
+        "alwaysOnTop": {
+          "name": "常に最前面に表示",
+          "note": "エディターウィンドウを常に最前面に表示します。"
+        }
+      }
     }
+  },
+  "Addons": {
+    "title": "{{name}} v{{version}} by {{author}}",
+    "byline": "by {{author}}",
+    "openFolder": {
+      "plugin": "プラグインフォルダを開く",
+      "theme": "テーマフォルダを開く"
+    },
+    "openStore": {
+      "plugin": "プラグインストアを開く",
+      "theme": "テーマストアを開く"
+    },
+    "storeMessage": {
+      "plugin": "公式コミュニティプラグインを閲覧してインストール",
+      "theme": "公式コミュニティテーマを閲覧してインストール"
+    },
+    "store": "ストア",
+    "viewInstalled": {
+      "plugin": "インストール済みプラグインを表示",
+      "theme": "インストール済みテーマを表示"
+    },
+    "reload": "リロード",
+    "addonSettings": "設定",
+    "website": "ウェブサイト",
+    "source": "ソース",
+    "invite": "サポートサーバー",
+    "donate": "寄付",
+    "patreon": "Patreon",
+    "name": "名称",
+    "author": "作者",
+    "version": "バージョン",
+    "added": "追加日",
+    "modified": "更新日",
+    "releaseDate": "リリース日",
+    "lastUpdated": "最終更新日",
+    "isEnabled": "有効",
+    "popularity": "人気順",
+    "isInstalled": "インストール済み",
+    "downloads": "ダウンロード数",
+    "likes": "高評価数",
+    "listView": "リスト表示",
+    "gridView": "グリッド表示",
+    "enableAll": "すべて有効化",
+    "disableAll": "すべて無効化",
+    "enableAllWarning": {
+      "plugin": "すべてのプラグインを有効にすると、一時的なラグや予期せぬエラーが発生する可能性があります。 (Shiftキーを押しながらクリックすると、このプロンプトをスキップできます！)",
+      "theme": "すべてのテーマを有効にすると、一時的なラグや予期せぬエラーが発生する可能性があります。 (Shiftキーを押しながらクリックすると、このプロンプトをスキップできます！)"
+    },
+    "search": {
+      "plugin": {
+        "zero": "検索できるプラグインがありません",
+        "one": "1個のプラグインを検索",
+        "other": "{{count}}個のプラグインを検索"
+      },
+      "theme": {
+        "zero": "検索できるテーマがありません",
+        "one": "1個のテーマを検索",
+        "other": "{{count}}個のテーマを検索"
+      }
+    },
+    "results": {
+      "zero": "結果なし",
+      "one": "{{count}}件の結果",
+      "other": "{{count}}件の結果"
+    },
+    "editAddon": "編集",
+    "deleteAddon": "削除",
+    "downloadAddon": "ダウンロード",
+    "confirmDelete": "本当に{{name}}を削除しますか？",
+    "confirmationText": "{{name}}に未保存のデータがあります。このウィンドウを閉じると、それらの変更はすべて失われます。",
+    "enabled": "{{name}}を有効化しました。",
+    "disabled": "{{name}}を無効化しました。",
+    "couldNotEnable": "{{name}}を有効化できませんでした。",
+    "couldNotDisable": "{{name}}を無効化できませんでした。",
+    "couldNotStart": "{{name}}を起動できませんでした。",
+    "couldNotStop": "{{name}}を停止できませんでした。",
+    "settingsError": "{{name}}の設定を開けませんでした。",
+    "methodError": "{{method}}を起動できませんでした。",
+    "unknownAuthor": "作者不明",
+    "noDescription": "説明はありません。",
+    "noSettings": "{{name}} には設定パネルがありません。",
+    "isDisabled": "{{name}} は無効になっています。",
+    "alreadyExists": {
+      "plugin": "{{name}} という名前のプラグインが既に存在します",
+      "theme": "{{name}} という名前のテーマが既に存在します"
+    },
+    "metaError": "METAを解析できませんでした。",
+    "missingNameData": "METAの名前データがありません。",
+    "metaNotFound": "METAが見つかりませんでした。",
+    "compileError": "コンパイルできませんでした。詳しくはコンソールをご覧ください。",
+    "wasUnloaded": "{{name}}が解除されました。",
+    "blankSlateHeader": {
+      "plugin": "プラグインがありません！",
+      "theme": "テーマがありません！"
+    },
+    "blankSlateMessage": {
+      "plugin": "[公式ウェブサイト](https://www.google.com/search?q=%7B%7Blink%7D%7D)から入手して、プラグインフォルダに追加してください。",
+      "theme": "[公式ウェブサイト](https://www.google.com/search?q=%7B%7Blink%7D%7D)から入手して、テーマフォルダに追加してください。"
+    },
+    "blankSlateHeaderGeneric": "何もありません！",
+    "blankSlateMessageGeneric": "何か追加してみましょう。",
+    "wasLoaded": "{{name}}のv{{version}}が読み込まれました。",
+    "failedToDownload": {
+      "plugin": "プラグイン {{name}} のダウンロードに失敗しました",
+      "theme": "テーマ {{name}} のダウンロードに失敗しました"
+    },
+    "successfullyDownload": "{{name}} のダウンロードに成功しました",
+    "alreadyInstalled": "{{name}} は既にインストールされています",
+    "failedToFetch": "アドオンを取得できません",
+    "new": "新着",
+    "updated": "更新あり",
+    "downloadCount": {
+      "one": "{{count}}回ダウンロード",
+      "other": "{{count}}回ダウンロード"
+    },
+    "likeCount": {
+      "one": "{{count}}件の高評価",
+      "other": "{{count}}件の高評価"
+    },
+    "tags": "タグ",
+    "preview": "プレビュー",
+    "official": "公式",
+    "manyEnabled": {
+      "plugin": {
+        "one": "1個のプラグインを有効にしました。",
+        "other": "{{count}}個のプラグインを有効にしました。"
+      },
+      "theme": {
+        "one": "1個のテーマを有効にしました。",
+        "other": "{{count}}個のテーマを有効にしました。"
+      }
+    }
+  },
+  "CustomCSS": {
+    "confirmationText": "カスタムCSSに未保存のデータがあります。このウィンドウを閉じると、これらの変更はすべて失われます。",
+    "update": "アップデート",
+    "save": "保存",
+    "openNative": "外部エディタで開く",
+    "openDetached": "別ウィンドウで開く",
+    "settings": "エディター設定",
+    "editorTitle": "カスタムCSSエディター",
+    "cssInstallSuccess": "カスタムCSSへの追加に成功しました。",
+    "cssInstalled": "CSSをインストールしました！",
+    "cssInstallError": "カスタムCSSへの追加に失敗しました。",
+    "cssReverted": "CSSが元に戻されました。",
+    "cssReverting": "10秒後に変更が元に戻されます",
+    "cssKept": "CSSの変更を永続的に保持しました",
+    "cssIsDetached": "エディターが切り離されています"
+  },
+  "Modals": {
+    "confirmAction": "本当によろしいですか？",
+    "installCss": "このCSSをカスタムCSSに追加してもよろしいですか？",
+    "addonCrashed": "クラッシュを防ぐため、このプラグインは無効化されました。開発者にこの問題を報告してください。",
+    "okay": "はい",
+    "done": "Done",
+    "cancel": "いいえ",
+    "nevermind": "Nevermind",
+    "close": "Close",
+    "name": "名前",
+    "message": "メッセージ",
+    "error": "エラー",
+    "addonErrors": "アドオンエラー",
+    "restartRequired": "再起動が必要",
+    "restartNow": "今すぐ再起動",
+    "restartLater": "後で再起動",
+    "additionalInfo": "その他の情報",
+    "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？",
+    "changelog": "変更履歴",
+    "debuglog": "デバッグログファイルが100MBを超えました。ログを消去しますか？",
+    "automaticallyEnable": "自動的に有効化"
+  },
+  "Sorting": {
+    "sortBy": "並び順",
+    "order": "順序",
+    "ascending": "昇順",
+    "descending": "降順"
+  },
+  "WindowPrefs": {
+    "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
+    "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
+  },
+  "Toasts": {
+    "recoveryFailed": "復旧が完了しませんでした。一部の処理に失敗しました。"
+  },
+  "Updater": {
+    "updateFailed": "アップデートに失敗しました！",
+    "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https://betterdiscord.app/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
+    "updateSuccessful": "アップデートに成功しました！",
+    "updateAvailable": "BetterDiscordに新しいアップデート(v{{version}})があります。",
+    "viewUpdates": "更新を表示",
+    "addonUpdaterNotificationTitle": "アドオンアップデータ",
+    "addonUpdatesAvailable": {
+      "plugin": {
+        "one": "1個のプラグインに更新があります！",
+        "other": "{{count}}個のプラグインに更新があります！"
+      },
+      "theme": {
+        "one": "1個のテーマに更新があります！",
+        "other": "{{count}}個のテーマに更新があります！"
+      }
+    },
+    "addonUpdated": "{{name}}がバージョン{{version}}にアップデートされました！",
+    "addonUpdateFailed": "{{name}} の更新に失敗しました。後でもう一度お試しください。",
+    "checking": "アップデートを確認",
+    "finishedChecking": "アップデートの確認が終了しました！",
+    "checkForUpdates": "アップデートを確認",
+    "updateAll": "全てアップデート",
+    "noUpdatesAvailable": "アップデートはありません。",
+    "versionAvailable": "バージョン{{version}}を公開しました。",
+    "upToDateBlankslate": {
+      "plugin": "すべてのプラグインが最新のようです！",
+      "theme": "すべてのテーマが最新のようです！"
+    },
+    "updateButton": "アップデート"
+  },
+  "Settings": {
+    "customColor": "カスタムカラー",
+    "resetSettings": "設定をリセット",
+    "resetSettingsWarning": "設定をリセットするとすべて初期状態に戻ります。この操作は取り消せません。"
+  },
+  "Socials": {
+    "twitter": "フォローする！",
+    "github": "Starを付ける！"
+  },
+  "Paginator": {
+    "back": "戻る",
+    "next": "次へ"
+  }
 }
