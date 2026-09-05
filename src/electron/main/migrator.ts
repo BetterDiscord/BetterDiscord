@@ -12,8 +12,6 @@ const supported: NodeJS.Platform[] = [
 ];
 
 function migrate() {
-    if (!supported.includes(process.platform)) return;
-
     const logPath = path.join(bdFolder, "data", "updater.log");
     const uuid = randomUUID();
 
@@ -69,22 +67,24 @@ require("../betterdiscord.app.asar");
     }
 }
 
-Object.defineProperty(global, "_betterdiscord_migrate", {value: migrate});
+if (supported.includes(process.platform)) {
+    Object.defineProperty(global, "_betterdiscord_migrate", {value: migrate});
 
-Module.wrap = new Proxy(Module.wrap, {
-    apply(target, thisArg, argArray) {
-        const bundle = (argArray[0] as string);
-        const index = bundle.indexOf("this.emit(\"host-updated\"");
+    Module.wrap = new Proxy(Module.wrap, {
+        apply(target, thisArg, argArray) {
+            const bundle = (argArray[0] as string);
+            const index = bundle.indexOf("this.emit(\"host-updated\"");
 
-        if (index !== -1) {
-            Module.wrap = target;
+            if (index !== -1) {
+                Module.wrap = target;
 
-            argArray[0] = bundle.slice(0, index) + "(void global._betterdiscord_migrate())||" + bundle.slice(index);
-        }
+                argArray[0] = bundle.slice(0, index) + "(void global._betterdiscord_migrate())||" + bundle.slice(index);
+            }
 
 
-        return Reflect.apply(target, thisArg, argArray);
-    },
-});
+            return Reflect.apply(target, thisArg, argArray);
+        },
+    });
 
-app.on("before-quit", migrate);
+    app.on("before-quit", migrate);
+}
