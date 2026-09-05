@@ -1,12 +1,18 @@
 import Builtin from "@structs/builtin";
 import {Filters, getLazy, getLazyBySource, getLazyByStrings, getMangledLazy, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
-import React from "react";
+import React, {createContext, useContext, useLayoutEffect, useMemo} from "react";
 
-const MessageGroupingContext = React.createContext({
-    first: false,
-    last: false
-});
+interface MessageGroupingState {
+    first: boolean,
+    last: boolean,
+}
+
+type MessageGroupingListener = (props: MessageGroupingState) => void;
+
+type MessageGroupingSubscriber = (listener: MessageGroupingListener) => ReturnType<React.EffectCallback>;
+
+const MessageGroupingEvents = createContext<MessageGroupingSubscriber>(() => () => {});
 
 export default new class ThemeAttributes extends Builtin {
     get name() {return "ThemeAttributes";}
@@ -21,9 +27,21 @@ export default new class ThemeAttributes extends Builtin {
         });
 
         this.after(MessageComponent!, "type", (_, [props], returnValue) => {
-            const {first, last} = React.useContext(MessageGroupingContext);
+            const subscribe = useContext(MessageGroupingEvents);
 
-            const li = findInTree(returnValue, (node) => node?.className?.includes("messageListItem"));
+            const li = findInTree(returnValue, (n) => n?.className?.includes("messageListItem"));
+
+            useLayoutEffect(() => {
+                return subscribe(({first, last}) => {
+                    const node = document.getElementById(li.id);
+
+                    if (!node) return;
+
+                    node.setAttribute("data-message-group-start", first.toString());
+                    node.setAttribute("data-message-group-end", last.toString());
+                });
+            }, [subscribe, li.id]);
+
             if (!li) return;
 
             const author = findInTree(props, (arg) => arg?.username, {walkable: ["message", "author"]});
@@ -39,9 +57,6 @@ export default new class ThemeAttributes extends Builtin {
 
             li["data-author-is-deleted"] = author.id === "456226577798135808";
             li["data-author-is-bot"] = author.bot && author.discriminator !== "0000";
-
-            li["data-message-group-start"] = first;
-            li["data-message-group-end"] = last;
 
             li["data-message-is-reply"] = props?.message?.messageReference?.type === 0;
             li["data-message-is-forward"] = props?.message?.messageReference?.type === 1;
@@ -61,11 +76,110 @@ export default new class ThemeAttributes extends Builtin {
                 walkable: ["props", "children"]
             });
 
-            if (!Array.isArray(node?.children)) return;
+            const {
+                createSubscriber,
+                start,
+                end,
+                invalidate,
+                dispatch
+            } = useMemo<{
+                createSubscriber(message: string, state: MessageGroupingState): MessageGroupingSubscriber;
+                start(): void;
+                end(): void;
+                invalidate(): void;
+                dispatch(): void;
+            }>(() => {
+                const messageListeners: Record<string, ReturnType<typeof createNewSubscriber>> = {};
+
+                const badListeners: string[] = [];
+
+                function createNewSubscriber(): {
+                    subscribe: MessageGroupingSubscriber,
+                    updateState(state: MessageGroupingState): void;
+                    dispatch(): void;
+                } {
+                    const listeners = new Set<MessageGroupingListener>();
+
+                    let state: MessageGroupingState | undefined;
+
+                    let shouldDispatch = false;
+
+                    return {
+                        subscribe(listener) {
+                            if (state) {
+                                listener(state);
+                                shouldDispatch = false;
+                            }
+
+                            listeners.add(listener);
+                            return () => void listeners.delete(listener);
+                        },
+                        updateState(newState) {
+                            if (!state) shouldDispatch = true;
+                            else shouldDispatch = state.last !== newState.last || state.first !== newState.first;
+                            state = newState;
+                        },
+                        dispatch() {
+                            if (!shouldDispatch) return;
+
+                            for (const element of listeners) {
+                                element(state!);
+                            }
+
+                            shouldDispatch = true;
+                        }
+                    };
+                }
+
+                return {
+                    start() {
+                        badListeners.length = 0;
+                        badListeners.push(...Object.keys(messageListeners));
+                    },
+                    end() {
+                        const good = Object.keys(messageListeners);
+
+                        for (let index = 0; index < badListeners.length; index++) {
+                            const id = badListeners[index];
+
+                            if (good.includes(id)) continue;
+
+                            delete messageListeners[id];
+                        };
+
+                        badListeners.length = 0;
+                    },
+                    invalidate() {
+                        for (let index = 0; index < badListeners.length; index++) {
+                            delete messageListeners[badListeners[index]];
+                        };
+
+                        badListeners.length = 0;
+                    },
+                    createSubscriber(message, state) {
+                        const {subscribe, updateState} = messageListeners[message] ??= createNewSubscriber();
+
+                        updateState(state);
+
+                        return subscribe;
+                    },
+                    dispatch() {
+                        for (const key in messageListeners) {
+                            if (!Object.hasOwn(messageListeners, key)) continue;
+
+                            messageListeners[key].dispatch();
+                        }
+                    }
+                };
+            }, []);
+
+            useLayoutEffect(() => dispatch());
+
+            if (!Array.isArray(node?.children)) return invalidate();
 
             const baseChannelStreamMarkup = node.children.find(Array.isArray);
 
-            if (!baseChannelStreamMarkup) return;
+            if (!baseChannelStreamMarkup) return invalidate();
 
             const channelStreamMarkup: Array<[number, React.ReactElement<any, any>]> = [];
             for (let index = 0; index < baseChannelStreamMarkup.length; index++) {
@@ -76,7 +190,9 @@ export default new class ThemeAttributes extends Builtin {
                 }
             }
 
-            if (!channelStreamMarkup.length) return;
+            if (!channelStreamMarkup.length) return invalidate();
+
+            start();
 
             for (let i = 0; i < channelStreamMarkup.length; i++) {
                 const [index, element] = channelStreamMarkup[i];
@@ -94,8 +210,14 @@ export default new class ThemeAttributes extends Builtin {
 
                 // We could directly pass props to the Message component
                 // but we will not be doing that
-                baseChannelStreamMarkup[index] = <MessageGroupingContext value={{last, first}}>{baseChannelStreamMarkup[index]}</MessageGroupingContext>;
+                baseChannelStreamMarkup[index] = (
+                    <MessageGroupingEvents value={createSubscriber(element.props.message.id, {first, last})}>
+                        {baseChannelStreamMarkup[index]}
+                    </MessageGroupingEvents>
+                );
             }
+
+            end();
         });
     }
 
