@@ -16,6 +16,7 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {default as AddonManager} from "@modules/addonmanager";
 import type {Addon, AddonType} from "@typed/addon";
+import type {PluginInstance} from "@modules/pluginmanager";
 
 const {useCallback, useMemo} = React;
 
@@ -93,7 +94,7 @@ export interface AddonCardProps {
     hasSettings: boolean;
     editAddon(): void;
     deleteAddon(): void;
-    getSettingsPanel?(): HTMLElement | ReactNode;
+    getSettingsPanel?: PluginInstance["getSettingsPanel"];
     store: AddonManager;
 }
 

@@ -10,17 +10,64 @@ import Events from "./emitter";
 
 type PluginLoadPoint = "connection" | "idle";
 
+// Do not rename
+export interface PluginInstance {
+    /**
+     * Custom icon for slash commands
+     */
+    icon?: React.FunctionComponent | React.ComponentClass | string;
+    /**
+     * Runs when your plugin is enabled
+     */
+    start(): void;
+    /**
+     * Runs when your plugin is disabled
+     */
+    stop(): void;
+    /**
+     * @returns A React functional (not exotic react components like memo) / class component or React Node or a DOM node or a string
+     */
+    getSettingsPanel?(): React.ComponentClass | React.FunctionComponent | React.ReactNode | Element;
+    /** @deprecated Create your own [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) instead */
+    observer?(m: MutationRecord): void;
+    /** @deprecated Use the [Navigation: navigate event](https://developer.mozilla.org/en-US/docs/Web/API/Navigation/navigate_event) event instead */
+    onSwitch?(): void;
+}
+
+// Do not rename
+// Why does ts have no way to do classes properly without extending a real class?
+/**
+ * For both class and function (non arrow) exports
+ * @example
+ * const MyPlugin: BetterDiscord.PluginConstructor = class implements BetterDiscord.PluginInstance {
+ *      constructor(meta: BetterDiscord.Addon) {}
+ *      start() {}
+ *      stop() {}
+ * }
+ */
+type PluginConstructor = new (meta: Addon) => PluginInstance;
+// Do not rename
+/**
+ * Technically only arrows functions are treated as functions
+ * @example
+ * const MyPlugin: BetterDiscord.PluginFactory = (meta) => ({
+ *      start() {},
+ *      stop() {}
+ * });
+ */
+type PluginFactory = (meta: Addon) => PluginInstance;
+// Do not rename
+type PluginExport = PluginConstructor | PluginFactory;
+
 export interface Plugin extends Addon {
-    exports: any;
-    instance: {
-        icon?: any;
-        load?(): void;
-        start(): void;
-        stop(): void;
-        observer?(m: MutationRecord): void;
-        getSettingsPanel?(): any;
-        onSwitch?(): void;
-    };
+    exports: PluginExport;
+    instance: PluginInstance;
+    hasObserver: boolean;
+}
+
+export interface PluginModule {
+    exports: PluginExport;
+    filename: string;
 }
 
 const normalizeExports = `
@@ -37,16 +84,20 @@ class PluginManager extends AddonManager<Plugin> {
     language = "javascript";
     order = 3;
 
-    observer: MutationObserver;
+    private observerRef = -1;
+    private observer: MutationObserver | undefined;
+    private onObserverMutations: MutationCallback = (mutations) => {
+        // Possible speed increase
+        if (!this.addonList.length) return;
+
+        for (let i = 0, mlen = mutations.length; i < mlen; i++) {
+            this.onMutation(mutations[i]);
+        }
+    };
 
     constructor() {
         super();
         this.onSwitch = this.onSwitch.bind(this);
-        this.observer = new MutationObserver((mutations) => {
-            for (let i = 0, mlen = mutations.length; i < mlen; i++) {
-                this.onMutation(mutations[i]);
-            }
-        });
     }
 
     initialize() {
@@ -69,7 +120,10 @@ class PluginManager extends AddonManager<Plugin> {
     initAddon(plugin: Plugin) {
         // Evaluate the plugin
         try {
-            const module = {filename: plugin.filename, exports: {}};
+            const module = {
+                filename: plugin.filename,
+                exports: {} as PluginExport
+            } as PluginModule;
 
             plugin.fileContent += normalizeExports + `\n//# sourceURL=betterdiscord://betterdiscord/plugins/${plugin.filename}`;
 
@@ -77,7 +131,7 @@ class PluginManager extends AddonManager<Plugin> {
             const wrappedPlugin = new Function("require", "module", "exports", "__filename", "__dirname", plugin.fileContent!); // eslint-disable-line no-new-func
             wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
 
-            plugin.exports = module.exports;
+            plugin.exports = module.exports as PluginExport;
             delete plugin.fileContent;
         }
         catch (err) {
@@ -106,16 +160,14 @@ class PluginManager extends AddonManager<Plugin> {
             return false;
         }
 
-        const meta = Object.assign({}, plugin);
-        const exports = plugin.exports;
-        delete meta.exports;
+        const {exports, ...meta} = Object.assign({}, plugin);
 
         try {
             // Load the plugin instance
-            const instance = exports.prototype ? new exports(meta) : exports(meta);
+            const instance = exports.prototype ? new (exports as PluginConstructor)(meta) : (exports as PluginFactory)(meta);
 
             // Confirm the required methods are present
-            if (!instance.start || !instance.stop) {
+            if (typeof instance.start !== "function" || typeof instance.stop !== "function") {
                 this.showAddonError(plugin, "Missing start or stop function.", {
                     message: "Plugins must have both a start and stop function.",
                     stack: ""
@@ -124,10 +176,6 @@ class PluginManager extends AddonManager<Plugin> {
             }
 
             plugin.instance = instance;
-            plugin.name = instance.getName ? instance.getName() : plugin.name;
-            plugin.author = instance.getAuthor ? instance.getAuthor() : plugin.author;
-            plugin.description = instance.getDescription ? instance.getDescription() : plugin.description;
-            plugin.version = instance.getVersion ? instance.getVersion() : plugin.version;
 
             // Confirm required fields are present
             if (!plugin.name || !plugin.author || !plugin.description || !plugin.version) {
@@ -138,19 +186,7 @@ class PluginManager extends AddonManager<Plugin> {
                 return false;
             }
 
-            // Run the plugin's load function
-            try {
-                if (typeof instance.load === "function") instance.load();
-                return true;
-            }
-            catch (err) {
-                this.state[plugin.id] = false;
-                this.showAddonError(plugin, t("Addons.methodError", {method: "load()"}), {
-                    message: (err as Error).message,
-                    stack: (err as Error).stack
-                });
-                return false;
-            }
+            return true;
         }
         catch (err) {
             this.showAddonError(plugin, t("Addons.methodError", {method: "Plugin constructor()"}), {
@@ -172,6 +208,8 @@ class PluginManager extends AddonManager<Plugin> {
 
         try {
             plugin.instance.start();
+
+            plugin.hasObserver = typeof plugin.instance.observer === "function";
         }
         catch (err) {
             // Disable the addon if it can't be started
@@ -188,6 +226,19 @@ class PluginManager extends AddonManager<Plugin> {
             return false;
         }
 
+        if (plugin.hasObserver) {
+            this.observerRef++;
+
+            if (typeof this.observer === "undefined") {
+                this.observer = new MutationObserver(this.onObserverMutations);
+
+                this.observer.observe(document, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        }
+
         this.trigger("started", plugin.id);
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: plugin.name, version: plugin.version}));
         else this.initialAddonsLoaded++;
@@ -198,6 +249,15 @@ class PluginManager extends AddonManager<Plugin> {
     stopAddon(idOrAddon: string | Plugin) {
         const plugin = this.resolveAddon(idOrAddon);
         if (!plugin) return false;
+
+        if (plugin.hasObserver) {
+            this.observerRef = this.observerRef <= 0 ? -1 : this.observerRef - 1;
+
+            if (this.observerRef === -1) {
+                this.observer?.disconnect();
+                this.observer = undefined;
+            }
+        }
 
         try {
             plugin.instance?.stop();
@@ -223,10 +283,6 @@ class PluginManager extends AddonManager<Plugin> {
 
     setupFunctions() {
         Events.on("navigate", this.onSwitch);
-        this.observer.observe(document, {
-            childList: true,
-            subtree: true
-        });
     }
 
     onSwitch() {
