@@ -33,7 +33,7 @@ export default new class ThemeAttributes extends Builtin {
 
             useLayoutEffect(() => {
                 return subscribe(({first, last}) => {
-                    if (!li.id) return;
+                    if (!li?.id) return;
 
                     const node = document.getElementById(li.id);
 
