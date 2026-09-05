@@ -50,10 +50,10 @@ type PluginConstructor = new (meta: Addon) => PluginInstance;
 /**
  * Technically only arrows functions are treated as functions
  * @example
- * const MyPlugin: BetterDiscord.PluginFactory = (meta) => {
+ * const MyPlugin: BetterDiscord.PluginFactory = (meta) => ({
  *      start() {},
  *      stop() {}
- * };
+ * });
  */
 type PluginFactory = (meta: Addon) => PluginInstance;
 // Do not rename
@@ -160,9 +160,7 @@ class PluginManager extends AddonManager<Plugin> {
             return false;
         }
 
-        const meta: Omit<Plugin, "exports"> & {exports?: unknown;} = Object.assign({}, plugin);
-        const exports = plugin.exports;
-        delete meta.exports;
+        const {exports, ...meta} = Object.assign({}, plugin);
 
         try {
             // Load the plugin instance
@@ -178,7 +176,6 @@ class PluginManager extends AddonManager<Plugin> {
             }
 
             plugin.instance = instance;
-            plugin.hasObserver = typeof instance.observer === "function";
 
             // Confirm required fields are present
             if (!plugin.name || !plugin.author || !plugin.description || !plugin.version) {
@@ -211,6 +208,8 @@ class PluginManager extends AddonManager<Plugin> {
 
         try {
             plugin.instance.start();
+
+            plugin.hasObserver = typeof plugin.instance.observer === "function";
         }
         catch (err) {
             // Disable the addon if it can't be started
