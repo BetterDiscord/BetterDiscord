@@ -33,6 +33,8 @@ export default new class ThemeAttributes extends Builtin {
 
             useLayoutEffect(() => {
                 return subscribe(({first, last}) => {
+                    if (!li.id) return;
+
                     const node = document.getElementById(li.id);
 
                     if (!node) return;
@@ -40,7 +42,7 @@ export default new class ThemeAttributes extends Builtin {
                     node.setAttribute("data-message-group-start", first.toString());
                     node.setAttribute("data-message-group-end", last.toString());
                 });
-            }, [subscribe, li.id]);
+            }, [subscribe, li?.id]);
 
             if (!li) return;
 
@@ -126,7 +128,7 @@ export default new class ThemeAttributes extends Builtin {
                                 element(state!);
                             }
 
-                            shouldDispatch = true;
+                            shouldDispatch = false;
                         }
                     };
                 }
