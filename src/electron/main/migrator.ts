@@ -4,7 +4,7 @@ import fs from "fs";
 import {comparator} from "@common/semver";
 import {bdFolder} from "./modules/betterdiscord";
 import {randomUUID} from "crypto";
-import Module from "module";
+import {EventEmitter} from "events";
 
 const supported: NodeJS.Platform[] = [
     "win32",
@@ -68,19 +68,11 @@ require("../betterdiscord.app.asar");
 }
 
 if (supported.includes(process.platform)) {
-    Object.defineProperty(global, "_betterdiscord_migrate", {value: migrate});
-
-    Module.wrap = new Proxy(Module.wrap, {
+    EventEmitter.prototype.emit = new Proxy(EventEmitter.prototype.emit, {
         apply(target, thisArg, argArray) {
-            const bundle = (argArray[0] as string);
-            const index = bundle.indexOf("this.emit(\"host-updated\"");
-
-            if (index !== -1) {
-                Module.wrap = target;
-
-                argArray[0] = bundle.slice(0, index) + "(void global._betterdiscord_migrate())||" + bundle.slice(index);
+            if (argArray[0] === "host-updated") {
+                migrate();
             }
-
 
             return Reflect.apply(target, thisArg, argArray);
         },
