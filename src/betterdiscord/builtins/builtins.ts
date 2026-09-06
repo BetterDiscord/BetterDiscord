@@ -17,6 +17,7 @@ export {default as ReactDevTools} from "./developer/reactdevtools";
 export {default as InspectElement} from "./developer/inspectelement";
 export {default as StopDevToolsWarning} from "./developer/devtoolswarning";
 export {default as DebugLogs} from "./developer/debuglogs";
+export {default as WebpackSourceViewer} from "./developer/webpackSourceViewer";
 
 export {default as WindowPrefs} from "./window/transparency";
 export {default as RemoveMinimumSize} from "./window/removeminimumsize";

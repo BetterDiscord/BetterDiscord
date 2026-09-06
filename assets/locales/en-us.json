@@ -154,6 +154,10 @@
                     "button": "Attempt to recover Discord",
                     "report": "Report on Github",
                     "safeMode": "Relaunch in Safe Mode"
+                },
+                "webpackSourceViewer": {
+                    "name": "Webpack Source Viewer",
+                    "note": "Quickly view webpack modules in developer tools"
                 }
             },
             "editor": {
