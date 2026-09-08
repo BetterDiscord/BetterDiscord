@@ -264,7 +264,7 @@ class CommandManager {
                 const iconStyle = {width, height, padding};
 
                 const renderImageIcon = () => (
-                    <img src={iconUrl} alt={acronym} style={{width: "100%", height: "100%"}} />
+                    <img src={iconUrl as string} alt={acronym} style={{width: "100%", height: "100%"}} />
                 );
 
                 const renderAcronymIcon = () => (
