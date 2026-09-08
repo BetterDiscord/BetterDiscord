@@ -7,7 +7,6 @@ import type {DialogOptions} from "@common/types/ipc";
 
 
 export default new class IPCRenderer {
-
     constructor() {
         ipc.on(IPCEvents.NAVIGATE, () => Events.dispatch("navigate"));
         ipc.on(IPCEvents.MAXIMIZE, () => Events.dispatch("maximize"));
@@ -60,6 +59,10 @@ export default new class IPCRenderer {
 
     openPath(path: string) {
         return ipc.send(IPCEvents.OPEN_PATH, path);
+    }
+
+    openDevtoolsSource(url: string, line: number = 0, column: number = 0) {
+        return ipc.invoke(IPCEvents.OPEN_DEVTOOLS_SOURCE, url, line, column);
     }
 
     allowPreloadOverride = {

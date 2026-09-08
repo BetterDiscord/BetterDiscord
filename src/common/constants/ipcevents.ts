@@ -26,3 +26,4 @@ export const EDITOR_SETTINGS_UPDATE     = "bd-editor-settings-update";
 export const SET_ALLOW_PRELOAD_OVERRIDE = "bd-set-allow-preload-override";
 export const GET_ALLOW_PRELOAD_OVERRIDE = "bd-get-allow-preload-override";
 export const RUN_RENDERER               = "bd-run-renderer";
+export const OPEN_DEVTOOLS_SOURCE       = "bd-open-devtools-source";

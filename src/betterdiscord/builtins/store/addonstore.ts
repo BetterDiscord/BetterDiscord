@@ -18,8 +18,8 @@ let MessageAccessories;
 
 const MAX_EMBEDS = 10;
 
-const PROTOCOL_REGEX = /^<betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/\s]+)\/?>/i;
-const APP_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/]+)\/?$/i;
+const PROTOCOL_REGEX = /^<betterdiscord:\/\/store\/([^/\s]+)\/?>/i;
+const APP_PROTOCOL_REGEX = /^betterdiscord:\/\/store\/([^/]+)\/?$/i;
 
 const ADDON_REGEX = new RegExp([
     PROTOCOL_REGEX.source.slice(1),

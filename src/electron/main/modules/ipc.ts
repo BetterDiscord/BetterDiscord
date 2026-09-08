@@ -113,8 +113,9 @@ const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions,
 const inspectElement = async (event: IpcMainEvent) => {
     if (!event.sender.isDevToolsOpened()) {
         event.sender.openDevTools();
-        while (!event.sender.isDevToolsOpened()) await new Promise(r => setTimeout(r, 100));
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
     }
+
     event.sender.devToolsWebContents?.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
 };
 
@@ -198,6 +199,17 @@ const runRenderer = (event: IpcMainInvokeEvent) => {
     BetterDiscord.injectRenderer(BrowserWindow.fromWebContents(event.sender)!);
 };
 
+const openDevtoolsSource = async (event: IpcMainInvokeEvent, url: string, line: number, column: number) => {
+    if (!event.sender.isDevToolsOpened()) {
+        event.sender.openDevTools();
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
+    }
+
+    event.sender.devToolsWebContents!.executeJavaScript(`
+        DevToolsAPI.revealSourceLine(${JSON.stringify(url)}, ${line}, ${column});
+    `);
+};
+
 
 export default class IPCMain {
     static registerEvents() {
@@ -222,6 +234,7 @@ export default class IPCMain {
             ipc.handle(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE, getAllowPreloadOverride);
             ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
             ipc.handle(IPCEvents.RUN_RENDERER, runRenderer);
+            ipc.handle(IPCEvents.OPEN_DEVTOOLS_SOURCE, openDevtoolsSource);
         }
         catch (err) {
             // eslint-disable-next-line no-console

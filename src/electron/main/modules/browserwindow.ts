@@ -86,6 +86,12 @@ class BrowserWindow extends electron.BrowserWindow {
         BetterDiscord.setup(this);
         Editor.initialize(this);
 
+        // const devtools = new electron.BrowserWindow();
+        // devtools.webContents.openDevTools({mode: "right"});
+
+        // this.webContents.setDevToolsWebContents(devtools.webContents);
+        // this.webContents.openDevTools();
+
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
         this.webContents.setWindowOpenHandler = new Proxy(this.webContents.setWindowOpenHandler, {
