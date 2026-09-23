@@ -47,10 +47,14 @@ type MenuItemAccessory =
     | { type: "status"; status: string }
     | { type: "guildTag"; element: React.ReactNode };
 
-export interface BaseMenuItemProps extends Record<string, any> {
-    id: string;
-    label?: LabelOrRenderable;
-    /** @obsolete use `label` instead. This was technically removed months ago.  */
+type LabelAsId =
+    | { label: LabelOrRenderable; id?: string; }
+    | { label?: undefined; id: string; };
+
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
+export type BaseMenuItemProps = LabelAsId & Record<string, any> & {
+    /** @obsolete use `label` instead. This was technically removed months ago. */
     void_label?: LabelOrRenderable;
     color?: MenuItemColor;
     /** @deprecated use `leadingAccessory` instead. This will be removed when the context menu mana experiment is fully pushed. */
@@ -81,10 +85,9 @@ export interface BaseMenuItemProps extends Record<string, any> {
 
     // Turns into a customitem type in ContextMenu
     render?: (ctx: { color: MenuItemColor; disabled?: boolean; isFocused: boolean }) => React.ReactNode;
-}
+};
 
-export interface MenuCheckboxItemProps extends BaseMenuItemProps {
-    id: string,
+export type MenuCheckboxItemProps = LabelAsId & {
     label?: string | ReactNode,
     disabled?: boolean,
     subtext?: React.ReactNode,
@@ -98,7 +101,7 @@ export interface MenuControlProps {
     onClose(): void;
 };
 
-export interface MenuRadioItemProps extends MenuCheckboxItemProps {
+export type MenuRadioItemProps = MenuCheckboxItemProps & {
     group: string;
 };
 
@@ -108,8 +111,7 @@ export interface MenuControlRef {
     focus(): void;
 };
 
-export interface MenuControlItemProps extends MenuCheckboxItemProps {
-    id: string,
+export type MenuControlItemProps = LabelAsId & {
     label?: string,
     disabled?: boolean,
     control(props: MenuControlProps, ref: {ref: null | void | MenuControlRef;}): React.ReactElement;
@@ -120,7 +122,7 @@ interface MenuItemSeparator {
     type: "separator";
 }
 
-interface MenuItemSubmenu extends Omit<BaseMenuItemProps, "children"> {
+type MenuItemSubmenu = DistributiveOmit<BaseMenuItemProps, "children"> & {
     type: "submenu",
     /** @deprecated use `items` instead */
     render?: MenuItem[],
@@ -128,13 +130,13 @@ interface MenuItemSubmenu extends Omit<BaseMenuItemProps, "children"> {
     children?: MenuItem[],
     danger?: boolean,
     action?(event: React.MouseEvent): void,
-}
+};
 
-interface MenuItemDefault extends Omit<BaseMenuItemProps, "children"> {
+type MenuItemDefault = DistributiveOmit<BaseMenuItemProps, "children"> & {
     type?: "item",
     danger?: boolean,
     action?(event: React.MouseEvent): void,
-}
+};
 
 interface MenuItemRadio extends Omit<MenuRadioItemProps, "action"> {
     type: "radio",
@@ -561,6 +563,13 @@ class ContextMenu {
     buildItem(props: MenuItem) {
         const {type} = props;
         if (type === "separator") return React.createElement(MenuComponents.Separator!);
+        if (type === "group") {
+            return React.createElement(
+                MenuComponents.Group!,
+                null,
+                this.buildMenuChildren(props.items)
+            ) as any;
+        }
 
         let Component = MenuComponents.Item as React.FC<any>;
         if (type === "submenu") {
