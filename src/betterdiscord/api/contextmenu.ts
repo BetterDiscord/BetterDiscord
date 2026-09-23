@@ -1,6 +1,6 @@
 import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
-import React from "react";
+import React, {type ReactNode} from "react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
 import DOMManager from "@modules/dommanager";
@@ -29,7 +29,7 @@ export interface BaseMenuItemProps extends Record<string, any> {
 
 export interface MenuCheckboxItemProps {
     id: string,
-    label: string,
+    label: string | ReactNode,
     disabled?: boolean,
     subtext?: React.ReactNode,
     action?(event: React.MouseEvent): void,
