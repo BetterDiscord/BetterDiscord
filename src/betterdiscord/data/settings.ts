@@ -34,7 +34,7 @@ const DefaultSettings = [
         shown: false,
         settings: [
             {type: "switch", id: "bdAddonStore", value: true},
-            {type: "switch", id: "alwaysEnable", value: false, enableWith: "bdAddonStore"},
+            {type: "switch", id: "alwaysEnable", value: true, enableWith: "bdAddonStore"},
             {type: "switch", id: "addonEmbeds", value: true, enableWith: "bdAddonStore"}
         ]
     },
