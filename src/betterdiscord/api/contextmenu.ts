@@ -47,15 +47,12 @@ type MenuItemAccessory =
     | { type: "status"; status: string }
     | { type: "guildTag"; element: React.ReactNode };
 
-type LabelAsId =
-    | { label: LabelOrRenderable; id?: string; }
-    | { label?: undefined; id: string; };
-
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 
 type CustomItemContext = { color: MenuItemColor; disabled?: boolean; isFocused: boolean }
-
-export type BaseMenuItemProps = LabelAsId & Record<string, any> & {
+export type BaseMenuItemProps = Record<string, any> & {
+    label: LabelOrRenderable;
+    id: string;
     /** @obsolete use `label` instead. This was technically removed months ago. */
     // void_label?: LabelOrRenderable;
     color?: MenuItemColor;
@@ -89,8 +86,9 @@ export type BaseMenuItemProps = LabelAsId & Record<string, any> & {
     render?: (ctx: CustomItemContext) => React.ReactNode;
 };
 
-export type MenuCheckboxItemProps = LabelAsId & {
-    label?: string | ReactNode,
+export type MenuCheckboxItemProps = {
+    label: LabelOrRenderable;
+    id: string;
     disabled?: boolean,
     subtext?: React.ReactNode,
     action?(event: React.MouseEvent): void,
@@ -113,8 +111,9 @@ export interface MenuControlRef {
     focus(): void;
 };
 
-export type MenuControlItemProps = LabelAsId & {
-    label?: string,
+export type MenuControlItemProps = {
+    label: LabelOrRenderable;
+    id: string;
     disabled?: boolean,
     control(props: MenuControlProps, ref: {ref: null | void | MenuControlRef;}): React.ReactElement;
 };
