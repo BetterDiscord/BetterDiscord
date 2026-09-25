@@ -53,9 +53,11 @@ type LabelAsId =
 
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 
+type CustomItemContext = { color: MenuItemColor; disabled?: boolean; isFocused: boolean }
+
 export type BaseMenuItemProps = LabelAsId & Record<string, any> & {
     /** @obsolete use `label` instead. This was technically removed months ago. */
-    void_label?: LabelOrRenderable;
+    // void_label?: LabelOrRenderable;
     color?: MenuItemColor;
     /** @deprecated use `leadingAccessory` instead. This will be removed when the context menu mana experiment is fully pushed. */
     icon?: React.ComponentType<any> | React.ReactNode; // trailing icon
@@ -77,14 +79,14 @@ export type BaseMenuItemProps = LabelAsId & Record<string, any> & {
     dontCloseOnActionIfHoldingShiftKey?: boolean;
     navigable?: boolean;
 
-    children?: React.ReactNode | ReactNode[];
+    children?: React.ReactNode;
     onChildrenScroll?: (event: Event) => void;
     childRowHeight?: number;
     listClassName?: string;
     subMenuClassName?: string;
 
     // Turns into a customitem type in ContextMenu
-    render?: (ctx: { color: MenuItemColor; disabled?: boolean; isFocused: boolean }) => React.ReactNode;
+    render?: (ctx: CustomItemContext) => React.ReactNode;
 };
 
 export type MenuCheckboxItemProps = LabelAsId & {
