@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React, {type KeyboardEventHandler, type MouseEvent, type MouseEventHandler, type RefObject} from "react";
+import Spinner, {SpinnerType} from "@ui/spinner.tsx";
 
 
 const {useCallback} = React;
@@ -45,6 +46,7 @@ export interface ButtonProps {
     color?: typeof ButtonColors[keyof typeof ButtonColors];
     size?: typeof ButtonSizes[keyof typeof ButtonSizes];
     grow?: boolean;
+    submitting?: boolean
     children?: React.ReactNode;
 };
 
@@ -61,6 +63,7 @@ export default function Button(props: ButtonProps) {
         color = ButtonColors.BRAND,
         size = ButtonSizes.MEDIUM,
         grow = true,
+        submitting = false,
         ...others
     } = props;
 
@@ -85,7 +88,9 @@ export default function Button(props: ButtonProps) {
         onKeyDown={disabled ? () => {} : onKeyDown}
         disabled={disabled}
     >
-        <div className="bd-button-content">{children}</div>
+        <div className="bd-button-content">
+            {submitting ? <Spinner type={SpinnerType.PULSING_ELLIPSIS}/> : children}
+        </div>
     </button>;
 }
 

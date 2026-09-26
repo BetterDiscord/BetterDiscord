@@ -8,7 +8,7 @@
 .bd-backdrop {
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0, .6);
+    background: rgb(0 0 0 / 60%);
     position: absolute;
 }
 
@@ -51,12 +51,12 @@
 
 .bd-modal .title {
     font-size: 22px;
-    color: #fff;
+    color: #FFFFFF;
     font-weight: 600;
 }
 
 .bd-modal-body {
-    color: #fff;
+    color: #FFFFFF;
 }
 
 .bd-modal .footer .bd-button {
@@ -65,11 +65,11 @@
 }
 
 @keyframes bd-modal-close {
-    to {transform: scale(0.7);}
+    to { transform: scale(0.7); }
 }
 
 @keyframes bd-modal-open {
-    from {transform: scale(0.7);}
+    from { transform: scale(0.7); }
 }
 
 .bd-modal-root {
@@ -78,7 +78,7 @@
     background-color: var(--modal-background);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-normal);
-    margin: 0 auto;
+    padding: 10px;
     pointer-events: all;
     position: relative;
     max-height: 100%;
@@ -156,6 +156,7 @@
     z-index: 0;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     padding-left: 16px;
+
     /* padding-right: 16px; */
     overflow-x: hidden;
     font-size: 16px;
@@ -168,10 +169,10 @@
 .bd-modal-backdrop {
     position: fixed;
     top: 0;
-    right: var(--devtools-sidebar-width,0);
+    right: var(--devtools-sidebar-width, 0);
     bottom: 0;
     left: 0;
-    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
     transform: translateZ(0);
     pointer-events: all;
 }
@@ -180,9 +181,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: var(--devtools-sidebar-width,0);
+    right: var(--devtools-sidebar-width, 0);
     bottom: 0;
-    background: none!important;
+    background: none !important;
     pointer-events: none;
     z-index: 1002;
 }
@@ -199,17 +200,81 @@
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-    display: -webkit-box;
-    display: -ms-flexbox;
+    display: box;
+    display: flexbox;
     display: flex;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-    -ms-flex-direction: column;
+    flex-direction: column;
     flex-direction: column;
     min-height: 0;
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+.bd-modal-notice-story {
+    background: var(--background-surface-high);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    contain: layout;
+    container-type: inline-size;
+    padding: var(--space-24);
+}
+
+.bd-modal-notice-story-container-inner {
+    display: flex;
+    min-height: 0;
+    opacity: 1;
+    overflow: hidden;
+    transition-delay: var(--expand-structural-duration);
+    transition-duration: var(--expand-fade-duration);
+    transition-property: opacity;
+    transition-timing-function: var(--expand-easing-function);
+}
+
+.bd-modal-notice-story-container {
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    display: grid;
+    font-weight: 500;
+    grid-template-rows: 1fr;
+    padding: 8px;
+    transition-delay: 0s, 0s, 0s, 0s, 0s;
+    transition-duration: var(--expand-structural-duration), var(--expand-structural-duration), var(--expand-structural-duration), var(--expand-structural-duration), 0s;
+    transition-property: grid-template-rows, padding-bottom, padding-top, border-width, visibility;
+    transition-timing-function: var(--expand-easing-function);
+    visibility: visible;
+    width: 100%;
+}
+
+.bd-modal-notice-info {
+    background: var(--background-feedback-info);
+    border: 1px solid var(--icon-feedback-info);
+    color: var(--text-feedback-info);
+}
+
+.bd-modal-notice-warning {
+    background: var(--background-feedback-warning);
+    border: 1px solid var(--icon-feedback-warning);
+    color: var(--text-feedback-warning);
+}
+
+.bd-modal-notice-critical {
+    background: var(--background-feedback-critical);
+    border: 1px solid var(--icon-feedback-critical);
+    color: var(--text-feedback-critical);
+}
+
+.bd-modal-notice-positive {
+    background: var(--background-feedback-positive);
+    border: 1px solid var(--icon-feedback-positive);
+    color: var(--text-feedback-positive);
+}
+
+.bd-modal-icon-holder {
+    display: flex;
+    padding: var(--space-4);
 }
