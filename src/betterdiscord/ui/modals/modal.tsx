@@ -1,67 +1,71 @@
 import React, {type ReactNode} from "react";
 
-import Root, {ModalSizes} from "./root";
+import Root from "./root";
 import Header from "./header";
 import Footer from "./footer";
 import Content from "./content";
 
 import Text from "../base/text";
-import Button, {ButtonColors} from "../base/button";
+import Button from "../base/button";
 import Flex from "@ui/base/flex.tsx";
 import ErrorBoundary from "@ui/errorboundary.tsx";
 
-const {useRef, useEffect, useLayoutEffect, useState} = React;
+const {useLayoutEffect, useState} = React;
 
-type MenuItemColor =
-    | "default"
-    | "brand"
-    | "danger"
-    | "success";
-
-const COLOR_MAP: Record<MenuItemColor, string> = {
-    "default": Button.Colors.PRIMARY,
-    "brand": Button.Colors.BRAND,
-    "danger": Button.Colors.RED,
-    "success": Button.Colors.GREEN,
-};
-
+type MenuItemColor = "default" | "brand" | "danger" | "success";
 type ModalSize = "sm" | "md" | "lg" | "dy";
 
-const SIZE_MAP: Record<ModalSize, typeof Root.Sizes[keyof typeof Root.Sizes]> = {
+type RootSize = (typeof Root.Sizes)[keyof typeof Root.Sizes];
+type ButtonColor = (typeof Button.Colors)[keyof typeof Button.Colors];
+type ButtonLook = (typeof Button.Looks)[keyof typeof Button.Looks];
+
+const SIZE_MAP: Record<ModalSize, RootSize> = {
     sm: Root.Sizes.SMALL,
     md: Root.Sizes.MEDIUM,
     lg: Root.Sizes.LARGE,
     dy: Root.Sizes.DYNAMIC,
 };
 
-function resolveSize(size?: ModalSize | string): typeof Root.Sizes[keyof typeof Root.Sizes] | string {
-    if (size?.startsWith("bd-")) return size;
-    return SIZE_MAP[size as ModalSize] ?? Root.Sizes.MEDIUM;
+const COLOR_MAP: Record<MenuItemColor, ButtonColor> = {
+    "default": Button.Colors.PRIMARY,
+    "brand": Button.Colors.BRAND,
+    "danger": Button.Colors.RED,
+    "success": Button.Colors.GREEN,
+};
+
+function resolveMapped<TKey extends string, TValue extends string>(
+    value: TKey | TValue | undefined,
+    map: Record<TKey, TValue>,
+    fallback: TValue,
+): TValue {
+    if (typeof value === "string" && value.startsWith("bd-")) return value as TValue;
+    return (map as Record<string, TValue>)[value as string] ?? fallback;
 }
 
-function resolveColor(color?: MenuItemColor | string): string {
-    if (color?.startsWith("bd-")) return color;
-    return COLOR_MAP[color as MenuItemColor] ?? Button.Colors.PRIMARY;
+function resolveSize(size?: ModalSize | RootSize): RootSize {
+    return resolveMapped(size, SIZE_MAP, Root.Sizes.MEDIUM);
+}
+
+function resolveColor(color?: MenuItemColor | ButtonColor): ButtonColor {
+    return resolveMapped(color, COLOR_MAP, Button.Colors.PRIMARY);
 }
 
 interface ActionProps {
     label: string;
-    color?: MenuItemColor | string;
-    look?: typeof Button.Looks[keyof typeof Button.Looks];
+    color?: MenuItemColor | ButtonColor;
+    look?: ButtonLook;
     disabled?: boolean;
-
     onClick?(): void | boolean | Promise<void | boolean>;
-
     closeOnClick?: boolean;
 }
 
 interface ModalProps {
-    size?: ModalSize | string;
+    size?: ModalSize | RootSize;
     transitionState?: number;
     className?: string;
 
-    title: string | ReactNode;
-    subtitle?: string | ReactNode;
+    title: ReactNode;
+    subtitle?: ReactNode;
 
     children?: ReactNode;
 
@@ -73,7 +77,6 @@ interface ModalProps {
     };
 
     onClose?(): void;
-
     onCloseCallback?(): void;
 }
 
@@ -96,9 +99,8 @@ export default function Modal({
     }, [onCloseCallback]);
 
     return (
-        <Root transitionState={transitionState} size={resolveSize(size) as typeof ModalSizes[keyof typeof ModalSizes]}
-              className={className}>
-            <ErrorBoundary name={"Modal"} id={"Components.Modal"}>
+        <Root transitionState={transitionState} size={resolveSize(size)} className={className}>
+            <ErrorBoundary name="Modal" id="Components.Modal">
                 <Header>
                     <Flex direction={Flex.Direction.VERTICAL}>
                         <Text tag="h1" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong>
@@ -118,7 +120,7 @@ export default function Modal({
                             <div className="bd-modal-notice-story-container-inner">
                                 {notice.icon && (
                                     <div className="bd-modal-icon-holder">
-                                        <notice.icon/>
+                                        <notice.icon />
                                     </div>
                                 )}
                                 <Flex align="bd-flex-align-center">
@@ -129,9 +131,7 @@ export default function Modal({
                     </div>
                 )}
 
-                <Content>
-                    {children}
-                </Content>
+                <Content>{children}</Content>
 
                 {actions.length > 0 && (
                     <Footer>
@@ -140,7 +140,7 @@ export default function Modal({
                                 key={`${action.label}-${index}`}
                                 type="button"
                                 look={action.look ?? Button.Looks.FILLED}
-                                color={(resolveColor(action.color) as typeof ButtonColors[keyof typeof ButtonColors])}
+                                color={resolveColor(action.color)}
                                 disabled={action.disabled || pendingIndex !== null}
                                 submitting={pendingIndex === index}
                                 onClick={async () => {
