@@ -288,5 +288,5 @@
 
 .bd-checkbox-note-group {
     display: flex;
-    padding: 16px;
+    padding: var(--space-16);
 }
