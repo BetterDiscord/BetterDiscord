@@ -89,8 +89,8 @@ interface ModalProps {
     onClose?(): void;
 
     onCloseCallback?({
-                         checked: boolean,
-                     }): void;
+                         checked,
+                     }: {checked: boolean}): void;
 }
 
 export default function Modal({
@@ -182,7 +182,8 @@ export default function Modal({
                                             if (result !== false && action.closeOnClick !== false) {
                                                 onClose?.();
                                             }
-                                        } finally {
+                                        }
+                                        finally {
                                             setPendingIndex(null);
                                         }
                                         return;
