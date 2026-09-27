@@ -82,6 +82,7 @@
     pointer-events: all;
     position: relative;
     max-height: 100%;
+    color: var(--custom-message-content-color,var(--text-default));
 }
 
 .bd-close-button {
@@ -236,6 +237,7 @@
 }
 
 .bd-modal-notice-story-container {
+    margin-top: var(--space-16, --space-16);
     border-radius: var(--radius-sm);
     box-sizing: border-box;
     display: grid;
@@ -277,4 +279,14 @@
 .bd-modal-icon-holder {
     display: flex;
     padding: var(--space-4);
+}
+
+.bd-modal-footer-buttons {
+    gap: var(--space-8);
+    padding: var(--space-0);
+}
+
+.bd-checkbox-note-group {
+    display: flex;
+    padding: 16px;
 }

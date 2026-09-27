@@ -7,10 +7,11 @@ export interface SettingItemProps {
     note?: string;
     inline?: boolean;
     children?: React.ReactNode;
+    divider?: boolean;
 };
 
 export default function SettingItem(props: SettingItemProps) {
-    const {id, name, note, inline, children} = props;
+    const {id, name, note, inline, children, divider = true} = props;
     return <div className={"bd-setting-item" + (inline ? " inline" : "")}>
         <div className={"bd-setting-header"}>
             <label htmlFor={id} className={"bd-setting-title"}>{name}</label>
@@ -18,6 +19,6 @@ export default function SettingItem(props: SettingItemProps) {
         </div>
         <div className={"bd-setting-note"}>{note}</div>
         {!inline && children}
-        <Divider className="bd-setting-divider" />
+        {divider && <Divider className="bd-setting-divider" />}
     </div>;
 }

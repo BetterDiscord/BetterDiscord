@@ -9,6 +9,7 @@ import Text from "../base/text";
 import Button from "../base/button";
 import Flex from "@ui/base/flex.tsx";
 import ErrorBoundary from "@ui/errorboundary.tsx";
+import CheckBox from "@ui/settings/components/checkbox.tsx";
 
 const {useLayoutEffect, useState} = React;
 
@@ -50,12 +51,19 @@ function resolveColor(color?: MenuItemColor | ButtonColor): ButtonColor {
     return resolveMapped(color, COLOR_MAP, Button.Colors.PRIMARY);
 }
 
+interface CheckboxProps {
+    note: string;
+    onChange: (value: boolean) => void;
+}
+
 interface ActionProps {
     label: string;
     color?: MenuItemColor | ButtonColor;
     look?: ButtonLook;
     disabled?: boolean;
+
     onClick?(): void | boolean | Promise<void | boolean>;
+
     closeOnClick?: boolean;
 }
 
@@ -69,6 +77,8 @@ interface ModalProps {
 
     children?: ReactNode;
 
+    checkboxProps?: CheckboxProps;
+
     actions?: ActionProps[];
     notice?: {
         message: ReactNode;
@@ -77,7 +87,10 @@ interface ModalProps {
     };
 
     onClose?(): void;
-    onCloseCallback?(): void;
+
+    onCloseCallback?({
+                         checked: boolean,
+                     }): void;
 }
 
 export default function Modal({
@@ -91,16 +104,21 @@ export default function Modal({
                                   notice,
                                   onClose,
                                   onCloseCallback,
+                                  checkboxProps
                               }: ModalProps) {
     const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
+    const [checked, setChecked] = useState<boolean>(false);
+
     useLayoutEffect(() => {
-        onCloseCallback?.();
-    }, [onCloseCallback]);
+        onCloseCallback?.({
+            checked: checked,
+        });
+    }, [checked, onCloseCallback]);
 
     return (
-        <Root transitionState={transitionState} size={resolveSize(size)} className={className}>
-            <ErrorBoundary name="Modal" id="Components.Modal">
+        <ErrorBoundary name="Modal" id="Components.Modal">
+            <Root transitionState={transitionState} size={resolveSize(size)} className={className}>
                 <Header>
                     <Flex direction={Flex.Direction.VERTICAL}>
                         <Text tag="h1" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong>
@@ -111,30 +129,42 @@ export default function Modal({
                                 {subtitle}
                             </Text>
                         )}
+
+                        {notice?.message && (
+                            <div className={`bd-modal-notice-story-container bd-modal-notice-${notice.type}`}>
+                                <div className="bd-modal-notice-story-container-inner">
+                                    {notice.icon && (
+                                        <div className="bd-modal-icon-holder">
+                                            <notice.icon/>
+                                        </div>
+                                    )}
+                                    <Flex align="bd-flex-align-center">
+                                        <Text size={Text.Sizes.SIZE_14}>{notice.message}</Text>
+                                    </Flex>
+                                </div>
+                            </div>
+                        )}
                     </Flex>
                 </Header>
 
-                {notice?.message && (
-                    <div style={{padding: "0px 10px"}}>
-                        <div className={`bd-modal-notice-story-container bd-modal-notice-${notice.type}`}>
-                            <div className="bd-modal-notice-story-container-inner">
-                                {notice.icon && (
-                                    <div className="bd-modal-icon-holder">
-                                        <notice.icon />
-                                    </div>
-                                )}
-                                <Flex align="bd-flex-align-center">
-                                    <Text size={Text.Sizes.SIZE_14}>{notice.message}</Text>
-                                </Flex>
-                            </div>
-                        </div>
+                <Content>{children}</Content>
+
+                {checkboxProps && (
+                    <div className={"bd-checkbox-note-group"}>
+                        <CheckBox
+                            label={checkboxProps.note}
+                            value={checked}
+                            onChange={(newValue) => {
+                                setChecked(newValue);
+                                checkboxProps?.onChange?.(newValue);
+                            }}
+                        />
                     </div>
                 )}
 
-                <Content>{children}</Content>
-
                 {actions.length > 0 && (
-                    <Footer>
+                    <Footer
+                            className={"bd-modal-footer-buttons"}>
                         {actions.map((action, index) => (
                             <Button
                                 key={`${action.label}-${index}`}
@@ -152,8 +182,7 @@ export default function Modal({
                                             if (result !== false && action.closeOnClick !== false) {
                                                 onClose?.();
                                             }
-                                        }
-                                        finally {
+                                        } finally {
                                             setPendingIndex(null);
                                         }
                                         return;
@@ -169,7 +198,7 @@ export default function Modal({
                         ))}
                     </Footer>
                 )}
-            </ErrorBoundary>
-        </Root>
+            </Root>
+        </ErrorBoundary>
     );
 }
