@@ -118,7 +118,7 @@ export default function Modal({
             result = await action.onClick?.();
         }
         catch (err) {
-            Logger.err(err);
+            Logger.err(err as string);
             return;
         }
         finally {
