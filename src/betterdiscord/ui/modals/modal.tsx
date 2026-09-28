@@ -1,4 +1,4 @@
-import React, {type ReactNode} from "react";
+import React, {type ReactNode, useCallback} from "react";
 
 import Root from "./root";
 import Header from "./header";
@@ -10,6 +10,7 @@ import Button from "../base/button";
 import Flex from "@ui/base/flex.tsx";
 import ErrorBoundary from "@ui/errorboundary.tsx";
 import CheckBox from "@ui/settings/components/checkbox.tsx";
+import Logger from "@common/logger.ts";
 
 const {useLayoutEffect, useState} = React;
 
@@ -89,8 +90,8 @@ interface ModalProps {
     onClose?(): void;
 
     onCloseCallback?({
-                         checked,
-                     }: {checked: boolean}): void;
+        checked,
+    }: {checked: boolean}): void;
 }
 
 export default function Modal({
@@ -109,6 +110,23 @@ export default function Modal({
     const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
     const [checked, setChecked] = useState<boolean>(false);
+
+    const handleAction = useCallback(async (action: any, index: number) => {
+        setPendingIndex(index);
+        let result;
+        try {
+            result = await action.onClick?.();
+        }
+        catch (err) {
+            Logger.err(err);
+            return;
+        }
+        finally {
+            setPendingIndex(null);
+        }
+
+        if (result !== false && action.closeOnClick !== false) onClose?.();
+    }, [onClose]);
 
     useLayoutEffect(() => {
         onCloseCallback?.({
@@ -173,26 +191,7 @@ export default function Modal({
                                 color={resolveColor(action.color)}
                                 disabled={action.disabled || pendingIndex !== null}
                                 submitting={pendingIndex === index}
-                                onClick={async () => {
-                                    const maybePromise = action.onClick?.();
-                                    if (maybePromise instanceof Promise) {
-                                        setPendingIndex(index);
-                                        try {
-                                            const result = await maybePromise;
-                                            if (result !== false && action.closeOnClick !== false) {
-                                                onClose?.();
-                                            }
-                                        }
-                                        finally {
-                                            setPendingIndex(null);
-                                        }
-                                        return;
-                                    }
-
-                                    if (maybePromise !== false && action.closeOnClick !== false) {
-                                        onClose?.();
-                                    }
-                                }}
+                                onClick={() => handleAction(action, index)}
                             >
                                 {action.label}
                             </Button>
