@@ -116,10 +116,12 @@ export default function Modal({
         let result;
         try {
             result = await action.onClick?.();
-        } catch (err) {
+        }
+        catch (err) {
             Logger.err(err);
             return;
-        } finally {
+        }
+        finally {
             setPendingIndex(null);
         }
 
