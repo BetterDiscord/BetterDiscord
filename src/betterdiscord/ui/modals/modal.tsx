@@ -90,8 +90,8 @@ interface ModalProps {
     onClose?(): void;
 
     onCloseCallback?({
-        checked,
-    }: {checked: boolean}): void;
+                         checked,
+                     }: { checked: boolean }): void;
 }
 
 export default function Modal({
@@ -116,12 +116,10 @@ export default function Modal({
         let result;
         try {
             result = await action.onClick?.();
-        }
-        catch (err) {
+        } catch (err) {
             Logger.err(err);
             return;
-        }
-        finally {
+        } finally {
             setPendingIndex(null);
         }
 
@@ -182,7 +180,7 @@ export default function Modal({
 
                 {actions.length > 0 && (
                     <Footer
-                            className={"bd-modal-footer-buttons"}>
+                        className={"bd-modal-footer-buttons"}>
                         {actions.map((action, index) => (
                             <Button
                                 key={`${action.label}-${index}`}
