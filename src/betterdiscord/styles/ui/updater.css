@@ -56,3 +56,24 @@
     transform: rotate(360deg);
   }
 }
+
+.bd-update-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 10px;
+}
+
+.bd-update-link {
+  display: flex;
+  align-items: center;
+  color: var(--interactive-text-default);
+}
+
+.bd-update-link:hover {
+  color: var(--interactive-text-hover);
+}
+
+.bd-update-link:active {
+  color: var(--interactive-text-active);
+}
