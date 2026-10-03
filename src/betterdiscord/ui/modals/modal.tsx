@@ -11,6 +11,7 @@ import Flex from "@ui/base/flex.tsx";
 import ErrorBoundary from "@ui/errorboundary.tsx";
 import CheckBox from "@ui/settings/components/checkbox.tsx";
 import Logger from "@common/logger.ts";
+import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 
 const {useLayoutEffect, useState} = React;
 
@@ -35,6 +36,21 @@ const COLOR_MAP: Record<MenuItemColor, ButtonColor> = {
     "success": Button.Colors.GREEN,
 };
 
+export const Icon = ({type}: { type: "warning" | "critical" | "info" | "positive"; }) => {
+    switch (type) {
+        case "warning":
+            return <TriangleAlertIcon color="var(--status-warning)" size="18px"/>;
+        case "critical":
+            return <CircleAlertIcon color="var(--status-danger)" size="18px"/>;
+        case "info":
+            return <InfoIcon color="#3B82F6" size="18px"/>;
+        case "positive":
+            return <CircleCheckIcon color="var(--status-positive)" size="18px"/>;
+        default:
+            return null;
+    }
+};
+
 function resolveMapped<TKey extends string, TValue extends string>(
     value: TKey | TValue | undefined,
     map: Record<TKey, TValue>,
@@ -54,6 +70,7 @@ function resolveColor(color?: MenuItemColor | ButtonColor): ButtonColor {
 
 interface CheckboxProps {
     note: string;
+    defaultValue: boolean;
     onChange: (value: boolean) => void;
 }
 
@@ -109,19 +126,17 @@ export default function Modal({
                               }: ModalProps) {
     const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
-    const [checked, setChecked] = useState<boolean>(false);
+    const [checked, setChecked] = useState<boolean>(checkboxProps.defaultValue ?? false);
 
     const handleAction = useCallback(async (action: any, index: number) => {
         setPendingIndex(index);
         let result;
         try {
             result = await action.onClick?.();
-        }
-        catch (err) {
+        } catch (err) {
             Logger.err(err as string);
             return;
-        }
-        finally {
+        } finally {
             setPendingIndex(null);
         }
 
@@ -151,11 +166,14 @@ export default function Modal({
                         {notice?.message && (
                             <div className={`bd-modal-notice-story-container bd-modal-notice-${notice.type}`}>
                                 <div className="bd-modal-notice-story-container-inner">
-                                    {notice.icon && (
+                                    {notice.icon ? (
                                         <div className="bd-modal-icon-holder">
                                             <notice.icon/>
                                         </div>
-                                    )}
+                                        ) : <div className="bd-modal-icon-holder">
+                                            <Icon type={notice.type}/>
+                                        </div>
+                                    }
                                     <Flex align="bd-flex-align-center">
                                         <Text size={Text.Sizes.SIZE_14}>{notice.message}</Text>
                                     </Flex>
@@ -165,7 +183,7 @@ export default function Modal({
                     </Flex>
                 </Header>
 
-                <Content>{children}</Content>
+                <Content className={"bd-text-muted"}>{children}</Content>
 
                 {checkboxProps && (
                     <div className={"bd-checkbox-note-group"}>
