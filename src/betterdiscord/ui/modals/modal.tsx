@@ -36,7 +36,7 @@ const COLOR_MAP: Record<MenuItemColor, ButtonColor> = {
     "success": Button.Colors.GREEN,
 };
 
-export const Icon = ({type}: { type: "warning" | "critical" | "info" | "positive"; }) => {
+export const Icon = ({type = "info"}: { type: "warning" | "critical" | "info" | "positive"; }) => {
     switch (type) {
         case "warning":
             return <TriangleAlertIcon color="var(--status-warning)" size="18px"/>;
@@ -173,7 +173,7 @@ export default function Modal({
                                             <notice.icon/>
                                         </div>
                                         ) : <div className="bd-modal-icon-holder">
-                                            <Icon type={notice.type}/>
+                                            {notice.type && <Icon type={notice.type}/>}
                                         </div>
                                     }
                                     <Flex align="bd-flex-align-center">
