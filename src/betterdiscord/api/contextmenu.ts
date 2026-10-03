@@ -1,35 +1,94 @@
 import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
-import React from "react";
+import React, {type ReactNode} from "react";
 import DiscordModules from "@modules/discordmodules";
 import NodePatcher from "@modules/nodepatcher";
 import DOMManager from "@modules/dommanager";
-import type {DiscordIconProps} from "@utils/icon";
-
 
 let startupComplete = false;
 
 // https://github.com/doggybootsy/vx/blob/main/packages/mod/src/api/menu/components.ts
-type MenuItemColor = "default" | "danger" | "premium-gradient";
+type MenuItemColor =
+    | "default"
+    | "brand"
+    | "danger"
+    | "premium"
+    | "premium-gradient"
+    | "success";
 
-export interface BaseMenuItemProps extends Record<string, any> {
-    id: string,
-    disabled?: boolean,
-    action?(event: React.MouseEvent): void,
-    children?: React.ReactNode,
-    icon?: React.FunctionComponent<DiscordIconProps>,
-    color?: MenuItemColor,
-    subtext?: string,
-    focusedClassName?: string,
-    className?: string,
-    keepItemStyles?: boolean,
-    dontCloseOnActionIfHoldingShiftKey?: boolean,
-    imageUrl?(props: unknown): string;
+interface RenderPropContext {
+    isFocused: boolean;
+    disabled?: boolean;
+}
+
+type LabelOrRenderable<T = RenderPropContext> = React.ReactNode | ((ctx: T) => React.ReactNode);
+
+interface MenuItemIndicator {
+    icon: React.ComponentType<any>;
+    color?: string;
+    className?: string;
+    [key: string]: any;
+}
+
+type BadgeTypes = "beta" | "new" | "free_trial" | "early_access"
+type BadgeVariants = MenuItemColor
+
+type MenuItemBadge = BadgeTypes | {
+    type: BadgeTypes,
+    variant?: BadgeVariants
 };
 
-export interface MenuCheckboxItemProps {
-    id: string,
-    label: string,
+type MenuItemAccessory =
+    | { type: "icon"; icon: React.ComponentType<any>; color?: string; className?: string; [key: string]: any }
+    | { type: "emoji"; emojiId?: string; src?: string; animated?: boolean }
+    | { type: "image"; src: string }
+    | { type: "avatar"; src: string }
+    | { type: "roleDot"; variant: "dot" | "pill"; color?: string; colors?: string[] }
+    | { type: "status"; status: string }
+    | { type: "guildTag"; element: React.ReactNode };
+
+type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
+
+type CustomItemContext = { color: MenuItemColor; disabled?: boolean; isFocused: boolean }
+export type BaseMenuItemProps = Record<string, any> & {
+    label: LabelOrRenderable;
+    id: string;
+    /** @obsolete use `label` instead. This was technically removed months ago. */
+    // void_label?: LabelOrRenderable;
+    color?: MenuItemColor;
+    /** @deprecated use `leadingAccessory` instead. This will be removed when the context menu mana experiment is fully pushed. */
+    icon?: React.ComponentType<any> | React.ReactNode; // trailing icon
+    /** @deprecated use `leadingAccessory` instead. This will be removed when the context menu mana experiment is fully pushed. */
+    iconLeft?: React.ComponentType<any> | React.ReactNode; // leading icon
+    iconProps?: Record<string, any>;
+    leadingAccessory?: MenuItemAccessory;
+    trailingIndicator?: MenuItemIndicator;
+    shortcut?: React.ReactNode;
+    subtext?: React.ReactNode;
+    subtextLineClamp?: number;
+    loading?: boolean;
+    badge?: MenuItemBadge;
+    disabled?: boolean;
+    className?: string;
+    focusedClassName?: string;
+    action?: (event: React.MouseEvent) => void;
+    dontCloseOnAction?: boolean;
+    dontCloseOnActionIfHoldingShiftKey?: boolean;
+    navigable?: boolean;
+
+    children?: React.ReactNode;
+    onChildrenScroll?: (event: Event) => void;
+    childRowHeight?: number;
+    listClassName?: string;
+    subMenuClassName?: string;
+
+    // Turns into a customitem type in ContextMenu
+    render?: (ctx: CustomItemContext) => React.ReactNode;
+};
+
+export type MenuCheckboxItemProps = {
+    label: LabelOrRenderable;
+    id: string;
     disabled?: boolean,
     subtext?: React.ReactNode,
     action?(event: React.MouseEvent): void,
@@ -42,7 +101,7 @@ export interface MenuControlProps {
     onClose(): void;
 };
 
-export interface MenuRadioItemProps extends MenuCheckboxItemProps {
+export type MenuRadioItemProps = MenuCheckboxItemProps & {
     group: string;
 };
 
@@ -52,9 +111,9 @@ export interface MenuControlRef {
     focus(): void;
 };
 
-export interface MenuControlItemProps {
-    id: string,
-    label?: string,
+export type MenuControlItemProps = {
+    label: LabelOrRenderable;
+    id: string;
     disabled?: boolean,
     control(props: MenuControlProps, ref: {ref: null | void | MenuControlRef;}): React.ReactElement;
 };
@@ -64,44 +123,50 @@ interface MenuItemSeparator {
     type: "separator";
 }
 
-interface MenuItemSubmenu extends BaseMenuItemProps {
+type MenuItemSubmenu = DistributiveOmit<BaseMenuItemProps, "children"> & {
     type: "submenu",
+    /** @deprecated use `items` instead */
     render?: MenuItem[],
     items?: MenuItem[],
+    children?: MenuItem[],
     danger?: boolean,
-    onClick?(event: React.MouseEvent): void,
-}
+    action?(event: React.MouseEvent): void,
+};
 
-interface MenuItemDefault extends BaseMenuItemProps {
+type MenuItemDefault = DistributiveOmit<BaseMenuItemProps, "children"> & {
     type?: "item",
     danger?: boolean,
-    onClick?(event: React.MouseEvent): void,
-}
+    action?(event: React.MouseEvent): void,
+};
 
-interface MenuItemRadio extends MenuRadioItemProps {
+interface MenuItemRadio extends Omit<MenuRadioItemProps, "action"> {
     type: "radio",
     danger?: boolean,
-    onClick?(event: React.MouseEvent): void,
+    action?(event: React.MouseEvent): void,
+    /** @deprecated use `checked` instead */
     active?: boolean;
 }
 
-interface MenuItemCheckbox extends MenuCheckboxItemProps {
+interface MenuItemCheckbox extends Omit<MenuCheckboxItemProps, "action"> {
     type: "toggle",
     danger?: boolean,
-    onClick?(event: React.MouseEvent): void,
+    action?(event: React.MouseEvent): void,
+    /** @deprecated use `checked` instead */
     active?: boolean;
 }
 
-interface MenuItemControl extends MenuControlItemProps {
+interface MenuItemControl extends Omit<MenuControlItemProps, "label"> {
     type: "control";
+    label?: string | ReactNode;
 }
 
 interface MenuItemGroup {
     type: "group",
+    label?: LabelOrRenderable,
     items: MenuItem[];
 }
 
-type MenuItem = MenuItemSeparator | MenuItemSubmenu | MenuItemDefault | MenuItemRadio | MenuItemCheckbox | MenuItemControl;
+type MenuItem = MenuItemSeparator | MenuItemSubmenu | MenuItemDefault | MenuItemRadio | MenuItemCheckbox | MenuItemControl | MenuItemGroup;
 
 interface ContextMenuComponents {
     MenuSeparator: React.FC;
@@ -240,7 +305,11 @@ interface ContextMenuObject {
 
 type MenuRenderNode = React.ReactElement<MenuRenderProps, React.ComponentType<MenuRenderProps>>;
 
-type PatchCallback = (res: React.ReactElement<React.PropsWithChildren<MenuRenderProps>, React.ComponentType<React.PropsWithChildren<MenuRenderProps>>>, props: MenuRenderProps, instance?: React.Component<MenuRenderProps>) => void;
+type PatchCallback = (
+    res: React.ReactElement<React.PropsWithChildren<MenuRenderProps>>,
+    props: MenuRenderProps,
+    instance?: React.Component<MenuRenderProps>
+) => void;
 
 function globToRegExp(glob: string) {
     let out = "^";
@@ -291,9 +360,9 @@ class MenuPatcher {
         named: Record<string, Set<PatchCallback>>,
         regex: Array<{regex: RegExp, patches: Set<PatchCallback>;}>;
     } = {
-            named: {},
-            regex: []
-        };
+        named: {},
+        regex: []
+    };
 
     static handleRender<T extends React.ComponentType<MenuRenderProps>>(Component: T): T {
         const fNode = {type: Component} as MenuRenderNode;
@@ -495,12 +564,19 @@ class ContextMenu {
     buildItem(props: MenuItem) {
         const {type} = props;
         if (type === "separator") return React.createElement(MenuComponents.Separator!);
+        if (type === "group") {
+            return React.createElement(
+                MenuComponents.Group!,
+                null,
+                this.buildMenuChildren(props.items)
+            ) as any;
+        }
 
         let Component = MenuComponents.Item as React.FC<any>;
         if (type === "submenu") {
             if (!props.children) {
                 const children = props.render || props.items;
-                if (children) props.children = this.buildMenuChildren(children);
+                if (children) props.children = this.buildMenuChildren(children) as any;
             }
         }
         else if (type === "toggle" || type === "radio") {
@@ -510,10 +586,16 @@ class ContextMenu {
         else if (type === "control") {
             Component = MenuComponents.ControlItem;
         }
-        if (!props.id) props.id = `${props.label.replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
+
+        if (!props.id) {
+            const label = typeof props.label === "string" ? props.label : "";
+            props.id = `${label.replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
+        }
 
         if (props.type !== "control") {
+            // wrapper for old plugins and simplicity.
             if (props.danger) (props as BaseMenuItemProps).color = "danger";
+            // @ts-expect-error `onClick` is a wrapper for old plugins.
             if (props.onClick && !props.action) props.action = props.onClick;
             (props as BaseMenuItemProps).extended = true;
         }
@@ -577,8 +659,8 @@ class ContextMenu {
      *     }]
      * }]);
      */
-    buildMenuChildren(setup: ReadonlyArray<MenuItem | MenuItemGroup>) {
-        const mapper = (s: MenuItem | MenuItemGroup) => {
+    buildMenuChildren(setup: ReadonlyArray<MenuItem | MenuItemGroup>): React.ReactElement[] {
+        const mapper = (s: MenuItem | MenuItemGroup): React.ReactElement => {
             if (s.type === "group") return buildGroup(s);
             return this.buildItem(s);
         };
