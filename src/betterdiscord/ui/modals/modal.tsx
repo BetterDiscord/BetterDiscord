@@ -126,7 +126,7 @@ export default function Modal({
                               }: ModalProps) {
     const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
-    const [checked, setChecked] = useState<boolean>(checkboxProps.defaultValue ?? false);
+    const [checked, setChecked] = useState<boolean>(checkboxProps?.defaultValue ?? false);
 
     const handleAction = useCallback(async (action: any, index: number) => {
         setPendingIndex(index);
