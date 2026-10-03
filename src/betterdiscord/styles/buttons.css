@@ -421,31 +421,31 @@
 /* Color Green Success */
 .bd-button-filled.bd-button-color-green {
     color: var(--white-500);
-    background-color: var(--control-connect-background-default)
+    background-color: var(--control-connected-background-default)
 }
 
 .bd-button-filled.bd-button-color-green:hover {
-    background-color: var(--control-connect-background-hover)
+    background-color: var(--control-connected-background-hover)
 }
 
 .bd-button-filled.bd-button-color-green:active {
-    background-color: var(--control-connect-background-active)
+    background-color: var(--control-connected-background-active)
 }
 
 .bd-button-outlined.bd-button-color-green {
     color: var(--control-primary-text-default);
-    border-color: var(--control-connect-border-default)
+    border-color: var(--control-connected-border-default)
 }
 
 .bd-button-outlined.bd-button-color-green:hover {
-    background-color: var(--control-connect-background-hover);
-    border-color: var(--control-connect-border-hover);
+    background-color: var(--control-connected-background-hover);
+    border-color: var(--control-connected-border-hover);
     color: var(--control-primary-text-hover)
 }
 
 .bd-button-outlined.bd-button-color-green:active {
-    background-color: var(--control-connect-background-active);
-    border-color: var(--control-connect-border-active);
+    background-color: var(--control-connected-background-active);
+    border-color: var(--control-connected-border-active);
     color: var(--control-primary-text-active)
 }
 
