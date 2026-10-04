@@ -1,14 +1,12 @@
+/* stylelint-disable number-max-precision */
+
 #bd-notifications-root {
     position: fixed;
     display: flex;
     padding: 16px;
     z-index: 9999;
     pointer-events: none;
-    display: flex;
-}
-
-#bd-notifications-root>* {
-    pointer-events: auto;
+    gap: 20px;
 }
 
 .bd-notification-container {
@@ -17,24 +15,27 @@
     flex-direction: column;
     gap: 8px;
     z-index: 3002;
+
     /* right above titleBar */
 }
 
 .bd-notification {
+    pointer-events: auto;
     background-color: var(--card-background-default);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-medium);
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
     position: relative;
     width: 350px;
 }
 
-.bd-notification [class*="markdown_"] [class*="paragraph_"]:last-child {
+/* As far as I can tell, this isn't used for anything since we started parsing markdown properly */
+
+/* .bd-notification [class*="markdown_"] [class*="paragraph_"]:last-child {
     margin-bottom: 0px !important;
-}
+} */
 
 .bd-notification-top-left {
     top: 16px;
@@ -64,7 +65,7 @@
     border-radius: 8px 8px 0 0;
     display: flex;
     flex-direction: column;
-    padding: 16px 40px 0px 16px;
+    padding: 16px 40px 0 16px;
 }
 
 .bd-notification-icon {
@@ -120,7 +121,7 @@
 .bd-notification-close {
     color: var(--interactive-text-default);
     cursor: pointer;
-    opacity: .5;
+    opacity: 0.5;
     position: absolute;
     right: 12px;
     top: 12px;
@@ -143,7 +144,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 10px 16px 0px 16px;
+    padding: 10px 16px 0;
 }
 
 .bd-notification-footer button {
@@ -181,14 +182,14 @@
 }
 
 .bd-notification-enter {
-    animation: slideIn 0.5s ease-out forwards;
+    animation: slide-in 0.5s ease-out forwards;
 }
 
 .bd-notification-exit {
-    animation: slideOut 0.5s ease-in forwards;
+    animation: slide-out 0.5s ease-in forwards;
 }
 
-@keyframes slideIn {
+@keyframes slide-in {
     from {
         opacity: 0;
         transform: translateX(100%);
@@ -200,7 +201,7 @@
     }
 }
 
-@keyframes slideOut {
+@keyframes slide-out {
     from {
         opacity: 1;
         transform: translateX(0);
