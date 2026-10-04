@@ -405,6 +405,7 @@ class MenuPatcher {
     }
 
     static patchRecursive(target: MenuRenderNode, iteration = 0) {
+        if (iteration >= this.MAX_PATCH_ITERATIONS) return;
         const depth = ++iteration;
 
         nodePatcher.patch(target, (props, res, instance) => {
