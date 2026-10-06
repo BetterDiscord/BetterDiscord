@@ -37,10 +37,6 @@
             },
             "store": {
                 "name": "Addon Store",
-                "bdAddonStore": {
-                    "name": "Enable Addon Store",
-                    "note": "Enables the BetterDiscord Addon Store."
-                },
                 "alwaysEnable": {
                     "name": "Always Enable",
                     "note": "When enabled by default addons downloaded via the addon store will be enabled."
@@ -54,7 +50,7 @@
                 "name": "Window Preferences",
                 "removeMinimumSize": {
                     "name": "Remove Minimum Size",
-                    "note": "Removes Discord's forced minimum window size of 940x500"
+                    "note": "Removes Discord's forced minimum window size of 800x500"
                 },
                 "transparency": {
                     "name": "Enable Transparency",
@@ -64,9 +60,54 @@
                     "name": "Window Frame",
                     "note": "Adds the native os window frame to the main window"
                 },
-                "inAppTrafficLights": {
-                    "name": "Use In App Traffic Lights",
-                    "note": "Instead of using the OS traffic lights it will use a in app one"
+                "roundedCorners": {
+                    "name": "Rounded Corners",
+                    "note": "Whether a frameless window should have rounded corners"
+                },
+                "acceptFirstMouse": {
+                    "name": "Accept First Mouse Click",
+                    "note": "Whether clicking an inactive window will also click through to the web contents"
+                },
+                "vibrancy": {
+                    "name": "Vibrancy",
+                    "note": "Add a type of vibrancy effect to the window",
+                    "options": {
+                        "none": "None",
+                        "titlebar": "Titlebar",
+                        "selection": "Selection",
+                        "menu": "Menu",
+                        "popover": "Popover",
+                        "sidebar": "Sidebar",
+                        "header": "Header",
+                        "sheet": "Sheet",
+                        "window": "Window",
+                        "hud": "Hud",
+                        "fullscreen-ui": "Fullscreen UI",
+                        "tooltip": "Tooltip",
+                        "content": "Content",
+                        "under-window": "Under Window",
+                        "under-page": "Under Page"
+                    }
+                },
+                "visualEffectState": {
+                    "name": "Visual Effect State",
+                    "note": "Specify how the material appearance should reflect window activity state",
+                    "options": {
+                        "followWindow": "Follow Window",
+                        "active": "Active",
+                        "inactive": "Inactive"
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "Background Material",
+                    "note": "Set the window's system-drawn background material, including behind the non-client area",
+                    "options": {
+                        "auto": "Auto",
+                        "none": "None",
+                        "mica": "Mica",
+                        "acrylic": "Acrylic",
+                        "tabbed": "Tabbed"
+                    }
                 }
             },
             "addons": {
@@ -147,13 +188,6 @@
                 "devTools": {
                     "name": "DevTools",
                     "note": "Enables toggling DevTools with ctrl+shift+i"
-                },
-                "recovery": {
-                    "name": "Recovery",
-                    "note": "Enables the ability to attempt to save discord without reloading",
-                    "button": "Attempt to recover Discord",
-                    "report": "Report on Github",
-                    "safeMode": "Relaunch in Safe Mode"
                 },
                 "webpackSourceViewer": {
                     "name": "Webpack Source Viewer",
@@ -443,5 +477,10 @@
     "Paginator": {
         "back": "Back",
         "next": "Next"
+    },
+    "Recovery": {
+        "button": "Attempt to recover Discord",
+        "report": "Report on Github",
+        "safeMode": "Relaunch in Safe Mode"
     }
 }

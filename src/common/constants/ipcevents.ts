@@ -27,3 +27,5 @@ export const SET_ALLOW_PRELOAD_OVERRIDE = "bd-set-allow-preload-override";
 export const GET_ALLOW_PRELOAD_OVERRIDE = "bd-get-allow-preload-override";
 export const RUN_RENDERER               = "bd-run-renderer";
 export const OPEN_DEVTOOLS_SOURCE       = "bd-open-devtools-source";
+export const SET_VIBRANCY               = "bd-set-vibrancy";
+export const SET_BACKGROUND_MATERIAL    = "bd-set-background-material";

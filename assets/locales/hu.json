@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Minimális méret felülírása",
-                    "note": "Felülírja és eltávolítja a Discord kényszerített minimális 940x500-as ablakméretét"
+                    "note": "Felülírja és eltávolítja a Discord kényszerített minimális 800x500-as ablakméretét"
                 },
                 "name": "Ablak beállítások",
                 "transparency": {

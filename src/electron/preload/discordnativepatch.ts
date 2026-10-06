@@ -37,10 +37,6 @@ const contextBridge = {
     ...electron.contextBridge,
     exposeInMainWorld(apiKey: string, api: any) {
         if (apiKey === "DiscordNative") {
-            // On macOS check if native frame is enabled
-            // every other os say false
-            api.window.USE_OSX_NATIVE_TRAFFIC_LIGHTS = process.platform === "darwin" && process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS === "false";
-
             api.window.setDevtoolsCallbacks(
                 () => {
                     isOpen = true;

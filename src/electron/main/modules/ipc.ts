@@ -121,7 +121,13 @@ const inspectElement = async (event: IpcMainEvent) => {
 
 const setMinimumSize = (event: IpcMainEvent, width: number, height: number) => {
     const window = BrowserWindow.fromWebContents(event.sender);
-    window?.setMinimumSize(width, height);
+
+    if (process.platform === "darwin") {
+        width ||= 1;
+        height ||= 1;
+    }
+
+    BrowserWindow.prototype.setMinimumSize.call(window, width, height);
 };
 
 const setWindowSize = (event: IpcMainEvent, width: number, height: number) => {
@@ -210,6 +216,19 @@ const openDevtoolsSource = async (event: IpcMainInvokeEvent, url: string, line: 
     `);
 };
 
+const setVibrancy = (event: IpcMainInvokeEvent, vibrancy: Parameters<BrowserWindow["setVibrancy"]>[0] | "none") => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setVibrancy(vibrancy === "none" ? null : vibrancy, {animationDuration: 100});
+};
+
+const setBackgroundMaterial = (event: IpcMainInvokeEvent, material: Parameters<BrowserWindow["setBackgroundMaterial"]>[0]) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setBackgroundMaterial(material);
+};
 
 export default class IPCMain {
     static registerEvents() {
@@ -235,6 +254,8 @@ export default class IPCMain {
             ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
             ipc.handle(IPCEvents.RUN_RENDERER, runRenderer);
             ipc.handle(IPCEvents.OPEN_DEVTOOLS_SOURCE, openDevtoolsSource);
+            ipc.handle(IPCEvents.SET_VIBRANCY, setVibrancy);
+            ipc.handle(IPCEvents.SET_BACKGROUND_MATERIAL, setBackgroundMaterial);
         }
         catch (err) {
             // eslint-disable-next-line no-console

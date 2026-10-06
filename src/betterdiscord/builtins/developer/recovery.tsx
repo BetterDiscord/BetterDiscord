@@ -152,7 +152,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetail
                             onClick={openGithubIssue}
                             color={ButtonColors.YELLOW}
                         >
-                            {t("Collections.settings.developer.recovery.report")}
+                            {t("Recovery.report")}
                         </Button>
                     )}
                     {pluginInfo?.invite && (
@@ -171,7 +171,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetail
                         }}
                         color={ButtonColors.RED}
                     >
-                        {t("Collections.settings.developer.recovery.safeMode")}
+                        {t("Recovery.safeMode")}
                     </Button>
                 </div>
             </div>
@@ -188,16 +188,10 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetail
 };
 
 export default new class Recovery extends Builtin {
-    get name() {return "Recovery";}
-    get category() {return "developer";}
-    get id() {return "recovery";}
-
-    async enabled() {
+    initialize() {
         this.patchErrorBoundry();
-    }
 
-    async disabled() {
-        this.unpatchAll();
+        return super.initialize();
     }
 
     getPluginInfo(pluginName: string): PluginInfo | null {
@@ -269,7 +263,7 @@ export default new class Recovery extends Builtin {
                         }
                     }}
                 >
-                    {t("Collections.settings.developer.recovery.button")}
+                    {t("Recovery.button")}
                 </Button>
             );
 
