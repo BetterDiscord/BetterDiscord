@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Xóa Kích Thước Tối Thiểu",
-                    "note": "Xóa kích thước tối thiểu của Discord (940x500)"
+                    "note": "Xóa kích thước tối thiểu của Discord (800x500)"
                 },
                 "name": "Cài Đặt Cửa Sổ",
                 "transparency": {

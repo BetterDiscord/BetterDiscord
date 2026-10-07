@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Usuń limit minimalnego rozmiaru okna",
-                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
+                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (800x500)"
                 },
                 "name": "Ustawienia okna",
                 "transparency": {

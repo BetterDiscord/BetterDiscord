@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Poista vähimmäiskoko",
-                    "note": "Poistaa Discordin pakotetun vähimmäisikkunakoon 940x500"
+                    "note": "Poistaa Discordin pakotetun vähimmäisikkunakoon 800x500"
                 },
                 "name": "Ikkuna-asetukset",
                 "transparency": {

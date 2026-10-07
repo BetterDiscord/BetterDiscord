@@ -62,15 +62,30 @@ class BrowserWindow extends electron.BrowserWindow {
             options.backgroundColor = "#00000000";
         }
 
-        const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
+        if (process.platform === "darwin") {
+            const vibrancy = BetterDiscord.getSetting("window", "vibrancy");
+            const visualEffectState = BetterDiscord.getSetting("window", "visualEffectState");
+
+            if (vibrancy && vibrancy !== "none") {
+                options.vibrancy = vibrancy;
+                options.backgroundColor = "#00000000";
+                options.visualEffectState = visualEffectState || "followWindow";
+            }
+        }
+
+        const backgroundMaterial = BetterDiscord.getSetting("window", "backgroundMaterial");
+        if (process.platform === "win32" && backgroundMaterial) {
+            options.backgroundColor = "#00000000";
+            options.backgroundMaterial = backgroundMaterial;
+        }
+
         options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
+        if (options.frame) {
+            delete options.trafficLightPosition;
+            options.titleBarStyle = "default";
+        }
 
         process.env.BETTERDISCORD_NATIVE_FRAME = options.frame.toString();
-        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights.toString();
-
-        if (inAppTrafficLights) {
-            delete options.titleBarStyle;
-        }
 
         const removeMinimumSize = Boolean(BetterDiscord.getSetting("window", "removeMinimumSize") ?? false);
         if (removeMinimumSize) {
@@ -78,10 +93,20 @@ class BrowserWindow extends electron.BrowserWindow {
             options.minHeight = 0;
         }
 
+        if (BetterDiscord.getSetting("window", "acceptFirstMouse")) {
+            options.acceptFirstMouse = true;
+        }
+
+        // for falsy
+        if (BetterDiscord.getSetting("window", "roundedCorners") === false) {
+            options.roundedCorners = false;
+        }
+
         super(options);
         if (removeMinimumSize) {
             this.setMinimumSize = () => {};
         }
+
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
         Editor.initialize(this);

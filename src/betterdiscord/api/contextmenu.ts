@@ -166,6 +166,10 @@ interface MenuItemGroup {
     items: MenuItem[];
 }
 
+interface MenuGroup {
+    id?: string;
+}
+
 type MenuItem = MenuItemSeparator | MenuItemSubmenu | MenuItemDefault | MenuItemRadio | MenuItemCheckbox | MenuItemControl | MenuItemGroup;
 
 interface ContextMenuComponents {
@@ -173,7 +177,7 @@ interface ContextMenuComponents {
     MenuCheckboxItem: React.FC<React.PropsWithChildren<MenuCheckboxItemProps>>;
     MenuRadioItem: React.FC<React.PropsWithChildren<MenuRadioItemProps>>;
     MenuControlItem: React.FC<React.PropsWithChildren<MenuControlItemProps>>;
-    MenuGroup: React.FC<React.PropsWithChildren>;
+    MenuGroup: React.FC<React.PropsWithChildren<MenuGroup>>;
     MenuItem: React.FC<React.PropsWithChildren<BaseMenuItemProps>>;
     Menu: React.FC<React.PropsWithChildren<MenuRenderProps>>;
 }

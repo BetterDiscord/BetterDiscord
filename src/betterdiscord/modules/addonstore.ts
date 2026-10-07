@@ -373,10 +373,7 @@ const addonStore = new class AddonStore extends Store {
 
         // window.AddonStore = this;
 
-        const isEnabled = () => (
-            Settings.get<boolean>("settings", "store", "bdAddonStore")
-            || Settings.get<boolean>("settings", "addons", "checkForUpdates")
-        );
+        const isEnabled = () => Settings.get<boolean>("settings", "addons", "checkForUpdates");
 
         let wasEnabled = isEnabled();
 
@@ -403,7 +400,6 @@ const addonStore = new class AddonStore extends Store {
             this.#promise = Promise.resolve();
         };
 
-        Settings.on("settings", "store", "bdAddonStore", handle);
         Settings.on("settings", "addons", "checkForUpdates", handle);
 
         if (wasEnabled) {
@@ -672,11 +668,9 @@ const addonStore = new class AddonStore extends Store {
                     }
                 }
 
-                if (Settings.get<boolean>("settings", "store", "bdAddonStore")) {
-                    const hours = Settings.get<number>("addons", "updateInterval");
+                const hours = Settings.get<number>("addons", "updateInterval");
 
-                    this._setTimeout = window.setTimeout(() => this.requestAddons(), hours * minutes * 60 * 1000);
-                }
+                this._setTimeout = window.setTimeout(() => this.requestAddons(), hours * minutes * 60 * 1000);
 
                 resolve();
             });

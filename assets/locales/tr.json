@@ -25,7 +25,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Minimum boyutu kaldır",
-                    "note": "Discord'un 940x500 boyut limitini kaldırır"
+                    "note": "Discord'un 800x500 boyut limitini kaldırır"
                 },
                 "name": "Pencere Tercihleri",
                 "transparency": {

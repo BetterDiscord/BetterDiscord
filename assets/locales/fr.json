@@ -25,7 +25,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Enlever la Taille Minimale",
-                    "note": "Enlève la taille de fenêtre minimale forcée de Discord qui est de 940x500"
+                    "note": "Enlève la taille de fenêtre minimale forcée de Discord qui est de 800x500"
                 },
                 "name": "Fenêtre des Préférences",
                 "transparency": {
