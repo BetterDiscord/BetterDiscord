@@ -61,13 +61,13 @@
     transition: transform 0.2s ease;
 }
 
-.bd-addon-error[open] .bd-addon-error-expander {
-    transform: rotate(90deg);
-}
-
 .bd-addon-error-expander,
 .bd-addon-error-icon {
     flex: 0 0 auto;
+}
+
+.bd-addon-error[open] .bd-addon-error-expander {
+    transform: rotate(90deg);
 }
 
 .bd-addon-error-header-inner {
@@ -110,10 +110,6 @@
 
 .bd-addon-error-stack pre:hover [class*="codeActions"] {
     display: block;
-}
-
-.bd-addon-error-stack pre [class*="codeActions"] > div {
-    cursor: pointer;
 }
 
 .bd-addon-error-details {
