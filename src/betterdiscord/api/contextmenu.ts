@@ -1,4 +1,4 @@
-import {Filters, getByKeys, getLazyByKeys, getMangled, getModule, webpackRequire} from "@webpack";
+import {Filters, getByKeys, getBySource, getLazyByKeys, getModule, webpackRequire} from "@webpack";
 import Logger from "@common/logger";
 import React, {type ReactNode} from "react";
 import DiscordModules from "@modules/discordmodules";
@@ -261,10 +261,14 @@ const ContextMenuActions = (() => {
     const out: any = {};
 
     try {
-        Object.assign(out, getMangled(Filters.bySource("new DOMRect", "CONTEXT_MENU_CLOSE"), {
-            closeContextMenu: Filters.byStrings("CONTEXT_MENU_CLOSE"),
-            openContextMenu: Filters.byStrings("renderLazy")
-        }, {searchDefault: false, cacheId: "core-contextmenu-Actions"}));
+        Object.assign(out, getBySource(["new DOMRect", "CONTEXT_MENU_CLOSE"], {
+            searchDefault: false,
+            cacheId: "core-contextmenu-Actions",
+            map: {
+                closeContextMenu: Filters.byStrings("CONTEXT_MENU_CLOSE"),
+                openContextMenu: Filters.byStrings("renderLazy")
+            }
+        }));
 
         startupComplete &&= typeof (out.closeContextMenu) === "function" && typeof (out.openContextMenu) === "function";
     }

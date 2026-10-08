@@ -2,9 +2,10 @@ import Patcher from "@modules/patcher";
 import React from "react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getByKeys, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import {getByKeys, getByStrings, getModule, getStore} from "@webpack";
 import type {FluxStore} from "@typed/discord/modules";
 import type {Channel, Guild} from "@typed/discord/structs";
+import {Webpack} from "@typed/discord";
 
 // TODO: create better types for this file, too many "any"
 
@@ -181,7 +182,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {
-        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"), {firstId: 264322, cacheId: "core-commandmanager-indexstore"});
+        const [mod, key] = getByStrings<Webpack.ModuleWithKey>([".getScoreWithoutLoadingLatest"], {withKey: true, searchExports: true, firstId: 264322, cacheId: "core-commandmanager-indexstore"})!;
 
         Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -238,9 +239,12 @@ class CommandManager {
     }
 
     static #patchApplicationIcons() {
-        const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((_, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {firstId: 826298, cacheId: "core-commandmanager-appIcons"})
-        });
+        const [mod, key] = getByStrings<Webpack.ModuleWithKey>([".type===", ".BUILT_IN?"], {
+            withKey: true,
+            searchExports: true,
+            firstId: 826298,
+            cacheId: "core-commandmanager-appIcons"
+        })!;
 
         Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
             const getIconUrl = () => {
@@ -310,10 +314,12 @@ class CommandManager {
     }
 
     static #patchAuthorizer() {
-        const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"), {
+        const [module, key] = getByStrings<Webpack.ModuleWithKey>(["openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"], {
+            searchExports: true,
+            withKey: true,
             firstId: 972995,
             cacheId: "core-commandmanager-authorizer"
-        });
+        })!;
 
         Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {

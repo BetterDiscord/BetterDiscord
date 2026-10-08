@@ -1,5 +1,5 @@
 import Builtin from "@structs/builtin";
-import {Filters, getLazy, getLazyBySource, getLazyByStrings, getMangledLazy, Stores} from "@webpack";
+import {Filters, getLazy, getLazyBySource, getLazyByStrings, Stores} from "@webpack";
 import {findInTree} from "@common/utils";
 import React, {createContext, useContext, useLayoutEffect, useMemo} from "react";
 
@@ -66,9 +66,10 @@ export default new class ThemeAttributes extends Builtin {
     }
 
     async patchMessageHook() {
-        const messageHook = await getMangledLazy("SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries", {
-            key: Filters.byStrings("SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries")
-        }, {
+        const messageHook = await getLazyBySource(["SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries"], {
+            map: {
+                key: Filters.byStrings("SUMMARIES_UNREAD_BAR_VIEWED,{num_unread_summaries")
+            },
             cacheId: "core-themeattributes-messageHook",
             mapDeclarations: true
         });

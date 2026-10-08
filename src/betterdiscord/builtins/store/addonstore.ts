@@ -10,9 +10,10 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getBySource, getLazy, getLazyBySource, getWithKey} from "@webpack";
+import {Filters, getBySource, getLazy, getLazyByStrings} from "@webpack";
 import {findInTree} from "@common/utils";
 import {getInternalInstance, getOwnerInstance} from "@utils/react";
+import type {Webpack} from "@typed/discord";
 
 let MessageAccessories;
 
@@ -126,11 +127,9 @@ export default new class AddonStoreBuiltin extends Builtin {
         }
     }
 
-    private linkOpener?: Generator;
+    private linkOpener?: Webpack.ModuleWithKey;
     async patchLinkOpener() {
-        const [module, key] = this.linkOpener ??= getWithKey((m) => String(m).includes(".trackAnnouncementMessageLinkClicked("), {
-            target: await getLazyBySource([".trackAnnouncementMessageLinkClicked("])
-        });
+        const [module, key] = this.linkOpener ??= (await getLazyByStrings<Webpack.ModuleWithKey>([".trackAnnouncementMessageLinkClicked("], {searchExports: true, withKey: true}))!;
 
         this.before(module, key, (_, args) => {
             if (args[0].href) {

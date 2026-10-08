@@ -17,7 +17,7 @@ import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
 import ChangelogModal, {type ChangelogProps} from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
-import {Filters, getMangled} from "@webpack";
+import {Filters, getBySource} from "@webpack";
 import AddonError from "@structs/addonerror";
 import AddonErrorsStore from "@stores/addonerrors";
 import SimpleMarkdownExt from "@structs/markdown";
@@ -39,11 +39,12 @@ export default class Modals {
     static _ModalActions: ModalActions;
     static get ModalActions() {
         // currently the module is unmangled, but keeping this incase it gets mangled again
-        return this._ModalActions ??= getMangled("?.stackNextByDefault", {
-            openModal: Filters.byStrings("?.stackNextByDefault"),
-            closeModal: Filters.byStrings(".setState", ".getState()["),
-            closeAllModals: Filters.byStrings(".getState();for")
-        }, {
+        return this._ModalActions ??= getBySource(["?.stackNextByDefault"], {
+            map: {
+                openModal: Filters.byStrings("?.stackNextByDefault"),
+                closeModal: Filters.byStrings(".setState", ".getState()["),
+                closeAllModals: Filters.byStrings(".getState();for")
+            },
             firstId: 192308,
             cacheId: "betterdiscord-modals"
         }) as ModalActions;
