@@ -6,7 +6,7 @@ import {getModule} from "@webpack";
 
 const {Fragment, useState, useCallback, useEffect} = React;
 
-const TransitionGroup: React.FC<any> = getModule(x => x.defaultProps?.transitionAppear, {searchExports: true, cacheId: "bd-core-modal-TransitionGroup"}) || function () {};
+const TransitionGroup: any = getModule(x => x.defaultProps?.transitionAppear, {searchExports: true, cacheId: "bd-core-modal-TransitionGroup"}) || function () {};
 
 class ModalLayer extends React.Component<{onClose(): void; render(p: any): ReactNode;}, {transitionState: number | null;}> {
     constructor(props: {onClose(): void; render(p: any): ReactNode;}) {
