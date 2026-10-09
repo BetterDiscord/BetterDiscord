@@ -2,7 +2,7 @@ import ReactDOM from "@modules/reactdom";
 import React from "react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
+import {Filters, getByKeys, getBySource, getLazy, getLazyBySource} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import AddonPage from "@ui/settings/addonpage";
@@ -310,11 +310,14 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     patchSettingsSearch() {
-        const search = getMangled<{
+        const search = getBySource<{
             search(): Record<string, any>;
-        }>(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]", {
-            search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
-        }, {cacheId: "core-settings-search"});
+        }>([".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]"], {
+            map: {
+                search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
+            },
+            cacheId: "core-settings-search"
+        })!;
 
         Patcher.after("SettingsManager", search, "search", (_, __, res) => {
             res = {...res}; // Discord freezes the object
@@ -368,14 +371,16 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getMangledLazy<{
+        const versionDisplayModule = (await getLazyBySource<{
             versionDisplay: React.FC;
         }>(["copyValue", "RELEASE_CHANNEL", "Build Override"], {
-            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
-        }, {
+            map: {
+                versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
+            },
             searchDefault: false,
-            mapDeclarations: true
-        });
+            mapDeclarations: true,
+            cacheId: "bd-settings-version-info"
+        }))!;
 
         if (typeof versionDisplayModule.versionDisplay !== "function") return;
 

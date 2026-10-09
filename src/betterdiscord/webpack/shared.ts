@@ -34,11 +34,12 @@ export const wrapDeclarationFilter = (filter: Webpack.ExportedOnlyFilter) => Obj
     __originalFilter: filter
 });
 
-export function getDeclaration(module: Webpack.Module<any>, filter: Webpack.ExportedOnlyFilter) {
+export function getDeclaration(module: Webpack.Module<any>, filter: Webpack.ExportedOnlyFilter, withKey: boolean) {
     const wrappedFilter = wrapDeclarationFilter(filter);
 
     for (const name in module.declarations) {
         if (!wrappedFilter(module.declarations[name])) continue;
+        if (withKey) return [module.declarations, name];
         return module.declarations[name];
     }
 }

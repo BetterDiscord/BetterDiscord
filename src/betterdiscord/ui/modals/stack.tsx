@@ -2,13 +2,11 @@ import React, {type ReactNode} from "react";
 import Events from "@modules/emitter";
 
 import Backdrop from "./backdrop";
-import {getWithKey} from "@webpack";
+import {getModule} from "@webpack";
 
 const {Fragment, useState, useCallback, useEffect} = React;
 
-
-const [Transitions, TransitionKey] = getWithKey(m => m?.defaultProps?.transitionAppear);
-const TransitionGroup = Transitions && TransitionKey ? Transitions[TransitionKey] : function () {};
+const TransitionGroup: any = getModule(x => x.defaultProps?.transitionAppear, {searchExports: true, cacheId: "bd-core-modal-TransitionGroup"}) || function () {};
 
 class ModalLayer extends React.Component<{onClose(): void; render(p: any): ReactNode;}, {transitionState: number | null;}> {
     constructor(props: {onClose(): void; render(p: any): ReactNode;}) {
