@@ -11,7 +11,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Exposed Checkbox component
 - Added new settings
     - roundedCorners - setting to remove the rounded corners on linux and windows
-    - acceptFirstMouse - macOS specific behavoir to allow the app to take first click
+    - acceptFirstMouse - macOS specific behavior to allow the app to take first click
     - vibrancy - macOS background materiel
     - visualEffectState - set the effect state for macOS
     - backgroundMaterial - windows feature to set the background material
@@ -28,7 +28,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 
 ### Changed
 - Changed notifications to not require id
-- Deprecated getWithKey and getMangled/getProxyMangled from the plugin webpack space
+- Deprecated getWithKey and getMangled/getMangledProxy from the plugin webpack space
 
 ### Fixed
 - Fixed enableWith having issue in BD core settings
