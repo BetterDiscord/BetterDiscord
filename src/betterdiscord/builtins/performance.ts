@@ -11,10 +11,14 @@ export default new class Performance extends Builtin {
     }
 
     handleSheet(sheet: CSSStyleSheet) {
-        if (!sheet.cssRules.length) return;
+        let rules: CSSRuleList | undefined;
+        try {rules = sheet.cssRules;}
+        catch {/* empty */}
 
-        for (let index = 0; index < sheet.cssRules.length; index++) {
-            const rule = sheet.cssRules[index];
+        if (!rules?.length) return;
+
+        for (let index = 0; index < rules.length; index++) {
+            const rule = rules[index];
 
             if (rule instanceof CSSStyleRule) {
                 if (!rule.selectorText.includes(":has(.gameOption_")) continue;
