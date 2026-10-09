@@ -11,7 +11,7 @@ import Drawer from "@ui/settings/drawer";
 import SettingItem from "@ui/settings/components/item";
 import SettingsTitle from "@ui/settings/title";
 
-import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
+import {ArrowDownToLineIcon, CheckIcon, GithubIcon, GlobeIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 import type {CoreUpdater, ThemeUpdater, PluginUpdater, AddonUpdater} from "@modules/updater";
 import {SettingsTitleContext} from "./settings";
 import addonStore from "@modules/addonstore";
@@ -44,6 +44,21 @@ function makeButton(tooltip: string, children: ReactNode, action: () => Promise<
     </DiscordModules.Tooltip>;
 }
 
+const LinkIcons = {
+    website: GlobeIcon,
+    source: GithubIcon
+} as const;
+
+function makeLink(type: keyof typeof LinkIcons, url?: string) {
+    if (!url) return null;
+    const tooltip = t(`Addons.${type}`);
+    const Icon = LinkIcons[type];
+
+    return <DiscordModules.Tooltip key={type} color="primary" position="top" text={tooltip}>
+        {(props) => <a {...props} aria-label={tooltip} className="bd-link bd-update-link" href={url} target="_blank" rel="noopener noreferrer"><Icon size="20px" /></a>}
+    </DiscordModules.Tooltip>;
+}
+
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}: {hasUpdate: boolean; remoteVersion: string; update: () => Promise<void>;}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
         <SettingItem name={`Core v${Config.get("version")}`} note={hasUpdate ? t("Updater.versionAvailable", {version: remoteVersion}) : t("Updater.noUpdatesAvailable")} inline={true} id={"core-updater"}>
@@ -73,6 +88,9 @@ function AddonUpdaterPanel({pending: filenames, type, updater, update, updateAll
             if (!info) return null;
 
             return <SettingItem key={addon.filename} name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
+                <div className="bd-update-links">
+                    {(Object.keys(LinkIcons) as Array<keyof typeof LinkIcons>).map(l => makeLink(l, addon[l]))}
+                </div>
                 {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, filename))}
                 {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{t("Updater.updateButton")}</Button> */}
             </SettingItem>;
