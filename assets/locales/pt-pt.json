@@ -25,7 +25,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Remove o tamanho mínimo",
-                    "note": "Remove o tamanho mínimo obrigatório de janela do Discord de 940x500"
+                    "note": "Remove o tamanho mínimo obrigatório de janela do Discord de 800x500"
                 },
                 "name": "Preferência de Janela",
                 "transparency": {

@@ -25,7 +25,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "移除最小化限制",
-                    "note": "移除 Discord 限制的最小窗口尺寸（940x500）"
+                    "note": "移除 Discord 限制的最小窗口尺寸（800x500）"
                 },
                 "name": "窗口设置",
                 "transparency": {

@@ -25,7 +25,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Elimină mărimea minimă",
-                    "note": "Elimina marimea minima de 940x500 a ferestrei"
+                    "note": "Elimina marimea minima de 800x500 a ferestrei"
                 },
                 "name": "Preferinte în privința mărimii ferestrei",
                 "transparency": {

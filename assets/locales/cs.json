@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Odebrat minimální velikost",
-                    "note": "Odebere Discordem vynucenou minimální velikost okna 940x500"
+                    "note": "Odebere Discordem vynucenou minimální velikost okna 800x500"
                 },
                 "name": "Předvolby okna",
                 "transparency": {

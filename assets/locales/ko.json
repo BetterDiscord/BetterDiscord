@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "최소 크기 제거",
-                    "note": "디스코드의 강제 창 최소 크기 제한 (940x500) 을 제거합니다"
+                    "note": "디스코드의 강제 창 최소 크기 제한 (800x500) 을 제거합니다"
                 },
                 "name": "창 선호",
                 "transparency": {
