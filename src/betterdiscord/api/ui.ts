@@ -8,13 +8,14 @@ import Group, {buildSetting, type ButtonSetting, type CustomSetting, type GroupO
 import React, {useState, type ReactElement} from "react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
-import NotificationUI, {type Notification} from "@ui/notifications";
+import {type Notification} from "@ui/notifications";
 import type {ChangelogProps} from "@ui/modals/changelog";
 import type {DialogOptions} from "@common/types/ipc";
 import type {Setting, SettingsCategory} from "@data/settings";
 import type {ConfirmationModalOptions} from "@ui/modals/confirmation";
 import type {FloatingWindowProps} from "@ui/floating/window";
 import FloatingWindows from "@ui/floatingwindows";
+import Notifications from "@stores/notifications";
 
 export interface SettingsPanelProps {
     /** An array of settings to show */
@@ -152,7 +153,7 @@ class UI {
 
         const finalNotification = {...defaultObj, ...options};
 
-        return NotificationUI.show(finalNotification);
+        return Notifications.show(finalNotification);
     }
 
     /**

@@ -13,9 +13,7 @@ import ErrorBoundary from "@ui/errorboundary";
 
 import NoResults from "@ui/blankslates/noresults";
 import EmptySlate from "@ui/blankslates/empty";
-import Web from "@data/web";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader, addonContext} from "./addonshared";
-import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 import {useStateFromStores} from "@ui/hooks";
@@ -42,15 +40,12 @@ function openFolder(folder: string) {
     ipc.openPath(folder);
 }
 
-function Blankslate({type, folder}: {type: AddonType; folder: string;}) {
+function Blankslate({type}: {type: AddonType;}) {
     const {toggleStore} = React.useContext(addonContext);
-    const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
-    const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], context: type}).toString();
-    const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
-    const buttonKey = storeEnabled ? "Addons.openStore" : "Addons.openFolder";
-    return <EmptySlate title={t("Addons.blankSlateHeader", {context: type})} message={storeEnabled ? "" : message}>
-        <Button size={Button.Sizes.LARGE} onClick={onClick}>
-            {t(buttonKey, {context: type})}
+
+    return <EmptySlate title={t("Addons.blankSlateHeader", {context: type})}>
+        <Button size={Button.Sizes.LARGE} onClick={toggleStore}>
+            {t("Addons.openStore", {context: type})}
         </Button>
     </EmptySlate>;
 }
@@ -88,8 +83,6 @@ function confirmEnable(action: () => void, type: string) {
 
 function StoreCard() {
     const {toggleStore, store} = React.useContext(addonContext);
-
-    if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
     return (
         <div
@@ -227,7 +220,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
             </div>
         </div>,
         <StoreCard />,
-        !hasAddonsInstalled && <Blankslate type={store.prefix as AddonType} folder={store.addonFolder} />,
+        !hasAddonsInstalled && <Blankslate type={store.prefix as AddonType} />,
         isSearching && !hasResults && hasAddonsInstalled && <NoResults />,
         hasAddonsInstalled && <div key="addonList" className={"bd-addon-list" + (view == "grid" ? " bd-grid-view" : "")}>{renderedCards}</div>
     ];

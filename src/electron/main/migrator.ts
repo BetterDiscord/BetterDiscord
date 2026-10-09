@@ -4,6 +4,7 @@ import fs from "fs";
 import {comparator} from "@common/semver";
 import {bdFolder} from "./modules/betterdiscord";
 import {randomUUID} from "crypto";
+import {EventEmitter} from "events";
 
 const supported: NodeJS.Platform[] = [
     "win32",
@@ -11,8 +12,6 @@ const supported: NodeJS.Platform[] = [
 ];
 
 function migrate() {
-    if (!supported.includes(process.platform)) return;
-
     const logPath = path.join(bdFolder, "data", "updater.log");
     const uuid = randomUUID();
 
@@ -68,4 +67,16 @@ require("../betterdiscord.app.asar");
     }
 }
 
-app.on("before-quit", migrate);
+if (supported.includes(process.platform)) {
+    EventEmitter.prototype.emit = new Proxy(EventEmitter.prototype.emit, {
+        apply(target, thisArg, argArray) {
+            if (argArray[0] === "host-updated") {
+                migrate();
+            }
+
+            return Reflect.apply(target, thisArg, argArray);
+        },
+    });
+
+    app.on("before-quit", migrate);
+}

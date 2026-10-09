@@ -113,14 +113,21 @@ const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions,
 const inspectElement = async (event: IpcMainEvent) => {
     if (!event.sender.isDevToolsOpened()) {
         event.sender.openDevTools();
-        while (!event.sender.isDevToolsOpened()) await new Promise(r => setTimeout(r, 100));
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
     }
+
     event.sender.devToolsWebContents?.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
 };
 
 const setMinimumSize = (event: IpcMainEvent, width: number, height: number) => {
     const window = BrowserWindow.fromWebContents(event.sender);
-    window?.setMinimumSize(width, height);
+
+    if (process.platform === "darwin") {
+        width ||= 1;
+        height ||= 1;
+    }
+
+    BrowserWindow.prototype.setMinimumSize.call(window, width, height);
 };
 
 const setWindowSize = (event: IpcMainEvent, width: number, height: number) => {
@@ -198,6 +205,30 @@ const runRenderer = (event: IpcMainInvokeEvent) => {
     BetterDiscord.injectRenderer(BrowserWindow.fromWebContents(event.sender)!);
 };
 
+const openDevtoolsSource = async (event: IpcMainInvokeEvent, url: string, line: number, column: number) => {
+    if (!event.sender.isDevToolsOpened()) {
+        event.sender.openDevTools();
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
+    }
+
+    event.sender.devToolsWebContents!.executeJavaScript(`
+        DevToolsAPI.revealSourceLine(${JSON.stringify(url)}, ${line}, ${column});
+    `);
+};
+
+const setVibrancy = (event: IpcMainInvokeEvent, vibrancy: Parameters<BrowserWindow["setVibrancy"]>[0] | "none") => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setVibrancy(vibrancy === "none" ? null : vibrancy, {animationDuration: 100});
+};
+
+const setBackgroundMaterial = (event: IpcMainInvokeEvent, material: Parameters<BrowserWindow["setBackgroundMaterial"]>[0]) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setBackgroundMaterial(material);
+};
 
 export default class IPCMain {
     static registerEvents() {
@@ -222,6 +253,9 @@ export default class IPCMain {
             ipc.handle(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE, getAllowPreloadOverride);
             ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
             ipc.handle(IPCEvents.RUN_RENDERER, runRenderer);
+            ipc.handle(IPCEvents.OPEN_DEVTOOLS_SOURCE, openDevtoolsSource);
+            ipc.handle(IPCEvents.SET_VIBRANCY, setVibrancy);
+            ipc.handle(IPCEvents.SET_BACKGROUND_MATERIAL, setBackgroundMaterial);
         }
         catch (err) {
             // eslint-disable-next-line no-console

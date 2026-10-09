@@ -2,12 +2,12 @@ import ReactDOM from "@modules/reactdom";
 import React from "react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
+import {Filters, getByKeys, getBySource, getLazy, getLazyBySource} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import AddonPage from "@ui/settings/addonpage";
 
-import type {SettingsCategory} from "@data/settings";
+import type {RadioOption, SettingsCategory} from "@data/settings";
 import VersionInfo from "./misc/versioninfo";
 import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
@@ -173,7 +173,7 @@ const SettingsRenderer = new class SettingsRenderer {
 
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
-                        const {text, children} = items;
+                        const {text, children: child} = items;
 
                         const [, forceUpdate] = useForceUpdate();
 
@@ -209,7 +209,7 @@ const SettingsRenderer = new class SettingsRenderer {
 
                                 {node && (
                                     ReactDOM.createPortal(
-                                        <div className="bd-settings-page-title-children">{children}</div>,
+                                        <div className="bd-settings-page-title-children">{child}</div>,
                                         node
                                     )
                                 )}
@@ -310,11 +310,14 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     patchSettingsSearch() {
-        const search = getMangled<{
+        const search = getBySource<{
             search(): Record<string, any>;
-        }>(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]", {
-            search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
-        }, {cacheId: "core-settings-search"});
+        }>([".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]"], {
+            map: {
+                search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
+            },
+            cacheId: "core-settings-search"
+        })!;
 
         Patcher.after("SettingsManager", search, "search", (_, __, res) => {
             res = {...res}; // Discord freezes the object
@@ -368,14 +371,16 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getMangledLazy<{
+        const versionDisplayModule = (await getLazyBySource<{
             versionDisplay: React.FC;
         }>(["copyValue", "RELEASE_CHANNEL", "Build Override"], {
-            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
-        }, {
+            map: {
+                versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
+            },
             searchDefault: false,
-            mapDeclarations: true
-        });
+            mapDeclarations: true,
+            cacheId: "bd-settings-version-info"
+        }))!;
 
         if (typeof versionDisplayModule.versionDisplay !== "function") return;
 
@@ -536,13 +541,30 @@ function useCollectionMenu(collection: SettingsCollection) {
         return collection.settings.map(category => ({
             id: category.id,
             name: category.name!,
-            settings: category.settings.filter(s => s.type === "switch" && !s.hidden).map(setting => ({
-                id: setting.id,
-                label: setting.name!,
-                disabled: setting.disabled,
-                checked: Settings.get<boolean>(collection.id, category.id, setting.id),
-                action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
-            }))
+            settings: category.settings
+                .filter(s => (s.type === "switch" || s.type === "dropdown") && !s.hidden)
+                .map(setting => {
+                    if (setting.type === "dropdown") {
+                        return {
+                            type: "dropdown",
+                            id: setting.id,
+                            label: setting.name!,
+                            disabled: setting.disabled,
+                            options: (setting as any).options as Array<RadioOption<string>>,
+                            value: Settings.get<string>(collection.id, category.id, setting.id),
+                            action: (value: string) => Settings.set(collection.id, category.id, setting.id, value)
+                        } as const;
+                    }
+
+                    return {
+                        type: "switch",
+                        id: setting.id,
+                        label: setting.name!,
+                        disabled: setting.disabled,
+                        checked: Settings.get<boolean>(collection.id, category.id, setting.id),
+                        action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
+                    } as const;
+                })
         }));
     }, []);
 
@@ -555,9 +577,30 @@ function useCollectionMenu(collection: SettingsCollection) {
                     action={() => openCategory(collection.id)}
                     key={`bd.${collection.id}.${category.id}`}
                 >
-                    {category.settings.map(setting => (
-                        <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
-                    ))}
+                    {category.settings.map(setting => {
+                        if (setting.type === "dropdown") {
+                            return (
+                                <ContextMenu.Item key={`bd.${collection.id}.${category.id}.${setting.id}`} label={setting.label} id={setting.id} disabled={setting.disabled}>
+                                    <ContextMenu.Group id={setting.id}>
+                                        {setting.options.map(option => (
+                                            <ContextMenu.RadioItem
+                                                // @ts-expect-error internal
+                                                label={option.label}
+                                                group={setting.id}
+                                                id={`${setting.id}-${option.value}`}
+                                                key={`bd.${collection.id}.${category.id}.${setting.id}-${option.value}`}
+                                                action={() => setting.action(option.value)}
+                                                checked={setting.value === option.value}
+                                            />
+                                        ))}
+                                    </ContextMenu.Group>
+                                </ContextMenu.Item>
+                            );
+                        }
+                        return (
+                            <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
+                        );
+                    })}
                 </ContextMenu.Item>
             ))}
         </>
@@ -565,8 +608,7 @@ function useCollectionMenu(collection: SettingsCollection) {
 }
 
 function useAddonMenu(manager: AddonManager) {
-    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
-    const addonStoreIsEnabled = useStateFromStores(Settings, () => Settings.get("settings", "store", "bdAddonStore"), []);
+    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
 
     const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
         <ContextMenu.CheckboxItem
@@ -587,10 +629,9 @@ function useAddonMenu(manager: AddonManager) {
                 }
 
                 const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-                const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
 
                 if (hasSettings) {
-                    Modals.showAddonSettingsModal(name, getSettings());
+                    Modals.showAddonSettingsModal(name, (addon as Plugin).instance.getSettingsPanel!());
                 }
                 else {
                     toasts.warning(t("Addons.noSettings", {name}));
@@ -604,19 +645,17 @@ function useAddonMenu(manager: AddonManager) {
             <ContextMenu.Group key={`bd.${manager.prefix}.installed`}>
                 {toggles}
             </ContextMenu.Group>
-            {!!addonStoreIsEnabled && (
-                <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
-                    <ContextMenu.Item
-                        label={t("Addons.openStore", {context: manager.prefix})}
-                        id={`${manager.prefix}-store`}
-                        action={() => {
-                            openCategory(manager.prefix + "s");
-                            // If the addon store instantly opens have it just stop basically
-                            DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
-                        }}
-                    />
-                </ContextMenu.Group>
-            )}
+            <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
+                <ContextMenu.Item
+                    label={t("Addons.openStore", {context: manager.prefix})}
+                    id={`${manager.prefix}-store`}
+                    action={() => {
+                        openCategory(manager.prefix + "s");
+                        // If the addon store instantly opens have it just stop basically
+                        DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
+                    }}
+                />
+            </ContextMenu.Group>
         </>
     );
 }

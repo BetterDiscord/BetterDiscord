@@ -22,7 +22,7 @@ import DiscordNativePatch from "../discordnativepatch";
 const {BETTERDISCORD_PROTOCOL} = process.env;
 delete process.env.BETTERDISCORD_PROTOCOL;
 
-export function addProtocolListener(callback: (a: string) => void) {
+export function addProtocolListener(callback: (link: string) => void) {
     if (BETTERDISCORD_PROTOCOL) {
         process.nextTick(() => callback(BETTERDISCORD_PROTOCOL));
     }

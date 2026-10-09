@@ -1,13 +1,14 @@
 import type AddonManager from "@modules/addonmanager";
+import type {Addon} from "@typed/addon";
 
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are available on {@link BdApi}.
  */
-class AddonAPI {
-    #manager: AddonManager;
+class AddonAPI<T extends Addon> {
+    #manager: AddonManager<T>;
 
     /** @ignore */
-    constructor(manager: AddonManager) {this.#manager = manager;}
+    constructor(manager: AddonManager<T>) {this.#manager = manager;}
 
     /**
      * The path to the addon folder.

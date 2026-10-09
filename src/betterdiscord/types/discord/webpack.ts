@@ -6,7 +6,7 @@ export interface Require {
     e(id: PropertyKey): Promise<unknown>;
     l(url: string, onLoad: (event: Event) => void, key: string, id: string): void;
     p: string,
-    u: (id: string) => string
+    u: (id: string) => string;
 }
 
 export interface Module<T extends any = any> {
@@ -15,6 +15,11 @@ export interface Module<T extends any = any> {
     declarations: Record<string, any>;
     loaded: boolean;
 }
+
+export type ModuleWithKey<T extends any = any> = [
+    module: {[key: string]: T;},
+    key: string
+];
 
 export type RawModule = ((module: Module, exports: object, require: Require) => void) & {
     // BD specific properties
@@ -46,6 +51,12 @@ export type Options = {
     cacheId?: string | null;
     /** A filter to run on the found module's declarations, with the query instead returning the first matching declaration */
     declarationFilter?: ExportedOnlyFilter;
+    /** If set to true will return an array containing the module and the key of the thing matching the filter on it */
+    withKey?: boolean;
+    /** A mapper to transform the matched module's exports */
+    map?: Record<string, ExportedOnlyFilter>;
+    /** Whether the mapper should apply to the module's declarations instead of exports */
+    mapDeclarations?: boolean;
 };
 
 export type LazyOptions = Options & {
@@ -72,11 +83,7 @@ export type BulkQueries = Options & {
     /** The filter to use to find the module */
     filter: ModuleFilter,
     /** Whether an array of all matching modules should be returned */
-    all?: boolean,
-    /** A mapper to transform the matched module's exports */
-    map?: Record<string, ExportedOnlyFilter>;
-    /** Whether the mapper should apply to the module's declarations instead of exports */
-    mapDeclarations?: boolean;
+    all?: boolean;
 };
 
 export type WithKeyOptions = Options & {

@@ -259,7 +259,7 @@ Object.defineProperty(global, "appSettings", {
             setting.set("MIN_HEIGHT", 0);
         }
         else {
-            setting.set("MIN_WIDTH", 940);
+            setting.set("MIN_WIDTH", 800);
             setting.set("MIN_HEIGHT", 500);
         }
 

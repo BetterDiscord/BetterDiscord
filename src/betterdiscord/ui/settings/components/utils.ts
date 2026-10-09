@@ -28,7 +28,7 @@ export function useItemProps<T, V extends any = T>(props: BaseSettingProps<T>, c
     const [original] = useState(() => (ctx.fail ? usesDefaultValue ? props.defaultValue : props.value : ctx.value) as T);
 
     const change = useCallbackRef<HandledValue<T, V>["setState"]>((value, stateOnly) => {
-        if (ctx.disabled || props.disabled) return;
+        if (ctx.fail ? props.disabled : ctx.disabled) return;
 
         const out = convertValue(value, ctx.fail ? (usesDefaultValue ? internalState : props.value) as T : ctx.value);
 

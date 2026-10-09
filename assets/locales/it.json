@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Rimuovi dimensione minima",
-                    "note": "Rimuove la dimensione minima forzata della finestra di Discord di 940x500."
+                    "note": "Rimuove la dimensione minima forzata della finestra di Discord di 800x500."
                 },
                 "name": "Preferenze Finestra",
                 "transparency": {

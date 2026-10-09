@@ -26,7 +26,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "最小サイズ削除",
-                    "note": "Discordの最小ウィンドウサイズである940x500を強制的に解除します。"
+                    "note": "Discordの最小ウィンドウサイズである800x500を強制的に解除します。"
                 },
                 "name": "ウィンドウ設定",
                 "transparency": {
