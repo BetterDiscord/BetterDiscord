@@ -608,7 +608,7 @@ function useCollectionMenu(collection: SettingsCollection) {
 }
 
 function useAddonMenu(manager: AddonManager) {
-    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
+    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
 
     const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
         <ContextMenu.CheckboxItem
@@ -629,10 +629,9 @@ function useAddonMenu(manager: AddonManager) {
                 }
 
                 const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-                const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
 
                 if (hasSettings) {
-                    Modals.showAddonSettingsModal(name, getSettings());
+                    Modals.showAddonSettingsModal(name, (addon as Plugin).instance.getSettingsPanel!());
                 }
                 else {
                     toasts.warning(t("Addons.noSettings", {name}));
