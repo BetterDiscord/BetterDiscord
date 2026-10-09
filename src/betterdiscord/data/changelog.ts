@@ -8,46 +8,38 @@ export default {
     // https://youtu.be/BZq1eb9d0HI?si=67V2eArlF4atnGnz
     video: "https://www.youtube.com/embed/Qv1HUqqUgkg??si=67V2eArlF4atnGnz&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
-    blurb: "New Injection Style and Bug fixes!",
+    blurb: "Bug fixes and changes",
     changes: [
         {
-            type: "improved",
-            title: "New Injection Style",
+            type: "added",
+            title: "New settings",
             items: [
-                "Windows and Linux users should not have to ever re-inject BetterDiscord",
-                "macOS users will have to re-inject BetterDiscord less frequently"
+                "Rounded corners – Whether a frameless window should have rounded corners",
+                "Accept First Mouse Click – Whether clicking an inactive window will also click through to the web contents",
+                "Vibrancy – Add a type of vibrancy effect to the window",
+                "Visual Effect State – Specify how the material appearance should reflect window activity state",
+                "Background Material – Set the window's system-drawn background material"
             ]
         },
         {
-            type: "fixed",
-            title: "Fixes",
+            type: "progress",
+            title: "Removed settings",
             items: [
-                "Discord Activities are fixed",
-                "BetterDiscord's location in settings is now fixed",
-                "Plugin settings are now fixed"
-            ]
-        },
-        {
-            type: "improved",
-            title: "QoL",
-            items: [
-                "The Custom CSS editor now fills the settings page",
-                "The floating and popout editors have received additional features",
-                "The addon store and addon updater now share the same backend"
-            ]
-        },
-        {
-            type: "improved",
-            title: "Disabled Plugins Stay Disabled",
-            items: [
-                "Plugins never run unless enabled"
+                "Recovery – Want it to always be on for fixing errors",
+                "In App Traffic Lights – No longer possible",
+                "Addon Store – Want it to be a more core feature"
             ]
         },
         {
             type: "added",
-            title: "For Developers",
+            title: "Performance Increase",
+            items: ["Removed a slow Discord CSS selector"]
+        },
+        {
+            type: "fixed",
+            title: "Reinjection",
             items: [
-                "BetterDiscord now has official types [@betterdiscord/types](https://www.npmjs.com/package/@betterdiscord/types)"
+                "Fixed BetterDiscord reinjection issue on windows and linux"
             ]
         }
     ]

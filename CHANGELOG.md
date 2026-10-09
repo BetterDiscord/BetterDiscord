@@ -2,6 +2,42 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+### 1.14.2
+
+### Added
+- Add render api for notifications
+- Context menu types
+- Modal component
+- Exposed Checkbox component
+- Added new settings
+    - roundedCorners - setting to remove the rounded corners on linux and windows
+    - acceptFirstMouse - macOS specific behavior to allow the app to take first click
+    - vibrancy - macOS background materiel
+    - visualEffectState - set the effect state for macOS
+    - backgroundMaterial - windows feature to set the background material
+- withKey/map webpack options
+- A performance builtin to remove a very slow selector
+
+
+### Removed
+- Removed load, getName, getVersion, getAuthor, getDescription from the plugin apis
+- Removed settings
+    - recovery - no reason to disable it
+    - inAppTrafficLights - not possible in the client anymore
+    - bdAddonStore - can no longer disable the addon store
+
+### Changed
+- Changed notifications to not require id
+- Deprecated getWithKey and getMangled/getMangledProxy from the plugin webpack space
+
+### Fixed
+- Fixed enableWith having issue in BD core settings
+- Fixed number input bug with min
+- Fixed the reinject from not reinjecting sometimes (does fully break openasar)
+- Fixed remove style
+- Fixed context menu patching
+- Fixed some internal css selectors that are slow
+
 ### 1.14.1
 
 ### Added
