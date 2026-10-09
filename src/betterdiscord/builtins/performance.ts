@@ -25,9 +25,6 @@ export default new class Performance extends Builtin {
                 this.observer?.disconnect();
                 this.observer = undefined;
 
-                console.log(rule);
-
-
                 break;
             }
         }
