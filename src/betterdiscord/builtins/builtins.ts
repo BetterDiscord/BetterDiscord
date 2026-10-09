@@ -23,3 +23,5 @@ export {default as WindowPrefs} from "./window/transparency";
 export {default as RemoveMinimumSize} from "./window/removeminimumsize";
 export {default as NativeFrame} from "./window/nativeframe";
 export {default as ExtraWindowHandlers} from "./window/handler";
+
+export {default as Performance} from "./performance";
