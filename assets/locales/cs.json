@@ -1,7 +1,7 @@
 {
     "Panels": {
         "plugins": "Pluginy",
-        "themes": "Témata",
+        "themes": "Motivy",
         "customcss": "Vlastní CSS",
         "updates": "Aktualizace"
     },
@@ -11,7 +11,7 @@
             "general": {
                 "name": "Obecné",
                 "voiceDisconnect": {
-                    "name": "Odpojení z hlas. kanálu",
+                    "name": "Odpojení z hlasového kanálu",
                     "note": "Odpojit z hlasového kanálu při zavření Discordu"
                 },
                 "showToasts": {
@@ -20,7 +20,11 @@
                 },
                 "mediaKeys": {
                     "name": "Zakázat klávesy médií",
-                    "note": "Zabrání Discordu přivlastnění kláves médií při přehrávání videa."
+                    "note": "Zabrání Discordu přivlastnit si klávesy médií při přehrávání videí."
+                },
+                "bdContextMenu": {
+                    "name": "Kontextová nabídka nastavení",
+                    "note": "Přidá sekci BetterDiscord do kontextové nabídky nastavení."
                 }
             },
             "window": {
@@ -42,11 +46,11 @@
                 "name": "Správce doplňků",
                 "addonErrors": {
                     "name": "Zobrazit chyby doplňků",
-                    "note": "Zobrazí okno s chybami pluginů/témat"
+                    "note": "Zobrazí okno s chybami pluginů/motivů"
                 },
                 "editAction": {
-                    "name": "Upravit akci",
-                    "note": "Kde se objeví doplňky a témata při úpravě",
+                    "name": "Způsob upravování",
+                    "note": "Kde se objeví doplňky a motivy při úpravě",
                     "options": {
                         "detached": "Oddělené okno",
                         "system": "Systémový editor"
@@ -97,7 +101,7 @@
                 },
                 "devToolsWarning": {
                     "name": "Zastavit varování DevTools",
-                    "note": "Zabrání Discordu vypisovat jeho \"Zadrž!\" zprávu"
+                    "note": "Zabrání Discordu vypisovat jeho zprávu „Zadrž!“"
                 },
                 "debugLogs": {
                     "name": "Ladicí protokoly",
@@ -105,7 +109,7 @@
                 },
                 "devTools": {
                     "name": "DevTools",
-                    "note": "Povolí přepnutí DevTools při stisku Ctrl+Shift+I"
+                    "note": "Povolí přepnutí DevTools při stisku Ctrl + Shift + I"
                 }
             },
             "editor": {
@@ -116,7 +120,7 @@
                 },
                 "fontSize": {
                     "name": "Velikost písma",
-                    "note": "Velikost písma (pt) k použití v editoru"
+                    "note": "Velikost písma (v bodech) k použití v editoru"
                 },
                 "minimap": {
                     "name": "Minimapa",
