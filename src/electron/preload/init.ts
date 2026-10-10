@@ -7,6 +7,13 @@ import * as IPCEvents from "@common/constants/ipcevents";
 export default function () {
     webFrame.top?.executeJavaScript(`(() => {${fs.readFileSync(path.join(__dirname, "earlyRenderer.js"), "utf8")}})()`).catch(() => {});
 
+    IPC.send = new Proxy(IPC.send, {
+        apply(target, thisArg, argArray) {
+            if (argArray[0] === "DISCORD_SETTINGS_UPDATE_BACKGROUND_COLOR") argArray[1] = "#00000000";
+            return Reflect.apply(target, thisArg, argArray);
+        },
+    });
+
     // Load Discord's original preload
     const preload = process.env.BD_DISCORD_PRELOAD;
     if (preload) {
