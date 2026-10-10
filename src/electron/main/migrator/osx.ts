@@ -53,18 +53,19 @@ function patchStagedHost(Updater: any) {
 
                 const targetBundle = fileURLToPath(request.targetBundleURL);
                 const installed = request.useUpdateBundleName ? path.join(path.dirname(targetBundle), path.basename(stagedApp)) : targetBundle;
-                const version = JSON.parse(fs.readFileSync(path.join(stagedApp, "Contents", "Resources", "build_info.json"), "utf8")).version as string;
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
+                const buildinfo = require(path.join(stagedApp, "Contents", "Resources", "build_info.json"));
 
                 const asarpath = thisArg._isoa ? retainOpenAsar() : "no";
 
-                log(`ShipIt will install ${version} from ${stagedApp} to ${installed}`);
+                log(`ShipIt will install ${buildinfo.version} from ${stagedApp} to ${installed}`);
 
                 spawn("/bin/sh", [
                     "-c", migrateScript,
                     "sh",
                     path.join(installed, "Contents", "Resources"),
-                    version,
-                    path.join(tmpdir(), "betterdiscord-migrate.lock"),
+                    buildinfo.version,
+                    path.join(tmpdir(), `betterdiscord-migrate-${buildinfo.releaseChannel}.lock`),
                     hostIndex,
                     hostPackage,
                     installed,
