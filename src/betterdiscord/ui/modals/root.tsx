@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import React, {type PropsWithChildren} from "react";
 import DiscordModules from "@modules/discordmodules";
-import {getByKeys, getModule} from "@webpack";
-
+import {Filters, getByKeys, getProxy} from "@webpack";
 
 // TODO: rewrite these types properly
 const Anims: any = getByKeys(["Easing"], {firstId: 615300, cacheId: "core-modalroot-anims"});
@@ -20,12 +19,14 @@ export const ModalStyles = Object.freeze({
     CUSTOM: ""
 });
 
-
-const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {
-    searchExports: true,
-    firstId: 305866,
-    cacheId: "core-modalroot-focuslock"
-}) ?? React.Fragment;
+const ReactFocusRings = getProxy<typeof import("react-focus-rings")>(Filters.bySource("focus-rings-ring"), {
+    cacheId: "core-react-focus-rings",
+    map: {
+        FocusRing: Filters.byStrings("FocusRing was given a focusTarget"),
+        FocusRingScope: Filters.byStrings(".current),", ".Provider,{value:", ".current.setThemeOptions"),
+        FocusRingManager: x => typeof x === "object"
+    }
+});
 
 type RootProps = PropsWithChildren<{
     className?: string;
@@ -35,6 +36,7 @@ type RootProps = PropsWithChildren<{
 }>;
 
 export default function ModalRoot({className, transitionState, children, size = ModalSizes.DYNAMIC, style = ModalStyles.CUSTOM}: RootProps) {
+    const ref = React.useRef<HTMLDivElement>(null);
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
 
     const preferences: any = React.useContext(DiscordModules.AccessibilityContext ?? {});
@@ -50,14 +52,17 @@ export default function ModalRoot({className, transitionState, children, size = 
         }
     });
 
-    return <FocusLock disableTrack={true}>
-        <DiscordModules.ReactSpring.animated.div
-            className={clsx("bd-modal-root", size, className, style)}
-            style={springStyles}
-        >
-            {children}
-        </DiscordModules.ReactSpring.animated.div>
-    </FocusLock>;
+    return (
+        <ReactFocusRings.FocusRingScope containerRef={ref}>
+            <DiscordModules.ReactSpring.animated.div
+                ref={ref}
+                className={clsx("bd-modal-root", size, className, style)}
+                style={springStyles}
+            >
+                {children}
+            </DiscordModules.ReactSpring.animated.div>
+        </ReactFocusRings.FocusRingScope>
+    );
 }
 
 ModalRoot.Sizes = ModalSizes;
