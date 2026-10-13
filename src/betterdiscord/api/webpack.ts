@@ -68,6 +68,9 @@ class Webpack {
         /** Generates a function that filters by a specific internal Store name. */
         byStoreName(name: string) {return Filters.byStoreName(name);},
 
+        /** Generates a function that filters by a specific properties of a destructured declare */
+        byDestructure(...properties: string[]) {return Filters.byDestructure(...properties);},
+
         /** Generates a combined function from a list of filters. */
         combine(...filters: ModuleFilter[]): ModuleFilter {return Filters.combine(...filters);},
 
