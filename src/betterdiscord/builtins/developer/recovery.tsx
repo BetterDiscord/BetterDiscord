@@ -4,7 +4,6 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
-import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";
 import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
@@ -216,7 +215,6 @@ export default new class Recovery extends Builtin {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
-            if (!Settings.get(this.collection, this.category, this.id)) return;
             const buttons = retValue?.props?.action?.props;
 
             if (!buttons) return;
