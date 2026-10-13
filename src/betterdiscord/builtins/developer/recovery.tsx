@@ -216,7 +216,6 @@ export default new class Recovery extends Builtin {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
-            if (!Settings.get(this.collection, this.category, this.id)) return;
             const buttons = retValue?.props?.action?.props;
 
             if (!buttons) return;
