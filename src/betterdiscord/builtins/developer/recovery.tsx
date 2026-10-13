@@ -4,7 +4,6 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
-import Settings from "@stores/settings";
 import Toasts from "@stores/toasts";
 import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
