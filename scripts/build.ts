@@ -49,7 +49,8 @@ function buildOptions() {
             ".js": "jsx",
             ".css": "css",
             ".html": "copy",
-            ".svg": "text"
+            ".svg": "text",
+            ".sh": "text"
         },
         plugins: [styleLoader() as unknown as esbuild.Plugin],
         logLevel: "info",

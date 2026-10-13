@@ -12,3 +12,8 @@ declare module "*.svg" {
     const value: string;
     export default value;
 }
+
+declare module "*.sh" {
+    const value: string;
+    export default value;
+}
