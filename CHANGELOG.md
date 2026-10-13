@@ -2,6 +2,21 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+### 1.14.3
+
+### Added
+- Reinjection on macOS
+- Add `byDestructure` webpack filter
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed inputs in modals not working
+- Fixed recovery
+- Fixed transparency bug when switching accounts
+
 ### 1.14.2
 
 ### Added
