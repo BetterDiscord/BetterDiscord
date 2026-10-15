@@ -95,13 +95,11 @@ function getPluginInfo(pluginName: string): PluginInfo | null {
     }
 }
 
-function purgeChildren(ret)
-{
+function purgeChildren(ret: { props: { action: { props: { children: never[]; }; }; }; }) {
     ret.props.action.props.children = [];
 }
 
-function ErrorButtons({instance}: {instance: ErrorBoundary})
-{
+function ErrorButtons({instance}: {instance: ErrorBoundary}) {
     const recover = React.useCallback(() => {
         attemptRecovery().then((_) => {
             instance.setState({info: null, error: null});
@@ -115,8 +113,7 @@ function ErrorButtons({instance}: {instance: ErrorBoundary})
     </Flex>;
 }
 
-function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, pluginInfo: PluginInfo | null, stack: React.ReactNode | null})
-{
+function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, pluginInfo: PluginInfo | null, stack: React.ReactNode | null}) {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
     const timeout = React.useRef<number>(0);
@@ -183,46 +180,77 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
             window.clearTimeout(timeout.current);
             timeout.current = window.setTimeout(() => setCopied(false), 2000);
         }
-        catch (error) {
-            Logger.error("Recovery", `Failed to copy error details: ${error}`);
+        catch (_error) {
+            Logger.error("Recovery", `Failed to copy error details: ${_error}`);
         }
     }, [instance, pluginInfo]);
 
-    return <div className={"bd-recovery-container"}>
-        <Flex className={"bd-recovery-header"}>
-            <div className={"bd-recovery-toggle"} aria-expanded={isExpanded} onClick={() => setIsExpanded(v => !v)}>
-                <span>{isExpanded ? "Hide Error Details" : "Show Error Details"}</span>
-                {isExpanded ? <ChevronDown size={16}/> : <ChevronRightIcon size={16}/>}
-            </div>
-            <Button color={"bd-button-color-white"} onClick={copy}>
-                <Flex align={Flex.Align.CENTER} style={{gap: "6px"}}>
-                    {copied ? <Check size={16}/> : <Copy size={16}/>}
-                    <span>{copied ? "Copied" : "Copy"}</span>
-                </Flex>
-            </Button>
-        </Flex>
+    return (
+        <DiscordModules.AccessibilityContext.Provider value={{reducedMotion: {enabled: true}}}>
+            <DiscordModules.LayerProvider.AppLayerProvider>
+                <div className={"bd-recovery-container"}>
+                    <Flex className={"bd-recovery-header"}>
+                        <div
+                            className={"bd-recovery-toggle"}
+                            aria-expanded={isExpanded}
+                            onClick={() => setIsExpanded(v => !v)}
+                        >
+                            <span>{isExpanded ? "Hide Error Details" : "Show Error Details"}</span>
+                            {isExpanded ? <ChevronDown size={16}/> : <ChevronRightIcon size={16}/>}
+                        </div>
+                        <Button color={"bd-button-color-white"} onClick={copy}>
+                            <Flex align={Flex.Align.CENTER} style={{gap: "6px"}}>
+                                {copied ? <Check size={16}/> : <Copy size={16}/>}
+                                <span>{copied ? "Copied" : "Copy"}</span>
+                            </Flex>
+                        </Button>
+                    </Flex>
 
-        {!!pluginInfo && <div className={"bd-recovery-suspect"}>
-            <span className={"bd-suspected-label"}>{t("Recovery.suspect")}</span>
-            <span className={"bd-suspected-plugin"}>
-                <MessageCircleWarningIcon size={14}/>
-                {pluginInfo.name}
-                <span className={"bd-suspected-version"}>v{pluginInfo.version}</span>
-            </span>
-            <div className={"bd-recovery-links"}>
-                {!!pluginInfo.githubUrl && <GithubIcon className={"bd-recovery-link"} onClick={openReport} size={24}/>}
-                {!!pluginInfo.invite && <Server className={"bd-recovery-link"} onClick={() => {
-                    recover();
-                    Modals.showGuildJoinModal(pluginInfo?.invite as string);
-                }} size={24}/>}
-            </div>
-        </div>}
+                    {!!pluginInfo && (
+                        <div className={"bd-recovery-suspect"}>
+                            <span className={"bd-suspected-label"}>{t("Recovery.suspect")}</span>
+                            <span className={"bd-suspected-plugin"}>
+                            <MessageCircleWarningIcon size={14}/>
+                                    {pluginInfo.name}
+                                    <span className={"bd-suspected-version"}>v{pluginInfo.version}</span>
+                            </span>
+                            <div className={"bd-recovery-links"}>
+                                {!!pluginInfo.githubUrl && (
+                                    <DiscordModules.Tooltip text={t("Recovery.report")}>
+                                        {props => (
+                                            <GithubIcon {...props} className={"bd-recovery-link"} onClick={openReport} size={24}/>
+                                        )}
+                                    </DiscordModules.Tooltip>
+                                )}
+                                {!!pluginInfo.invite && (
+                                    <DiscordModules.Tooltip text={t("Recovery.joinSupport")}>
+                                        {props => (
+                                            <Server
+                                                {...props}
+                                                className={"bd-recovery-link"}
+                                                onClick={() => {
+                                                    recover();
+                                                    Modals.showGuildJoinModal(pluginInfo.invite as string);
+                                                }}
+                                                size={24}
+                                            />
+                                        )}
+                                    </DiscordModules.Tooltip>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
-
-        {isExpanded && <div className={"bd-recovery-details"}>
-            <div className={"bd-recovery-stack"}>{stack}</div>
-        </div>}
-    </div>;
+                    {isExpanded && <div className={"bd-recovery-details"}>
+                        <div className={"bd-recovery-stack bd-scroller-thin"}>{stack}</div>
+                    </div>}
+                </div>
+                {/* This is literally so I can use discords tooltips lmfao */}
+                {/* @ts-expect-error true */}
+                <DiscordModules.LayerProvider.AppLayerContainer/>
+            </DiscordModules.LayerProvider.AppLayerProvider>
+        </DiscordModules.AccessibilityContext.Provider>
+    );
 }
 
 
