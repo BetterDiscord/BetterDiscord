@@ -96,7 +96,8 @@ function getPluginInfo(pluginName: string): PluginInfo | null {
 }
 
 function purgeChildren(ret: { props: { action: { props: { children: never[]; }; }; }; }) {
-    ret.props.action.props.children = [];
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    ret.props?.action?.props?.children && (ret.props.action.props.children = []);
 }
 
 function ErrorButtons({instance}: {instance: ErrorBoundary}) {
@@ -121,26 +122,6 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
     const githubUrl = pluginInfo?.githubUrl ?? null;
 
     React.useEffect(() => () => window.clearTimeout(timeout.current), []);
-
-    React.useEffect(() => {
-        if (pluginInfo) {
-            pluginmanager.disableAddon(pluginInfo.name);
-
-            Notifications.show({
-                title: "BetterDiscord Recovery",
-                content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
-                type: "warning",
-                duration: Infinity,
-                actions: [
-                    ...(config.isCanary ? [{
-                        label: "Re-enable",
-                        onClick: () => pluginmanager.enableAddon(pluginInfo.name),
-                        dontClose: true,
-                    }] : [])
-                ]
-            });
-        }
-    }, [pluginInfo]);
 
     const openReport = React.useCallback(() => {
         if (!githubUrl) return;
@@ -263,8 +244,33 @@ export default new class Recovery extends Builtin {
     patchErrorBoundry() {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
+        this.after(mod?.prototype, "componentDidCatch", (_instance, [error]) => {
+            const stack = error?.stack;
+            const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
+            const pluginInfo = match?.[2] ? getPluginInfo(`${match[2]}.plugin.js`) : null;
+            if (!pluginInfo) return;
+
+            pluginmanager.disableAddon(pluginInfo.name);
+
+            Notifications.show({
+                title: "BetterDiscord Recovery",
+                content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
+                type: "warning",
+                duration: Infinity,
+                actions: [
+                    ...(config.isCanary ? [{
+                        label: "Re-enable",
+                        onClick: () => pluginmanager.enableAddon(pluginInfo.name),
+                        dontClose: true,
+                    }] : [])
+                ]
+            });
+        });
+
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
             purgeChildren(retValue);
+
+            if (!retValue.props?.action?.props) return;
 
             const errorInstance = instance as ErrorBoundary;
 
