@@ -14,6 +14,7 @@ import Notifications from "@stores/notifications";
 import Flex from "@ui/base/flex.tsx";
 import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWarningIcon, Server} from "lucide-react";
 import config from "@stores/config.ts";
+import {Logo} from "@ui/logo.tsx";
 
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
@@ -256,6 +257,7 @@ export default new class Recovery extends Builtin {
                 title: "BetterDiscord Recovery",
                 content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
                 type: "warning",
+                icon: () => <Logo size={16} accent />,
                 duration: Infinity,
                 actions: [
                     ...(config.isCanary ? [{
@@ -273,9 +275,7 @@ export default new class Recovery extends Builtin {
             if (!retValue.props?.action?.props) return;
 
             const errorInstance = instance as ErrorBoundary;
-
             const errorStack = errorInstance.state;
-
             const parsedError = errorStack ? SimpleMarkdownExt.parseToReact(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
             const stack = errorStack?.error?.stack;
