@@ -1,56 +1,60 @@
-import Button, {ButtonColors} from "@ui/base/button";
+import Button from "@ui/base/button";
 import React from "react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
-import Toasts from "@stores/toasts";
 import pluginmanager from "@modules/pluginmanager";
-import IPC from "@modules/ipc";
 import Modals from "@ui/modals";
-import {getByPrototypes, getByStrings} from "@webpack";
-import config from "@stores/config";
-import {Logo} from "@ui/logo";
-import clsx from "clsx";
+import {getByPrototypes, getProxy} from "@webpack";
+import * as Webpack from "@webpack";
 import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
 import SimpleMarkdownExt from "@structs/markdown";
 import Notifications from "@stores/notifications";
+import Flex from "@ui/base/flex.tsx";
+import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWarningIcon, Server} from "lucide-react";
+import config from "@stores/config.ts";
 
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
-// TODO: arven if you get a chance
+interface PluginInfo {
+    name: string;
+    githubUrl: string | null;
+    invite: string | null;
+    version: string;
+}
+
+const transitionTo = getProxy<TransitionTo>(Webpack.Filters.byStrings("transitionTo - Transitioning to"), {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
+
+const recoverySteps = [
+    {
+        action: () => DiscordModules.Dispatcher?.dispatch?.({type: "LAYER_POP_ALL"}),
+        errorMessage: "Failed to pop all layers"
+    },
+    {
+        action: () => DiscordModules.Dispatcher?.dispatch?.({type: "MODAL_POP_ALL"}),
+        errorMessage: "Failed to pop all modals"
+    },
+    {
+        action: () => DiscordModules.Dispatcher?.dispatch({type: "CONTEXT_MENU_CLOSE"}),
+        errorMessage: "Failed to close context menus"
+    },
+    {
+        action: () => Modals.ModalActions?.closeAllModals?.(),
+        errorMessage: "Failed to close all modals"
+    },
+    {
+        action: () => transitionTo?.("/channels/@me"),
+        errorMessage: "Failed to route to main channel"
+    },
+];
+
 async function attemptRecovery() {
-    const transitionTo = getByStrings<TransitionTo>(["transitionTo - Transitioning to"], {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
-
-    const recoverySteps = [
-        {
-            action: () => DiscordModules.Dispatcher?.dispatch?.({type: "LAYER_POP_ALL"}),
-            errorMessage: "Failed to pop all layers"
-        },
-        {
-            action: () => DiscordModules.Dispatcher?.dispatch?.({type: "MODAL_POP_ALL"}),
-            errorMessage: "Failed to pop all modals"
-        },
-        {
-            action: () => DiscordModules.Dispatcher?.dispatch({type: "CONTEXT_MENU_CLOSE"}),
-            errorMessage: "Failed to close context menus"
-        },
-        {
-            action: () => transitionTo?.("/channels/@me"),
-            errorMessage: "Failed to route to main channel"
-        },
-        {
-            action: () => Modals.ModalActions?.closeAllModals?.(),
-            errorMessage: "Failed to close all modals"
-        }
-    ];
-
     let allActionsCompleted = true;
 
     for (const {action, errorMessage} of recoverySteps) {
         try {
-            const result = action();
-            await result;
+            await action();
         }
         catch (error) {
             Logger.error("Recovery", `${errorMessage}:, ${error}`);
@@ -73,204 +77,185 @@ const parseGithubUrl = (url: string) => {
     }
 };
 
-interface PluginInfo {
-    name: string;
-    githubUrl: string | null;
-    invite: string | null;
-    version: string;
+function getPluginInfo(pluginName: string): PluginInfo | null {
+    try {
+        const plugin = pluginmanager.resolveAddon(pluginName);
+        if (!plugin) return null;
+
+        return {
+            name: plugin.name ?? pluginName,
+            githubUrl: plugin.source ? parseGithubUrl(plugin.source) : null,
+            invite: plugin.invite ?? null,
+            version: plugin.version ?? "0.0.0"
+        };
+    }
+    catch (error) {
+        Logger.error("Recovery", `Failed to get plugin info: ${error}`);
+        return null;
+    }
 }
 
-interface ErrorDetailsProps {
-    componentStack: any;
-    pluginInfo: PluginInfo | null;
-    stack?: string;
-    instance: any;
+function purgeChildren(ret)
+{
+    ret.props.action.props.children = [];
 }
 
-const ErrorDetails = ({componentStack, pluginInfo, stack, instance}: ErrorDetailsProps) => {
+function ErrorButtons({instance}: {instance: ErrorBoundary})
+{
+    const recover = React.useCallback(() => {
+        attemptRecovery().then((_) => {
+            instance.setState({info: null, error: null});
+        });
+    }, [instance]);
+
+    return <Flex align={Flex.Align.CENTER} style={{gap: "8px"}}>
+        <Button onClick={() => window.location.reload()} color={"bd-button-color-brand"}>{t("Addons.reload")}</Button>
+        <Button onClick={recover} color={"bd-button-color-green"}>{t("Recovery.button")}</Button>
+        <Button color={"bd-button-color-red"}>{t("Recovery.safeMode")}</Button>
+    </Flex>;
+}
+
+function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, pluginInfo: PluginInfo | null, stack: React.ReactNode | null})
+{
     const [isExpanded, setIsExpanded] = React.useState(false);
-    const [height, setHeight] = React.useState(0);
-    const contentRef = React.useRef(null);
+    const [copied, setCopied] = React.useState(false);
+    const timeout = React.useRef<number>(0);
+
+    const githubUrl = pluginInfo?.githubUrl ?? null;
+
+    React.useEffect(() => () => window.clearTimeout(timeout.current), []);
 
     React.useEffect(() => {
-        const updateHeight = () => {
-            if (isExpanded) {
-                const maxHeight = Math.min(0.6 * window.innerHeight, 534);
-                setHeight(maxHeight);
-            }
-            else {
-                setHeight(0);
-            }
-        };
+        if (pluginInfo) {
+            pluginmanager.disableAddon(pluginInfo.name);
 
-        updateHeight();
-        window.addEventListener("resize", updateHeight);
-        return () => window.removeEventListener("resize", updateHeight);
-    }, [isExpanded]);
-
-    const openGithubIssue = () => {
-        if (pluginInfo?.githubUrl) {
-            const baseRepoUrl = parseGithubUrl(pluginInfo.githubUrl);
-            if (!baseRepoUrl) return;
-
-            const issueTitle = encodeURIComponent(`[Bug Report] Plugin Crash - ${pluginInfo?.name} v${pluginInfo?.version}`);
-            const issueBody = encodeURIComponent(
-                `### Error Details\n\`\`\`js\n${stack ?? "Failed to get stack"}\n\`\`\`\n - Generated by BD Recovery Builtin.` + "\n\n### Steps to Reproduce\n1.\n2.\n3.\n\n" + "### Additional Context\n"
-            );
-            window.open(`${baseRepoUrl}/issues/new?title=${issueTitle}&body=${issueBody}`, "_blank");
+            Notifications.show({
+                title: "BetterDiscord Recovery",
+                content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
+                type: "warning",
+                duration: Infinity,
+                actions: [
+                    ...(config.isCanary ? [{
+                        label: "Re-enable",
+                        onClick: () => pluginmanager.enableAddon(pluginInfo.name),
+                        dontClose: true,
+                    }] : [])
+                ]
+            });
         }
-    };
+    }, [pluginInfo]);
 
-    const openDiscordSupport = async () => {
-        if (pluginInfo?.invite) {
-            const recoverySuccessful = await attemptRecovery();
-            if (recoverySuccessful) {
-                instance.setState({info: null, error: null});
-                if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
-            }
-            else {
-                Toasts.show(t("Toasts.recoveryFailed"));
-            }
+    const openReport = React.useCallback(() => {
+        if (!githubUrl) return;
+
+        const name = pluginInfo?.name ?? "Unknown Plugin";
+        const version = pluginInfo?.version ?? "unknown";
+        const error = instance.state?.error;
+
+        const issueTitle = encodeURIComponent(`[Bug Report] Plugin Crash - ${name} v${version}`);
+        const issueBody = encodeURIComponent(
+            `### Error Details\n\`\`\`js\n${error?.stack ?? error ?? "Failed to get stack"}\n\`\`\`\n - Generated by BD Recovery Builtin.` + "\n\n### Steps to Reproduce\n1.\n2.\n3.\n\n" + "### Additional Context\n"
+        );
+        window.open(`${githubUrl}/issues/new?title=${issueTitle}&body=${issueBody}`, "_blank", "noopener,noreferrer");
+    }, [githubUrl, pluginInfo?.name, pluginInfo?.version, instance.state?.error]);
+
+    const recover = React.useCallback(() => {
+        attemptRecovery().then((_) => {
+            instance.setState({info: null, error: null});
+        });
+    }, [instance]);
+
+    const copy = React.useCallback(() => {
+        const {error, info} = (instance.state ?? {}) as any;
+
+        const text = [
+            pluginInfo && `Suspected addon: ${pluginInfo.name} v${pluginInfo.version}`,
+            error?.stack ?? String(error ?? "No stack available"),
+            info?.componentStack && `Component stack:${info.componentStack}`
+        ].filter(Boolean).join("\n\n");
+
+        try {
+            const nativeCopy = (window as any).DiscordNative?.clipboard?.copy;
+            if (nativeCopy) nativeCopy(text);
+            else navigator.clipboard.writeText(text);
+
+            setCopied(true);
+            window.clearTimeout(timeout.current);
+            timeout.current = window.setTimeout(() => setCopied(false), 2000);
         }
-    };
+        catch (error) {
+            Logger.error("Recovery", `Failed to copy error details: ${error}`);
+        }
+    }, [instance, pluginInfo]);
 
-    // TODO: move UI to ui, keep separate from logic
-    return (
-        <div className="bd-error-container">
-            <div className="bd-error-toggle-wrapper">
-                <Button
-                    className={`bd-error-toggle ${isExpanded ? "expanded" : ""}`}
-                    onClick={() => setIsExpanded(!isExpanded)}
-                >
-                    {isExpanded ? "Hide Error Details ▼" : "Show Error Details ▶"}
-                </Button>
-                <div className="bd-error-actions">
-                    {pluginInfo?.githubUrl && (
-                        <Button
-                            className="bd-error-github"
-                            onClick={openGithubIssue}
-                            color={ButtonColors.YELLOW}
-                        >
-                            {t("Recovery.report")}
-                        </Button>
-                    )}
-                    {pluginInfo?.invite && (
-                        <Button
-                            className="bd-error-discord"
-                            onClick={openDiscordSupport}
-                        >
-                            {t("Addons.invite")}
-                        </Button>
-                    )}
-                    <Button
-                        className="bd-error-safe-mode"
-                        onClick={async () => {
-                            pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
-                            await IPC.relaunch();
-                        }}
-                        color={ButtonColors.RED}
-                    >
-                        {t("Recovery.safeMode")}
-                    </Button>
-                </div>
+    return <div className={"bd-recovery-container"}>
+        <Flex className={"bd-recovery-header"}>
+            <div className={"bd-recovery-toggle"} aria-expanded={isExpanded} onClick={() => setIsExpanded(v => !v)}>
+                <span>{isExpanded ? "Hide Error Details" : "Show Error Details"}</span>
+                {isExpanded ? <ChevronDown size={16}/> : <ChevronRightIcon size={16}/>}
             </div>
-            <div
-                className="bd-error-content-wrapper"
-                style={{height: `${height}px`, overflow: "hidden"}}
-            >
-                <div ref={contentRef} className="bd-error-content">
-                    {componentStack}
-                </div>
+            <Button color={"bd-button-color-white"} onClick={copy}>
+                <Flex align={Flex.Align.CENTER} style={{gap: "6px"}}>
+                    {copied ? <Check size={16}/> : <Copy size={16}/>}
+                    <span>{copied ? "Copied" : "Copy"}</span>
+                </Flex>
+            </Button>
+        </Flex>
+
+        {!!pluginInfo && <div className={"bd-recovery-suspect"}>
+            <span className={"bd-suspected-label"}>{t("Recovery.suspect")}</span>
+            <span className={"bd-suspected-plugin"}>
+                <MessageCircleWarningIcon size={14}/>
+                {pluginInfo.name}
+                <span className={"bd-suspected-version"}>v{pluginInfo.version}</span>
+            </span>
+            <div className={"bd-recovery-links"}>
+                {!!pluginInfo.githubUrl && <GithubIcon className={"bd-recovery-link"} onClick={openReport} size={24}/>}
+                {!!pluginInfo.invite && <Server className={"bd-recovery-link"} onClick={() => {
+                    recover();
+                    Modals.showGuildJoinModal(pluginInfo?.invite as string);
+                }} size={24}/>}
             </div>
-        </div>
-    );
-};
+        </div>}
+
+
+        {isExpanded && <div className={"bd-recovery-details"}>
+            <div className={"bd-recovery-stack"}>{stack}</div>
+        </div>}
+    </div>;
+}
+
 
 export default new class Recovery extends Builtin {
     initialize() {
         this.patchErrorBoundry();
-
         return super.initialize();
-    }
-
-    getPluginInfo(pluginName: string): PluginInfo | null {
-        try {
-            const plugin = pluginmanager.resolveAddon(pluginName);
-            if (!plugin) return null;
-
-            return {
-                name: plugin.name || pluginName,
-                githubUrl: plugin.source || null,
-                invite: plugin.invite || null,
-                version: plugin.version || `0.0.0`
-            };
-        }
-        catch (error) {
-            Logger.error("Recovery", `Failed to get plugin info: ${error}`);
-            return null;
-        }
     }
 
     patchErrorBoundry() {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
-            const buttons = retValue?.props?.action?.props;
+            purgeChildren(retValue);
 
-            if (!buttons) return;
+            const errorInstance = instance as ErrorBoundary;
 
-            const errorStack = (instance as ErrorBoundary).state;
+            const errorStack = errorInstance.state;
 
             const parsedError = errorStack ? SimpleMarkdownExt.parseToReact(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
-            const foundIssue = errorStack.error?.stack && TEST_PLUGIN_REGEX.exec(errorStack.error?.stack);
-            let pluginInfo = null;
+            const stack = errorStack?.error?.stack;
+            const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
+            const pluginInfo = match?.[2] ? getPluginInfo(`${match[2]}.plugin.js`) : null;
 
-            if (foundIssue) {
-                const pluginName = `${foundIssue[2]}.plugin.js`;
-                pluginInfo = this.getPluginInfo(pluginName);
-                pluginmanager.disableAddon(foundIssue[2]);
-                Notifications.show({
-                    id: "plugin-crash",
-                    title: t("Addons.disabled", {name: pluginName}),
-                    content: t("Modals.addonCrashed"),
-                    duration: Infinity,
-                    type: "info",
-                    icon: () => <Logo size={16} accent />,
-                    actions: [
-                        ...(config.isCanary ? [{
-                            label: "Re-enable",
-                            onClick: () => pluginmanager.enableAddon(foundIssue[2]),
-                            dontClose: true,
-                        }] : [])
-                    ]
-                });
-            }
-
-            buttons.className = clsx(buttons.className, "bd-recovery-buttons");
-            buttons.children.push(
-                <Button
-                    className="bd-button-recovery"
-                    onClick={async () => {
-                        const recoverySuccessful = await attemptRecovery();
-                        if (recoverySuccessful) {
-                            (instance as ErrorBoundary).setState({info: null, error: null});
-                        }
-                        else {
-                            Toasts.show(t("Toasts.recoveryFailed"));
-                        }
-                    }}
-                >
-                    {t("Recovery.button")}
-                </Button>
+            retValue.props.action.props.children.push(
+                <ErrorButtons instance={errorInstance}/>
             );
 
-            if (parsedError) {
-                retValue.props.action = [
-                    retValue?.props?.action,
-                    <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
-                ];
-            }
+            retValue.props.action = [
+                retValue.props.action,
+                <ErrorDetails stack={parsedError} pluginInfo={pluginInfo} instance={errorInstance}/>
+            ];
         });
     }
 };
