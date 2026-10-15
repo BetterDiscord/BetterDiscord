@@ -15,6 +15,7 @@ import Flex from "@ui/base/flex.tsx";
 import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWarningIcon, Server} from "lucide-react";
 import config from "@stores/config.ts";
 import {Logo} from "@ui/logo.tsx";
+import Ipc from "@modules/ipc.ts";
 
 const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
 
@@ -108,10 +109,14 @@ function ErrorButtons({instance}: {instance: ErrorBoundary}) {
         });
     }, [instance]);
 
+    const ipcLoad = React.useCallback(() => {
+        Ipc.relaunch();
+    }, []);
+
     return <Flex align={Flex.Align.CENTER} style={{gap: "8px"}}>
         <Button onClick={() => window.location.reload()} color={"bd-button-color-brand"}>{t("Addons.reload")}</Button>
         <Button onClick={recover} color={"bd-button-color-green"}>{t("Recovery.button")}</Button>
-        <Button color={"bd-button-color-red"}>{t("Recovery.safeMode")}</Button>
+        <Button onClick={ipcLoad} color={"bd-button-color-red"}>{t("Recovery.safeMode")}</Button>
     </Flex>;
 }
 
@@ -270,9 +275,9 @@ export default new class Recovery extends Builtin {
         });
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
-            purgeChildren(retValue);
-
             if (!retValue.props?.action?.props) return;
+
+            purgeChildren(retValue);
 
             const errorInstance = instance as ErrorBoundary;
             const errorStack = errorInstance.state;
