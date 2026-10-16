@@ -85,8 +85,15 @@ Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", (that, args, or
         return;
     }
 
-    if ((that as HTMLElement).closest(".monaco-editor")) {
+    const isMonacoClosest = (that as HTMLElement).closest(".monaco-editor");
+
+    if (isMonacoClosest) {
         shouldSkipNextFocus = true;
+    }
+
+    // swallow non-Monaco focus calls
+    if (!isMonacoClosest) {
+        return;
     }
 
     return original.apply(that, args);
