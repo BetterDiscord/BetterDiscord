@@ -110,6 +110,7 @@ function ErrorButtons({instance}: {instance: ErrorBoundary}) {
     }, [instance]);
 
     const ipcLoad = React.useCallback(() => {
+        pluginmanager.disableAllAddons();
         Ipc.relaunch();
     }, []);
 
