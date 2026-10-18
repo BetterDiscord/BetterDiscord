@@ -4,10 +4,9 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
-import pluginmanager from "@modules/pluginmanager";
+import PluginManager, {type Plugin} from "@modules/pluginmanager";
 import Modals from "@ui/modals";
-import {getByPrototypes, getProxy} from "@webpack";
-import * as Webpack from "@webpack";
+import {Filters, getByPrototypes, getBySource, getProxy} from "@webpack";
 import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
 import SimpleMarkdownExt from "@structs/markdown";
 import Notifications from "@stores/notifications";
@@ -16,8 +15,11 @@ import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWar
 import config from "@stores/config.ts";
 import {Logo} from "@ui/logo.tsx";
 import Ipc from "@modules/ipc.ts";
+import type {Webpack} from "@typed/discord";
+import type {Fiber} from "react-reconciler";
+import Patcher from "@modules/patcher";
 
-const TEST_PLUGIN_REGEX = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/;
+const TEST_PLUGIN_REGEX = /betterdiscord:\/\/plugins\/(.*?\.plugin\.js)/;
 
 interface PluginInfo {
     name: string;
@@ -26,7 +28,7 @@ interface PluginInfo {
     version: string;
 }
 
-const transitionTo = getProxy<TransitionTo>(Webpack.Filters.byStrings("transitionTo - Transitioning to"), {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
+const transitionTo = getProxy<TransitionTo>(Filters.byStrings("transitionTo - Transitioning to"), {searchExports: true, firstId: 976860, cacheId: "core-recovery-transitionTo"});
 
 const recoverySteps = [
     {
@@ -81,7 +83,7 @@ const parseGithubUrl = (url: string) => {
 
 function getPluginInfo(pluginName: string): PluginInfo | null {
     try {
-        const plugin = pluginmanager.resolveAddon(pluginName);
+        const plugin = PluginManager.resolveAddon(pluginName);
         if (!plugin) return null;
 
         return {
@@ -97,12 +99,12 @@ function getPluginInfo(pluginName: string): PluginInfo | null {
     }
 }
 
-function purgeChildren(ret: { props: { action: { props: { children: never[]; }; }; }; }) {
+function purgeChildren(ret: {props: {action: {props: {children: never[];};};};}) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     ret.props?.action?.props?.children && (ret.props.action.props.children = []);
 }
 
-function ErrorButtons({instance}: {instance: ErrorBoundary}) {
+function ErrorButtons({instance}: {instance: ErrorBoundary;}) {
     const recover = React.useCallback(() => {
         attemptRecovery().then((_) => {
             instance.setState({info: null, error: null});
@@ -110,7 +112,7 @@ function ErrorButtons({instance}: {instance: ErrorBoundary}) {
     }, [instance]);
 
     const ipcLoad = React.useCallback(() => {
-        pluginmanager.disableAllAddons();
+        PluginManager.disableAllAddons();
         Ipc.relaunch();
     }, []);
 
@@ -121,7 +123,7 @@ function ErrorButtons({instance}: {instance: ErrorBoundary}) {
     </Flex>;
 }
 
-function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, pluginInfo: PluginInfo | null, stack: React.ReactNode | null}) {
+function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, pluginInfo: PluginInfo | null, stack: React.ReactNode | null;}) {
     const [isExpanded, setIsExpanded] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
     const timeout = React.useRef<number>(0);
@@ -184,11 +186,11 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
                             onClick={() => setIsExpanded(v => !v)}
                         >
                             <span>{isExpanded ? "Hide Error Details" : "Show Error Details"}</span>
-                            {isExpanded ? <ChevronDown size={16}/> : <ChevronRightIcon size={16}/>}
+                            {isExpanded ? <ChevronDown size={16} /> : <ChevronRightIcon size={16} />}
                         </div>
                         <Button color={"bd-button-color-white"} onClick={copy}>
                             <Flex align={Flex.Align.CENTER} style={{gap: "6px"}}>
-                                {copied ? <Check size={16}/> : <Copy size={16}/>}
+                                {copied ? <Check size={16} /> : <Copy size={16} />}
                                 <span>{copied ? "Copied" : "Copy"}</span>
                             </Flex>
                         </Button>
@@ -198,15 +200,15 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
                         <div className={"bd-recovery-suspect"}>
                             <span className={"bd-suspected-label"}>{t("Recovery.suspect")}</span>
                             <span className={"bd-suspected-plugin"}>
-                            <MessageCircleWarningIcon size={14}/>
-                                    {pluginInfo.name}
-                                    <span className={"bd-suspected-version"}>v{pluginInfo.version}</span>
+                                <MessageCircleWarningIcon size={14} />
+                                {pluginInfo.name}
+                                <span className={"bd-suspected-version"}>v{pluginInfo.version}</span>
                             </span>
                             <div className={"bd-recovery-links"}>
                                 {!!pluginInfo.githubUrl && (
                                     <DiscordModules.Tooltip text={t("Recovery.report")}>
                                         {props => (
-                                            <GithubIcon {...props} className={"bd-recovery-link"} onClick={openReport} size={24}/>
+                                            <GithubIcon {...props} className={"bd-recovery-link"} onClick={openReport} size={24} />
                                         )}
                                     </DiscordModules.Tooltip>
                                 )}
@@ -235,7 +237,7 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
                 </div>
                 {/* This is literally so I can use discords tooltips lmfao */}
                 {/* @ts-expect-error true */}
-                <DiscordModules.LayerProvider.AppLayerContainer/>
+                <DiscordModules.LayerProvider.AppLayerContainer />
             </DiscordModules.LayerProvider.AppLayerProvider>
         </DiscordModules.AccessibilityContext.Provider>
     );
@@ -245,34 +247,82 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
 export default new class Recovery extends Builtin {
     initialize() {
         this.patchErrorBoundry();
+        this.patchReactReconcilerCapturedStacks();
         return super.initialize();
+    }
+
+    lastThrownComponent: React.ComponentType | null = null;
+
+    // https://github.com/react/react/blob/098d2e87a1f7142947418d15f63f975b58c4685b/packages/react-reconciler/src/ReactCapturedValue.js#L22
+    patchReactReconcilerCapturedStacks() {
+        const [declarations, key] = getBySource<Webpack.ModuleWithKey<() => {source: Fiber;}>>([".errorRecoveryDisabledLanes|="], {
+            declarationFilter: Filters.byStrings("value:", ".set"),
+            withKey: true
+        })!;
+
+        this.after(declarations, key, (_, __, res) => {
+            this.lastThrownComponent = (res.source?.return as Fiber || res.source as Fiber).elementType;
+        });
     }
 
     patchErrorBoundry() {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
-        this.after(mod?.prototype, "componentDidCatch", (_instance, [error]) => {
-            const stack = error?.stack;
-            const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
-            const pluginInfo = match?.[2] ? getPluginInfo(`${match[2]}.plugin.js`) : null;
-            if (!pluginInfo) return;
+        this.after(mod?.prototype, "componentDidCatch", (instance, [error]) => {
+            let pluginInfo: PluginInfo | null | undefined;
 
-            pluginmanager.disableAddon(pluginInfo.name);
+            try {
+                const stack = error?.stack;
 
-            Notifications.show({
-                title: "BetterDiscord Recovery",
-                content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
-                type: "warning",
-                icon: () => <Logo size={16} accent />,
-                duration: Infinity,
-                actions: [
-                    ...(config.isCanary ? [{
-                        label: "Re-enable",
-                        onClick: () => pluginmanager.enableAddon(pluginInfo.name),
-                        dontClose: true,
-                    }] : [])
-                ]
-            });
+                const plugins = new Set<Plugin>();
+
+                const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
+                if (match) {
+                    const plugin = PluginManager.resolveAddon(match[1]);
+                    if (plugin) plugins.add(plugin);
+                }
+
+                const patches = Patcher.getPatches(this.lastThrownComponent);
+                this.lastThrownComponent = null;
+                if (patches) {
+                    for (let index = 0; index < patches.children.length; index++) {
+                        const child = patches.children[index];
+
+                        const plugin = PluginManager.resolveAddon(child.pluginSource || child.caller);
+                        if (plugin) plugins.add(plugin);
+                    }
+                }
+
+                const [plugin] = plugins.values().take(1).toArray();
+
+                plugins.clear();
+
+                if (!plugin) return;
+
+                pluginInfo = getPluginInfo(plugin.id);
+
+                if (!pluginInfo) return;
+
+                PluginManager.disableAddon(pluginInfo.name);
+
+                Notifications.show({
+                    title: "BetterDiscord Recovery",
+                    content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
+                    type: "warning",
+                    icon: () => <Logo size={16} accent />,
+                    duration: Infinity,
+                    actions: [
+                        ...(config.isCanary ? [{
+                            label: "Re-enable",
+                            onClick: () => PluginManager.enableAddon(pluginInfo!.name),
+                            dontClose: true,
+                        }] : [])
+                    ]
+                });
+            }
+            finally {
+                (instance as React.Component).setState({pluginInfo});
+            }
         });
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
@@ -284,17 +334,15 @@ export default new class Recovery extends Builtin {
             const errorStack = errorInstance.state;
             const parsedError = errorStack ? SimpleMarkdownExt.parseToReact(`\`\`\`${errorStack.error?.stack}\n\n${errorStack.info?.componentStack}\`\`\``) : null;
 
-            const stack = errorStack?.error?.stack;
-            const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
-            const pluginInfo = match?.[2] ? getPluginInfo(`${match[2]}.plugin.js`) : null;
+            const pluginInfo = (instance as React.Component<never, {pluginInfo: PluginInfo | null;}>).state.pluginInfo;
 
             retValue.props.action.props.children.push(
-                <ErrorButtons instance={errorInstance}/>
+                <ErrorButtons instance={errorInstance} />
             );
 
             retValue.props.action = [
                 retValue.props.action,
-                <ErrorDetails stack={parsedError} pluginInfo={pluginInfo} instance={errorInstance}/>
+                <ErrorDetails stack={parsedError} pluginInfo={pluginInfo} instance={errorInstance} />
             ];
         });
     }
