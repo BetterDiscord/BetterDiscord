@@ -269,52 +269,60 @@ export default new class Recovery extends Builtin {
         const mod = getByPrototypes<typeof React.PureComponent>(["_handleSubmitReport"], {firstId: 670735, cacheId: "core-recovery-ErrorBoundary"});
 
         this.after(mod?.prototype, "componentDidCatch", (instance, [error]) => {
-            const stack = error?.stack;
+            let pluginInfo: PluginInfo | null | undefined;
 
-            const plugins = new Set<Plugin>();
+            try {
+                const stack = error?.stack;
 
-            const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
-            if (match) {
-                const plugin = PluginManager.resolveAddon(match[1]);
-                if (plugin) plugins.add(plugin);
-            }
+                const plugins = new Set<Plugin>();
 
-            const patches = Patcher.getPatches(this.lastThrownComponent);
-            if (patches) {
-                for (let index = 0; index < patches.children.length; index++) {
-                    const child = patches.children[index];
-
-                    const plugin = PluginManager.resolveAddon(child.pluginSource || child.caller);
+                const match = typeof stack === "string" ? TEST_PLUGIN_REGEX.exec(stack) : null;
+                if (match) {
+                    const plugin = PluginManager.resolveAddon(match[1]);
                     if (plugin) plugins.add(plugin);
                 }
+
+                const patches = Patcher.getPatches(this.lastThrownComponent);
+                this.lastThrownComponent = null;
+                if (patches) {
+                    for (let index = 0; index < patches.children.length; index++) {
+                        const child = patches.children[index];
+
+                        const plugin = PluginManager.resolveAddon(child.pluginSource || child.caller);
+                        if (plugin) plugins.add(plugin);
+                    }
+                }
+
+                const [plugin] = plugins.values().take(1).toArray();
+
+                plugins.clear();
+
+                if (!plugin) return;
+
+                pluginInfo = getPluginInfo(plugin.id);
+
+                if (!pluginInfo) return;
+
+                PluginManager.disableAddon(pluginInfo.name);
+
+                Notifications.show({
+                    title: "BetterDiscord Recovery",
+                    content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
+                    type: "warning",
+                    icon: () => <Logo size={16} accent />,
+                    duration: Infinity,
+                    actions: [
+                        ...(config.isCanary ? [{
+                            label: "Re-enable",
+                            onClick: () => PluginManager.enableAddon(pluginInfo!.name),
+                            dontClose: true,
+                        }] : [])
+                    ]
+                });
             }
-
-            const plugin = plugins.values().take(1).next();
-
-            if (!plugin.value) return;
-
-            const pluginInfo = getPluginInfo(plugin.value.id);
-
-            if (!pluginInfo) return;
-
-            (instance as React.Component).setState({pluginInfo});
-
-            PluginManager.disableAddon(pluginInfo.name);
-
-            Notifications.show({
-                title: "BetterDiscord Recovery",
-                content: `Suspected plugin causing the crashes: ${pluginInfo.name} v${pluginInfo.version}`,
-                type: "warning",
-                icon: () => <Logo size={16} accent />,
-                duration: Infinity,
-                actions: [
-                    ...(config.isCanary ? [{
-                        label: "Re-enable",
-                        onClick: () => PluginManager.enableAddon(pluginInfo.name),
-                        dontClose: true,
-                    }] : [])
-                ]
-            });
+            finally {
+                (instance as React.Component).setState({pluginInfo});
+            }
         });
 
         this.after(mod?.prototype, "render", (instance, _, retValue) => {
