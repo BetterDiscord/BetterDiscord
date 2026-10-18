@@ -26,8 +26,11 @@ export interface Patch<M extends object, K extends StringKeys<M>> extends Generi
     originalFunction: M[K] extends (...a: any[]) => any ? M[K] : never;
 }
 
+const TEST_PLUGIN_REGEX = /betterdiscord:\/\/plugins\/(.*?\.plugin\.js)/;
+
 export interface GenericChildPatch {
     caller: string;
+    pluginSource: string | null;
     type: "before" | "instead" | "after";
     id: number;
     callback: (...a: any[]) => any;
@@ -270,6 +273,7 @@ export default class Patcher {
         if (!patch.proxyFunction) this.rePatch<M, K>(patch);
         const child: GenericChildPatch = {
             caller,
+            pluginSource: new Error().stack?.match(TEST_PLUGIN_REGEX)?.[1] || null,
             type,
             id: patch.counter,
             callback,
@@ -293,4 +297,7 @@ export default class Patcher {
         return child.unpatch;
     }
 
+    static getPatches(item: any) {
+        return this.patches.find(x => x.originalFunction === item || x.proxyFunction === item);
+    }
 }
