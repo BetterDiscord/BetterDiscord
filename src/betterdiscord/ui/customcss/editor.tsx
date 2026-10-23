@@ -12,7 +12,6 @@ import {useStateFromStores} from "@ui/hooks";
 
 import type {editor as MonacoEditor} from "monaco-editor";
 import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
-import Patcher from "@modules/patcher";
 import clsx from "clsx";
 
 type IStandaloneCodeEditor = MonacoEditor.IStandaloneCodeEditor;
@@ -77,20 +76,6 @@ export interface EditorRef {
     value: string;
     node: HTMLDivElement | null;
 }
-
-let shouldSkipNextFocus = false;
-Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", (that, args, original) => {
-    if (shouldSkipNextFocus) {
-        shouldSkipNextFocus = false;
-        return;
-    }
-
-    if ((that as HTMLElement).closest(".monaco-editor")) {
-        shouldSkipNextFocus = true;
-    }
-
-    return original.apply(that, args);
-});
 
 export default function CodeEditor({
     value,
