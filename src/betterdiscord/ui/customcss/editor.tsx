@@ -9,10 +9,10 @@ import Flex from "../base/flex";
 import Switch from "../settings/components/switch";
 import Text from "@ui/base/text";
 import {useStateFromStores} from "@ui/hooks";
+import {getModule} from "@webpack";
 
 import type {editor as MonacoEditor} from "monaco-editor";
 import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
-import Patcher from "@modules/patcher";
 import clsx from "clsx";
 
 type IStandaloneCodeEditor = MonacoEditor.IStandaloneCodeEditor;
@@ -78,19 +78,58 @@ export interface EditorRef {
     node: HTMLDivElement | null;
 }
 
-let shouldSkipNextFocus = false;
-Patcher.instead("monaco~editor", HTMLElement.prototype, "focus", (that, args, original) => {
-    if (shouldSkipNextFocus) {
-        shouldSkipNextFocus = false;
-        return;
-    }
+interface LockStack {
+    add(uid: string, setEnabled: (enabled: boolean) => void): void;
+    remove(uid: string): void;
+    current(): {uid: string;} | undefined;
+}
 
-    if ((that as HTMLElement).closest(".monaco-editor")) {
-        shouldSkipNextFocus = true;
-    }
-
-    return original.apply(that, args);
+const LockStack = getModule<LockStack>(m => Array.isArray(m?.locks) && typeof m?.toggleLayer === "function", {
+    searchExports: true,
+    firstId: 557361,
+    cacheId: "core-editor-lockstack"
 });
+
+let layerId = 0;
+
+function useFocusLayer(ref: React.RefObject<HTMLDivElement | null>) {
+    useEffect(() => {
+        const node = ref.current?.closest(".floating-window");
+        if (!node || !LockStack) return;
+
+        const uid = `bd-editor-window-${layerId++}`;
+        let active = false;
+
+        const activate = () => {
+            if (LockStack.current()?.uid === uid) return;
+            if (active) LockStack.remove(uid);
+            LockStack.add(uid, () => {});
+            active = true;
+        };
+
+        const deactivate = () => {
+            if (!active) return;
+            LockStack.remove(uid);
+            active = false;
+        };
+
+        const onInteraction = (event: Event) => {
+            if (node.contains(event.target as Node)) activate();
+            else if (event.type === "focusin") deactivate();
+        };
+
+        document.addEventListener("pointerdown", onInteraction, true);
+        document.addEventListener("focusin", onInteraction, true);
+
+        if (node.contains(document.activeElement)) activate();
+
+        return () => {
+            document.removeEventListener("pointerdown", onInteraction, true);
+            document.removeEventListener("focusin", onInteraction, true);
+            deactivate();
+        };
+    }, [ref]);
+}
 
 export default function CodeEditor({
     value,
@@ -103,6 +142,7 @@ export default function CodeEditor({
 }: Props) {
     const ref = useRef<HTMLDivElement>(null);
     const windowRef = useRef<HTMLDivElement>(null);
+    useFocusLayer(windowRef);
 
     const language = useMemo(() => {
         const requested = requestedLang.toLowerCase().replace(/ /g, "_");

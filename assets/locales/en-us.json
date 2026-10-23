@@ -479,8 +479,10 @@
         "next": "Next"
     },
     "Recovery": {
-        "button": "Attempt to recover Discord",
+        "button": "Attempt Recovery",
+        "suspect": "Suspected Addon",
         "report": "Report on Github",
-        "safeMode": "Relaunch in Safe Mode"
+        "safeMode": "Relaunch in Safe Mode",
+        "joinSupport": "Join Support Server!"
     }
 }
