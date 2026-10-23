@@ -188,11 +188,11 @@ class Webpack {
 
     getStore(name: string) {return getStore(name);}
 
-    getById(id: PropertyKey, options: WebpackOptions = {}) {
+    getById<T extends object>(id: PropertyKey, options: WebpackOptions = {}) {
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.raw", options.raw, "Expected: boolean");
         if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
 
-        return getById(id, options);
+        return getById<T>(id, options);
     }
 
     getProxy<T extends object>(filter: ModuleFilter, options: ProxyOptions = {}) {
