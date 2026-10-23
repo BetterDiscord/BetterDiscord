@@ -8,22 +8,21 @@ export default {
     // https://youtu.be/BZq1eb9d0HI?si=67V2eArlF4atnGnz
     video: "https://www.youtube.com/embed/Qv1HUqqUgkg??si=67V2eArlF4atnGnz&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
-    blurb: "Hot fixes and macOS reinjection",
+    blurb: "Fix Plugin Settings",
     changes: [
         {
-            type: "added",
-            title: "macOS Reinjection",
+            type: "fixed",
+            title: "Fixed Plugin Settings",
             items: [
-                "Users on macOS now get automatic reinjection"
+                "Textboxes are now focusable"
             ]
         },
         {
-            type: "fixed",
-            title: "Hot fixes",
+            type: "improved",
+            title: "Revamped Recovery Page",
             items: [
-                "Fixed recovery error page",
-                "Fixed addon settings",
-                "Fixed transparency bug when switching accounts"
+                "The recovery page has a brand new UI",
+                "Better at detecting bad plugins"
             ]
         }
     ]
