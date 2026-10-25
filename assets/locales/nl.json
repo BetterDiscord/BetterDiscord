@@ -20,6 +20,12 @@
                 "mediaKeys": {
                     "name": "Schakel mediatoetsen uit",
                     "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
+                },
+                "notificationPosition": {
+                    "name": "Notificatie"
+                },
+                "notificationEnabled": {
+                    "name": "Toon notificaties"
                 }
             }
         }
@@ -28,11 +34,8 @@
         "byline": "door {{author}}",
         "reload": "Herladeen",
         "addonSettings": "Instellingen",
-        "website": "Website",
         "source": "Bronnen",
-        "invite": "Support Server",
         "donate": "Donatie",
-        "patreon": "Patreon",
         "name": "Naam",
         "author": "Schrijver",
         "version": "Versie",

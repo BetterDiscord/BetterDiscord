@@ -1,6 +1,5 @@
 {
     "Panels": {
-        "plugins": "Plugins",
         "themes": "Temas",
         "customcss": "CSS Personalizado"
     },
@@ -8,7 +7,6 @@
         "settings": {
             "name": "Ajustes",
             "general": {
-                "name": "General",
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -23,11 +21,11 @@
                 }
             },
             "window": {
+                "name": "Preferencias de la Ventana",
                 "removeMinimumSize": {
                     "name": "Eliminar Tamaño Mínimo",
-                    "note": "Elimina el tamaño mínimo de Discord de 800x500"
+                    "note": "Elimina el tamaño mínimo de Discord de 940x500"
                 },
-                "name": "Preferencias de la Ventana",
                 "transparency": {
                     "name": "Activar Transparencia",
                     "note": "Hace que la ventana principal pueda ser transparente (requiere reinicio)"
@@ -87,7 +85,6 @@
                     "note": "Permite activar el depurador al presionar la tecla F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
                     "note": "Inyecta tu instalación local de React Developer Tools en Discord"
                 },
                 "inspectElement": {
@@ -114,7 +111,6 @@
         "source": "Fuente",
         "invite": "Servidor de Soporte",
         "donate": "Donar",
-        "patreon": "Patreon",
         "name": "Nombre",
         "author": "Autor",
         "version": "Versión",
@@ -158,7 +154,6 @@
         "close": "Cerrar",
         "name": "Nombre",
         "message": "Mensaje",
-        "error": "Error",
         "addonErrors": "Errores de Complementos",
         "restartRequired": "Reinicio Requerido",
         "restartNow": "Reiniciar Ahora",

@@ -21,14 +21,32 @@
                 "mediaKeys": {
                     "name": "Wyłącz przyciski multimedialne",
                     "note": "Zapobiega korzystaniu z klawiszy multimedialnych przez Discorda podczas odtwarzania filmów."
+                },
+                "themeAttributes": {
+                    "name": "Atrybuty motywów",
+                    "note": "Dodaje atrybuty do różnych elementów, aby pomóc w temacie."
+                },
+                "notificationPosition": {
+                    "name": "Powiadomienia",
+                    "note": "Pozwala wybrać, gdzie chcesz otrzymywać powiadomienia."
+                },
+                "notificationEnabled": {
+                    "name": "Pokaż powiadomienia",
+                    "note": "Zapobiega wyświetlaniu powiadomień na ekranie lub umożliwia wyświetlanie powiadomień."
+                }
+            },
+            "store": {
+                "name": "Sklep z dodatkami",
+                "alwaysEnable": {
+                    "name": "Zawsze włączony"
                 }
             },
             "window": {
+                "name": "Ustawienia okna",
                 "removeMinimumSize": {
                     "name": "Usuń limit minimalnego rozmiaru okna",
-                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (800x500)"
+                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
                 },
-                "name": "Ustawienia okna",
                 "transparency": {
                     "name": "Włącz przezroczystość",
                     "note": "Dodaje efekt przezroczytstości do okna Discorda (wymaga ponownego uruchomienia)"
@@ -88,7 +106,6 @@
                     "note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
                     "note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
                 },
                 "inspectElement": {
@@ -151,13 +168,12 @@
         "source": "Źródło",
         "invite": "Wspomóż serwer",
         "donate": "Przekaż darowiznę",
-        "patreon": "Patreon",
         "name": "Nazwa",
         "author": "Twórca",
         "version": "Wersja",
         "added": "Data dodania",
         "modified": "Data modyfikacji",
-        "search": "Wyszukaj",
+        "isEnabled": "Stan",
         "editAddon": "Edytuj",
         "deleteAddon": "Usuń",
         "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
@@ -172,15 +188,11 @@
         "methodError": "Metoda {{method}} nie może zostać wywołana.",
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
-        "alreadyExists": "Masz już dodatek z nazwą {{name}}",
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
         "metaNotFound": "Nie odnaleziono metadanych.",
         "compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
-        "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
-        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu.",
-        "isEnabled": "Stan",
         "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany."
     },
     "CustomCSS": {
@@ -231,7 +243,6 @@
         "updateAll": "Zaktualizuj wszystko",
         "noUpdatesAvailable": "Brak dostępnych aktualizacji.",
         "versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
-        "upToDateBlankslate": "Wszystkie dodatki są aktualne!",
         "updateButton": "Zaktualizuj"
     }
 }

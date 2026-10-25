@@ -21,14 +21,37 @@
                 "mediaKeys": {
                     "name": "停用媒體控制鍵",
                     "note": "防止 Discord 在播放影片時劫持媒體控制鍵"
+                },
+                "themeAttributes": {
+                    "name": "佈景主題屬性",
+                    "note": "向元素新增 HTML 屬性以幫助套用佈景主題。"
+                },
+                "notificationPosition": {
+                    "name": "通知",
+                    "note": "選取通知出現的位置。"
+                },
+                "notificationEnabled": {
+                    "name": "顯示通知",
+                    "note": "阻止或是允許於螢幕上顯示通知。"
+                }
+            },
+            "store": {
+                "name": "擴充功能市集",
+                "alwaysEnable": {
+                    "name": "始終啟用",
+                    "note": "啟用後，於擴充功能市集下載的擴充功能會預設啟用。"
+                },
+                "addonEmbeds": {
+                    "name": "擴充功能嵌入訊息",
+                    "note": "於聊天視窗內嵌入擴充功能市集資訊卡片。"
                 }
             },
             "window": {
+                "name": "視窗設定",
                 "removeMinimumSize": {
                     "name": "移除最小視窗尺寸限制",
-                    "note": "移除 Discord 限制的最小視窗尺寸（800x500）"
+                    "note": "移除 Discord 限制的最小視窗尺寸（940x500）"
                 },
-                "name": "視窗設定",
                 "transparency": {
                     "name": "透明化",
                     "note": "啟用主視窗透明（需要重新啟動以生效）"
@@ -49,8 +72,17 @@
                     "note": "在何處編輯擴充功能及佈景主題",
                     "options": {
                         "detached": "獨立視窗",
+                        "external": "外置視窗",
                         "system": "系統編輯器"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "自動檢查更新",
+                    "note": "定期檢查擴充功能及 BetterDiscord 主體的更新"
+                },
+                "updateInterval": {
+                    "name": "檢查更新頻率",
+                    "note": "檢查擴充功能與BD主體更新的間隔"
                 }
             },
             "customcss": {
@@ -77,6 +109,7 @@
                     "options": {
                         "settings": "設定選單",
                         "detached": "獨立視窗",
+                        "external": "外置視窗",
                         "system": "系統編輯器"
                     }
                 }
@@ -104,12 +137,23 @@
                     "note": "輸出控制台中的所有資訊到 BetterDiscord 資料夾下的 debug.log"
                 },
                 "devTools": {
-                    "name": "DevTools",
+                    "name": "開發人員工具",
                     "note": "啟用切換 DevTools（Ctrl+Shift+I）"
                 }
             },
             "editor": {
                 "name": "編輯器偏好",
+                "theme": {
+                    "name": "主題",
+                    "note": "選取程式碼編輯器的主題",
+                    "options": {
+                        "system": "跟隨系統",
+                        "vs-dark": "深色",
+                        "vs": "淺色",
+                        "hc-black": "高對比黑色",
+                        "hc-light": "高對比淺色"
+                    }
+                },
                 "lineNumbers": {
                     "name": "行數編號",
                     "note": "啟用在編輯器一側顯示行數"
@@ -124,11 +168,19 @@
                 },
                 "hover": {
                     "name": "參考工具提示",
-                    "note": "允許在懸停於規則和選擇器時顯示參考工具提示"
+                    "note": "允許在遊標暫留於規則和選擇器時顯示參考工具提示"
                 },
                 "quickSuggestions": {
                     "name": "快速建議",
                     "note": "啟用在您輸入時顯示自動完成建議"
+                },
+                "insertSpaces": {
+                    "name": "插入空白字元",
+                    "note": "縮排時按下 Tab 鍵將插入空白字元而非定位字元"
+                },
+                "tabSize": {
+                    "name": "定位字元大小",
+                    "note": "選取一個定位字元相當於多少個空白字元"
                 },
                 "renderWhitespace": {
                     "name": "顯示空格",
@@ -145,20 +197,63 @@
     "Addons": {
         "title": "{{name}} 版本 {{version}} 作者 {{author}}",
         "byline": "作者 {{author}}",
+        "openFolder": {
+            "plugin": "開啟擴充功能資料夾",
+            "theme": "開啟佈景主題資料夾"
+        },
+        "openStore": {
+            "plugin": "開啟擴充功能市集",
+            "theme": "開啟佈景主題市集"
+        },
+        "storeMessage": {
+            "plugin": "瀏覽及安裝官方認證的社群擴充功能",
+            "theme": "瀏覽及安裝官方認證的社群佈景主題"
+        },
+        "store": "市集",
+        "viewInstalled": {
+            "plugin": "檢視已安裝擴充功能",
+            "theme": "檢視已安裝佈景主題"
+        },
         "reload": "重新載入",
         "addonSettings": "設定",
         "website": "網站",
         "source": "原始碼",
         "invite": "技術支援伺服器",
         "donate": "捐贈",
-        "patreon": "Patreon",
         "name": "名稱",
         "author": "作者",
         "version": "版本",
         "added": "安裝時間",
         "modified": "最後更新時間",
+        "releaseDate": "發佈日期",
+        "lastUpdated": "最後更新",
+        "isEnabled": "已啟用",
+        "popularity": "人氣值",
+        "isInstalled": "已安裝",
+        "downloads": "下載次數",
+        "likes": "喜歡次數",
+        "listView": "清單檢視",
+        "gridView": "方格檢視",
+        "enableAll": "全部啟用",
+        "disableAll": "全部停用",
+        "enableAllWarning": {
+            "plugin": "同時啟用所有擴充功能可能會導致程式執行緩慢或是出現意外錯誤。\n\n（點選啟用時按住 Shift 鍵即可跳過此提示！）",
+            "theme": "同時啟用所有佈景主題可能會導致程式執行緩慢或是出現意外錯誤。\n\n（點選啟用時按住 Shift 鍵即可跳過此提示！）"
+        },
+        "search": {
+            "plugin": {
+                "other": "於 {{count}} 個擴充功能中搜尋"
+            },
+            "theme": {
+                "other": "於 {{count}} 個佈景主題中搜尋"
+            }
+        },
+        "results": {
+            "other": "{{count}} 個結果"
+        },
         "editAddon": "編輯",
         "deleteAddon": "刪除",
+        "downloadAddon": "下載",
         "confirmDelete": "您真的要刪除 {{name}} 嗎？",
         "confirmationText": "您還有未儲存的更改，關閉此視窗將失去所有對 {{name}} 所做的更改。",
         "enabled": "已啟用 {{name}}。",
@@ -168,18 +263,55 @@
         "couldNotStart": "無法啟動 {{name}}。",
         "couldNotStop": "無法停止 {{name}}。",
         "settingsError": "無法開啟設定 {{name}}。",
-        "methodError": "無法調用 {{method}}。",
+        "methodError": "無法發動 {{method}}。",
         "unknownAuthor": "未知的作者",
         "noDescription": "作者没有留下任何描述。",
+        "alreadyExists": {
+            "plugin": "已存在相同名稱 {{name}} 的擴充功能",
+            "theme": "已存在相同名稱 {{name}} 的佈景主題"
+        },
         "metaError": "無法解析元資料。",
         "missingNameData": "元資料缺少名稱。",
         "metaNotFound": "無法找到元資料。",
         "compileError": "無法編譯。詳細資訊請見控制台。",
         "wasUnloaded": "已解除安裝 {{name}}。",
-        "isEnabled": "已啟用",
+        "blankSlateHeader": {
+            "plugin": "您還未新增任何擴充功能！",
+            "theme": "您還未新增任何佈景主題！"
+        },
+        "blankSlateMessage": {
+            "plugin": "您可以在[此網站]({{link}})中取得，並將其新增到您的擴充功能資料夾中。",
+            "theme": "您可以在[此網站]({{link}})中取得，並將其新增到您的佈景主題資料夾中。"
+        },
+        "blankSlateHeaderGeneric": "這裡什麼都沒有！",
+        "blankSlateMessageGeneric": "快去找找看需要什麼吧。",
         "wasLoaded": "已載入 {{name}} 版本 {{version}}。",
-        "listView": "清單檢視",
-        "gridView": "方格檢視"
+        "failedToDownload": {
+            "plugin": "無法下載擴充功能 {{name}}",
+            "theme": "無法下載佈景主題 {{name}}"
+        },
+        "successfullyDownload": "已成功下載 {{name}}",
+        "alreadyInstalled": "{{name}} 已經存在",
+        "failedToFetch": "無法取得擴充功能",
+        "new": "新",
+        "updated": "近期更新",
+        "downloadCount": {
+            "other": "{{count}} 次下載"
+        },
+        "likeCount": {
+            "other": "{{count}} 個喜歡"
+        },
+        "tags": "標籤",
+        "preview": "預覽",
+        "official": "官方認證",
+        "manyEnabled": {
+            "plugin": {
+                "other": "已啟用 {{count}} 個擴充功能。"
+            },
+            "theme": {
+                "other": "已啟用 {{count}} 個佈景主題。"
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "您還有未儲存的更改，關閉此視窗將失去所有對客製化 CSS 所做的更改。",
@@ -188,10 +320,18 @@
         "openNative": "在系統編輯器中開啟",
         "openDetached": "在獨立視窗中開啟",
         "settings": "編輯器設定",
-        "editorTitle": "客製化 CSS 編輯器"
+        "editorTitle": "客製化 CSS 編輯器",
+        "cssInstallSuccess": "CSS 已成功新增至客製化 CSS。",
+        "cssInstalled": "已安裝 CSS！",
+        "cssInstallError": "CSS 無法新增至客製化 CSS。",
+        "cssReverted": "CSS 已復原。",
+        "cssReverting": "變更將於 10 秒後復原",
+        "cssKept": "已永久保留 CSS 變更"
     },
     "Modals": {
         "confirmAction": "您確定嗎？",
+        "installCss": "您真的要將此 CSS 新增至客製化 CSS 嗎？",
+        "addonCrashed": "為防止當機，此擴充功能已遭停用。請將此問題告知擴充功能的開發人員。",
         "okay": "確定",
         "done": "完成",
         "cancel": "取消",
@@ -206,7 +346,9 @@
         "restartLater": "稍後自行重新啟動",
         "additionalInfo": "額外資訊",
         "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？",
-        "changelog": "更新日誌"
+        "changelog": "更新日誌",
+        "debuglog": "偵錯記錄檔已超過 100MB，是否清除？",
+        "automaticallyEnable": "自動啟用"
     },
     "Sorting": {
         "sortBy": "排序方式",
@@ -218,18 +360,49 @@
         "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap和最大化。\n\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
         "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
     },
+    "Toasts": {
+        "recoveryFailed": "復原未完成。部分操作無法完成。"
+    },
     "Updater": {
         "updateFailed": "更新失敗！",
         "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https://betterdiscord.app/) 下載最新版本的安裝程式並重新安裝。",
         "updateSuccessful": "更新成功！",
         "updateAvailable": "BetterDiscord 已有新的版本 ({{version}})",
+        "viewUpdates": "檢視更新",
+        "addonUpdaterNotificationTitle": "擴充功能更新工具",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "other": "偵測到 {{count}} 個擴充功能有更新！"
+            },
+            "theme": {
+                "other": "偵測到 {{count}} 個佈景主題有更新！"
+            }
+        },
         "addonUpdated": "{{name}} 已更新到版本 {{version}}！",
+        "addonUpdateFailed": "無法更新 {{name}}。請稍後再試一次。",
         "checking": "正在檢查更新！",
         "finishedChecking": "已完成檢查更新！",
         "checkForUpdates": "檢查更新！",
         "updateAll": "全部更新！",
         "noUpdatesAvailable": "沒有可供使用的更新。",
         "versionAvailable": "版本 {{version}} 已可供使用！",
+        "upToDateBlankslate": {
+            "plugin": "您所有的擴充功能似乎都是最新的！",
+            "theme": "您所有的佈景主題似乎都是最新的！"
+        },
         "updateButton": "更新！"
+    },
+    "Settings": {
+        "customColor": "自訂顏色",
+        "resetSettings": "重設設定",
+        "resetSettingsWarning": "即將讓您的所有設定回到原始狀態，此操作無法復原。"
+    },
+    "Socials": {
+        "twitter": "跟隨我們！",
+        "github": "為本專案點個 Star！"
+    },
+    "Paginator": {
+        "back": "返回",
+        "next": "繼續"
     }
 }

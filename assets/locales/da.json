@@ -1,1 +1,64 @@
-{}
+{
+    "Panels": {
+        "themes": "Temaer",
+        "customcss": "Brugerdefineret CSS",
+        "updates": "Opdateringer"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Indstillinger",
+            "general": {
+                "name": "Generel",
+                "voiceDisconnect": {
+                    "name": "Stemme Afbrydelse",
+                    "note": "Afbryd forbindelse til stemmeserver, når Discord lukkes"
+                },
+                "showToasts": {
+                    "name": "Vis Toasts",
+                    "note": "Viser en lille notifikation om vigtige informationer"
+                },
+                "mediaKeys": {
+                    "name": "Deaktivér Medietaster",
+                    "note": "Forhindrer Discord i at kapre dine medietaster efter afspilning af en video."
+                },
+                "themeAttributes": {
+                    "name": "Tema Attributter",
+                    "note": "Tilføjer attributter til forskellige elementer for at hjælpe med tema."
+                },
+                "notificationPosition": {
+                    "name": "Notifikation",
+                    "note": "Lader dig vælge hvor du vil have notifikationer til at poppe op"
+                },
+                "notificationEnabled": {
+                    "name": "Vis Notifikationer",
+                    "note": "Forhindrer eller tillader meddelelser i at blive vist på skærmen."
+                }
+            },
+            "store": {
+                "name": "Addon Butik"
+            },
+            "customcss": {
+                "nativeOpen": {
+                    "name": "Åbn i Indbygget Editor",
+                    "note": "Hvis du klikker på Brugerdefineret CSS fanen åbner din brugerdefinerede css i din native editor"
+                },
+                "openAction": {
+                    "name": "Editor Placering",
+                    "note": "Hvor Brugerdefineret CSS skal åbnes som standard",
+                    "options": {
+                        "settings": "Indstillinger",
+                        "detached": "Afbrudt Vindue",
+                        "external": "Eksternt Vindue",
+                        "system": "Systemeditor"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Indstillinger for udviklere",
+                "debuggerHotkey": {
+                    "name": "Debugger Genvejstast"
+                }
+            }
+        }
+    }
+}

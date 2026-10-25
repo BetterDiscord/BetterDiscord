@@ -23,7 +23,6 @@
         "addonSettings": "Innstillinger",
         "website": "Nettsted",
         "donate": "Donere",
-        "patreon": "Patreon",
         "name": "Navn",
         "author": "Forfatter",
         "version": "Versjon",
@@ -36,7 +35,6 @@
     },
     "Modals": {
         "confirmAction": "Er Du Sikker?",
-        "okay": "Okay",
         "restartNow": "Start på nytt nå",
         "restartLater": "Start på nytt senere"
     },

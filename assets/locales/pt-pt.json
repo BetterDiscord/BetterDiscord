@@ -1,8 +1,9 @@
 {
     "Panels": {
-        "plugins": "Plugins",
+        "plugins": "Extensões",
         "themes": "Temas",
-        "customcss": "CSS Personalizado"
+        "customcss": "CSS Personalizado",
+        "updates": "Atualizações"
     },
     "Collections": {
         "settings": {
@@ -20,14 +21,33 @@
                 "mediaKeys": {
                     "name": "Desativar as chaves Mídia",
                     "note": "Previne o Discord de dar hijack as chaves Mídia depois de ver um video."
+                },
+                "themeAttributes": {
+                    "name": "Atributos de Tema",
+                    "note": "Adiciona atributos a vários elementos para ajudar no tema."
+                },
+                "notificationPosition": {
+                    "name": "Notificação",
+                    "note": "Permite escolher onde deseja que as notificações sejam popup."
+                },
+                "notificationEnabled": {
+                    "name": "Mostrar notificações",
+                    "note": "Impede ou permite que notificações sejam exibidas na tela."
+                }
+            },
+            "store": {
+                "name": "Loja de Complementos",
+                "alwaysEnable": {
+                    "name": "Sempre habilitar",
+                    "note": "Quando ativado por padrão complementos baixados pela loja de complementos serão ativados."
                 }
             },
             "window": {
+                "name": "Preferência de Janela",
                 "removeMinimumSize": {
                     "name": "Remove o tamanho mínimo",
-                    "note": "Remove o tamanho mínimo obrigatório de janela do Discord de 800x500"
+                    "note": "Remove o tamanho mínimo obrigatório de janela do Discord de 940x500"
                 },
-                "name": "Preferência de Janela",
                 "transparency": {
                     "name": "Ativar Transparência",
                     "note": "Ativa a janela principal para ter transparência (requer reniciar)"
@@ -83,7 +103,6 @@
             "developer": {
                 "name": "Definições de desenvolvedor",
                 "debuggerHotkey": {
-                    "name": "Debugger Hotkey",
                     "note": "Permite a ativação do debugger quando pressiona o F8"
                 },
                 "reactDevTools": {
@@ -99,7 +118,6 @@
                     "note": "Pára o Discord de mostrar a mensagem \"Hold up!\""
                 },
                 "debugLogs": {
-                    "name": "Debug Logs",
                     "note": "Saída de tudo da consola para o ficheiro debug.log na pasta BetterDiscord"
                 }
             }
@@ -110,11 +128,9 @@
         "byline": "feito por {{author}}",
         "reload": "Recarregar",
         "addonSettings": "Definições",
-        "website": "Website",
         "source": "Fonte",
         "invite": "Servidor de Suporte",
         "donate": "Doar",
-        "patreon": "Patreon",
         "name": "Nome",
         "author": "Autor",
         "version": "Versão",
@@ -151,7 +167,6 @@
     },
     "Modals": {
         "confirmAction": "Tem a certeza?",
-        "okay": "Okay",
         "done": "Feito",
         "cancel": "Cancelar",
         "nevermind": "Deixa estár",

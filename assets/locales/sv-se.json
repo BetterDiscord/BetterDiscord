@@ -24,11 +24,11 @@
                 }
             },
             "window": {
+                "name": "Fönsterinställningar",
                 "removeMinimumSize": {
                     "name": "Ta bort minimistorleken",
-                    "note": "Tar bort Discords minimifönsterstorlek på 800x500"
+                    "note": "Tar bort Discords minimifönsterstorlek på 940x500"
                 },
-                "name": "Fönsterinställningar",
                 "transparency": {
                     "name": "Aktivera Genomskinlighet",
                     "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
@@ -111,12 +111,13 @@
         "source": "Källa",
         "invite": "Supportserver",
         "donate": "Donera",
-        "patreon": "Patreon",
         "name": "Namn",
         "author": "Upphovsman",
-        "version": "Version",
         "added": "Tilläggsdatum",
         "modified": "Ändringsdatum",
+        "isEnabled": "Aktiverad",
+        "listView": "Listvy",
+        "gridView": "Rutnätsvy",
         "editAddon": "Redigera",
         "deleteAddon": "Ta bort",
         "confirmDelete": "Är du säker på att du vill ta bort {{name}}?",
@@ -129,10 +130,7 @@
         "settingsError": "Kunde inte öppna inställningarna för {{namn}}",
         "unknownAuthor": "Okänd upphovsman",
         "noDescription": "Beskrivning saknas.",
-        "compileError": "Kunde inte kompileras. Se konsolen för mer information.",
-        "isEnabled": "Aktiverad",
-        "listView": "Listvy",
-        "gridView": "Rutnätsvy"
+        "compileError": "Kunde inte kompileras. Se konsolen för mer information."
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
