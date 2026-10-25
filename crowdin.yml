@@ -1,6 +1,54 @@
 project_id_env: CROWDIN_PROJECT_ID
 api_token_env: CROWDIN_PERSONAL_TOKEN
-preserve_hierarchy: true
+preserve_hierarchy: false
+
 files:
   - source: /assets/locales/en-us.json
     translation: /assets/locales/%locale%.json
+
+    # Don't write English fallbacks into translation files, i18n already falls back to en-us per key
+    skip_untranslated_strings: true
+
+    # Keep existing translations when an English string is edited, but flag them for review
+    update_option: update_as_unapproved
+
+    # Crowdin language id -> our filename (without .json), must match assets/locales/index.ts
+    languages_mapping:
+      locale:
+        en-GB: en-gb
+        zh-CN: zh-cn
+        zh-TW: zh-tw
+        cs: cs
+        da: da
+        nl: nl
+        fr: fr
+        de: de
+        el: el
+        hu: hu
+        it: it
+        ja: ja
+        ko: ko
+        pl: pl
+        pt-PT: pt-pt
+        pt-BR: pt-br
+        ru: ru
+        sk: sk
+        es-ES: es-es
+        es-419: es-419
+        sv-SE: sv-se
+        tr: tr
+        bg: bg
+        uk: uk
+        fi: fi
+        "no": "no"
+        hr: hr
+        ro: ro
+        lt: lt
+        th: th
+        vi: vi
+        hi: hi
+
+        # Not selectable in Discord yet, intentionally left out of index.ts
+        ar: ar
+        he: he
+        id: id
