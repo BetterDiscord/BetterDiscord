@@ -1,1 +1,49 @@
-{}
+{
+    "Panels": {
+        "plugins": "Įskiepiai",
+        "themes": "Temos",
+        "customcss": "Pasirinktinis CSS",
+        "updates": "Naujinimai"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Nustatymai",
+            "general": {
+                "name": "Bendrieji",
+                "voiceDisconnect": {
+                    "name": "Balso atjungimas",
+                    "note": "Atsijunkite nuo balso serverio užveriant „Discord“"
+                },
+                "mediaKeys": {
+                    "name": "Išjungti medijos klavišus"
+                },
+                "notificationPosition": {
+                    "name": "Pranešimas"
+                },
+                "notificationEnabled": {
+                    "name": "Rodyti pranešimus"
+                }
+            },
+            "store": {
+                "name": "Priedų parduotuvė"
+            },
+            "editor": {
+                "name": "Rengyklės parinktys",
+                "theme": {
+                    "name": "Tema"
+                }
+            }
+        }
+    },
+    "Updater": {
+        "versionAvailable": "Versija {{version}} dabar pasiekiamas.",
+        "updateButton": "Atnaujinti!"
+    },
+    "Settings": {
+        "customColor": "Pasirinktinė spalva"
+    },
+    "Socials": {
+        "twitter": "Sekite mus!",
+        "github": "Duokite žvaigždutę mums!"
+    }
+}

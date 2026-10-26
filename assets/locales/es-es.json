@@ -1,14 +1,13 @@
 {
     "Panels": {
-        "plugins": "Plugins",
         "themes": "Temas",
-        "customcss": "CSS Personalizado"
+        "customcss": "CSS Personalizado",
+        "updates": "Actualizaciones"
     },
     "Collections": {
         "settings": {
             "name": "Ajustes",
             "general": {
-                "name": "General",
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -20,14 +19,37 @@
                 "mediaKeys": {
                     "name": "Desactivar las Teclas Multimedia",
                     "note": "Evita que Discord se apropie de tus teclas multimedia después de reproducir un vídeo"
+                },
+                "themeAttributes": {
+                    "name": "Atributos del tema",
+                    "note": "Agrega atributos a varios elementos para ayudar a la personalización del tema."
+                },
+                "notificationPosition": {
+                    "name": "Notificación",
+                    "note": "Te permite elegir dónde quieres que aparezca la notificación."
+                },
+                "notificationEnabled": {
+                    "name": "Mostrar notificaciones",
+                    "note": "Permite o impide que se muestren las notificaciones en pantalla."
+                }
+            },
+            "store": {
+                "name": "Tienda de complementos",
+                "alwaysEnable": {
+                    "name": "Habilitar siempre",
+                    "note": "Cuando está habilitada por defecto, los complementos descargados a través de la tienda de complementos estarán habilitados."
+                },
+                "addonEmbeds": {
+                    "name": "Embeds de complementos",
+                    "note": "Inserta las tarjetas de la tienda de complementos en el chat."
                 }
             },
             "window": {
+                "name": "Preferencias de la Ventana",
                 "removeMinimumSize": {
                     "name": "Eliminar Tamaño Mínimo",
-                    "note": "Elimina el tamaño mínimo de Discord de 800x500"
+                    "note": "Elimina el tamaño mínimo de Discord de 940x500"
                 },
-                "name": "Preferencias de la Ventana",
                 "transparency": {
                     "name": "Activar Transparencia",
                     "note": "Hace que la ventana principal pueda ser transparente (requiere reinicio)"
@@ -48,8 +70,17 @@
                     "note": "Donde aparecerán los plugins y temas al editarlos",
                     "options": {
                         "detached": "Ventana Independiente",
+                        "external": "Ventana externa",
                         "system": "Editor del Sistema"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "Buscar actualizaciones automáticamente",
+                    "note": "Comprueba periódicamente si hay actualizaciones para tu complemento y el núcleo de BD"
+                },
+                "updateInterval": {
+                    "name": "Intervalo de comprobación de actualización",
+                    "note": "Con qué frecuencia se deben buscar actualizaciones de complementos/núcleo"
                 }
             },
             "customcss": {
@@ -76,6 +107,7 @@
                     "options": {
                         "settings": "Menú de Ajustes",
                         "detached": "Ventana Independiente",
+                        "external": "Ventana externa",
                         "system": "Editor del Sistema"
                     }
                 }
@@ -87,7 +119,7 @@
                     "note": "Permite activar el depurador al presionar la tecla F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
+                    "name": "Herramientas para desarrolladores de React",
                     "note": "Inyecta tu instalación local de React Developer Tools en Discord"
                 },
                 "inspectElement": {
@@ -101,6 +133,59 @@
                 "debugLogs": {
                     "name": "Registros de Depuración",
                     "note": "Envía todo lo que aparece en la consola a un archivo llamado debug.log en la carpeta de BetterDiscord"
+                },
+                "devTools": {
+                    "name": "Herramientas de desarrollador",
+                    "note": "Permite activar o desactivar las herramientas para desarrolladores con ctrl+mayús+i"
+                }
+            },
+            "editor": {
+                "name": "Opciones de editor",
+                "theme": {
+                    "name": "Tema",
+                    "note": "El tema para el editor de código",
+                    "options": {
+                        "system": "Sistema",
+                        "vs": "Claro",
+                        "hc-black": "Negro de alto contraste",
+                        "hc-light": "Blanco de alto contraste"
+                    }
+                },
+                "lineNumbers": {
+                    "note": "Permite mostrar los números de línea en la pantalla del editor"
+                },
+                "fontSize": {
+                    "name": "Tamaño de letra",
+                    "note": "Tamaño de la fuente (pt) que se utilizará en el editor"
+                },
+                "minimap": {
+                    "name": "Mini mapa",
+                    "note": "Permite mostrar el minimapa del código en el lateral del editor"
+                },
+                "hover": {
+                    "name": "Información sobre herramientas de referencia",
+                    "note": "Permite mostrar las sugerencias de referencia al pasar el cursor sobre las reglas y selectores"
+                },
+                "quickSuggestions": {
+                    "name": "Sugerencias rápidas",
+                    "note": "Habilitar la visualización de sugerencias de autocompletar mientras escribe"
+                },
+                "insertSpaces": {
+                    "name": "Insertar espacios",
+                    "note": "Insertar espacios en lugar de tabulaciones"
+                },
+                "tabSize": {
+                    "name": "Tamaño de tabulación",
+                    "note": "El número de espacios a los que equivale una tabulación"
+                },
+                "renderWhitespace": {
+                    "name": "Mostrar espacio en blanco",
+                    "note": "Cuando el editor debe mostrar el espacio en blanco",
+                    "options": {
+                        "all": "Siempre",
+                        "none": "Nunca",
+                        "selection": "Selección"
+                    }
                 }
             }
         }
@@ -108,20 +193,66 @@
     "Addons": {
         "title": "{{name}} v{{version}} por {{author}}",
         "byline": "por {{author}}",
+        "openFolder": {
+            "plugin": "Abrir carpeta de plugins",
+            "theme": "Abrir la carpeta de temas"
+        },
+        "openStore": {
+            "plugin": "Abrir tienda de plugins",
+            "theme": "Abrir tienda de temas"
+        },
+        "storeMessage": {
+            "plugin": "Navegar e instalar plugins oficiales de la comunidad",
+            "theme": "Explora e instala temas oficiales de la comunidad"
+        },
+        "store": "Tienda",
+        "viewInstalled": {
+            "plugin": "Ver Plugins Instalados",
+            "theme": "Ver temas instalados"
+        },
         "reload": "Recargar",
         "addonSettings": "Ajustes",
         "website": "Sitio web",
         "source": "Fuente",
         "invite": "Servidor de Soporte",
         "donate": "Donar",
-        "patreon": "Patreon",
         "name": "Nombre",
         "author": "Autor",
         "version": "Versión",
         "added": "Fecha de Adición",
         "modified": "Fecha de Modificación",
+        "releaseDate": "Fecha de lanzamiento",
+        "lastUpdated": "Última actualización",
+        "isEnabled": "Activado",
+        "popularity": "Popularidad",
+        "isInstalled": "Instalado",
+        "downloads": "Descargas",
+        "likes": "Me gusta",
+        "listView": "Vista de lista",
+        "gridView": "Vista de cuadrícula",
+        "enableAll": "Habilitar todo",
+        "disableAll": "Deshabilitar todo",
+        "enableAllWarning": {
+            "plugin": "Activar todos los plugins puede causar lag temporal y errores inesperados.\n\n(Mantén pulsado Máyus al hacer clic para omitir este mensaje)",
+            "theme": "Habilitar todos los temas puede provocar retrasos temporales y errores inesperados. \n\n(¡Mantén pulsada la tecla mayús mientras haces clic para saltarte este aviso!)"
+        },
+        "search": {
+            "plugin": {
+                "one": "Buscar un solo plugin",
+                "other": "Buscar {{count}} plugins"
+            },
+            "theme": {
+                "one": "Buscar un tema",
+                "other": "Buscar {{count}} temas"
+            }
+        },
+        "results": {
+            "one": "{{count}} Resultado",
+            "other": "{{count}} Resultados"
+        },
         "editAddon": "Editar",
         "deleteAddon": "Eliminar",
+        "downloadAddon": "Descargar",
         "confirmDelete": "¿Estás seguro de que quieres borrar {{name}}?",
         "confirmationText": "Tiene cambios no guardados en {{name}}. Al cerrar esta ventana se perderán todos los cambios.",
         "enabled": "{{name}} ha sido activado.",
@@ -134,11 +265,53 @@
         "methodError": "{{method}} no pudo ser lanzado.",
         "unknownAuthor": "Autor Desconocido",
         "noDescription": "Descripción no proporcionada.",
+        "alreadyExists": {
+            "plugin": "Ya existe un plugin con el nombre {{name}}",
+            "theme": "Ya existe un tema con el nombre de {{name}}"
+        },
         "metaError": "El META no pudo ser analizado.",
         "missingNameData": "El META no contiene datos del nombre.",
         "metaNotFound": "El META no ha sido encontrado.",
         "compileError": "No se ha podido compilar.",
-        "wasUnloaded": "{{name}} ha sido descargado."
+        "wasUnloaded": "{{name}} ha sido descargado.",
+        "blankSlateHeader": {
+            "plugin": "¡No tienes ningún plugin!",
+            "theme": "¡Tú no tienes temas!"
+        },
+        "blankSlateMessage": {
+            "plugin": "Descárgalos de [nuestro sitio web]({{link}}) y añádelos a tu carpeta de plugins.",
+            "theme": "Descarga algunos desde [our website]({{link}}) y agrégalos a la carpeta de tu tema."
+        },
+        "blankSlateHeaderGeneric": "¡Tú no tienes nada!",
+        "blankSlateMessageGeneric": "Probablemente deberías conseguir algunos.",
+        "wasLoaded": "{{name}} v{{version}} se cargó.",
+        "failedToDownload": {
+            "plugin": "No se ha podido descargar {{name}}",
+            "theme": "Error al descargar el tema {{name}}"
+        },
+        "alreadyInstalled": "{{name}} Ya está instalado",
+        "failedToFetch": "No se pueden obtener los complementos",
+        "new": "Nuevo",
+        "updated": "Actualizado",
+        "downloadCount": {
+            "other": "{{count}} Descargas"
+        },
+        "likeCount": {
+            "one": "{{count}} Me gusta",
+            "other": "{{count}} Me gusta"
+        },
+        "tags": "Etiquetas",
+        "preview": "Vista previa",
+        "official": "Oficial",
+        "manyEnabled": {
+            "plugin": {
+                "one": "Se ha activado un plugin.",
+                "other": "Se han activado {{count}} plugins."
+            },
+            "theme": {
+                "other": "Se han habilitado {{count}} temas."
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Tienes cambios sin guardar en tu CSS Personalizado. Al cerrar esta ventana se perderán todos los cambios.",
@@ -147,10 +320,18 @@
         "openNative": "Abrir en el Editor del Sistema",
         "openDetached": "Mostrar en Ventana Independiente",
         "settings": "Ajustes del Editor",
-        "editorTitle": "Editor de CSS Personalizado"
+        "editorTitle": "Editor de CSS Personalizado",
+        "cssInstallSuccess": "Se agregó correctamente CSS a CustomCSS.",
+        "cssInstalled": "¡CSS instalado!",
+        "cssInstallError": "No se pudo agregar el CSS a CustomCSS.",
+        "cssReverted": "CSS fue revertido.",
+        "cssReverting": "Los cambios serán revertidos en 10 segundos",
+        "cssKept": "Los cambios CSS se conservan permanentemente"
     },
     "Modals": {
         "confirmAction": "¿Estás seguro?",
+        "installCss": "¿Estás seguro de que quieres añadir este CSS a tú CSS personalizado?",
+        "addonCrashed": "Este plugin ha sido desactivado para prevenir fallos. Infórmale al desarrollador sobre este problema.",
         "okay": "Vale",
         "done": "Hecho",
         "cancel": "Cancelar",
@@ -158,13 +339,14 @@
         "close": "Cerrar",
         "name": "Nombre",
         "message": "Mensaje",
-        "error": "Error",
         "addonErrors": "Errores de Complementos",
         "restartRequired": "Reinicio Requerido",
         "restartNow": "Reiniciar Ahora",
         "restartLater": "Reiniciar más Tarde",
         "additionalInfo": "Información Adicional",
-        "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?"
+        "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",
+        "changelog": "Registro de cambios",
+        "debuglog": "El archivo de registro de depuración ha superado los 100 MB. ¿Desea borrar el registro?"
     },
     "Sorting": {
         "sortBy": "Ordenar por",
@@ -175,5 +357,49 @@
     "WindowPrefs": {
         "enabledInfo": "Esta opción requiere un tema transparente para que funcione correctamente. En Windows esto podría hacer que el ajuste automático de la ventana (Aero Snap) y la maximización dejen de funcionar.\n\nPara que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",
         "disabledInfo": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?"
+    },
+    "Toasts": {
+        "recoveryFailed": "Recuperación incompleta. Algunas acciones no se completaron."
+    },
+    "Updater": {
+        "updateFailedMessage": "BetterDiscord tuvo un error al actualizarse. Descargue la última versión del instalador desde nuestro sitio web\n(https://betterdiscord.app/) y reinstala.",
+        "updateSuccessful": "¡Actualización exitosa!",
+        "updateAvailable": "BetterDiscord tiene una nueva actualización (v{{version}})",
+        "viewUpdates": "Ver actualizaciones",
+        "addonUpdaterNotificationTitle": "Actualizador de complementos",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "¡Un plugin tiene una actualización!",
+                "other": "¡{{count}} plugin tienen actualizaciones!"
+            },
+            "theme": {
+                "other": "¡Los temas {{count}} tienen actualizaciones!"
+            }
+        },
+        "addonUpdated": "¡{{name}} se ha actualizado a la versión {{version}}!",
+        "addonUpdateFailed": "No se pudo actualizar {{name}}. Inténtelo de nuevo más tarde.",
+        "checking": "¡Buscando actualizaciones!",
+        "checkForUpdates": "¡Comprueba si hay actualizaciones!",
+        "updateAll": "¡Actualizar todo!",
+        "noUpdatesAvailable": "No hay actualizaciones disponibles.",
+        "versionAvailable": "¡Versión {{version}} ahora disponible!",
+        "upToDateBlankslate": {
+            "plugin": "¡Todos tus plugins parecen estar actualizados!",
+            "theme": "¡Todos tus temas parecen estar actualizados!"
+        },
+        "updateButton": "¡Actualizar!"
+    },
+    "Settings": {
+        "customColor": "Color personalizado",
+        "resetSettings": "Restablecer configuración",
+        "resetSettingsWarning": "Restablecer la configuración la devuelve a su estado original; esto no se puede deshacer."
+    },
+    "Socials": {
+        "twitter": "¡Síguenos!",
+        "github": "¡Danos una estrella!"
+    },
+    "Paginator": {
+        "back": "Atrás",
+        "next": "Siguiente"
     }
 }

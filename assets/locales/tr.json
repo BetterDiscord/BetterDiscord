@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Eklentiler",
         "themes": "Temalar",
-        "customcss": "Özel CSS"
+        "customcss": "Özel CSS",
+        "updates": "Güncellemeler"
     },
     "Collections": {
         "settings": {
@@ -20,14 +21,20 @@
                 "mediaKeys": {
                     "name": "Medya Tuşlarını Deaktive Et",
                     "note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
+                },
+                "notificationPosition": {
+                    "name": "Bildirim"
+                },
+                "notificationEnabled": {
+                    "name": "Bildirimleri göster"
                 }
             },
             "window": {
+                "name": "Pencere Tercihleri",
                 "removeMinimumSize": {
                     "name": "Minimum boyutu kaldır",
-                    "note": "Discord'un 800x500 boyut limitini kaldırır"
+                    "note": "Discord'un 940x500 boyut limitini kaldırır"
                 },
-                "name": "Pencere Tercihleri",
                 "transparency": {
                     "name": "Şeffaflığı Etkinleştir",
                     "note": "Ana pencerenin şeffaf olmasına el verir (yeniden başlatma gerekli)"
@@ -101,6 +108,47 @@
                 "debugLogs": {
                     "name": "Hata Ayıklama çıktıları",
                     "note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
+                },
+                "devTools": {
+                    "name": "Geliştirici Araçları"
+                }
+            },
+            "editor": {
+                "name": "Düzenleyici Seçenekleri",
+                "theme": {
+                    "name": "Tema",
+                    "note": "Kod düzenleyici için tema",
+                    "options": {
+                        "system": "Sistem",
+                        "vs-dark": "Karanlık",
+                        "vs": "Aydınlık",
+                        "hc-black": "Yüksek Siyah Kontrast",
+                        "hc-light": "Yüksek Aydınlık Kontrast"
+                    }
+                },
+                "lineNumbers": {
+                    "name": "Sıralı Sayılar"
+                },
+                "fontSize": {
+                    "name": "Yazı Tipi Büyüklüğü"
+                },
+                "minimap": {
+                    "name": "Ufak harita"
+                },
+                "quickSuggestions": {
+                    "name": "Hızlı Öneriler"
+                },
+                "insertSpaces": {
+                    "name": "Boşluk Ekleme"
+                },
+                "tabSize": {
+                    "name": "Sekme Büyüklüğü"
+                },
+                "renderWhitespace": {
+                    "options": {
+                        "all": "Her zaman",
+                        "none": "Asla"
+                    }
                 }
             }
         }
@@ -108,20 +156,40 @@
     "Addons": {
         "title": "{{author}} tarafından {{name}} v{{version}}",
         "byline": "{{author}} tarafından",
+        "store": "Mağaza",
         "reload": "Yeniden-Başlat",
         "addonSettings": "Ayarlar",
-        "website": "Website",
+        "website": "Dça Sitesi",
         "source": "Kaynak",
         "invite": "Destek Sunucusu",
         "donate": "Bağış",
-        "patreon": "Patreon",
         "name": "İsim",
         "author": "Yapımcı",
         "version": "Versiyon",
         "added": "Eklenim Tarihi",
         "modified": "Düzenlenme Tarihi",
+        "releaseDate": "Çıkış Tarihi",
+        "lastUpdated": "Son Güncelleme",
+        "isEnabled": "Aktif",
+        "popularity": "Popülerlik",
+        "isInstalled": "Yüklenenler",
+        "downloads": "İndirilenler",
+        "likes": "Beğeniler",
+        "listView": "Liste Bakışı",
+        "enableAll": "Hepsini Aktif Et",
+        "disableAll": "Hepsini Deaktif Et",
+        "search": {
+            "theme": {
+                "other": "{{count}} Tema Arat"
+            }
+        },
+        "results": {
+            "one": "{{count}} Sonuç",
+            "other": "{{count}} Sonuçlar"
+        },
         "editAddon": "Düzenle",
         "deleteAddon": "Sil",
+        "downloadAddon": "İndir",
         "confirmDelete": "{{name}} eklentisini silmek istediğinize emin misiniz?",
         "confirmationText": "{{name}} eklentisinde kaydedilmemiş değişiklikler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
         "enabled": "{{name}} başlatıldı.",
@@ -138,7 +206,22 @@
         "missingNameData": "META isim verisi yok.",
         "metaNotFound": "META bulunamadı.",
         "compileError": "Derlenemedi.",
-        "wasUnloaded": "{{name}} çıkarıldı."
+        "wasUnloaded": "{{name}} çıkarıldı.",
+        "blankSlateHeader": {
+            "theme": "Hiç bir temaya sahip değilsin!"
+        },
+        "new": "Yeni",
+        "updated": "Güncellenmiş",
+        "downloadCount": {
+            "one": "{{count}} İndirilen",
+            "other": "{{count}} İndirlenler"
+        },
+        "likeCount": {
+            "other": "{{count}} Beğeniler"
+        },
+        "tags": "Etiketlemeler",
+        "preview": "Önizleme",
+        "official": "Resmi"
     },
     "CustomCSS": {
         "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
@@ -164,7 +247,8 @@
         "restartNow": "Şimdi Yeniden Başlat",
         "restartLater": "Sonra Yeniden Başlat",
         "additionalInfo": "Ek Bilgi",
-        "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+        "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
+        "changelog": "Değişiklik Tablosu"
     },
     "Sorting": {
         "sortBy": "Göre Sırala",
@@ -175,5 +259,32 @@
     "WindowPrefs": {
         "enabledInfo": "Bu seçeneğin düzgün çalışması için şeffaf bir tema gerekiyor.\nWindows'da bu aero snapping ve maksimize etmeyi bozabilir.\n\nEtki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
         "disabledInfo": "Etki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+    },
+    "Updater": {
+        "updateFailed": "Güncelleme başarısız!",
+        "updateSuccessful": "Güncelleme Başarılı!",
+        "updateAvailable": "BetterDiscord'un s{{version}} güncellemesi yayınlandı",
+        "viewUpdates": "Güncellemeleri Gör",
+        "addonUpdateFailed": "{{name}} Güncellemesi Başarısız. Lütfem sonra yeniden deneyin.",
+        "checking": "Güncellemeler kontrol ediliyor!",
+        "finishedChecking": "Güncellemeleri kontrol etmeyi bitirildi!",
+        "checkForUpdates": "Güncellemeleri denetle!",
+        "updateAll": "Tümünü Güncelle!",
+        "noUpdatesAvailable": "Mevcut güncelleme yok.",
+        "versionAvailable": "Sürüm {{version}} artık kullanılabilir!",
+        "updateButton": "Güncelleme!"
+    },
+    "Settings": {
+        "customColor": "Özel Renk",
+        "resetSettings": "Ayarları Sıfırla",
+        "resetSettingsWarning": "Tüm ayarlarını varsayılan ayarlara sıfırlamak, bu işlem geri alınamaz."
+    },
+    "Socials": {
+        "twitter": "Bizi Takip Et!",
+        "github": "Bizi Yıldızla!"
+    },
+    "Paginator": {
+        "back": "Geri",
+        "next": "Sonraki"
     }
 }

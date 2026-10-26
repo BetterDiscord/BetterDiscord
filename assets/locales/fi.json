@@ -24,11 +24,11 @@
                 }
             },
             "window": {
+                "name": "Ikkuna-asetukset",
                 "removeMinimumSize": {
                     "name": "Poista vähimmäiskoko",
-                    "note": "Poistaa Discordin pakotetun vähimmäisikkunakoon 800x500"
+                    "note": "Poistaa Discordin pakotetun vähimmäisikkunakoon 940x500"
                 },
-                "name": "Ikkuna-asetukset",
                 "transparency": {
                     "name": "Ota läpinäkyvyys käyttöön",
                     "note": "Mahdollistaa pääikkunan läpinäkyvyyden (vaatii uudelleenkäynnistyksen)"
@@ -104,7 +104,6 @@
                     "note": "Tulostaa kaiken konsolista BetterDiscord-kansion debug.log-tiedostoon"
                 },
                 "devTools": {
-                    "name": "DevTools",
                     "note": "Mahdollistaa DevToolsin kytkemisen näppäinyhdistelmällä ctrl+shift+i"
                 }
             },
@@ -149,12 +148,12 @@
         "source": "Lähde",
         "invite": "Tuki-palvelin",
         "donate": "Lahjoita",
-        "patreon": "Patreon",
         "name": "Nimi",
         "author": "Luoja",
         "version": "Versio",
         "added": "lisäyspäivämäärä",
         "modified": "Muutospäivämäärä",
+        "isEnabled": "Otettu käyttöön",
         "editAddon": "Muokkaa",
         "deleteAddon": "Poista",
         "confirmDelete": "Haluatko varmasti poistaa {{name}}?",
@@ -174,7 +173,6 @@
         "metaNotFound": "META:a ei löytynyt.",
         "compileError": "Ei voitu koota. Katso lisätietoja konsolista.",
         "wasUnloaded": "{{name}} purettiin.",
-        "isEnabled": "Otettu käyttöön",
         "wasLoaded": "\n{{name}} v{{version}} ladattiin."
     },
     "CustomCSS": {

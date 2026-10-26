@@ -1,8 +1,7 @@
 {
     "Panels": {
         "plugins": "Pluginy",
-        "themes": "Témy",
-        "customcss": "Custom CSS"
+        "themes": "Témy"
     },
     "Collections": {
         "settings": {
@@ -23,11 +22,11 @@
                 }
             },
             "window": {
+                "name": "Vlastnosti Okna",
                 "removeMinimumSize": {
                     "name": "Zrušiť minimálnu velkosť",
-                    "note": "Zruší minimálnu veľkosť Discord okna 800x500"
+                    "note": "Zruší minimálnu veľkosť Discord okna 940x500"
                 },
-                "name": "Vlastnosti Okna",
                 "transparency": {
                     "name": "Povoliť priehľadnosť",
                     "note": "Povolí, aby bolo hlavné okno priehľadné (potrebný reštart)"
@@ -53,9 +52,7 @@
                 }
             },
             "customcss": {
-                "name": "Custom CSS",
                 "customcss": {
-                    "name": "Custom CSS",
                     "note": "Aktivuje kartu \"Custom CSS\""
                 },
                 "liveUpdate": {
@@ -87,7 +84,6 @@
                     "note": "Povolí spustenie debuggera pri stlačení F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
                     "note": "Pridá inštaláciu React Developer Tools do Discordu"
                 },
                 "inspectElement": {
@@ -114,7 +110,6 @@
         "source": "Zdroj",
         "invite": "Server podpory",
         "donate": "Prispieť",
-        "patreon": "Patreon",
         "name": "Meno",
         "author": "Autor",
         "version": "Verzia",
@@ -146,8 +141,7 @@
         "save": "Uložiť",
         "openNative": "Otvoriť v Systémovom Editore",
         "openDetached": "Oddeliť Okno",
-        "settings": "Nastavenia Editora",
-        "editorTitle": "Custom CSS Editor"
+        "settings": "Nastavenia Editora"
     },
     "Modals": {
         "confirmAction": "Ste si istý?",

@@ -23,11 +23,11 @@
                 }
             },
             "window": {
+                "name": "Preferinte în privința mărimii ferestrei",
                 "removeMinimumSize": {
                     "name": "Elimină mărimea minimă",
-                    "note": "Elimina marimea minima de 800x500 a ferestrei"
+                    "note": "Elimina marimea minima de 940x500 a ferestrei"
                 },
-                "name": "Preferinte în privința mărimii ferestrei",
                 "transparency": {
                     "name": "Activează Transparența",
                     "note": "Fă ca fereastra principală să fie transparentă (necesită repornire)"
@@ -87,7 +87,6 @@
                     "note": "Activează deschiderea debugger-ului la apasarea tastei F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
                     "note": "Instalează React Developer Tools in Discord"
                 },
                 "inspectElement": {
@@ -99,7 +98,6 @@
                     "note": "Opreste Discord-ul din a afișa mesajul \"Stai puțin!\""
                 },
                 "debugLogs": {
-                    "name": "Debug Logs",
                     "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
                 }
             }
@@ -114,7 +112,6 @@
         "source": "Sursă",
         "invite": "Susține Server-ul",
         "donate": "Donează",
-        "patreon": "Patreon",
         "name": "Nume",
         "author": "Autor",
         "version": "Versiune",
@@ -151,7 +148,6 @@
     },
     "Modals": {
         "confirmAction": "Ești sigur ?",
-        "okay": "Okay",
         "done": "Gata",
         "cancel": "Anulează",
         "nevermind": "Nu contează",

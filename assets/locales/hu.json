@@ -21,14 +21,37 @@
                 "mediaKeys": {
                     "name": "Médiavezérlő billentyűk letiltása",
                     "note": "Megakadályozza, hogy a Discord a videók lejátszása után átkalibrálja a médiavezérlő billentyűket."
+                },
+                "themeAttributes": {
+                    "name": "Téma Attributetok",
+                    "note": "Különböző elemekhez attribútumokat ad hozzá, hogy segítsen a témák kialakításában."
+                },
+                "notificationPosition": {
+                    "name": "Értesítés",
+                    "note": "Lehetővé teszi, hogy kiválassza, hol szeretné, hogy megjelenjenek az értesítések."
+                },
+                "notificationEnabled": {
+                    "name": "Értesítések megjelenítése",
+                    "note": "Megakadályozza vagy engedélyezi az értesítések megjelenítését a képernyőn."
+                }
+            },
+            "store": {
+                "name": "Addon Bolt",
+                "alwaysEnable": {
+                    "name": "Mindig engedélyezve",
+                    "note": "Ha alapértelmezés szerint engedélyezve van, az addon boltból letöltött kiegészítők engedélyezve lesznek."
+                },
+                "addonEmbeds": {
+                    "name": "Addon Embedek",
+                    "note": "Beágyazza az addon store kártyákat a csevegésbe."
                 }
             },
             "window": {
+                "name": "Ablak beállítások",
                 "removeMinimumSize": {
                     "name": "Minimális méret felülírása",
-                    "note": "Felülírja és eltávolítja a Discord kényszerített minimális 800x500-as ablakméretét"
+                    "note": "Felülírja és eltávolítja a Discord kényszerített minimális 940x500-as ablakméretét"
                 },
-                "name": "Ablak beállítások",
                 "transparency": {
                     "name": "Átlátszóság engedélyezése",
                     "note": "A főablak átláthatóvá tétele (újraindítást igényel)"
@@ -49,8 +72,17 @@
                     "note": "A pluginok és témák szerkesztése ebben a szerkesztőben",
                     "options": {
                         "detached": "Különálló ablak",
+                        "external": "Külső ablak",
                         "system": "Rendszer alapértelmezett"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "Frissítések automatikus ellenőrzése",
+                    "note": "Rendszeresen ellenőrzi az addonok és a BD mag frissítéseit"
+                },
+                "updateInterval": {
+                    "name": "Frissítési Intervalum",
+                    "note": "Milyen gyakran kell ellenőrizni az addon/core frissítéseket"
                 }
             },
             "customcss": {
@@ -77,6 +109,7 @@
                     "options": {
                         "settings": "Beállítások menü",
                         "detached": "Különálló ablak",
+                        "external": "Külső Ablak",
                         "system": "Rendszer alapértelmezett"
                     }
                 }
@@ -110,6 +143,17 @@
             },
             "editor": {
                 "name": "Szerkesztői beállítások",
+                "theme": {
+                    "name": "Téma",
+                    "note": "A kód szerkesztő témája",
+                    "options": {
+                        "system": "Rendszer",
+                        "vs-dark": "Sötét",
+                        "vs": "Világos",
+                        "hc-black": "Magas Kontraszt Fekete",
+                        "hc-light": "Magas Kontraszt Világos"
+                    }
+                },
                 "lineNumbers": {
                     "name": "Szakasz sorszámok",
                     "note": "Lehetővé teszi a szakasz sorszámok megjelenítését a szerkesztő oldalán"
@@ -130,6 +174,14 @@
                     "name": "Gyors javaslatok",
                     "note": "Engedélyezi az automatikus kitöltési javaslatok megjelenítését gépelés közben"
                 },
+                "insertSpaces": {
+                    "name": "Szóközök beillesztése",
+                    "note": "Szóközök beillesztése tabulátorok helyett"
+                },
+                "tabSize": {
+                    "name": "Tab Méret",
+                    "note": "A tabulátorok száma megegyezik a következővel"
+                },
                 "renderWhitespace": {
                     "name": "Fehér tér megjelenítése",
                     "note": "Szóközök megjelenítése a szerkesztőben",
@@ -145,18 +197,55 @@
     "Addons": {
         "title": "{{name}} v{{version}} {{author}} által",
         "byline": "{{author}} által",
+        "openFolder": {
+            "plugin": "Plugin Mappa Megnyitása",
+            "theme": "Téma Mappa Megnyitása"
+        },
+        "openStore": {
+            "plugin": "Plugin Bolt Megnyitása",
+            "theme": "Téma Bolt Megnyitása"
+        },
+        "storeMessage": {
+            "plugin": "Hivatalos közösségi pluginok böngészése és telepítése",
+            "theme": "Hivatalos közösségi témák böngészése és telepítése"
+        },
+        "store": "Bolt",
+        "viewInstalled": {
+            "plugin": "Telepített pluginok megtekintése",
+            "theme": "Telepített témák megtekintése"
+        },
         "reload": "Újratöltés",
         "addonSettings": "Beállítások",
         "website": "Weboldal",
         "source": "Forrás",
         "invite": "Támogatási szerver",
         "donate": "Támogatás",
-        "patreon": "Patreon",
         "name": "Név",
         "author": "Szerző",
         "version": "Verzió",
         "added": "Hozzáadás dátuma",
         "modified": "Módosítás dátuma",
+        "releaseDate": "Kiadási dátum",
+        "lastUpdated": "Utolsó frissítés",
+        "isEnabled": "Bekapcsolva",
+        "popularity": "Népszerűség",
+        "isInstalled": "Telepítve",
+        "downloads": "Letöltések",
+        "likes": "Lájkok",
+        "listView": "Lista nézet",
+        "gridView": "Rács nézet",
+        "enableAll": "Összes engedélyezése",
+        "disableAll": "Összes letiltása",
+        "enableAllWarning": {
+            "plugin": "Az összes bővítmény engedélyezése ideiglenes késleltetést és váratlan hibákat okozhat.\n\n(A Shift billentyű lenyomva tartásával kattintson, hogy kihagyja ezt a figyelmeztetést!)",
+            "theme": "Az összes téma engedélyezése ideiglenes késleltetést és váratlan hibákat okozhat.\n\n(A Shift billentyű lenyomva tartásával kattintson, hogy kihagyja ezt a figyelmeztetést!)"
+        },
+        "search": {
+            "plugin": {
+                "one": "Egy plugin keresése",
+                "other": "{{count}} plugin keresése"
+            }
+        },
         "editAddon": "Szerkesztés",
         "deleteAddon": "Törlés",
         "confirmDelete": "Biztos, hogy törölni akarja ezt: {{name}}?",
@@ -176,7 +265,6 @@
         "metaNotFound": "META nem található.",
         "compileError": "Sikertelen indítás. Részletekért lásd a konzolt.",
         "wasUnloaded": "{{name}} nem indult el.",
-        "isEnabled": "Bekapcsolva",
         "wasLoaded": "{{name}} v{{{version}} betöltődött."
     },
     "CustomCSS": {
@@ -228,5 +316,8 @@
         "noUpdatesAvailable": "Nincsenek elérhető frissítések.",
         "versionAvailable": "Verziófrissítés elérhető: {{version}}!",
         "updateButton": "Frissítés!"
+    },
+    "Paginator": {
+        "next": "Következő"
     }
 }

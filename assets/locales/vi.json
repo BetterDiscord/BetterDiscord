@@ -21,14 +21,33 @@
                 "mediaKeys": {
                     "name": "Vô Hiệu Hóa Phím Điều Khiển Phương Tiện",
                     "note": "Ngăn Discord kiểm soát phím điều khiển phương tiện sau khi xem video."
+                },
+                "themeAttributes": {
+                    "name": "Thuộc tính giao diện",
+                    "note": "Thêm thuộc tính cho nhiều thành phần khác nhau để hỗ trợ việc tạo giao diện."
+                },
+                "notificationPosition": {
+                    "name": "Thông báo",
+                    "note": "Cho phép bạn chọn nơi thông báo xuất hiện."
+                },
+                "notificationEnabled": {
+                    "name": "Hiển thị thông báo",
+                    "note": "Ngăn chặn hoặc cho phép thông báo hiển thị trên màn hình."
+                }
+            },
+            "store": {
+                "name": "Cửa hàng Tiện ích",
+                "alwaysEnable": {
+                    "name": "Luôn bật",
+                    "note": "Khi được bật theo mặc định, tiện ích sau khi được cài đặt từ cửa hàng tiện ích sẽ được bật."
                 }
             },
             "window": {
+                "name": "Cài Đặt Cửa Sổ",
                 "removeMinimumSize": {
                     "name": "Xóa Kích Thước Tối Thiểu",
-                    "note": "Xóa kích thước tối thiểu của Discord (800x500)"
+                    "note": "Xóa kích thước tối thiểu của Discord (940x500)"
                 },
-                "name": "Cài Đặt Cửa Sổ",
                 "transparency": {
                     "name": "Bật Cửa Sổ Trong Suốt",
                     "note": "Cho phép cửa sổ Discord nhìn xuyên thấu (cần khởi động lại)"
@@ -49,8 +68,16 @@
                     "note": "Nơi trình chỉnh sửa tiện ích và chủ đề hiển thị khi sửa",
                     "options": {
                         "detached": "Cửa Sổ Tách Rời",
+                        "external": "Cửa sổ độc lập",
                         "system": "Trình Chỉnh Sửa"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "Tự động kiểm tra các bản cập nhật"
+                },
+                "updateInterval": {
+                    "name": "Thời lượng kiểm tra bản cập nhật mới",
+                    "note": "Thời lượng kiểm tra bản cập nhật mới cho addon và lõi"
                 }
             },
             "customcss": {
@@ -77,6 +104,7 @@
                     "options": {
                         "settings": "Menu Cài Đặt",
                         "detached": "Cửa Sổ Riêng",
+                        "external": "Cửa sổ độc lập",
                         "system": "Trình Chỉnh Sửa"
                     }
                 }
@@ -88,7 +116,7 @@
                     "note": "Cho phép kích hoạt trình gỡ lỗi bằng cách nhấn F8 với DevTools mở"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
+                    "name": "Công cụ developer cho React",
                     "note": "Thêm cài đặt của React Developer Tools vào Discord"
                 },
                 "inspectElement": {
@@ -104,12 +132,23 @@
                     "note": "Lưu mọi thứ được hiển thị ở Console vào tệp debug.log trong thư mục BetterDiscord"
                 },
                 "devTools": {
-                    "name": "DevTools",
+                    "name": "Công cụ nhà phát triển",
                     "note": "Kích hoạt DevTools bằng tổ hợp Ctrl + Shift + i"
                 }
             },
             "editor": {
                 "name": "Cài đặt Trình Chỉnh Sửa",
+                "theme": {
+                    "name": "Chủ đề",
+                    "note": "Giao diện cho trình sửa code",
+                    "options": {
+                        "system": "Hệ thống",
+                        "vs-dark": "Tối",
+                        "vs": "Sáng",
+                        "hc-black": "Tối, tương phản cao",
+                        "hc-light": "Sáng, tương phản cao"
+                    }
+                },
                 "lineNumbers": {
                     "name": "Số Dòng",
                     "note": "Hiển thị số dòng ở cạnh của trình chỉnh sửa"
@@ -119,7 +158,6 @@
                     "note": "Kích thước phông chữ (pt) được sử dụng trong trình chỉnh sửa"
                 },
                 "minimap": {
-                    "name": "Minimap",
                     "note": "Hiển thị Minimap ở cạnh của trình chỉnh sửa"
                 },
                 "hover": {
@@ -129,6 +167,14 @@
                 "quickSuggestions": {
                     "name": "Đề Xuất Nhanh",
                     "note": "Hiển thị những đề xuất tự hoàn thành khi bạn gõ"
+                },
+                "insertSpaces": {
+                    "name": "Chèn ký tự cách",
+                    "note": "Chèn ký tự cách thay cho ký tự tab"
+                },
+                "tabSize": {
+                    "name": "Kích cỡ Tab",
+                    "note": "Số ký tự cách cho một ký tự tab"
                 },
                 "renderWhitespace": {
                     "name": "Hiển Thị Khoảng Trắng",
@@ -145,20 +191,63 @@
     "Addons": {
         "title": "{{name}} v{{version}} bởi {{author}}",
         "byline": "bởi {{author}}",
+        "openFolder": {
+            "plugin": "Mở thư mục Plugin",
+            "theme": "Mở thư mục Chủ đề"
+        },
+        "openStore": {
+            "plugin": "Mở Cửa hàng plugin",
+            "theme": "Mở Cửa hàng chủ đề"
+        },
+        "storeMessage": {
+            "plugin": "Tìm và cài đặt plugin chính thức từ cộng đồng",
+            "theme": "Tìm và cài đặt chủ đề chính thức từ cộng đồng"
+        },
+        "store": "Cửa hàng",
+        "viewInstalled": {
+            "plugin": "Xem plugin đã cài đặt",
+            "theme": "Xem chủ đề đã cài đặt"
+        },
         "reload": "Tải lại",
         "addonSettings": "Cài đặt",
         "website": "Trang web",
         "source": "Nguồn",
         "invite": "Máy chủ hỗ trợ",
         "donate": "Ủng hộ",
-        "patreon": "Patreon",
         "name": "Tên",
         "author": "Tác giả",
         "version": "Phiên bản",
         "added": "Ngày thêm",
         "modified": "Ngày sửa đổi",
+        "releaseDate": "Ngày phát hành",
+        "lastUpdated": "Cập nhật cuối cùng",
+        "isEnabled": "Đã kích hoạt",
+        "popularity": "Độ phổ biến",
+        "isInstalled": "Đã cài đặt",
+        "downloads": "Lượt tải về",
+        "likes": "Lượt thích",
+        "listView": "Dạng Danh Sách",
+        "gridView": "Dạng Ô",
+        "enableAll": "Kích hoạt tất cả",
+        "disableAll": "Vô hiệu hóa tất cả",
+        "enableAllWarning": {
+            "plugin": "Bật tất cả plugin có thể gây giật lag và lỗi không mong muốn.\n\n(Giữ phím Shift khi nhấn để bỏ qua thông báo này)",
+            "theme": "Bật tất cả chủ đề có thể gây giật lag và lỗi không mong muốn.\n\n(Giữ phím Shift khi nhấn để bỏ qua thông báo này)"
+        },
+        "search": {
+            "plugin": {
+                "other": "Tìm {{count}} plugin"
+            },
+            "theme": {
+                "other": "Tìm {{count}} chủ đề"
+            }
+        },
+        "results": {
+            "other": "{{count}} kết quả"
+        },
         "editAddon": "Chỉnh sửa",
         "deleteAddon": "Xóa",
+        "downloadAddon": "Tải xuống",
         "confirmDelete": "Bạn chắc chắn muốn xóa {{name}}?",
         "confirmationText": "Bạn có những thay đổi chưa lưu cho {{name}}. Đóng cửa sổ này sẽ xóa hết những thay đổi của bạn.",
         "enabled": "{{name}} đã được kích hoạt.",
@@ -171,15 +260,52 @@
         "methodError": "{{method}} không thể được kích hoạt.",
         "unknownAuthor": "Tác giả không xác định",
         "noDescription": "Không có miêu tả.",
+        "alreadyExists": {
+            "plugin": "Đã tồn tại plugin với tên {{name}}",
+            "theme": "Đã tồn tại chủ đề với tên {{name}}"
+        },
         "metaError": "Không thể phân tích META.",
         "missingNameData": "Thiếu dữ liệu tên META.",
         "metaNotFound": "Không thể tìm thấy META.",
         "compileError": "Không thể biên dịch. Vui lòng kiểm tra Console để biết thêm chi tiết.",
         "wasUnloaded": "{{name}} đã được gỡ.",
-        "isEnabled": "Đã kích hoạt",
+        "blankSlateHeader": {
+            "plugin": "Bạn không có plugin nào!",
+            "theme": "Bạn không có chủ đề nào!"
+        },
+        "blankSlateMessage": {
+            "plugin": "Lấy một vài plugin ở [trang web của chúng tôi]({{link}}) và thêm vào thư mục plugin nhé.",
+            "theme": "Lấy một vài chủ đề ở [trang web của chúng tôi]({{link}}) và thêm vào thư mục chủ đề nhé."
+        },
+        "blankSlateHeaderGeneric": "Bạn không có cái gì cả!",
+        "blankSlateMessageGeneric": "Bạn nên tải một vài cái.",
         "wasLoaded": "{{name}} v{{version}} đã được thêm.",
-        "listView": "Dạng Danh Sách",
-        "gridView": "Dạng Ô"
+        "failedToDownload": {
+            "plugin": "Lỗi khi tải plugin {{name}}",
+            "theme": "Lỗi khi tải chủ đề {{name}}"
+        },
+        "successfullyDownload": "Đã tải thành công {{name}}",
+        "alreadyInstalled": "{{name}} đã được cài đặt trước đó",
+        "failedToFetch": "Không thể lấy addon",
+        "new": "Mới",
+        "updated": "Đã cập nhật",
+        "downloadCount": {
+            "other": "{{count}} lượt tải"
+        },
+        "likeCount": {
+            "other": "{{count}} like"
+        },
+        "tags": "Thẻ",
+        "preview": "Xem trước",
+        "official": "Chính thức",
+        "manyEnabled": {
+            "plugin": {
+                "other": "{{count}} plugin đã được cài đặt."
+            },
+            "theme": {
+                "other": "{{count}} chủ đề đã được cài đặt."
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Bạn có những thay đổi chưa lưu cho CSS Tùy Chỉnh của bạn. Đóng cửa sổ này sẽ xóa hết những thay đổi của bạn.",
@@ -188,10 +314,18 @@
         "openNative": "Mở trong Trình Chỉnh Sửa",
         "openDetached": "Cửa Sổ Riêng",
         "settings": "Cài đặt Trình Chỉnh Sửa",
-        "editorTitle": "Trình Chỉnh Sửa CSS Tùy Chỉnh"
+        "editorTitle": "Trình Chỉnh Sửa CSS Tùy Chỉnh",
+        "cssInstallSuccess": "CSS đã được thêm vào CustomCSS.",
+        "cssInstalled": "CSS đã được cài đặt!",
+        "cssInstallError": "Lỗi khi thêm CSS vào CustomCSS.",
+        "cssReverted": "CSS đã được hoàn tác.",
+        "cssReverting": "Thay đổi sẽ được hoàn tác trong 10 giây nữa",
+        "cssKept": "Thay đổi CSS đã được thêm vĩnh viễn"
     },
     "Modals": {
         "confirmAction": "Bạn chắc chắn chứ?",
+        "installCss": "Bạn chắc chắn muốn thêm CSS này vào CustomCSS không?",
+        "addonCrashed": "Plugin này đã được vô hiệu hóa để tránh văng. Vui lòng báo cáo lỗi này đến người phát triển.",
         "okay": "OK",
         "done": "Xong",
         "cancel": "Hủy bỏ",
@@ -206,7 +340,9 @@
         "restartLater": "Khởi Động Lại Sau",
         "additionalInfo": "Thông Tin Bổ Sung",
         "restartPrompt": "Để có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
-        "changelog": "Nhật ký thay đổi"
+        "changelog": "Nhật ký thay đổi",
+        "debuglog": "Nhật ký gỡ lỗi của bạn đã vượt quá 100MB, bạn có muốn dọn dẹp không?",
+        "automaticallyEnable": "Tự động kích hoạt"
     },
     "Sorting": {
         "sortBy": "Lọc Bởi",
@@ -218,18 +354,49 @@
         "enabledInfo": "Lựa chọn này cần phải có một chủ đề trong suốt để có thể hoạt động đúng cách. Trên Windows, tính năng sắp xếp và thu phóng cửa số (Aero Snapping) và toàn cửa sổ có thể không hoạt động.\n\nĐể có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
         "disabledInfo": "Để có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?"
     },
+    "Toasts": {
+        "recoveryFailed": "Phục hồi không hoàn tất. Một vài tác vụ đã không thể hoàn thành."
+    },
     "Updater": {
         "updateFailed": "Cập Nhật Thất Bại!",
         "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
         "updateSuccessful": "Cập Nhật Thành Công!",
         "updateAvailable": "BetterDiscord có cập nhật mới (v{{version}})",
+        "viewUpdates": "Xem cập nhật",
+        "addonUpdaterNotificationTitle": "Trình cập nhật addon",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "other": "{{count}} plugin có bản cập nhật mới!"
+            },
+            "theme": {
+                "other": "{{count}} chủ đề có bản cập nhật mới!"
+            }
+        },
         "addonUpdated": "{{name}} đã được cập nhật lên phiên bản {{version}}!",
+        "addonUpdateFailed": "Lỗi khi cập nhật {{name}}. Xin vui lòng thử lại.",
         "checking": "Đang kiểm tra cập nhât...",
         "finishedChecking": "Kiểm tra cập nhật thành công!",
         "checkForUpdates": "Kiểm Tra Cập Nhật!",
         "updateAll": "Cập Nhật Mọi Thứ!",
         "noUpdatesAvailable": "Không có cập nhật mới.",
         "versionAvailable": "Phiên bản {{version}} đã có sẵn!",
+        "upToDateBlankslate": {
+            "plugin": "Tất cả plugin của bạn đều ở phiên bản mới nhất!",
+            "theme": "Tất cả chủ đề của bạn đều ở phiên bản mới nhất!"
+        },
         "updateButton": "Cập nhật!"
+    },
+    "Settings": {
+        "customColor": "Màu tùy chỉnh",
+        "resetSettings": "Đặt lại cài đặt",
+        "resetSettingsWarning": "Khi đặt lại cài đặt của bạn, tất cả cài đặt sẽ trở về trạng thái ban đầu và việc này không thể được hoàn tác."
+    },
+    "Socials": {
+        "twitter": "Hãy theo dõi chúng tôi!",
+        "github": "Hãy thả sao cho chúng tôi!"
+    },
+    "Paginator": {
+        "back": "Quay lại",
+        "next": "Tiếp theo"
     }
 }
