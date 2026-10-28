@@ -193,7 +193,7 @@ export default new class ThemeManager extends AddonManager<Theme> {
         DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
 
         if (theme.properties) {
-            for (const [name, prop] of Object.entries(theme.properties)) {
+            for (const [name, _] of Object.entries(theme.properties)) {
                 const saved = Manager.getValue(theme.slug, name);
                 if (saved !== undefined) {
                     document.documentElement.style.setProperty(`--${name}`, saved as string, "important");
@@ -246,7 +246,7 @@ export default new class ThemeManager extends AddonManager<Theme> {
         }
     }
 
-    updateStyleSheet(property: string, value: string, prop?: ThemePropertyState) {
+    updateStyleSheet(property: string, value: string) {
         document.documentElement.style.setProperty(`--${property}`, value, "important");
     }
 };

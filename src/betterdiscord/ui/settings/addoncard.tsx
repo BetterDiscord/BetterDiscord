@@ -19,16 +19,10 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {default as AddonManager} from "@modules/addonmanager";
 import type {Addon, AddonType} from "@typed/addon";
-import {
-    Manager,
-    type Theme,
-    type ThemePropertyState,
-import type {MouseEvent, ReactNode} from "react";
-import type {default as AddonManager, Addon} from "@modules/addonmanager";
 import Thememanager, {
     Manager,
     type Theme,
-    type ThemePropertyState, type ThemePropertyStateCheckbox,
+    type ThemePropertyState,
     type ThemePropertyStateSlider
 } from "@modules/thememanager.ts";
 import SettingItem from "@ui/settings/components/item";
@@ -143,7 +137,6 @@ function ThemeSettingsParse({name, data, addon}: {name: string, data: ThemePrope
         setValue(newValue);
         Thememanager.updateStyleSheet(name, newValue, data);
         Manager.updateFile(addon.slug, name, newValue);
-        console.log(newValue, name, data);
     };
 
     if (data.options) {

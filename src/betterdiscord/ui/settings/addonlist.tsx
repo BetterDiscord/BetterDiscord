@@ -21,8 +21,6 @@ import {type Addon, type AddonType} from "@typed/addon";
 import type AddonManager from "@modules/addonmanager";
 import type {Plugin} from "@modules/pluginmanager";
 import type {Theme} from "@modules/thememanager.ts";
-import type {ChangeEvent, MouseEvent, ReactNode} from "react";
-import type {Theme} from "@modules/thememanager.ts";
 
 type ViewTypes = "grid" | "list";
 type SortTypes = "name" | "author" | "version" | "added" | "modified" | "isEnabled";
