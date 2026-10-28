@@ -33,8 +33,7 @@ const DefaultSettings = [
         collapsible: true,
         shown: false,
         settings: [
-            {type: "switch", id: "bdAddonStore", value: true},
-            {type: "switch", id: "alwaysEnable", value: false},
+            {type: "switch", id: "alwaysEnable", value: true},
             {type: "switch", id: "addonEmbeds", value: true}
         ]
     },
@@ -45,8 +44,8 @@ const DefaultSettings = [
         shown: false,
         settings: [
             {type: "switch", id: "customcss", value: true},
-            {type: "switch", id: "liveUpdate", value: false},
-            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}]},
+            {type: "switch", id: "liveUpdate", value: true, enableWith: "customcss"},
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "external"}, {value: "system"}], enableWith: "customcss"},
         ]
     },
     {
@@ -63,7 +62,8 @@ const DefaultSettings = [
             {type: "switch", id: "insertSpaces", value: false},
             {type: "number", id: "tabSize", min: 1, value: 4},
             {type: "number", id: "fontSize", min: 2, value: 14},
-            {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]}
+            {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]},
+            {type: "switch", id: "alwaysOnTop", value: false}
         ]
     },
     {
@@ -74,9 +74,12 @@ const DefaultSettings = [
         settings: [
             {type: "switch", id: "transparency", value: false},
             {type: "switch", id: "removeMinimumSize", value: false},
-            {type: "switch", id: "frame", value: false},
-            // MacOS exclusive
-            {type: "switch", id: "inAppTrafficLights", value: false, disabled: process.env.BETTERDISCORD_NATIVE_FRAME === "true", hidden: process.platform !== "darwin"}
+            {type: "switch", id: "frame", value: false, enableWith: "roundedCorners"},
+            {type: "switch", id: "roundedCorners", value: true, disableWith: "frame", hidden: process.platform === "darwin"},
+            {type: "switch", id: "acceptFirstMouse", value: false, hidden: process.platform !== "darwin"},
+            {type: "dropdown", id: "vibrancy", hidden: process.platform !== "darwin", value: "none", options: [{value: "none"}, {value: "titlebar"}, {value: "selection"}, {value: "menu"}, {value: "popover"}, {value: "sidebar"}, {value: "header"}, {value: "sheet"}, {value: "window"}, {value: "hud"}, {value: "fullscreen-ui"}, {value: "tooltip"}, {value: "content"}, {value: "under-window"}, {value: "under-page"}]},
+            {type: "dropdown", id: "visualEffectState", hidden: process.platform !== "darwin", value: "followWindow", options: [{value: "followWindow"}, {value: "active"}, {value: "inactive"}]},
+            {type: "dropdown", id: "backgroundMaterial", hidden: process.platform !== "win32", value: "auto", options: [{value: "auto"}, {value: "none"}, {value: "mica"}, {value: "acrylic"}, {value: "tabbed"}]}
         ]
     },
     {
@@ -91,7 +94,7 @@ const DefaultSettings = [
             {type: "switch", id: "reactDevTools", value: false, enableWith: "devTools"},
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
-            {type: "switch", id: "recovery", value: true, enableWith: "devTools"},
+            {type: "switch", id: "webpackSourceViewer", value: true, enableWith: "devTools"},
             {type: "switch", id: "canary", value: config.isCanary, hidden: true},
         ]
     }
@@ -151,7 +154,7 @@ if (config.isDevelopment) {
                     stickToMarkers: false
                 },
                 {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
-                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
+                {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultColor: "#ffffff"},
             ]
         } as SettingsCategory
     );
@@ -221,8 +224,6 @@ export interface RadioOption<T> {
     value: T;
     description?: string;
     color?: string;
-    /** @deprecated */
-    desc?: string;
 }
 
 export interface RadioSetting<T> extends ValueSettingItem<T> {
@@ -278,7 +279,11 @@ export interface MultipleFileSetting extends ValueSettingItem<string[]> {
 
 export type FileSetting = SingleFileSetting | MultipleFileSetting;
 
-export type Setting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
+type BaseSetting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
+
+export type Setting<T = any> = Omit<BaseSetting<T>, "defaultValue"> & {
+    defaultValue?: never | unknown | any | T;
+};
 
 export interface SettingsCategory {
     type: "category";

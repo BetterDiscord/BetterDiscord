@@ -1,0 +1,426 @@
+{
+    "Panels": {
+        "plugins": "תוספים",
+        "themes": "ערכות עיצוב",
+        "customcss": "CSS מותאם אישית",
+        "updates": "עדכונים"
+    },
+    "Collections": {
+        "settings": {
+            "name": "הגדרות",
+            "general": {
+                "name": "כללי",
+                "voiceDisconnect": {
+                    "name": "ניתוק קול",
+                    "note": "ניתוק משרת הקול בעת סגירת דיסקורד"
+                },
+                "showToasts": {
+                    "name": "הצג טוסטים",
+                    "note": "מציג התראה קטנה עבור מידע חשוב"
+                },
+                "mediaKeys": {
+                    "name": "השבתת מקשי מדיה",
+                    "note": "מונע מדיסקורד לחטוף את מקשי המדיה שלך לאחר הפעלת סרטון."
+                },
+                "themeAttributes": {
+                    "name": "תכונות ערכת נושא",
+                    "note": "מוסיף מאפיינים לאלמנטים שונים כדי לסייע ביצירת נושאים."
+                },
+                "notificationPosition": {
+                    "name": "הודע",
+                    "note": "מאפשר לך לבחור היכן ברצונך שיופיעו התראות."
+                },
+                "notificationEnabled": {
+                    "name": "הצג התראות",
+                    "note": "מונע או מאפשר הצגת התראות על המסך."
+                }
+            },
+            "store": {
+                "name": "חנות תוספים",
+                "alwaysEnable": {
+                    "name": "פועל תמיד",
+                    "note": "כאשר תוספים אלה מופעלים כברירת מחדל, הם יופעלו."
+                },
+                "addonEmbeds": {
+                    "name": "הטמעת תוספים",
+                    "note": "מטמיע את כרטיסי חנות התוספים בצ'אט."
+                }
+            },
+            "window": {
+                "name": "העדפות חלון",
+                "removeMinimumSize": {
+                    "name": "הסר את הגודל המינימלי",
+                    "note": "מסיר את גודל החלון המינימלי הכפוי של דיסקורד של 940x500"
+                },
+                "transparency": {
+                    "name": "הפעל שקיפות",
+                    "note": "מאפשר שקיפות בחלון הראשי (דורש הפעלה מחדש)"
+                },
+                "frame": {
+                    "name": "מסגרת חלון",
+                    "note": "מוסיף את מסגרת החלון המקורית של מערכת ההפעלה לחלון הראשי"
+                }
+            },
+            "addons": {
+                "name": "מנהל התוספים",
+                "addonErrors": {
+                    "name": "הצג שגיאות תוספים",
+                    "note": "מציג מודאל עם שגיאות תוסף/תבנית"
+                },
+                "editAction": {
+                    "name": "עריכת פעולה",
+                    "note": "היכן מופיעים תוספים וערכות נושא בעת עריכה",
+                    "options": {
+                        "detached": "חלון מנותק",
+                        "external": "חלון חיצוני",
+                        "system": "עורך המערכת"
+                    }
+                },
+                "checkForUpdates": {
+                    "name": "בדיקה אוטומטית של עדכונים",
+                    "note": "בודק מעת לעת אם יש עדכונים לתוספים ול-BD הליבה שלך"
+                },
+                "updateInterval": {
+                    "name": "מרווח בדיקת עדכון",
+                    "note": "באיזו תדירות לבדוק עדכוני תוספים/ליבות"
+                }
+            },
+            "customcss": {
+                "name": "CSS מותאם אישית",
+                "customcss": {
+                    "name": "CSS מותאם אישית",
+                    "note": "מפעיל את הכרטיסייה CSS מותאם אישית"
+                },
+                "liveUpdate": {
+                    "name": "עדכון חי",
+                    "note": "מעדכן את ה-css תוך כדי הקלדה"
+                },
+                "startDetached": {
+                    "name": "התחל מנותק",
+                    "note": "לחיצה על הכרטיסייה CSS מותאם אישית פותחת את העורך בחלון נפרד"
+                },
+                "nativeOpen": {
+                    "name": "פתח בעורך המקורי",
+                    "note": "לחיצה על הכרטיסייה CSS מותאם אישית פותחת את קובץ ה-CSS המותאם אישית שלך בעורך המקורי שלך"
+                },
+                "openAction": {
+                    "name": "מיקום העורך",
+                    "note": "היכן אמור להיפתח CSS מותאם אישית כברירת מחדל",
+                    "options": {
+                        "settings": "תפריט הגדרות",
+                        "detached": "חלון מנותק",
+                        "external": "חלון חיצוני",
+                        "system": "עורך המערכת"
+                    }
+                }
+            },
+            "developer": {
+                "name": "אפשרויות למפתחים",
+                "debuggerHotkey": {
+                    "name": "מקש קיצור לניפוי באגים",
+                    "note": "מאפשר הפעלת ניפוי שגיאות בעת לחיצה על F8 כאשר כלי הפיתוח פתוחים"
+                },
+                "reactDevTools": {
+                    "name": "כלי פיתוח של React",
+                    "note": "מזריק את ההתקנה המקומית שלך של כלי פיתוח React לתוך Discord"
+                },
+                "inspectElement": {
+                    "name": "מקש קיצור לבדיקת אלמנט",
+                    "note": "מפעיל את מקש הקיצור לבדיקת אלמנט (ctrl + shift + c) הנפוץ ברוב הדפדפנים"
+                },
+                "devToolsWarning": {
+                    "name": "אזהרת עצירת כלי פיתוח",
+                    "note": "מונע מדיסקורד להדפיס את הודעת ה\"המתנה!\" שלהם"
+                },
+                "debugLogs": {
+                    "name": "יומני ניפוי באגים",
+                    "note": "מוציא את כל מה שקורה מהקונסול לקובץ debug.log בתיקיית BetterDiscord"
+                },
+                "devTools": {
+                    "name": "כלי פיתוח",
+                    "note": "מאפשר הפעלת כלי פיתוח באמצעות ctrl+shift+i"
+                }
+            },
+            "editor": {
+                "name": "אפשרויות עורך",
+                "theme": {
+                    "name": "ערכת נושא",
+                    "note": "ערכת הנושא של עורך הקוד",
+                    "options": {
+                        "system": "מערכת",
+                        "vs-dark": "כהה",
+                        "vs": "בהיר",
+                        "hc-black": "שחור בניגודיות גבוהה",
+                        "hc-light": "אור ניגודיות גבוהה"
+                    }
+                },
+                "lineNumbers": {
+                    "name": "מספרי שורה",
+                    "note": "מאפשר הצגת מספרי שורות בצד העורך"
+                },
+                "fontSize": {
+                    "name": "גודל גופן",
+                    "note": "גודל הגופן (pt) לשימוש בעורך"
+                },
+                "minimap": {
+                    "name": "מינימפה",
+                    "note": "מאפשר הצגת מינימפת הקוד בצד העורך"
+                },
+                "hover": {
+                    "name": "טיפים לכלים להפניה",
+                    "note": "מאפשר הצגת תיאורי הכלים של ההפניה בעת ריחוף מעל כללים ובוחרים"
+                },
+                "quickSuggestions": {
+                    "name": "הצעות מהירות",
+                    "note": "מאפשר הצגת הצעות להשלמה אוטומטית תוך כדי הקלדה"
+                },
+                "insertSpaces": {
+                    "name": "הוספת רווחים",
+                    "note": "הוספת רווחים במקום טאבים"
+                },
+                "tabSize": {
+                    "name": "גודל הכרטיסייה",
+                    "note": "מספר הרווחים ש-Tab שווה לו"
+                },
+                "renderWhitespace": {
+                    "name": "הצג רווח לבן",
+                    "note": "מתי העורך צריך להציג רווחים לבנים",
+                    "options": {
+                        "all": "תמיד",
+                        "none": "אף פעם",
+                        "selection": "בחירה"
+                    }
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} מאת {{author}}",
+        "byline": "מאת {{author}}",
+        "openFolder": {
+            "plugin": "פתח את תיקיית התוספים",
+            "theme": "פתיחת תיקיית ערכות נושא"
+        },
+        "openStore": {
+            "plugin": "פתח את חנות התוספים",
+            "theme": "פתח את חנות העיצובים"
+        },
+        "storeMessage": {
+            "plugin": "עיון והתקנת תוספים רשמיים של הקהילה",
+            "theme": "עיון והתקנה של ערכות נושא רשמיות של הקהילה"
+        },
+        "store": "חנות",
+        "viewInstalled": {
+            "plugin": "הצג תוספים מותקנים",
+            "theme": "הצג ערכות נושא מותקנות"
+        },
+        "reload": "טען מחדש",
+        "addonSettings": "הגדרות",
+        "website": "אתר אינטרנט",
+        "source": "מקור",
+        "invite": "שרת תמיכה",
+        "donate": "תרום",
+        "name": "שם",
+        "author": "מחבר",
+        "version": "גירסה",
+        "added": "תאריך ההזמנה",
+        "modified": "תאריך עדכון",
+        "releaseDate": "תאריך הוצאה",
+        "lastUpdated": "העדכון אחרון",
+        "isEnabled": "פעיל",
+        "popularity": "פופולריות",
+        "isInstalled": "הותקן",
+        "downloads": "הורדות",
+        "likes": "לייקים",
+        "listView": "תצוגת רשימה",
+        "gridView": "תצוגת רשת",
+        "enableAll": "אפשר הכל",
+        "disableAll": "השבת הכל",
+        "enableAllWarning": {
+            "plugin": "הפעלת כל התוספים עלולה לגרום להשהיה זמנית ושגיאות בלתי צפויות.\n\n(החזק את מקש shift תוך כדי לחיצה כדי לדלג על הנחיה זו!)",
+            "theme": "הפעלת כל התבניות עלולה לגרום להשהיה זמנית ושגיאות בלתי צפויות.\n\n(החזק את מקש shift תוך כדי לחיצה כדי לדלג על הנחיה זו!)"
+        },
+        "search": {
+            "plugin": {
+                "one": "חפש תוסף אחד",
+                "two": "חפש {{count}} תוספים",
+                "other": "חפש {{count}} תוספים"
+            },
+            "theme": {
+                "one": "חפש נושא אחד",
+                "two": "חפש {{count}} ערכות נושא",
+                "other": "חפש {{count}} ערכות נושא"
+            }
+        },
+        "results": {
+            "one": "תוצאה {{count}}",
+            "two": "{{count}} תוצאות",
+            "other": "{{count}} תוצאות"
+        },
+        "editAddon": "ערוך",
+        "deleteAddon": "מחק",
+        "downloadAddon": "הורד",
+        "confirmDelete": "האם אתה בטוח שברצונך למחוק את {{name}}?",
+        "confirmationText": "יש לך שינויים שלא נשמרו ב-{{name}}. סגירת חלון זה תגרום לאובדן כל השינויים הללו.",
+        "enabled": "{{name}} הופעל.",
+        "disabled": "{{name}} הושבת.",
+        "couldNotEnable": "לא ניתן היה להפעיל את {{name}}.",
+        "couldNotDisable": "לא ניתן היה להשבית את {{name}}.",
+        "couldNotStart": "לא ניתן היה להפעיל את {{name}}.",
+        "couldNotStop": "לא ניתן היה לעצור את {{name}}.",
+        "settingsError": "לא ניתן היה לפתוח את ההגדרות עבור {{name}}",
+        "methodError": "לא ניתן היה לבטל את {{method}}.",
+        "unknownAuthor": "מחבר/ת לא ידוע/ה",
+        "noDescription": "תיאור לא סופק.",
+        "alreadyExists": {
+            "plugin": "כבר קיים תוסף בשם {{name}}",
+            "theme": "כבר קיימת ערכת נושא בשם {{name}}"
+        },
+        "metaError": "לא ניתן היה לנתח את ה-META.",
+        "missingNameData": "נתוני שם חסרים במטה.",
+        "metaNotFound": "META לא נמצא.",
+        "compileError": "לא ניתן היה לקמפל. ראה פרטים במסוף.",
+        "wasUnloaded": "{{name}} פורק.",
+        "blankSlateHeader": {
+            "plugin": "אין לך תוספים!",
+            "theme": "אין לך ערכות נושא!"
+        },
+        "blankSlateMessage": {
+            "plugin": "קחו כמה מהאתר שלנו ({{link}}) והוסיפו אותם לתיקיית התוספים שלכם.",
+            "theme": "קחו כמה מהאתר שלנו ({{link}}) והוסיפו אותם לתיקיית העיצוב שלכם."
+        },
+        "blankSlateHeaderGeneric": "אין לך כלום!",
+        "blankSlateMessageGeneric": "כנראה שכדאי לך להשיג קצת.",
+        "wasLoaded": "הגרסה {{name}} v{{version}} נטענה.",
+        "failedToDownload": {
+            "plugin": "הורדת התוסף {{name}} נכשלה",
+            "theme": "הורדת ערכת הנושא {{name}} נכשלה"
+        },
+        "successfullyDownload": "הורדת {{name}} בוצעה בהצלחה",
+        "alreadyInstalled": "{{name}} כבר מותקן",
+        "failedToFetch": "לא ניתן להשיג תוספים",
+        "new": "חדש",
+        "updated": "עודכן",
+        "downloadCount": {
+            "one": "הורדה {{count}}",
+            "two": "{{count}} הורדות",
+            "other": "{{count}} הורדות"
+        },
+        "likeCount": {
+            "one": "לייק {{count}}",
+            "two": "{{count}} לייקים",
+            "other": "{{count}} לייקים"
+        },
+        "tags": "תגים",
+        "preview": "תצוגה מקדימה",
+        "official": "רשמי",
+        "manyEnabled": {
+            "plugin": {
+                "one": "תוסף אחד הופעל.",
+                "two": "{{count}} תוספים הופעלו.",
+                "other": "{{count}} תוספים הופעלו."
+            },
+            "theme": {
+                "one": "ערכת נושא אחת הופעלה.",
+                "two": "{{count}} ערכות נושא הופעלו.",
+                "other": "{{count}} ערכות נושא הופעלו."
+            }
+        }
+    },
+    "CustomCSS": {
+        "confirmationText": "יש לך שינויים שלא נשמרו ב-CSS המותאם אישית שלך. סגירת חלון זה תגרום לאיבוד כל השינויים הללו.",
+        "update": "עדכן",
+        "save": "שמור",
+        "openNative": "פתח בעורך המערכת",
+        "openDetached": "ניתוק חלון",
+        "settings": "הגדרות העורך",
+        "editorTitle": "עורך CSS מותאם אישית",
+        "cssInstallSuccess": "CSS נוסף בהצלחה ל-CustomCSS.",
+        "cssInstalled": "CSS הותקן!",
+        "cssInstallError": "הוספת CSS ל-CustomCSS נכשלה.",
+        "cssReverted": "CSS הוחזר לגרסה הקודמת.",
+        "cssReverting": "השינויים יבוטלו בעוד 10 שניות",
+        "cssKept": "שינויי CSS נשמרים לצמיתות"
+    },
+    "Modals": {
+        "confirmAction": "האם אתה בטוח?",
+        "installCss": "האם אתה בטוח שאתה רוצה להוסיף את ה-CSS הזה ל-CSS המותאם אישית שלך?",
+        "addonCrashed": "תוסף זה הושבת כדי למנוע קריסות. אנא דווח על בעיה זו למפתח.",
+        "okay": "אישור",
+        "done": "בוצע",
+        "cancel": "ביטול",
+        "nevermind": "לא משנה",
+        "close": "סגירה",
+        "name": "שם",
+        "message": "הודעה",
+        "error": "שגיאה",
+        "addonErrors": "שגיאות תוספים",
+        "restartRequired": "נדרש הפעלה מחדש",
+        "restartNow": "אתחל כעת",
+        "restartLater": "אתחל מחדש מאוחר יותר",
+        "additionalInfo": "מידע נוסף",
+        "restartPrompt": "כדי שזה ייכנס לתוקף, יש להפעיל מחדש את דיסקורד. האם ברצונך להפעיל מחדש עכשיו?",
+        "changelog": "רשימת שינויים",
+        "debuglog": "קובץ יומן ניפוי השגיאות שלך חרג מ-100MB, האם ברצונך לנקות את היומן?",
+        "automaticallyEnable": "הפעלה אוטומטית"
+    },
+    "Sorting": {
+        "sortBy": "מיין לפי",
+        "order": "סדר",
+        "ascending": "עולה",
+        "descending": "יורד"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "אפשרות זו דורשת ערכת נושא שקופה כדי לפעול כראוי. ב-Windows, הדבר עלול לשבש את הצילום האווירי והמקסום.\n\nכדי שזה ייכנס לתוקף, יש להפעיל מחדש את דיסקורד. האם ברצונך להפעיל מחדש כעת?",
+        "disabledInfo": "כדי שזה ייכנס לתוקף, יש להפעיל מחדש את דיסקורד. האם ברצונך להפעיל מחדש עכשיו?"
+    },
+    "Toasts": {
+        "recoveryFailed": "השחזור לא הושלם. חלק מהפעולות נכשלו."
+    },
+    "Updater": {
+        "updateFailed": "עדכון נכשל!",
+        "updateFailedMessage": "עדכון BetterDiscord נכשל. אנא הורד את הגרסה האחרונה של תוכנית ההתקנה מהאתר שלנו (https://betterdiscord.app/) והתקן מחדש.",
+        "updateSuccessful": "העדכון הצליח!",
+        "updateAvailable": "ל-BetterDiscord יש עדכון חדש (v{{version}})",
+        "viewUpdates": "הצג עדכונים",
+        "addonUpdaterNotificationTitle": "עדכון תוספים",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "תוסף אחד קיבל עדכון!",
+                "two": "ל-{{count}} תוספים יש עדכונים!",
+                "other": "ל-{{count}} תוספים יש עדכונים!"
+            },
+            "theme": {
+                "one": "לערכת נושא אחת יש עדכון!",
+                "two": "ל-{{count}} ערכות נושא יש עדכונים!",
+                "other": "ל-{{count}} ערכות נושא יש עדכונים!"
+            }
+        },
+        "addonUpdated": "גרסה {{name}} עודכנה לגרסה {{version}}!",
+        "addonUpdateFailed": "עדכון {{name}} נכשל. אנא נסה שוב מאוחר יותר.",
+        "checking": "בודק אם קיימים עדכונים!",
+        "finishedChecking": "סיימתי לבדוק אם יש עדכונים!",
+        "checkForUpdates": "בדוק עידכונים!",
+        "updateAll": "עדכן הכל!",
+        "noUpdatesAvailable": "אין עדכונים זמינים.",
+        "versionAvailable": "גרסה {{version}} זמינה כעת!",
+        "upToDateBlankslate": {
+            "plugin": "נראה שכל התוספים שלך מעודכנים!",
+            "theme": "נראה שכל התבניות שלך מעודכנות!"
+        },
+        "updateButton": "העדכון!"
+    },
+    "Settings": {
+        "customColor": "צבע מותאם אישית",
+        "resetSettings": "איפוס הגדרות",
+        "resetSettingsWarning": "איפוס ההגדרות שלך מחזיר את כולן למצב המקורי, לא ניתן לבטל פעולה זו."
+    },
+    "Socials": {
+        "twitter": "עקבו אחרינו!",
+        "github": "כוכבו אותנו!"
+    },
+    "Paginator": {
+        "back": "חזור",
+        "next": "הבא"
+    }
+}

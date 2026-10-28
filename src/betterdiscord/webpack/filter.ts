@@ -45,8 +45,12 @@ export function byRegex(search: RegExp, filter: Webpack.ExportedOnlyFilter = m =
         const method = filter(module);
         if (!method) return false;
         let methodString = "";
-        try {methodString = method.toString([]);}
-        catch {methodString = method.toString();}
+        try {
+            methodString = method.toString([]);
+        }
+        catch {
+            methodString = method.toString();
+        }
         return methodString.search(search) !== -1;
     }, {
         search,
@@ -100,7 +104,9 @@ export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
 
             return true;
         }
-        catch {return false;}
+        catch {
+            return false;
+        }
     }, {
         strings
     });
@@ -119,6 +125,34 @@ export function byStoreName(name: string): Webpack.ExportedOnlyFilter {
         return module?._dispatchToken && module?.getName?.() === name;
     }, {
         name
+    });
+}
+
+export function byDestructure(...properties: string[]): Webpack.ExportedOnlyFilter {
+    return assign(module => {
+        if (typeof module !== "function") return false;
+
+        const str = String(module);
+        let end = str.indexOf("}=");
+
+        while (end !== -1) {
+            const start = str.lastIndexOf("{", end);
+
+            if (start !== -1) {
+                const names = str
+                    .substring(start + 1, end)
+                    .split(",")
+                    .map(p => p.split(":")[0].split("=")[0].trim());
+
+                if (properties.every(p => names.includes(p))) return true;
+            }
+
+            end = str.indexOf("}=", end + 2);
+        }
+
+        return false;
+    }, {
+        properties
     });
 }
 

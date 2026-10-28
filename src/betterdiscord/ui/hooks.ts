@@ -1,4 +1,4 @@
-import {useInsertionEffect, useReducer, useRef} from "react";
+import {useInsertionEffect, useMemo, useReducer, useRef} from "react";
 import type Store from "../stores/base";
 import {shallowEqual} from "fast-equals";
 import type {FluxStore} from "@typed/discord/modules";
@@ -74,3 +74,28 @@ export function useStateFromStores<T>(stores: StoreType | StoreType[], factory: 
 export function useForceUpdate() {
     return useReducer<number, any>((num) => num + 1, 0);
 }
+
+type AnyFN = (...args: any[]) => any;
+
+export function useCallbackRef<T extends AnyFN>(callback: T): T {
+    const ref = useRef(callback);
+
+    ref.current = callback;
+
+    return useMemo(() => {
+        const handler: ProxyHandler<typeof ref.current> = {
+            get [Symbol.for("callback")]() {
+                return ref.current;
+            }
+        };
+
+        for (const key of Reflect.ownKeys(Reflect) as Array<keyof typeof Reflect>) {
+            if (typeof Reflect[key] !== "function") continue;
+
+            // @ts-expect-error TS Sucks
+            handler[key] = (_, ...args) => Reflect[key](ref.current, ...args);
+        }
+
+        return new Proxy(ref.current, handler);
+    }, []);
+};

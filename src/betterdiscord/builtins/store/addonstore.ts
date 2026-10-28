@@ -10,18 +10,17 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getLazy, getLazyBySource, getWithKey} from "@webpack";
+import {Filters, getBySource, getLazy, getLazyByStrings} from "@webpack";
 import {findInTree} from "@common/utils";
-import DiscordModules from "@modules/discordmodules";
 import {getInternalInstance, getOwnerInstance} from "@utils/react";
-
+import type {Webpack} from "@typed/discord";
 
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;
 
-const PROTOCOL_REGEX = /^<betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/\s]+)\/?>/i;
-const APP_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/]+)\/?$/i;
+const PROTOCOL_REGEX = /^<betterdiscord:\/\/store\/([^/\s]+)\/?>/i;
+const APP_PROTOCOL_REGEX = /^betterdiscord:\/\/store\/([^/]+)\/?$/i;
 
 const ADDON_REGEX = new RegExp([
     PROTOCOL_REGEX.source.slice(1),
@@ -90,27 +89,22 @@ export default new class AddonStoreBuiltin extends Builtin {
 
     async initialize() {
         RemoteAPI.addProtocolListener((url) => {
-            if (!Settings.get(this.collection, this.category, this.id)) return;
-
             const match = url.match(APP_PROTOCOL_REGEX);
             if (!match) return;
 
             AddonStore.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
         });
 
+        this.patchEmbeds();
+        this.patchLinkOpener();
+
+        this.extractDiscordProtocolList().push("betterdiscord:");
+
         return super.initialize();
     }
 
     get name() {return "AddonStore";}
     get category() {return "store";}
-    get id() {return "bdAddonStore";}
-
-    async enabled() {
-        this.patchEmbeds();
-        this.patchLinkOpener();
-
-        this.extractDiscordProtocolList().push("betterdiscord:");
-    }
 
     /** The patches are slightly late sometimes, so this will update chat */
     forceUpdateChat() {
@@ -133,11 +127,9 @@ export default new class AddonStoreBuiltin extends Builtin {
         }
     }
 
-    private linkOpener?: Generator;
+    private linkOpener?: Webpack.ModuleWithKey;
     async patchLinkOpener() {
-        const [module, key] = this.linkOpener ??= getWithKey((m) => String(m).includes(".trackAnnouncementMessageLinkClicked("), {
-            target: await getLazyBySource([".trackAnnouncementMessageLinkClicked("])
-        });
+        const [module, key] = this.linkOpener ??= (await getLazyByStrings<Webpack.ModuleWithKey>([".trackAnnouncementMessageLinkClicked("], {searchExports: true, withKey: true}))!;
 
         this.before(module, key, (_, args) => {
             if (args[0].href) {
@@ -158,25 +150,10 @@ export default new class AddonStoreBuiltin extends Builtin {
     private extractDiscordProtocolList() {
         if (this.protocolList) return this.protocolList;
 
-        let protocols: string[] = [];
-
-        const link = DiscordModules.LinkParser;
-
-        const includes = Array.prototype.includes;
-        Array.prototype.includes = function (...args) {
-            if (includes.call(this, "discord:")) {
-                Array.prototype.includes = includes;
-                protocols = this as string[];
-
-                return false;
-            }
-
-            return includes.apply(this, args);
-        };
-
-        link.parse(["", "link", "betterdiscord://foo/bar"]);
-
-        return this.protocolList = protocols;
+        return this.protocolList = getBySource(["discord:", "mailto:"], {
+            searchDefault: false,
+            declarationFilter: x => Array.isArray(x) && x.includes("discord:")
+        }) || [];
     }
 
     async patchEmbeds() {
@@ -233,14 +210,14 @@ export default new class AddonStoreBuiltin extends Builtin {
         this.forceUpdateChat();
     }
 
-    async disabled() {
-        const list = this.extractDiscordProtocolList();
-        const index = list.indexOf("betterdiscord:");
-        if (index !== -1) {
-            list.splice(index, 1);
-        }
+    // async disabled() {
+    //     const list = this.extractDiscordProtocolList();
+    //     const index = list.indexOf("betterdiscord:");
+    //     if (index !== -1) {
+    //         list.splice(index, 1);
+    //     }
 
-        this.unpatchAll();
-        this.forceUpdateChat();
-    }
+    //     this.unpatchAll();
+    //     this.forceUpdateChat();
+    // }
 };

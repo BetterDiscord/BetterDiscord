@@ -2,6 +2,7 @@ import electron, {ipcRenderer} from "electron";
 import fs from "fs";
 import path from "path";
 import * as IPCEvents from "@common/constants/ipcevents";
+import type {AddonType} from "@typed/addon";
 
 // Build info file only exists for non-linux (for current injection)
 let dataPath = "";
@@ -11,7 +12,7 @@ dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
 const query = new URLSearchParams(location.search);
 
-const type = query.get("type")!;
+const type = query.get("type")! as "custom-css" | AddonType;
 const filename = query.get("filename")!;
 
 let filepath;
@@ -22,7 +23,14 @@ else {
     filepath = path.join(dataPath, `${type}s`, filename);
 }
 
-electron.contextBridge.exposeInMainWorld("Editor", {
+export interface Settings {
+    liveUpdate: boolean;
+    options: import("monaco-editor").editor.IStandaloneEditorConstructionOptions;
+    discordTheme: "light" | "dark" | "darker" | "midnight";
+    alwaysOnTop: boolean;
+}
+
+const editor = {
     type,
     filename,
     filepath,
@@ -30,26 +38,30 @@ electron.contextBridge.exposeInMainWorld("Editor", {
         return fs.readFileSync(filepath, "utf-8");
     },
     open() {
-        electron.shell.openPath(filepath);
+        electron.shell.openPath(filepath).then(() => window.close());
     },
-    write(contents) {
+    write(contents: string) {
         fs.writeFileSync(filepath, contents, "utf-8");
     },
-    shouldShowWarning(showWarning) {
+    shouldShowWarning(showWarning: boolean) {
         electron.ipcRenderer.invoke(IPCEvents.EDITOR_SHOULD_SHOW_WARNING, showWarning);
     },
     readText() {
         return electron.clipboard.readText();
     },
     settings: {
-        get: () => ipcRenderer.sendSync(IPCEvents.EDITOR_SETTINGS_GET),
-        subscribe(listener) {
+        get: () => ipcRenderer.sendSync(IPCEvents.EDITOR_SETTINGS_GET) as Settings,
+        subscribe(listener: (settings: Settings) => void) {
             electron.ipcRenderer.on(IPCEvents.EDITOR_SETTINGS_UPDATE, (_, settings) => {
                 listener(settings);
             });
         },
-        setLiveUpdate(state) {
-            electron.ipcRenderer.invoke(IPCEvents.EDITOR_SETTINGS_UPDATE, state);
+        set(settings: Partial<Settings>) {
+            electron.ipcRenderer.invoke(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
         }
     }
-} satisfies typeof window.Editor);
+};
+
+electron.contextBridge.exposeInMainWorld("Editor", editor);
+
+export type EditorNative = typeof editor;

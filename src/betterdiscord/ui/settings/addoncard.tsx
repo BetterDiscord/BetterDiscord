@@ -19,7 +19,7 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {default as AddonManager} from "@modules/addonmanager";
 import type {Addon, AddonType} from "@typed/addon";
-import Thememanager, {
+import {
     Manager,
     type Theme,
     type ThemePropertyState,
@@ -39,6 +39,8 @@ import Number from "@ui/settings/components/number.tsx";
 import Color from "@ui/settings/components/color.tsx";
 import fs from "fs";
 import path from "path";
+import type {PluginInstance} from "@modules/pluginmanager";
+
 const {useCallback, useMemo} = React;
 
 
@@ -115,7 +117,7 @@ export interface AddonCardProps {
     hasSettings: boolean;
     editAddon(): void;
     deleteAddon(): void;
-    getSettingsPanel?(): HTMLElement | ReactNode;
+    getSettingsPanel?: PluginInstance["getSettingsPanel"];
     store: AddonManager;
     hasThemeSettings?: boolean;
 }
@@ -268,7 +270,7 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         <div className="bd-addon-header">
             {type === "plugin" ? <PlugIcon size="20px" className="bd-icon" /> : <PaletteIcon size="20px" className="bd-icon" />}
             <div className="bd-title">{title}</div>
-            <Switch internalState={false} disabled={disabled} value={enabled} onChange={onChange} />
+            <Switch disabled={disabled} value={enabled} onChange={onChange} />
         </div>
         <div className="bd-description-wrap">
             {disabled && <div className="banner banner-danger"><ShieldAlertIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}

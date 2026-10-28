@@ -1,11 +1,11 @@
 import React from "react";
 import {t} from "@common/i18n";
 
-import Editor, {type EditorRef} from "@ui/customcss/editor";
+import Editor, {type Control, type EditorRef} from "@ui/customcss/editor";
 
-import {RotateCwIcon, SaveIcon} from "lucide-react";
+import {ExternalLinkIcon, PencilIcon, SaveIcon} from "lucide-react";
 
-const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = React;
+const {useState, useCallback, useImperativeHandle, useRef} = React;
 
 
 interface Props {
@@ -14,9 +14,15 @@ interface Props {
     save: (c: string) => void;
     openNative: () => void;
     id?: string;
+    openDetached?(): void;
+    ref: React.Ref<{
+        resize(): void;
+        value: string | undefined;
+        hasUnsavedChanges: boolean;
+    }>;
 }
 
-export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}: Props, ref) {
+export default function AddonEditor({content, language, save, openNative, id = "bd-addon-editor", openDetached, ref}: Props) {
     const editorRef = useRef<EditorRef>(null);
     const [hasUnsavedChanges, setUnsaved] = useState(false);
 
@@ -42,9 +48,10 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
         id={id}
         controls={[
             {label: <SaveIcon size="18px" />, tooltip: t("CustomCSS.save"), onClick: saveAddon},
-            {label: <RotateCwIcon size="18px" />, tooltip: t("CustomCSS.openNative"), onClick: popoutNative}
-        ]}
+            {label: <PencilIcon size="18px" />, tooltip: t("CustomCSS.openNative"), onClick: popoutNative},
+            openDetached && {label: <ExternalLinkIcon size="18px" />, tooltip: t("CustomCSS.openDetached"), onClick: openDetached, side: "right"}
+        ].filter(x => x) as Control[]}
         value={content}
         onChange={onChange}
     />;
-});
+};

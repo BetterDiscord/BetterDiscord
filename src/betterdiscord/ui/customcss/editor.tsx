@@ -9,14 +9,16 @@ import Flex from "../base/flex";
 import Switch from "../settings/components/switch";
 import Text from "@ui/base/text";
 import {useStateFromStores} from "@ui/hooks";
+import {getModule} from "@webpack";
 
 import type {editor as MonacoEditor} from "monaco-editor";
 import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
+import clsx from "clsx";
 
 type IStandaloneCodeEditor = MonacoEditor.IStandaloneCodeEditor;
 type IStandaloneEditorConstructionOptions = MonacoEditor.IStandaloneEditorConstructionOptions;
 
-const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
+const {useState, useCallback, useEffect, useMemo, useImperativeHandle} = React;
 
 
 const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciidoc", "assembly_x86", "autohotkey", "batchfile", "bro", "c_cpp", "c9search", "cirru", "clojure", "cobol", "coffee", "coldfusion", "csharp", "csound_document", "csound_orchestra", "csound_score", "css", "curly", "d", "dart", "diff", "dockerfile", "dot", "drools", "dummy", "dummysyntax", "eiffel", "ejs", "elixir", "elm", "erlang", "forth", "fortran", "ftl", "gcode", "gherkin", "gitignore", "glsl", "gobstones", "golang", "graphqlschema", "groovy", "haml", "handlebars", "haskell", "haskell_cabal", "haxe", "hjson", "html", "html_elixir", "html_ruby", "ini", "io", "jack", "jade", "java", "javascript", "json", "jsoniq", "jsp", "jssm", "jsx", "julia", "kotlin", "latex", "less", "liquid", "lisp", "livescript", "logiql", "lsl", "lua", "luapage", "lucene", "makefile", "markdown", "mask", "matlab", "maze", "mel", "mushcode", "mysql", "nix", "nsis", "objectivec", "ocaml", "pascal", "perl", "pgsql", "php", "pig", "powershell", "praat", "prolog", "properties", "protobuf", "python", "r", "razor", "rdoc", "red", "rhtml", "rst", "ruby", "rust", "sass", "scad", "scala", "scheme", "scss", "sh", "sjs", "smarty", "snippets", "soy_template", "space", "sql", "sqlserver", "stylus", "svg", "swift", "tcl", "tex", "text", "textile", "toml", "tsx", "twig", "typescript", "vala", "vbscript", "velocity", "verilog", "vhdl", "wollok", "xml", "xquery", "yaml", "django"];
@@ -66,22 +68,81 @@ interface Props {
     id?: string;
     controls: Control[];
     onChange: (c: string) => void;
+    className?: string;
+    ref?: React.Ref<EditorRef>;
 }
 
 export interface EditorRef {
     resize: () => void;
     value: string;
+    node: HTMLDivElement | null;
 }
 
-export default forwardRef(function CodeEditor({
+interface LockStack {
+    add(uid: string, setEnabled: (enabled: boolean) => void): void;
+    remove(uid: string): void;
+    current(): {uid: string;} | undefined;
+}
+
+const LockStack = getModule<LockStack>(m => Array.isArray(m?.locks) && typeof m?.toggleLayer === "function", {
+    searchExports: true,
+    firstId: 557361,
+    cacheId: "core-editor-lockstack"
+});
+
+let layerId = 0;
+
+function useFocusLayer(ref: React.RefObject<HTMLDivElement | null>) {
+    useEffect(() => {
+        const node = ref.current?.closest(".floating-window");
+        if (!node || !LockStack) return;
+
+        const uid = `bd-editor-window-${layerId++}`;
+        let active = false;
+
+        const activate = () => {
+            if (LockStack.current()?.uid === uid) return;
+            if (active) LockStack.remove(uid);
+            LockStack.add(uid, () => {});
+            active = true;
+        };
+
+        const deactivate = () => {
+            if (!active) return;
+            LockStack.remove(uid);
+            active = false;
+        };
+
+        const onInteraction = (event: Event) => {
+            if (node.contains(event.target as Node)) activate();
+            else if (event.type === "focusin") deactivate();
+        };
+
+        document.addEventListener("pointerdown", onInteraction, true);
+        document.addEventListener("focusin", onInteraction, true);
+
+        if (node.contains(document.activeElement)) activate();
+
+        return () => {
+            document.removeEventListener("pointerdown", onInteraction, true);
+            document.removeEventListener("focusin", onInteraction, true);
+            deactivate();
+        };
+    }, [ref]);
+}
+
+export default function CodeEditor({
     value,
     language: requestedLang = "css",
     id = "bd-editor",
     controls = [],
-    onChange: notifyParent
-}: Props, editorRef: React.ForwardedRef<EditorRef>) {
+    onChange: notifyParent,
+    className,
+    ref: editorRef
+}: Props) {
     const ref = useRef<HTMLDivElement>(null);
     const windowRef = useRef<HTMLDivElement>(null);
+    useFocusLayer(windowRef);
 
     const language = useMemo(() => {
         const requested = requestedLang.toLowerCase().replace(/ /g, "_");
@@ -112,7 +173,8 @@ export default forwardRef(function CodeEditor({
         return {
             resize,
             get value() {return editor!.getValue();},
-            set value(newValue) {editor!.setValue(newValue);}
+            set value(newValue) {editor!.setValue(newValue);},
+            get node() {return windowRef.current;}
         };
     }, [editor, resize]);
 
@@ -189,7 +251,6 @@ export default forwardRef(function CodeEditor({
             });
 
             const monacoEditor = window.monaco.editor.create(node, getOptions());
-
             setEditor(monacoEditor);
 
             monacoEditor.onDidChangeCursorSelection(() => {
@@ -271,7 +332,7 @@ export default forwardRef(function CodeEditor({
     const controlsLeft = controls.filter(c => c.side != "right").map(buildControl.bind(null, () => editor?.getValue()));
     const controlsRight = controls.filter(c => c.side == "right").map(buildControl.bind(null, () => editor?.getValue()));
 
-    return <div id="bd-editor-panel" className={theme} ref={windowRef}>
+    return <div id="bd-editor-panel" className={clsx(theme, className)} ref={windowRef}>
         <div id="bd-editor-controls">
             <div className="controls-section controls-left">
                 {controlsLeft}
@@ -343,4 +404,4 @@ export default forwardRef(function CodeEditor({
             </div>
         )}
     </div>;
-});
+};

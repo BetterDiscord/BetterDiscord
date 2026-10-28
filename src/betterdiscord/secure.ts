@@ -3,6 +3,12 @@ export default function () {
     Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
         get: function (...args: any[]) {
             const contentWindow = Reflect.apply(contentWindowGetter, this, args);
+
+            // Fix for discord activities
+            if (new URL(this.src, location.href).host.endsWith(".discordsays.com")) {
+                return contentWindow;
+            }
+
             return new Proxy(contentWindow, {
                 getOwnPropertyDescriptor: function (obj, prop) {
                     if (prop === "localStorage") return undefined;
@@ -21,11 +27,4 @@ export default function () {
     // Prevent interception by patching Reflect.apply and Function.prototype.bind
     Object.defineProperty(Reflect, "apply", {value: Reflect.apply, writable: false, configurable: false});
     Object.defineProperty(Function.prototype, "bind", {value: Function.prototype.bind, writable: false, configurable: false});
-
-    const oOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function (...args: any[]) {
-        const url = args[1];
-        if (url.toLowerCase().includes("api/webhooks")) return null;
-        return Reflect.apply(oOpen, this, args);
-    };
 }

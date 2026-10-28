@@ -7,7 +7,9 @@ export default class {
         return this._onHeadersReceived ??= electron.session.fromPartition(`bd:${Date.now()}:${Math.random()}`).webRequest.onHeadersReceived;
     }
 
-    static remove() {
+    static async remove() {
+        await electron.app.whenReady();
+        
         // electron.session.defaultSession.webRequest.onHeadersReceived may be redefined
         this.onHeadersReceived.call(electron.session.defaultSession.webRequest, (details, callback) => {
             if (!details.responseHeaders) return callback({cancel: false});

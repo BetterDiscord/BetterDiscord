@@ -4,7 +4,6 @@ import ts from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 
-
 // Make sure typescript rules only affect typescript for now
 ts.configs.recommended.forEach(r => r.files = ["**/*.ts", "**/*.tsx"]);
 
@@ -140,13 +139,13 @@ export default ts.config(
     },
     {
         files: ["src/betterdiscord/**/*"],
-        ...reactHooks.configs["recommended-latest"]
+        ...reactHooks.configs.flat["recommended-latest"]
     },
     {
         files: ["src/betterdiscord/**/*"],
         settings: {
             react: {
-                version: "18.3"
+                version: "19.1"
             }
         },
         languageOptions: {
@@ -167,7 +166,9 @@ export default ts.config(
             "react/jsx-key": "off",
             "react/jsx-no-target-blank": "error",
             "react/jsx-uses-react": "error",
-            "react/jsx-uses-vars": "error"
+            "react/jsx-uses-vars": "error",
+            "react-hooks/immutability": "off",
+            "react-hooks/refs": "off",
         }
     },
 );

@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import React, {type CSSProperties, type MouseEventHandler} from "react";
 
-
 export const FlexDirection = Object.freeze({
     VERTICAL: "bd-flex-vertical",
     HORIZONTAL: "bd-flex-horizontal",
@@ -32,9 +31,7 @@ export const FlexWrap = Object.freeze({
 
 
 export function FlexChild(props: {className?: string;[x: string]: any;}) {
-    if (!props.className) props.className = "";
-    props.className = clsx(props.className, "bd-flex-child");
-    return <Flex {...props} />;
+    return <Flex {...props} className={clsx(props.className, "bd-flex-child")} />;
 }
 
 interface FlexProps {

@@ -2,7 +2,7 @@ import path from "path";
 import Store from "./base";
 
 
-export default new class ConfigStore extends Store {
+class ConfigStore extends Store {
     data = {
         branch: process.env.__BRANCH__!,
         commit: process.env.__COMMIT__!,
@@ -30,4 +30,6 @@ export default new class ConfigStore extends Store {
 
     get isDevelopment() {return this.data.build !== "production";}
     get isCanary() {return this.data.branch !== "main";}
-};
+}
+
+export default new ConfigStore();

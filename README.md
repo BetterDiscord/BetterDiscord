@@ -38,13 +38,13 @@ Download the installer for your operating system below. You can check [this page
 
 [![Windows Installer][windows-badge]][windows-link] [![Mac Installer][mac-badge]][mac-link] [![Linux Installer][linux-badge]][linux-link]
 
-[windows-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe
+[windows-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Installer-Windows.exe
 [windows-badge]: https://img.shields.io/badge/Windows%20(7+)-3a71c1?logo=Windows&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
-[mac-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip
+[mac-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Installer-Mac.zip
 [mac-badge]: https://img.shields.io/badge/macOS%20(10.10+)-3a71c1?logo=Apple&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
-[linux-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage
+[linux-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Installer-Linux.AppImage.zip 
 [linux-badge]: https://img.shields.io/badge/Linux-3a71c1?logo=Linux&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
 
@@ -93,11 +93,11 @@ If you want to help translate BetterDiscord, please see [CONTRIBUTING.md](/CONTR
 # Star History
 
 <p align="center">
-  <a href="https://star-history.com/#betterdiscord/betterdiscord&Date">
-   <picture>
-     <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date&theme=dark" />
-     <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date" />
-     <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=betterdiscord/betterdiscord&type=Date" />
-   </picture>
+  <a href="https://www.star-history.com/?repos=betterdiscord%2Fbetterdiscord&type=date&legend=top-left">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&theme=dark&legend=top-left&sealed_token=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" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&legend=top-left&sealed_token=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" />
+      <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=betterdiscord/betterdiscord&type=date&legend=top-left&sealed_token=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" />
+    </picture>
   </a>
 </p>

@@ -138,6 +138,8 @@ BetterDiscord supports a number of languages thanks to translations provided by 
 * Do not submit translations generated with a translation such as Google Translate, DeepL, or anything of the sorts.
   * Crowdin's tools can be used for assistance but not full human replacements
 * Only submit translations for languages you are at the very least fluent in, better yet if it's your first language.
+* Do not open pull requests that change the files in `assets/locales/` directly. They are synced from Crowdin automatically and any changes made to them will be overwritten.
+  * The exception is `en-us.json`, which is the source for all translations. When adding new strings to BetterDiscord, add them only to `en-us.json` and they will become available on Crowdin once merged.
 
 ## Styleguides
 

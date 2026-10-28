@@ -1,4 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
+
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
 import SettingItem from "@ui/settings/components/item";
@@ -15,6 +16,8 @@ import Text from "@ui/base/text";
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
+import Modal from "@ui/modals/modal.tsx";
+import CheckBox from "@ui/settings/components/checkbox.tsx";
 
 /**
  * `Components` is a utility containing commonly used React components. An instance is available on {@link BdApi}.
@@ -35,11 +38,13 @@ class Components {
     SwitchInput = SwitchInput;
     TextInput = TextInput;
     SettingGroup = SettingGroup;
+    Checkbox = CheckBox;
     ErrorBoundary = ErrorBoundary;
     Text = Text;
     Flex = Flex;
     Button = Button;
     Spinner = Spinner;
+    Modal = Modal;
 }
 
 Object.freeze(Components);

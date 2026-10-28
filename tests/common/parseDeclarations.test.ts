@@ -69,6 +69,11 @@ describe("parseDeclarations", () => {
         expect(parseDeclarations(tested, 0)).toEqual(["a", "b"]);
     });
 
+    test("rest props", () => {
+        const tested = `let {a,b,...c}={},{...d}={};const[e,...f]=[];`;
+        expect(parseDeclarations(tested, 0)).toEqual(["a", "b", "c", "d", "e", "f"]);
+    });
+
     test("actual module code", async () => {
         const cases = moduleCode.replaceAll("\r\n", "\n").split("\n=-=-=-=\n");
 

@@ -1,0 +1,403 @@
+{
+    "Panels": {
+        "plugins": "Plugin",
+        "themes": "Tema",
+        "updates": "Pembaruan"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Setelan",
+            "general": {
+                "name": "Umum",
+                "voiceDisconnect": {
+                    "name": "Putuskan Suara",
+                    "note": "Putuskan koneksi dari server suara saat menutup Discord"
+                },
+                "showToasts": {
+                    "name": "Tampilkan Toasts",
+                    "note": "Tampilkan sebuah notifikasi kecil untuk informasi penting"
+                },
+                "mediaKeys": {
+                    "name": "Matikan Tombol Media",
+                    "note": "Mencegah Discord mengambil alih tombol media Anda setelah memutar video."
+                },
+                "themeAttributes": {
+                    "name": "Tema Atribut",
+                    "note": "Menambahkan atribut ke berbagai elemen untuk membantu dalam penyesuaian tema."
+                },
+                "notificationPosition": {
+                    "name": "Notifikasi",
+                    "note": "Memungkinkan Anda memilih di mana Anda ingin notifikasi muncul."
+                },
+                "notificationEnabled": {
+                    "name": "Tampilkan Notifikasi",
+                    "note": "Cegah atau mengizinkan notifikasi untuk ditampilkan pada layar."
+                }
+            },
+            "store": {
+                "name": "Toko Addon",
+                "alwaysEnable": {
+                    "name": "Selalu Aktifkan",
+                    "note": "Ketika diaktifkan secara bawaan, addon yang diunduh melalui toko addon akan diaktifkan."
+                },
+                "addonEmbeds": {
+                    "name": "Addon yang Terintegrasi",
+                    "note": "Menyematkan kartu toko addon ke dalam obrolan."
+                }
+            },
+            "window": {
+                "name": "Preferensi Jendela",
+                "removeMinimumSize": {
+                    "name": "Hapus Ukuran Maksimal",
+                    "note": "Hapus paksaan Discord maksimal ukuran jendela dari 940x500"
+                },
+                "transparency": {
+                    "name": "Aktifkan Transparansi",
+                    "note": "Mengaktifkan jendela utama agar menjadi transparan (membutuhkan restart)"
+                },
+                "frame": {
+                    "name": "Bingkai Jendela",
+                    "note": "Menambahkan bingkai jendela sistem operasi asli ke jendela utama"
+                }
+            },
+            "addons": {
+                "name": "Pengolah Addon",
+                "addonErrors": {
+                    "name": "Tampilkan Kesalahan Addon",
+                    "note": "Tampilkan sebuah popup dengan kesalahan tema/plugin"
+                },
+                "editAction": {
+                    "name": "Edit Aksi",
+                    "note": "Di mana plugin & tema muncul saat mengedit",
+                    "options": {
+                        "detached": "Jendela Terpisah",
+                        "external": "Jendela Eksternal",
+                        "system": "Sistem Editor"
+                    }
+                },
+                "checkForUpdates": {
+                    "name": "Otomatis Cek Pembaruan",
+                    "note": "Periode cek untuk pembaruan ke addon anda dan inti BD"
+                },
+                "updateInterval": {
+                    "name": "Interval Cek Pembaruan",
+                    "note": "Seberapa sering memeriksa pembaruan addon/inti"
+                }
+            },
+            "customcss": {
+                "customcss": {
+                    "note": "Mengaktifkan tab Custom CSS"
+                },
+                "liveUpdate": {
+                    "name": "Pembaruan Langsung",
+                    "note": "Memperbarui css saat Anda mengetik"
+                },
+                "startDetached": {
+                    "name": "Mulai Terpisah",
+                    "note": "Klik tab Custom CSS membuka editor di sebuah jendela terpisah"
+                },
+                "nativeOpen": {
+                    "name": "Buka di Editor Asli",
+                    "note": "Mengklik tab Custom CSS akan membuka file CSS kustom Anda di editor bawaan Anda."
+                },
+                "openAction": {
+                    "name": "Lokasi Editor",
+                    "note": "Di mana Custom CSS harus terbuka secara bawaan",
+                    "options": {
+                        "settings": "Menu Setelan",
+                        "detached": "Jendela Terpisah",
+                        "external": "Jendela Eksternal",
+                        "system": "Sistem Editor"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Opsi Pengembang",
+                "debuggerHotkey": {
+                    "name": "Tombol Pintas Debugger",
+                    "note": "Memungkinkan mengaktifkan debugger saat menekan tombol F8 dengan DevTools terbuka"
+                },
+                "reactDevTools": {
+                    "name": "Alat Pengembang React",
+                    "note": "Menyisipkan instalasi lokal Alat Pengembang React Anda ke dalam Discord"
+                },
+                "inspectElement": {
+                    "name": "Tombol Pintas Inspeksi Elemen",
+                    "note": "Mengaktifkan tombol pintas untuk memeriksa elemen (Ctrl + Shift + C) yang umum digunakan di sebagian besar browser"
+                },
+                "devToolsWarning": {
+                    "name": "Stop Peringatan DevTools",
+                    "note": "Mencegah Discord menampilkan pesan “Hold Up”"
+                },
+                "debugLogs": {
+                    "name": "Catatan Debug",
+                    "note": "Menyalin semua output dari konsol ke berkas debug.log di folder BetterDiscord"
+                },
+                "devTools": {
+                    "note": "Aktifkan DevTools dengan Ctrl+Shift+I"
+                }
+            },
+            "editor": {
+                "name": "Opsi Editor",
+                "theme": {
+                    "name": "Tema",
+                    "note": "Tema untuk kode editor",
+                    "options": {
+                        "system": "Sistem",
+                        "vs-dark": "Gelap",
+                        "vs": "Terang",
+                        "hc-black": "Kontras Tinggi Gelap",
+                        "hc-light": "Kontras Tinggi Terang"
+                    }
+                },
+                "lineNumbers": {
+                    "name": "Angka Baris",
+                    "note": "Aktifkan menampilkan angka baris pada sisi editor"
+                },
+                "fontSize": {
+                    "name": "Ukuran Font",
+                    "note": "Ukuran font (pt) untuk digunakan di editor"
+                },
+                "minimap": {
+                    "name": "Peta mini",
+                    "note": "Aktifkan menampilkan kode peta mini pada sisi editor"
+                },
+                "hover": {
+                    "name": "Tips Referensi",
+                    "note": "Memungkinkan tampilan tooltip referensi saat mengarahkan kursor ke aturan dan selektor"
+                },
+                "quickSuggestions": {
+                    "name": "Saran Langsung",
+                    "note": "Aktifkan menampilkan saran otomatis saat anda mengetik"
+                },
+                "insertSpaces": {
+                    "name": "Masukkan Spasi",
+                    "note": "Masukkan spasi alih-alih dari tab"
+                },
+                "tabSize": {
+                    "name": "Ukuran Tab",
+                    "note": "Jumlah spasi yang setara dengan satu tab"
+                },
+                "renderWhitespace": {
+                    "name": "Tampilkan Ruang Kosong",
+                    "note": "Ketika ruang kosong seharusnya ditampilkan oleh editor",
+                    "options": {
+                        "all": "Selalu",
+                        "none": "Tidak Pernah",
+                        "selection": "Pilihan"
+                    }
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} oleh {{author}}",
+        "byline": "oleh {{author}}",
+        "openFolder": {
+            "plugin": "Buka Folder Plugin",
+            "theme": "Buka Folder Tema"
+        },
+        "openStore": {
+            "plugin": "Buka Toko Plugin",
+            "theme": "Buka Toko Tema"
+        },
+        "storeMessage": {
+            "plugin": "Jelajahi dan instal plugin komunitas resmi",
+            "theme": "Jelajahi dan instal tema komunitas resmi"
+        },
+        "store": "Toko",
+        "viewInstalled": {
+            "plugin": "Lihat Plugin Terinstal",
+            "theme": "Lihat Tema Terinstal"
+        },
+        "reload": "Muat ulang",
+        "addonSettings": "Setelan",
+        "website": "Situs web",
+        "source": "Sumber",
+        "invite": "Server Dukungan",
+        "donate": "Donasi",
+        "name": "Nama",
+        "author": "Pembuat",
+        "version": "Versi",
+        "added": "Tanggal Ditambahkan",
+        "modified": "Tanggal Dimodifikasi",
+        "releaseDate": "Tanggal Rilis",
+        "lastUpdated": "Pembaruan terakhir",
+        "isEnabled": "Aktifkan",
+        "popularity": "Popularitas",
+        "isInstalled": "Terinstal",
+        "downloads": "Unduhan",
+        "likes": "Disukai",
+        "listView": "Tampilan Daftar",
+        "gridView": "Tampilan Kisi",
+        "enableAll": "Aktifkan Semua",
+        "disableAll": "Matikan Semua",
+        "enableAllWarning": {
+            "plugin": "Aktifkan semua plugin dapat menyebabkan lag sementara dan kesalahan yang tidak terduga.\n\n(Tahan tombol shift saat klik untuk melewati prompt ini!)",
+            "theme": "Aktifkan semua tema dapat menyebabkan lag sementara dan kesalahan yang tidak terduga.\n\n(Tahan tombol shift saat klik untuk melewati prompt ini!)"
+        },
+        "search": {
+            "plugin": {
+                "other": "Cari {{count}} plugin"
+            },
+            "theme": {
+                "other": "Cari {{count}} tema"
+            }
+        },
+        "results": {
+            "other": "{{count}} Hasil"
+        },
+        "deleteAddon": "Hapus",
+        "downloadAddon": "Unduh",
+        "confirmDelete": "Apakah anda yakin ingin menghapus {{name}}?",
+        "confirmationText": "Anda memiliki perubahan yang belum disimpan pada {{name}}. Menutup jendela ini akan menghapus semua perubahan tersebut.",
+        "enabled": "{{name}} telah diaktifkan.",
+        "disabled": "{{name}} telah dinonaktifkan.",
+        "couldNotEnable": "{{name}} tidak dapat diaktifkan.",
+        "couldNotDisable": "{{name}} tidak dapat dinonaktifkan.",
+        "couldNotStart": "{{name}} tidak dapat dimulai.",
+        "couldNotStop": "{{name}} tidak dapat diberhentikan.",
+        "settingsError": "Tidak dapat membuka setelan untuk {{name}}",
+        "methodError": "{{method}} tidak dapat dipecat.",
+        "unknownAuthor": "Pembuat Tidak Dikenal",
+        "noDescription": "Deskripsi tidak ditunjukan.",
+        "alreadyExists": {
+            "plugin": "Sudah ada plugin dengan nama {{name}}",
+            "theme": "Sudah ada tema dengan nama {{name}}"
+        },
+        "metaError": "META tidak dapat diparsing.",
+        "missingNameData": "META data nama hilang.",
+        "metaNotFound": "META tidak ditemukan.",
+        "compileError": "Tidak dapat terkompilasi. Lihat konsol untuk rincian.",
+        "wasUnloaded": "{{name}} telah tidak termuat.",
+        "blankSlateHeader": {
+            "plugin": "Anda tidak memiliki plugin apa pun!",
+            "theme": "Anda tidak memiliki tema apa pun!"
+        },
+        "blankSlateMessage": {
+            "plugin": "Unduh beberapa dari [situs web kami]({{link}}) dan tambahkan ke folder plugin Anda.",
+            "theme": "Unduh beberapa dari [situs web kami]({{link}}) dan tambahkan ke folder tema Anda."
+        },
+        "blankSlateHeaderGeneric": "Kamu tidak punya apa-apa!",
+        "blankSlateMessageGeneric": "Kamu sebaiknya mendapatkannya.",
+        "wasLoaded": "{{name}} v{{version}} telah termuat.",
+        "failedToDownload": {
+            "plugin": "Gagal untuk mengunduh plugin {{name}}",
+            "theme": "Gagal untuk mengunduh tema {{name}}"
+        },
+        "successfullyDownload": "Sukses terunduh {{name}}",
+        "alreadyInstalled": "{{name}} sudah terinstal",
+        "failedToFetch": "Tidak dapat mendapatkan addon",
+        "new": "Baru",
+        "updated": "Terbaru",
+        "downloadCount": {
+            "other": "{{count}} Unduhan"
+        },
+        "likeCount": {
+            "other": "{{count}} Disukai"
+        },
+        "tags": "Label",
+        "preview": "Tinjauan",
+        "official": "Resmi",
+        "manyEnabled": {
+            "plugin": {
+                "other": "{{count}} plugin sudah telah diaktifkan."
+            },
+            "theme": {
+                "other": "{{count}} tema sudah telah diaktifkan."
+            }
+        }
+    },
+    "CustomCSS": {
+        "confirmationText": "Anda memiliki perubahan yang belum disimpan pada Custom CSS anda. Menutup jendela ini akan menghapus semua perubahan tersebut.",
+        "update": "Perbarui",
+        "save": "Simpan",
+        "openNative": "Buka di Sistem Editor",
+        "openDetached": "Jendela Terpisah",
+        "settings": "Pengaturan Editor",
+        "editorTitle": "Editor Custom CSS",
+        "cssInstallSuccess": "CSS telah sukses ditambahkan pada Custom CSS.",
+        "cssInstalled": "CSS terinstal!",
+        "cssInstallError": "CSS gagal untuk ditambahkan pada Custom CSS.",
+        "cssReverted": "CSS telah dikembalikan.",
+        "cssReverting": "Perubahan akan dikembalikan dalam 10 detik",
+        "cssKept": "Perubahan CSS disimpan secara permanen"
+    },
+    "Modals": {
+        "confirmAction": "Anda yakin?",
+        "installCss": "Apakah Anda yakin ingin menambahkan CSS ini ke Custom CSS Anda?",
+        "addonCrashed": "Plugin ini telah dinonaktifkan untuk mencegah terjadinya crash. Silakan laporkan masalah ini kepada pengembang.",
+        "okay": "Oke",
+        "done": "Selesai",
+        "cancel": "Batalkan",
+        "nevermind": "Lupakan",
+        "close": "Tutup",
+        "name": "Nama",
+        "message": "Pesan",
+        "error": "Kesalahan",
+        "addonErrors": "Kesalahan Addon",
+        "restartRequired": "Restart Diperlukan",
+        "restartNow": "Restart Sekarang",
+        "restartLater": "Restart Nanti",
+        "additionalInfo": "Informasi tambahan",
+        "restartPrompt": "Untuk berlaku, Discord perlu restart. Apakah Anda ingin restart sekarang?",
+        "changelog": "Catatan Perubahan",
+        "debuglog": "Berkas log debug Anda telah melebihi 100MB, apakah Anda ingin menghapus log tersebut?",
+        "automaticallyEnable": "Otomatis Aktif"
+    },
+    "Sorting": {
+        "sortBy": "Urut Berdasarkan",
+        "order": "Urutan",
+        "ascending": "Naik",
+        "descending": "Menurun"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Opsi ini memerlukan tema transparan agar berfungsi dengan baik. Pada Windows, hal ini dapat mengganggu fitur Aero Snapping dan maximizing.\n\nUntuk berlaku, Discord perlu di-restart. Apakah Anda ingin me-restart sekarang?",
+        "disabledInfo": "Untuk berlaku, Discord perlu restart. Apakah Anda ingin me-restart sekarang?"
+    },
+    "Toasts": {
+        "recoveryFailed": "Pemulihan tidak lengkap. Beberapa tindakan gagal diselesaikan."
+    },
+    "Updater": {
+        "updateFailed": "Pembaruan Gagal!",
+        "updateFailedMessage": "BetterDiscord gagal untuk diperbarui. Dimohon unduh installer versi terkini dari situs web kami (https://betterdiscord.app/) dan instal ulang.",
+        "updateSuccessful": "Sukses Pembaruan!",
+        "updateAvailable": "BetterDiscord memiliki pembaruan baru (v{{version}})",
+        "viewUpdates": "Lihat Pembaruan",
+        "addonUpdaterNotificationTitle": "Pembaruan Addon",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "other": "{{count}} plugin memiliki pembaruan!"
+            },
+            "theme": {
+                "other": "{{count}} tema memiliki pembaruan!"
+            }
+        },
+        "addonUpdated": "{{name}} telah diperbarui ke versi {{version}}!",
+        "addonUpdateFailed": "Gagal untuk perbarui {{name}}. Tolong coba lagi nanti.",
+        "checking": "Memeriksa pembaruan!",
+        "finishedChecking": "Pemeriksaan pembaruan telah selesai!",
+        "checkForUpdates": "Periksa Untuk Pembaruan!",
+        "updateAll": "Perbarui Semua!",
+        "noUpdatesAvailable": "Tidak ada pembaruan yang tersedia.",
+        "versionAvailable": "Versi {{version}} sekarang tersedia!",
+        "upToDateBlankslate": {
+            "plugin": "Semua plugin Anda tampaknya sudah diperbarui!",
+            "theme": "Semua tema anda tampaknya sudah diperbarui!"
+        },
+        "updateButton": "Perbarui!"
+    },
+    "Settings": {
+        "customColor": "Warna Khusus",
+        "resetSettings": "Atur Ulang Setelan",
+        "resetSettingsWarning": "Mengatur ulang setelan anda akan mengembalikan semua setelan ke keadaan semula, dan hal ini tidak dapat dibatalkan."
+    },
+    "Socials": {
+        "twitter": "Ikuti Kami!",
+        "github": "Beri Kami Bintang!"
+    },
+    "Paginator": {
+        "back": "Kembali",
+        "next": "Berikut"
+    }
+}

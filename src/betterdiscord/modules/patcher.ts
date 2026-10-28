@@ -9,7 +9,6 @@ import DiscordModules from "./discordmodules";
 import {getByKeys} from "@webpack";
 import type {StringKeys} from "@typed/util";
 
-
 export interface GenericPatch {
     name: string;
     module: object;
@@ -27,8 +26,11 @@ export interface Patch<M extends object, K extends StringKeys<M>> extends Generi
     originalFunction: M[K] extends (...a: any[]) => any ? M[K] : never;
 }
 
+const TEST_PLUGIN_REGEX = /betterdiscord:\/\/plugins\/(.*?\.plugin\.js)/;
+
 export interface GenericChildPatch {
     caller: string;
+    pluginSource: string | null;
     type: "before" | "instead" | "after";
     id: number;
     callback: (...a: any[]) => any;
@@ -94,7 +96,8 @@ export default class Patcher {
 
     static makeOverride<M extends object, K extends StringKeys<M>>(patch: Patch<M, K>) {
         return function BDPatcher(this: any, ...args: any[]) {
-            let returnValue;
+            let returnValue: unknown;
+
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, args);
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
                 try {
@@ -108,15 +111,29 @@ export default class Patcher {
             const insteads = patch.children.filter(c => c.type === "instead");
             if (!insteads.length) {returnValue = patch.originalFunction.apply(this, args);}
             else {
-                for (const insteadPatch of insteads) {
-                    try {
-                        const tempReturn = insteadPatch.callback(this, args, patch.originalFunction.bind(this));
-                        if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
+                const getPatch = (index: number) => {
+                    const insteadPatch = insteads[index];
+                    if (!insteadPatch) {
+                        return function (this: any, ...innerArgs: any[]) {
+                            if (typeof returnValue === "undefined") return returnValue = patch.originalFunction.apply(this, innerArgs);
+                            return patch.originalFunction.apply(this, innerArgs);
+                        };
                     }
-                    catch (err) {
-                        Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
-                    }
-                }
+
+                    return function (this: any, ...innerArgs: any[]) {
+                        try {
+                            const tempReturn = insteadPatch.callback(this, innerArgs, getPatch(index + 1));
+                            if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
+                        }
+                        catch (err) {
+                            Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
+                        }
+
+                        return returnValue;
+                    };
+                };
+
+                getPatch(0).apply(this, args);
             }
 
             for (const slavePatch of patch.children.filter(c => c.type === "after")) {
@@ -256,11 +273,17 @@ export default class Patcher {
         if (!patch.proxyFunction) this.rePatch<M, K>(patch);
         const child: GenericChildPatch = {
             caller,
+            pluginSource: new Error().stack?.match(TEST_PLUGIN_REGEX)?.[1] || null,
             type,
             id: patch.counter,
             callback,
             unpatch: () => {
-                patch.children.splice(patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type), 1);
+                const index = patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type);
+
+                if (index === -1) return;
+
+                patch.children.splice(index, 1);
+
                 if (patch.children.length <= 0) {
                     const patchNum = this.patches.findIndex(p => p.module == module && p.functionName == functionName);
                     if (patchNum < 0) return;
@@ -274,4 +297,7 @@ export default class Patcher {
         return child.unpatch;
     }
 
+    static getPatches(item: any) {
+        return this.patches.find(x => x.originalFunction === item || x.proxyFunction === item);
+    }
 }

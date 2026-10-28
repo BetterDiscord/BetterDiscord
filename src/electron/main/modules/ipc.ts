@@ -1,5 +1,5 @@
 import {spawn} from "child_process";
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
+import {ipcMain as ipc, BrowserWindow, app, dialog, shell, type IpcMainInvokeEvent, type IpcMainEvent, type BrowserWindowConstructorOptions} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
 import Editor from "./editor";
@@ -63,9 +63,44 @@ const toggleDevTools = (event: IpcMainEvent) => {
     else closeDevTools(event);
 };
 
+/**
+ * Never let a renderer-supplied windowOptions weaken the security posture of the
+ * window we open. Discord's Electron fork already forces these safe values, but we
+ * don't want our own guarantees to depend on that so we force them here too, and
+ * never honor a caller-supplied preload.
+ */
+const SAFE_WEB_PREFERENCES: BrowserWindowConstructorOptions["webPreferences"] = {
+    nodeIntegration: false,
+    nodeIntegrationInWorker: false,
+    nodeIntegrationInSubFrames: false,
+    contextIsolation: true,
+    sandbox: true,
+    webviewTag: false,
+    webSecurity: true,
+    allowRunningInsecureContent: false,
+};
+
 const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions, closeOnUrl}: {windowOptions?: BrowserWindowConstructorOptions, closeOnUrl?: string;} = {}) => {
+    try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+            return Promise.reject(new Error("Invalid protocol"));
+        }
+    }
+    catch {
+        return Promise.reject(new Error("Invalid URL"));
+    }
+
     return new Promise<void>(resolve => {
-        const windowInstance = new BrowserWindow(windowOptions);
+        const safeOptions: BrowserWindowConstructorOptions = {
+            ...windowOptions,
+            webPreferences: {
+                ...windowOptions?.webPreferences,
+                ...SAFE_WEB_PREFERENCES,
+                preload: undefined
+            }
+        };
+        const windowInstance = new BrowserWindow(safeOptions);
         windowInstance.webContents.on("did-navigate", (__, navUrl) => {
             if (navUrl != closeOnUrl) return;
             windowInstance.close();
@@ -78,25 +113,26 @@ const createBrowserWindow = (_: IpcMainInvokeEvent, url: string, {windowOptions,
 const inspectElement = async (event: IpcMainEvent) => {
     if (!event.sender.isDevToolsOpened()) {
         event.sender.openDevTools();
-        while (!event.sender.isDevToolsOpened()) await new Promise(r => setTimeout(r, 100));
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
     }
+
     event.sender.devToolsWebContents?.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
 };
 
 const setMinimumSize = (event: IpcMainEvent, width: number, height: number) => {
     const window = BrowserWindow.fromWebContents(event.sender);
-    window?.setMinimumSize(width, height);
+
+    if (process.platform === "darwin") {
+        width ||= 1;
+        height ||= 1;
+    }
+
+    BrowserWindow.prototype.setMinimumSize.call(window, width, height);
 };
 
 const setWindowSize = (event: IpcMainEvent, width: number, height: number) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     window?.setSize(width, height);
-};
-
-const getAccentColor = () => {
-    // intentionally left blank so that fallback colors will be used
-    return ((process.platform == "win32" || process.platform == "darwin")
-        && systemPreferences.getAccentColor()) || "";
 };
 
 const stopDevtoolsWarning = (event: IpcMainEvent) => event.sender.removeAllListeners("devtools-opened");
@@ -169,6 +205,30 @@ const runRenderer = (event: IpcMainInvokeEvent) => {
     BetterDiscord.injectRenderer(BrowserWindow.fromWebContents(event.sender)!);
 };
 
+const openDevtoolsSource = async (event: IpcMainInvokeEvent, url: string, line: number, column: number) => {
+    if (!event.sender.isDevToolsOpened()) {
+        event.sender.openDevTools();
+        while (!event.sender.devToolsWebContents) await new Promise(r => setTimeout(r, 1 / 60));
+    }
+
+    event.sender.devToolsWebContents!.executeJavaScript(`
+        DevToolsAPI.revealSourceLine(${JSON.stringify(url)}, ${line}, ${column});
+    `);
+};
+
+const setVibrancy = (event: IpcMainInvokeEvent, vibrancy: Parameters<BrowserWindow["setVibrancy"]>[0] | "none") => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setVibrancy(vibrancy === "none" ? null : vibrancy, {animationDuration: 100});
+};
+
+const setBackgroundMaterial = (event: IpcMainInvokeEvent, material: Parameters<BrowserWindow["setBackgroundMaterial"]>[0]) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+
+    window?.setBackgroundColor("#00000000");
+    window?.setBackgroundMaterial(material);
+};
 
 export default class IPCMain {
     static registerEvents() {
@@ -185,7 +245,6 @@ export default class IPCMain {
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
             ipc.on(IPCEvents.EDITOR_SETTINGS_GET, getSettings);
-            ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
@@ -194,6 +253,9 @@ export default class IPCMain {
             ipc.handle(IPCEvents.GET_ALLOW_PRELOAD_OVERRIDE, getAllowPreloadOverride);
             ipc.handle(IPCEvents.SET_ALLOW_PRELOAD_OVERRIDE, setAllowPreloadOverride);
             ipc.handle(IPCEvents.RUN_RENDERER, runRenderer);
+            ipc.handle(IPCEvents.OPEN_DEVTOOLS_SOURCE, openDevtoolsSource);
+            ipc.handle(IPCEvents.SET_VIBRANCY, setVibrancy);
+            ipc.handle(IPCEvents.SET_BACKGROUND_MATERIAL, setBackgroundMaterial);
         }
         catch (err) {
             // eslint-disable-next-line no-console

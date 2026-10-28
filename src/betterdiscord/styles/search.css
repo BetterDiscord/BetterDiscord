@@ -9,6 +9,15 @@
     align-items: center;
 }
 
+.bd-search-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-search-disabled > * {
+    pointer-events: none;
+}
+
 .bd-search {
     padding: 2px 3px;
     background: none;

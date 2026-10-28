@@ -2,14 +2,15 @@
 
 import type {Webpack} from "@typed/discord";
 import {bySource} from "./filter";
-import {getModule} from "./searching";
-import {getDefaultKey, makeException, shouldSkipModule, wrapModuleFilter, getDeclaration} from "./shared";
+import {getMatched, getModule} from "./searching";
+import {makeException, shouldSkipModule, wrapModuleFilter} from "./shared";
 import {webpackRequire} from "./require";
 import WebpackCache from "./cache";
 import {mapObject} from "@utils/object";
-import {getLazy} from "./lazy";
+import {getLazy, isFromLazySearch} from "./lazy";
 import cache from "@common/utils/cache";
 
+/** @deprecated 10/07/26 use the withKey option instead */
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
         Object.values(exports).some(filter),
@@ -35,6 +36,7 @@ export function getById<T extends object>(id: PropertyKey, options: Webpack.Opti
     return undefined;
 }
 
+/** @deprecated 10/07/26 use the map option instead */
 export function getMangled<T extends object>(
     filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp> | number,
     mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
@@ -57,6 +59,7 @@ export function getMangled<T extends object>(
     return mapObject(module, mappers);
 }
 
+/** @deprecated 10/07/26 use the map option instead */
 export async function getMangledLazy<T extends object>(
     filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp>,
     mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
@@ -79,43 +82,6 @@ export async function getMangledLazy<T extends object>(
     return mapObject(module, mappers);
 }
 
-export function bulkGetMatched<T>(module: Webpack.Module<any>, options: Webpack.BulkQueries): T | undefined {
-    const {filter, defaultExport = true, searchExports = false, searchDefault = true, raw = false, map} = options;
-
-    if (filter(module.exports, module, module.id)) {
-        if (options.declarationFilter) return getDeclaration(module, options.declarationFilter);
-        if (options.mapDeclarations && options.map) return mapObject(module.declarations, options.map) as T;
-        const trueItem = map ? mapObject(module.exports, map) : raw ? module : module.exports;
-        return trueItem;
-    }
-
-    let defaultKey: string | undefined;
-    const exportKeys: string[] = [];
-    if (searchExports) exportKeys.push(...Object.keys(module.exports));
-    else if (searchDefault && (defaultKey = getDefaultKey(module))) exportKeys.push(defaultKey);
-
-    for (const key of exportKeys) {
-        const exported = module.exports[key];
-
-        if (shouldSkipModule(exported)) continue;
-
-        if (filter(exported, module, module.id)) {
-            if (options.declarationFilter) return getDeclaration(module, options.declarationFilter);
-            if (options.mapDeclarations && options.map) return mapObject(module.declarations, options.map) as T;
-
-            let value: any;
-            if (!defaultExport && defaultKey === key) {
-                value = map ? mapObject(module.exports, map) : raw ? module : module.exports;
-            }
-            else {
-                value = map ? mapObject(raw ? module.exports : exported, map) : raw ? module : exported;
-            }
-
-            return value;
-        }
-    }
-}
-
 export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     const returnedModules = Array(queries.length) as T;
     if (queries.length === 0) return returnedModules;
@@ -136,13 +102,13 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
 
     // Check the firstId for each query
     for (let i = 0; i < queries.length; i++) {
-        const {firstId} = queries[i];
+        const {firstId, filter} = queries[i];
         if (!firstId) continue;
 
         const module = webpackRequire.c[firstId];
         if (!module) continue;
 
-        const matched = bulkGetMatched(module, queries[i]);
+        const matched = getMatched(module, filter, queries[i]);
         if (matched) {
             count++;
             returnedModules[i] = matched;
@@ -155,7 +121,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     for (let i = 0; i < queries.length; i++) {
         if (i in returnedModules) continue;
 
-        const {all, cacheId} = queries[i];
+        const {all, cacheId, filter} = queries[i];
         if (all || !cacheId) continue;
 
         const id = WebpackCache.get(cacheId);
@@ -164,7 +130,7 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         const module = webpackRequire.c[id];
         if (!module) continue;
 
-        const matched = bulkGetMatched(module, queries[i]);
+        const matched = getMatched(module, filter, queries[i]);
         if (matched) {
             count++;
             returnedModules[i] = matched;
@@ -179,12 +145,12 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         if (shouldSkipModule(module.exports)) continue;
 
         for (let index = 0; index < queries.length; index++) {
-            const {all = false, cacheId} = queries[index];
+            const {all = false, cacheId, filter} = queries[index];
             if (!all && index in returnedModules) {
                 continue;
             }
 
-            const matched = bulkGetMatched(module, queries[index]);
+            const matched = getMatched(module, filter, queries[index]);
             if (!matched) continue;
 
             if (!all) {
@@ -201,28 +167,30 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         }
     }
 
-    for (let index = 0; index < queries.length; index++) {
-        const query = queries[index];
-        const exists = index in returnedModules;
+    if (!isFromLazySearch()) {
+        for (let index = 0; index < queries.length; index++) {
+            const query = queries[index];
+            const exists = index in returnedModules;
 
-        if (query.map) {
-            if (!exists) {
-                if (query.fatal) throw makeException();
+            if (query.map) {
+                if (!exists) {
+                    if (query.fatal) throw makeException();
 
-                returnedModules[index] = {};
+                    returnedModules[index] = {};
+                }
             }
-        }
-        else if (query.all) {
-            if ((!exists || returnedModules[index].length === 0) && query.fatal) {
+            else if (query.all) {
+                if ((!exists || returnedModules[index].length === 0) && query.fatal) {
+                    throw makeException();
+                }
+
+                if (!exists) {
+                    returnedModules[index] = [];
+                }
+            }
+            else if (!exists && query.fatal) {
                 throw makeException();
             }
-
-            if (!exists) {
-                returnedModules[index] = [];
-            }
-        }
-        else if (!exists && query.fatal) {
-            throw makeException();
         }
     }
 
@@ -240,6 +208,7 @@ export function getProxy<T extends object>(filter: Webpack.ModuleFilter, options
     return cache.proxy(() => getModule<T>(filter, {...options, fatal: true})!, options.typeofIsObject);
 }
 
+/** @deprecated 10/07/26 use the map option instead */
 export function getMangledProxy<T extends object>(
     filter: Webpack.ModuleFilter | string | RegExp | Array<string | RegExp> | number,
     mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,

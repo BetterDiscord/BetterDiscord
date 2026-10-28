@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import {comparator} from "@structs/semver";
+import {comparator} from "@common/semver";
 import {debounce, extend, findInTree, getNestedProp} from "@common/utils";
-import {forceLoad} from "@webpack";
+import {forceLoad, loadEntry} from "@webpack";
 import Store from "@stores/base";
 import {mapObject} from "@utils/object";
 import cache from "@common/utils/cache";
@@ -27,9 +27,17 @@ class Utils {
      * Loads the module ids within a chunk
      *
      * @param id Module with the chunk id.
-     * @returns Resolved chunk module
+     * @returns Resolved chunk modules
      */
     forceLoad = forceLoad;
+
+    /**
+     * Loads the entry ids of a method.
+     *
+     * @param string Function source.
+     * @returns Resolved chumk module
+     */
+    loadEntry = loadEntry;
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
@@ -74,7 +82,8 @@ class Utils {
      * Builds a classname string from any number of arguments. This includes arrays and objects.
      * When given an array all values from the array are added to the list.
      * When given an object they keys are added as the classnames if the value is truthy.
-     * Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
+     *
+     * Re-export of {@link https://www.npmjs.com/package/clsx}
      *
      * @param argument Anything that should be used to add classnames
      * @returns Joined classname

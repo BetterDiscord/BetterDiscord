@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, type ChangeEvent, type MouseEvent, type ReactNode} from "react";
+import React, {useState, useCallback, useMemo, type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
@@ -13,9 +13,7 @@ import ErrorBoundary from "@ui/errorboundary";
 
 import NoResults from "@ui/blankslates/noresults";
 import EmptySlate from "@ui/blankslates/empty";
-import Web from "@data/web";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader, addonContext} from "./addonshared";
-import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 import {useStateFromStores} from "@ui/hooks";
@@ -43,15 +41,12 @@ function openFolder(folder: string) {
     ipc.openPath(folder);
 }
 
-function Blankslate({type, folder}: {type: AddonType; folder: string;}) {
+function Blankslate({type}: {type: AddonType;}) {
     const {toggleStore} = React.useContext(addonContext);
-    const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
-    const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], context: type}).toString();
-    const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
-    const buttonKey = storeEnabled ? "Addons.openStore" : "Addons.openFolder";
-    return <EmptySlate title={t("Addons.blankSlateHeader", {context: type})} message={storeEnabled ? "" : message}>
-        <Button size={Button.Sizes.LARGE} onClick={onClick}>
-            {t(buttonKey, {context: type})}
+
+    return <EmptySlate title={t("Addons.blankSlateHeader", {context: type})}>
+        <Button size={Button.Sizes.LARGE} onClick={toggleStore}>
+            {t("Addons.openStore", {context: type})}
         </Button>
     </EmptySlate>;
 }
@@ -89,8 +84,6 @@ function confirmEnable(action: () => void, type: string) {
 
 function StoreCard() {
     const {toggleStore, store} = React.useContext(addonContext);
-
-    if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
     return (
         <div
@@ -151,7 +144,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
         setSort(value);
     }, [store.prefix]);
 
-    const search = useCallback((e: ChangeEvent<HTMLInputElement>) => setQuery(e.currentTarget.value.toLocaleLowerCase()), []);
+    const search = useCallback((value: string) => setQuery(value.toLocaleLowerCase()), []);
     const triggerEdit = useCallback((id: string) => store.editAddon?.(id), [store]);
     const triggerDelete = useCallback(async (id: string) => {
         const addon = addonList.find(a => a.id == id)!;
@@ -203,7 +196,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
 
     return [
         <AddonHeader count={renderedCards.length} searching={isSearching}>
-            <Search onChange={search} placeholder={`${t("Addons.search", {count: renderedCards.length, context: store.prefix})}...`} />
+            <Search value={query} onChange={search} placeholder={`${t("Addons.search", {count: renderedCards.length, context: store.prefix})}...`} />
         </AddonHeader>,
         <div className={"bd-controls bd-addon-controls"}>
             <div className="bd-controls-basic">
@@ -229,7 +222,7 @@ export default function AddonList({store}: {store: AddonManager;}) {
             </div>
         </div>,
         <StoreCard />,
-        !hasAddonsInstalled && <Blankslate type={store.prefix as AddonType} folder={store.addonFolder} />,
+        !hasAddonsInstalled && <Blankslate type={store.prefix as AddonType} />,
         isSearching && !hasResults && hasAddonsInstalled && <NoResults />,
         hasAddonsInstalled && <div key="addonList" className={"bd-addon-list" + (view == "grid" ? " bd-grid-view" : "")}>{renderedCards}</div>
     ];

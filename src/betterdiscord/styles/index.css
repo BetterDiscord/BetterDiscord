@@ -36,6 +36,7 @@
 @import "./spinner.css";
 @import "./search.css";
 @import "./text.css";
+@import "./ui/recovery.css";
 
 :root {
     --bd-brand: #3E82E5;

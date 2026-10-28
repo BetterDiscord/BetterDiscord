@@ -2,14 +2,13 @@ import ReactDOM from "@modules/reactdom";
 import React from "react";
 import Settings, {type SettingsCollection} from "@stores/settings";
 import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy, getMangled, getMangledLazy} from "@webpack";
+import {Filters, getByKeys, getBySource, getLazy, getLazyBySource} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import AddonPage from "@ui/settings/addonpage";
 
-import type {SettingsCategory} from "@data/settings";
+import type {RadioOption, SettingsCategory} from "@data/settings";
 import VersionInfo from "./misc/versioninfo";
-import {findInTree} from "@common/utils";
 import {useForceUpdate, useStateFromStores} from "./hooks";
 import SettingsPanel from "./settings/panel";
 import {CustomCSS} from "@builtins/builtins";
@@ -27,7 +26,10 @@ import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
 import type {GroupOnChange} from "./settings/group";
-import {getInternalInstance} from "@utils/react";
+
+const ContextMenu = new ContextMenuPatcher();
+
+const UserSettings = getByKeys<any>(["openUserSettings", "USER_SETTINGS_MODAL_KEY"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -49,25 +51,12 @@ const SettingsRenderer = new class SettingsRenderer {
         return drawerStates[collection][group];
     }
 
-    onChange(onChange: GroupOnChange): GroupOnChange {
-        return (...args: Parameters<GroupOnChange>) => {
-            onChange(...args);
-
-            // Delay until after switch animation
-            // customcss is here to let the tab show/hide
-            // since that component is out of our control/scope
-            if (args.length >= 3 && args[1] === "customcss") {
-                setTimeout(this.forceUpdate.bind(this), 250);
-            }
-        };
-    }
-
     buildSettingsPanel(id: string, title: string, groups: SettingsCategory[], onChange: GroupOnChange) {
         return React.createElement(SettingsPanel, {
             id,
             title,
             groups,
-            onChange: this.onChange(onChange).bind(this),
+            onChange: onChange.bind(this),
             onDrawerToggle: this.onDrawerToggle.bind(this),
             getDrawerState: this.getDrawerState.bind(this)
         });
@@ -176,19 +165,22 @@ const SettingsRenderer = new class SettingsRenderer {
                 };
 
                 const makeSettingsPanelProvider = (children: React.ReactNode) => {
-                    const ref: {
-                        current: {
-                            text?: React.ReactNode;
-                            children?: React.ReactNode;
-                        };
-                    } = {
-                        current: {}
+                    const listeners = new Set<() => void>();
+                    let items = {
+                        text: null as React.ReactNode,
+                        children: null as React.ReactNode
                     };
 
-                    let forceUpdate: () => void;
                     function PanelHeader() {
                         const [node, setNode] = React.useState<HTMLElement | undefined>();
-                        forceUpdate = useForceUpdate()[1];
+                        const {text, children: child} = items;
+
+                        const [, forceUpdate] = useForceUpdate();
+
+                        React.useLayoutEffect(() => {
+                            listeners.add(forceUpdate);
+                            return listeners.delete.bind(listeners, forceUpdate) as unknown as ReturnType<React.EffectCallback>;
+                        }, [forceUpdate]);
 
                         return (
                             <>
@@ -212,12 +204,12 @@ const SettingsRenderer = new class SettingsRenderer {
                                         return () => setNode(undefined);
                                     }}
                                 >
-                                    {ref.current.text}
+                                    {text}
                                 </div>
 
                                 {node && (
                                     ReactDOM.createPortal(
-                                        <div className="bd-settings-page-title-children">{ref.current.children}</div>,
+                                        <div className="bd-settings-page-title-children">{child}</div>,
                                         node
                                     )
                                 )}
@@ -230,8 +222,13 @@ const SettingsRenderer = new class SettingsRenderer {
                         render: () => (
                             <SettingsTitleContext
                                 value={(value) => {
-                                    ref.current = (value as {props: typeof ref["current"];}).props;
-                                    forceUpdate();
+                                    items = {
+                                        children: (value as React.ReactElement<{children: React.ReactNode;}>).props.children,
+                                        text: (value as React.ReactElement<{text: React.ReactNode;}>).props.text
+                                    };
+
+                                    listeners.forEach(listener => listener());
+
                                     return null;
                                 }}
                             >
@@ -273,13 +270,14 @@ const SettingsRenderer = new class SettingsRenderer {
                             ...makeSettingsPanelProvider(React.createElement(panel.element!)),
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSViewable,
-                            useSearchTerms: () => [panel.label]
+                            predicate: checkAll(useCustomCSSEnabled, () => !useCustomCSSClickable()),
+                            useSearchTerms: () => [panel.label],
                         });
+
                         insert("customcss_clickable", {
                             icon,
                             title: () => panel.label,
-                            predicate: useCustomCSSClickable,
+                            predicate: checkAll(useCustomCSSEnabled, useCustomCSSClickable),
                             onClick: () => CustomCSS.open(),
                             useSearchTerms: () => [panel.label]
                         });
@@ -305,19 +303,21 @@ const SettingsRenderer = new class SettingsRenderer {
         });
 
         Patcher.after("SettingsManager", rootLayout, "buildLayout", (_, __, res) => {
-            let index = res.findIndex((layout) => (layout as any).key === "activity_section") + 1;
-            if (index === -1) index = res.length;
+            const index = res.findIndex((layout) => (layout as any).key === "games_and_apps_section") + 1;
 
             res.splice(index, 0, section);
         });
     }
 
     patchSettingsSearch() {
-        const search = getMangled<{
+        const search = getBySource<{
             search(): Record<string, any>;
-        }>(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]", {
-            search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
-        }, {cacheId: "core-settings-search"});
+        }>([".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]"], {
+            map: {
+                search: Filters.byStrings(".PRIVACY_AND_SAFETY_PERSISTENT_VERIFICATION_CODES]")
+            },
+            cacheId: "core-settings-search"
+        })!;
 
         Patcher.after("SettingsManager", search, "search", (_, __, res) => {
             res = {...res}; // Discord freezes the object
@@ -371,14 +371,18 @@ const SettingsRenderer = new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getMangledLazy<{
+        const versionDisplayModule = (await getLazyBySource<{
             versionDisplay: React.FC;
-        }>(["copyValue", "RELEASE_CHANNEL"], {
-            versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL")
-        }, {
+        }>(["copyValue", "RELEASE_CHANNEL", "Build Override"], {
+            map: {
+                versionDisplay: Filters.byStrings("copyValue", "RELEASE_CHANNEL", "Build Override")
+            },
             searchDefault: false,
-            mapDeclarations: true
-        });
+            mapDeclarations: true,
+            cacheId: "bd-settings-version-info"
+        }))!;
+
+        if (typeof versionDisplayModule.versionDisplay !== "function") return;
 
         Patcher.instead("SettingsManager", versionDisplayModule, "versionDisplay", () => <VersionInfo />);
     }
@@ -389,18 +393,12 @@ const SettingsRenderer = new class SettingsRenderer {
         });
     }
 
-    forceUpdate() {
-        const viewClass = DiscordModules.ViewClasses?.standardSidebarView.split(" ")[0];
-        const node = document.querySelector(`.${viewClass}`);
-        if (!node) return;
-        const stateNode = findInTree(getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
-        if (stateNode) stateNode.forceUpdate();
+    private readonly DISCORD_USER_SETTINGS_MODAL_KEY: string = typeof UserSettings?.USER_SETTINGS_MODAL_KEY === "string" ? UserSettings.USER_SETTINGS_MODAL_KEY : "USER_SETTINGS_MODAL_MODAL_KEY";
+
+    public closeUserSettingsModal() {
+        Modals.ModalActions.closeModal(this.DISCORD_USER_SETTINGS_MODAL_KEY);
     }
 };
-
-const ContextMenu = new ContextMenuPatcher();
-
-const UserSettings = getByKeys<any>(["openUserSettings", "openUserSettingsFromParsedUrl"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 interface PanelLayout {
     buildLayout(): [category: CategoryLayout];
@@ -478,13 +476,17 @@ type LayoutConstructor = {
     onClick(): void;
 });
 
+const checkAll = (...hooks: Array<() => boolean>) => () => hooks.map(hook => hook()).every(x => x);
+
+const useCustomCSSEnabled = () => useStateFromStores(Settings, () => Settings.get<boolean>("settings", "customcss", "customcss"), []);
+
 /** @description On true clicking open will open not open the page. On false will open the page */
 const useCustomCSSClickable = () => {
-    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"));
+    const state = useStateFromStores(Settings, () => Settings.get<string>("settings", "customcss", "openAction"), []);
+    const isDetached = useStateFromStores(CustomCSS, () => CustomCSS.isDetached, []);
 
-    return ["detached", "external", "system"].includes(state);
+    return isDetached || ["detached", "external", "system"].includes(state);
 };
-const useCustomCSSViewable = () => !useCustomCSSClickable();
 
 function LayerSettingTitle() {
     const [node, setNode] = React.useState<HTMLElement | undefined | null | void>();
@@ -539,13 +541,30 @@ function useCollectionMenu(collection: SettingsCollection) {
         return collection.settings.map(category => ({
             id: category.id,
             name: category.name!,
-            settings: category.settings.filter(s => s.type === "switch" && !s.hidden).map(setting => ({
-                id: setting.id,
-                label: setting.name!,
-                disabled: setting.disabled,
-                checked: Settings.get<boolean>(collection.id, category.id, setting.id),
-                action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
-            }))
+            settings: category.settings
+                .filter(s => (s.type === "switch" || s.type === "dropdown") && !s.hidden)
+                .map(setting => {
+                    if (setting.type === "dropdown") {
+                        return {
+                            type: "dropdown",
+                            id: setting.id,
+                            label: setting.name!,
+                            disabled: setting.disabled,
+                            options: (setting as any).options as Array<RadioOption<string>>,
+                            value: Settings.get<string>(collection.id, category.id, setting.id),
+                            action: (value: string) => Settings.set(collection.id, category.id, setting.id, value)
+                        } as const;
+                    }
+
+                    return {
+                        type: "switch",
+                        id: setting.id,
+                        label: setting.name!,
+                        disabled: setting.disabled,
+                        checked: Settings.get<boolean>(collection.id, category.id, setting.id),
+                        action: () => Settings.set(collection.id, category.id, setting.id, !Settings.get(collection.id, category.id, setting.id))
+                    } as const;
+                })
         }));
     }, []);
 
@@ -558,9 +577,30 @@ function useCollectionMenu(collection: SettingsCollection) {
                     action={() => openCategory(collection.id)}
                     key={`bd.${collection.id}.${category.id}`}
                 >
-                    {category.settings.map(setting => (
-                        <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
-                    ))}
+                    {category.settings.map(setting => {
+                        if (setting.type === "dropdown") {
+                            return (
+                                <ContextMenu.Item key={`bd.${collection.id}.${category.id}.${setting.id}`} label={setting.label} id={setting.id} disabled={setting.disabled}>
+                                    <ContextMenu.Group id={setting.id}>
+                                        {setting.options.map(option => (
+                                            <ContextMenu.RadioItem
+                                                // @ts-expect-error internal
+                                                label={option.label}
+                                                group={setting.id}
+                                                id={`${setting.id}-${option.value}`}
+                                                key={`bd.${collection.id}.${category.id}.${setting.id}-${option.value}`}
+                                                action={() => setting.action(option.value)}
+                                                checked={setting.value === option.value}
+                                            />
+                                        ))}
+                                    </ContextMenu.Group>
+                                </ContextMenu.Item>
+                            );
+                        }
+                        return (
+                            <ContextMenu.CheckboxItem {...setting} key={`bd.${collection.id}.${category.id}.${setting.id}`} />
+                        );
+                    })}
                 </ContextMenu.Item>
             ))}
         </>
@@ -568,8 +608,7 @@ function useCollectionMenu(collection: SettingsCollection) {
 }
 
 function useAddonMenu(manager: AddonManager) {
-    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name || (a as any).getName?.()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
-    const addonStoreIsEnabled = useStateFromStores(Settings, () => Settings.get("settings", "store", "bdAddonStore"), []);
+    const addons = useStateFromStores(manager, () => manager.addonList.map(a => a.name).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).map((name) => [name as string, manager.resolveAddon(name), manager.isEnabled(name)] as const), [], true);
 
     const toggles = React.useMemo(() => addons.map(([name, addon, enabled]) => (
         <ContextMenu.CheckboxItem
@@ -590,10 +629,9 @@ function useAddonMenu(manager: AddonManager) {
                 }
 
                 const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
-                const getSettings = (hasSettings && (addon as Plugin).instance.getSettingsPanel!.bind((addon as Plugin).instance)) as () => any;
 
                 if (hasSettings) {
-                    Modals.showAddonSettingsModal(name, getSettings());
+                    Modals.showAddonSettingsModal(name, (addon as Plugin).instance.getSettingsPanel!());
                 }
                 else {
                     toasts.warning(t("Addons.noSettings", {name}));
@@ -607,19 +645,17 @@ function useAddonMenu(manager: AddonManager) {
             <ContextMenu.Group key={`bd.${manager.prefix}.installed`}>
                 {toggles}
             </ContextMenu.Group>
-            {!!addonStoreIsEnabled && (
-                <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
-                    <ContextMenu.Item
-                        label={t("Addons.openStore", {context: manager.prefix})}
-                        id={`${manager.prefix}-store`}
-                        action={() => {
-                            openCategory(manager.prefix + "s");
-                            // If the addon store instantly opens have it just stop basically
-                            DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
-                        }}
-                    />
-                </ContextMenu.Group>
-            )}
+            <ContextMenu.Group key={`bd.${manager.prefix}.store`}>
+                <ContextMenu.Item
+                    label={t("Addons.openStore", {context: manager.prefix})}
+                    id={`${manager.prefix}-store`}
+                    action={() => {
+                        openCategory(manager.prefix + "s");
+                        // If the addon store instantly opens have it just stop basically
+                        DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
+                    }}
+                />
+            </ContextMenu.Group>
         </>
     );
 }

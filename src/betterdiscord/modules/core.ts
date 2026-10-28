@@ -15,7 +15,6 @@ import Settings from "@stores/settings";
 import JsonStore from "@stores/json";
 import DiscordModules from "./discordmodules";
 
-import IPC from "./ipc";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
@@ -28,6 +27,7 @@ import CommandManager from "./commandmanager";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 import {allModulesLoaded, getStore, Stores} from "@webpack";
 import Patcher from "./patcher";
+import {initNotificationUI} from "@ui/notifications";
 
 export default new class Core {
     hasStarted = false;
@@ -40,16 +40,11 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
-
         this.trustBetterDiscordProtocol();
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
-
-        Logger.log("Startup", "Initializing AddonStore");
-        AddonStore.initialize();
 
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
@@ -57,6 +52,9 @@ export default new class Core {
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
         SettingsRenderer.initialize();
+
+        Logger.log("Startup", "Initializing AddonStore");
+        AddonStore.initialize();
 
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
@@ -91,6 +89,8 @@ export default new class Core {
 
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
+
+        initNotificationUI();
 
         const previousVersion = JsonStore.get("misc", "version");
         if (Config.get("version") !== previousVersion) {

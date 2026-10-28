@@ -68,6 +68,9 @@ class Webpack {
         /** Generates a function that filters by a specific internal Store name. */
         byStoreName(name: string) {return Filters.byStoreName(name);},
 
+        /** Generates a function that filters by a specific properties of a destructured declare */
+        byDestructure(...properties: string[]) {return Filters.byDestructure(...properties);},
+
         /** Generates a combined function from a list of filters. */
         combine(...filters: ModuleFilter[]): ModuleFilter {return Filters.combine(...filters);},
 
@@ -83,6 +86,7 @@ class Webpack {
         }
     };
 
+    /** @deprecated 10/07/26 use the withKey option instead */
     getWithKey(filter: ExportedOnlyFilter, options: WithKeyOptions = {}) {
         if (("first" in options)) return Logger.error("BdApi.Webpack~getWithKey", "Unsupported option first.");
         if (("defaultExport" in options) && typeof (options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getWithKey", "Invalid type for options.defaultExport", options.defaultExport, "Expected: boolean");
@@ -128,6 +132,7 @@ class Webpack {
         return getModuleWithFirst<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
     }
 
+    /** @deprecated 10/07/26 use the map option instead */
     getMangled<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
@@ -183,11 +188,11 @@ class Webpack {
 
     getStore(name: string) {return getStore(name);}
 
-    getById(id: PropertyKey, options: WebpackOptions = {}) {
+    getById<T extends object>(id: PropertyKey, options: WebpackOptions = {}) {
         if (("raw" in options) && typeof (options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.raw", options.raw, "Expected: boolean");
         if (("fatal" in options) && typeof (options.fatal) !== "boolean") return Logger.error("BdApi.Webpack~getById", "Invalid type for options.fatal", options.fatal, "Expected: boolean");
 
-        return getById(id, options);
+        return getById<T>(id, options);
     }
 
     getProxy<T extends object>(filter: ModuleFilter, options: ProxyOptions = {}) {
@@ -199,6 +204,7 @@ class Webpack {
         return getProxy<T>(filter, options);
     }
 
+    /** @deprecated 10/07/26 use the map option instead */
     getMangledProxy<T extends object>(filter: ModuleFilter | string | RegExp | Array<string | RegExp> | number, mangled: Record<keyof T, ExportedOnlyFilter>, options: MangledOptions = {}) {
         const {defaultExport = false, searchExports = false, raw = false, fatal = false} = options;
         if (typeof (defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangledProxy", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");

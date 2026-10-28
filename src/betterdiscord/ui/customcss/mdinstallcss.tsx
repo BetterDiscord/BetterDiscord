@@ -9,11 +9,10 @@ import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
 import {Filters, getLazy} from "@webpack";
 import Logger from "@common/logger";
-import NotificationUI from "@ui/notifications";
+import Notifications from "@stores/notifications";
 import Modals from "@ui/modals";
 import {findInTree} from "@common/utils";
 import type {Rule} from "@typed/discord/modules";
-
 
 class InstallCSS {
     static activeNotifications = new Map();
@@ -90,7 +89,7 @@ class InstallCSS {
 
             this.activeNotifications.set(notificationId, cssBlock);
 
-            NotificationUI.show({
+            Notifications.show({
                 id: notificationId,
                 title: t("CustomCSS.cssInstalled"),
                 content: t("CustomCSS.cssReverting"),
