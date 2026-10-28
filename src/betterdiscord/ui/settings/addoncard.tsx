@@ -23,6 +23,12 @@ import Thememanager, {
     Manager,
     type Theme,
     type ThemePropertyState,
+import type {MouseEvent, ReactNode} from "react";
+import type {default as AddonManager, Addon} from "@modules/addonmanager";
+import Thememanager, {
+    Manager,
+    type Theme,
+    type ThemePropertyState, type ThemePropertyStateCheckbox,
     type ThemePropertyStateSlider
 } from "@modules/thememanager.ts";
 import SettingItem from "@ui/settings/components/item";

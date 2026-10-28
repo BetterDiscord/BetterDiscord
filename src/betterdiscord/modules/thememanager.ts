@@ -164,6 +164,8 @@ export default new class ThemeManager extends AddonManager<Theme> {
         // Set the custom properties
         const properties = this.extractCustomProperties(theme.css);
         theme.properties = properties;
+
+
         return theme;
     }
 
@@ -174,6 +176,12 @@ export default new class ThemeManager extends AddonManager<Theme> {
         if (!theme.css) {
             const loaded = this.loadAddon(theme);
             if (!loaded) return false;
+        }
+
+        if (theme.properties) {
+            for (const [name, prop] of Object.entries(theme.properties)) {
+                this.registerProperty(name, prop);
+            }
         }
 
         if (theme.properties) {
