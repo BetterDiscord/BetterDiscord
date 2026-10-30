@@ -255,12 +255,7 @@ export default new class Recovery extends Builtin {
 
     // https://github.com/react/react/blob/098d2e87a1f7142947418d15f63f975b58c4685b/packages/react-reconciler/src/ReactCapturedValue.js#L22
     patchReactReconcilerCapturedStacks() {
-        const [declarations, key] = getBySource<Webpack.ModuleWithKey<() => {source: Fiber;}>>([".errorRecoveryDisabledLanes|="], {
-            declarationFilter: Filters.byStrings("value:", ".set"),
-            withKey: true
-        })!;
-
-        this.after(declarations, key, (_, __, res) => {
+        this.after(DiscordModules.ReactConciler, "stack", (_, __, res) => {
             this.lastThrownComponent = (res.source?.return as Fiber || res.source as Fiber).elementType;
         });
     }
