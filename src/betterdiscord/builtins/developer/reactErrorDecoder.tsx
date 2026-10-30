@@ -25,7 +25,8 @@ export default new class ReactErrorDecoder extends Builtin {
 
     private patchErrorCodes() {
         this.after(DiscordModules.ReactConciler, "errorStack", (_, [e], __) => {
-            return this.errors.get(String(e));
+            const errorCodeString = String(e);
+            return `${this.errors.get(errorCodeString)} (#${errorCodeString})`;
         });
     }
 
