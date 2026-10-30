@@ -6,7 +6,7 @@ import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
 import PluginManager, {type Plugin} from "@modules/pluginmanager";
 import Modals from "@ui/modals";
-import {Filters, getByPrototypes, getBySource, getProxy} from "@webpack";
+import {Filters, getByPrototypes, getProxy} from "@webpack";
 import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
 import SimpleMarkdownExt from "@structs/markdown";
 import Notifications from "@stores/notifications";
@@ -15,7 +15,6 @@ import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWar
 import config from "@stores/config.ts";
 import {Logo} from "@ui/logo.tsx";
 import Ipc from "@modules/ipc.ts";
-import type {Webpack} from "@typed/discord";
 import type {Fiber} from "react-reconciler";
 import Patcher from "@modules/patcher";
 

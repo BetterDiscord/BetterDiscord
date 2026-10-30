@@ -1,7 +1,7 @@
 import DiscordModules from "@modules/discordmodules";
 import Builtin from "@structs/builtin";
 
-const REACT_ERROR_CODES = `https://raw.githubusercontent.com/facebook/react/v${DiscordModules.React.version}/scripts/error-codes/codes.json`
+const REACT_ERROR_CODES = `https://raw.githubusercontent.com/facebook/react/v${DiscordModules.React.version}/scripts/error-codes/codes.json`;
 
 export default new class ReactErrorDecoder extends Builtin {
     get name() {return "ReactErrorDecoder";}
@@ -24,10 +24,8 @@ export default new class ReactErrorDecoder extends Builtin {
     }
 
     private patchErrorCodes() {
-        this.after(DiscordModules.ReactConciler, "errorStack", (_, [e], res) => {
-            const fullError = this.errors.get(String(e));
-            console.log(fullError)
-            return fullError;
+        this.after(DiscordModules.ReactConciler, "errorStack", (_, [e], __) => {
+            return this.errors.get(String(e));
         });
     }
 
