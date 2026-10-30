@@ -313,7 +313,7 @@ interface ContextMenuObject {
 
 type MenuRenderNode = React.ReactElement<MenuRenderProps, React.ComponentType<MenuRenderProps>>;
 
-type PatchCallback = (
+export type PatchCallback = (
     res: React.ReactElement<React.PropsWithChildren<MenuRenderProps>>,
     props: MenuRenderProps,
     instance?: React.Component<MenuRenderProps>

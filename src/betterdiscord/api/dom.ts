@@ -5,7 +5,7 @@ interface AnimateOptions {
     timing?: (timeFraction: number) => number;
 }
 
-class BaseDOM {
+export class BaseDOM {
     /** @ignore */
     constructor() {};
 

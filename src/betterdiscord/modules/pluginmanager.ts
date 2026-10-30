@@ -7,6 +7,9 @@ import AddonManager from "./addonmanager";
 import {type Addon} from "@typed/addon";
 import {t} from "@common/i18n";
 import Events from "./emitter";
+import {detectModuleType, replaceSections, type ModuleType} from "./scan";
+import {createModuleRuntime} from "../api/esm";
+import {createElement} from "react";
 
 type PluginLoadPoint = "connection" | "idle";
 
@@ -59,10 +62,31 @@ type PluginFactory = (meta: Addon) => PluginInstance;
 // Do not rename
 type PluginExport = PluginConstructor | PluginFactory;
 
+interface EsmModuleExports {
+    /**
+     * Runs when your plugin is enabled
+     */
+    start(): void;
+    /**
+     * Runs when your plugin is disabled
+     */
+    stop?(): void;
+    /**
+     *
+     */
+    SettingsComponent?: React.ComponentType;
+
+    /**
+     * If present this will be used instead of base exports
+     */
+    default?: EsmModuleExports;
+}
+
 export interface Plugin extends Addon {
-    exports: PluginExport;
+    exports: PluginExport | EsmModuleExports;
     instance: PluginInstance;
     hasObserver: boolean;
+    type: ModuleType;
 }
 
 export interface PluginModule {
@@ -70,10 +94,28 @@ export interface PluginModule {
     filename: string;
 }
 
+interface PluginMeta {
+    readonly url: string;
+    readonly manifest: Addon;
+    get enabled(): boolean;
+}
+
+interface EsmRuntimeConnection {
+    require<T>(key: string): T;
+    import<T>(key: string, dynamic: () => Promise<T>): Promise<T>;
+    runtime: ReturnType<typeof createModuleRuntime>;
+    exports: EsmModuleExports;
+    meta: PluginMeta;
+}
+
 const normalizeExports = `
 if (module.exports.default) {
     module.exports = module.exports.default;
 }`;
+
+const IDENT = /^[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u;
+const key = (k: string) => (IDENT.test(k) ? k : JSON.stringify(k));
+const prop = (name: string) => (IDENT.test(name) ? `.${name}` : `[${JSON.stringify(name)}]`);
 
 class PluginManager extends AddonManager<Plugin> {
     name = "PluginManager";
@@ -117,7 +159,7 @@ class PluginManager extends AddonManager<Plugin> {
         if (point === "idle") this.finishInit();
     }
 
-    initAddon(plugin: Plugin) {
+    commonjs(plugin: Plugin) {
         // Evaluate the plugin
         try {
             const module = {
@@ -160,7 +202,9 @@ class PluginManager extends AddonManager<Plugin> {
             return false;
         }
 
-        const {exports, ...meta} = Object.assign({}, plugin);
+        const {exports: _exports, ...meta} = Object.assign({}, plugin);
+
+        const exports = _exports as PluginExport;
 
         try {
             // Load the plugin instance
@@ -195,6 +239,145 @@ class PluginManager extends AddonManager<Plugin> {
             });
             return false;
         }
+    }
+
+    private convertModuleToCJS(plugin: Plugin, exports: EsmModuleExports, runtime: ReturnType<typeof createModuleRuntime>): PluginInstance | null {
+        if (exports.default) exports = exports.default;
+
+        if (typeof exports.start !== "function") {
+            this.showAddonError(plugin, "Missing start function.", {
+                message: "Plugins must have both a start function.",
+                stack: ""
+            });
+
+            return null;
+        }
+
+        return {
+            start() {
+                exports.start();
+            },
+            stop() {
+                runtime.undo();
+                if (typeof exports.stop === "function") exports.stop();
+            },
+            getSettingsPanel: exports.SettingsComponent ? () => createElement(exports.SettingsComponent as never) : undefined
+        };
+    }
+
+    module(plugin: Plugin) {
+        const runtime = createModuleRuntime(plugin.id);
+
+        const connectionKey = "__betterdiscord_esm_connect";
+        const dynamic = `${connectionKey}.import`;
+        const require = `${connectionKey}.require`;
+        const exports = `${connectionKey}.exports`;
+        const meta = `${connectionKey}.meta`;
+
+        const newCode = replaceSections(plugin.fileContent!, {
+            imports(imp, text) {
+                if (imp.dynamic) {
+                    if (imp.expression) {
+                        return `${dynamic}(${imp.expression},()=>${text})`;
+                    }
+
+                    if (runtime.modules.has(imp.source!)) {
+                        return `${require}(${JSON.stringify(imp.source)})`;
+                    }
+
+                    return null;
+                }
+
+                const req = `${require}(${JSON.stringify(imp.source)})`;
+
+                if (!imp.specifiers.length) return req;
+
+                const ns = imp.specifiers.find((s) => s.kind === "namespace");
+                const keys = imp.specifiers
+                    .filter((s) => s.kind !== "namespace")
+                    .map((s) => (s.imported === s.local ? s.imported : `${key(s.imported)}:${s.local}`));
+
+                if (!ns) return `const {${keys.join(",")}}=${req}`;
+                return keys.length ? `const ${ns.local}=${req},{${keys.join(",")}}=${ns.local}` : `const ${ns.local}=${req}`;
+            },
+            exports(info, _text, declaration) {
+                const set = (name: string, value: string) => `${exports}${prop(name)} = ${value};`;
+                const mod = info.source === null ? "" : `${require}(${JSON.stringify(info.source)})`;
+                const lines: string[] = [];
+
+                for (const s of info.specifiers) {
+                    if (s.kind === "all") lines.push(`Object.assign(${exports}, ${mod});`); // export * from "foo"
+                    else if (s.kind === "namespace") lines.push(set(s.exported, mod)); // export * as ns from "foo"
+                    else if (mod) lines.push(set(s.exported, mod + prop(s.local ?? "default"))); // export { a as b } from "foo"
+                    else if (s.local === null) return set("default", declaration ?? "undefined"); // export default <anonymous / expression>
+                    else lines.push(set(s.exported, s.local)); // export { a }, export function a() {}
+                }
+
+                if (declaration === null || info.declaration === "expression") return lines.join("\n");
+                const semi = info.declaration === "function" || info.declaration === "class" ? "" : ";";
+                return `${declaration}${semi}\n${lines.join("\n")}`;
+            },
+            importMeta: () => meta
+        });
+
+        const isEnabled = this.isEnabled.bind(this, plugin.id);
+
+        const connection: EsmRuntimeConnection = {
+            require(path) {
+                const module = runtime.modules.get(path);
+                if (module) return module;
+                throw new Error(`Unable to find "${path}"!`);
+            },
+            import(path, originalImport) {
+                const module = runtime.modules.get(path);
+                if (module) return Promise.resolve(module);
+                return originalImport();
+            },
+            meta: Object.freeze(Object.seal({
+                get enabled() {
+                    return isEnabled();
+                },
+                manifest: Object.assign({}, plugin),
+                url: `betterdiscord://betterdiscord/plugins/${plugin.filename}`
+            })),
+            exports: {} as EsmModuleExports,
+            runtime
+        };
+
+        // Evaluate the plugin
+        try {
+            const updatedCode = newCode + `\n//# sourceURL=betterdiscord://betterdiscord/plugins/${plugin.filename}`;
+
+            // Wrap the plugin in a function and run it
+            const wrappedPlugin = new Function(connectionKey, "require", updatedCode); // eslint-disable-line no-new-func
+            wrappedPlugin(connection, function () {throw new Error("Require is not supported");});
+
+            plugin.exports = connection.exports;
+            delete plugin.fileContent;
+
+            const instance = this.convertModuleToCJS(plugin, connection.exports as EsmModuleExports, runtime);
+
+            if (!instance) return false;
+
+            plugin.instance = instance;
+        }
+        catch (err) {
+            this.showAddonError(plugin, t("Addons.compileError"), {
+                message: (err as Error).message,
+                stack: (err as Error).stack
+            });
+            return false;
+        }
+
+        if (Config.isDevelopment) Object.defineProperty(plugin, "connection", {value: connection});
+
+        return true;
+    }
+
+    initAddon(plugin: Plugin) {
+        plugin.type ||= detectModuleType(plugin.fileContent!);
+
+        return plugin.type === "module" ? this.module(plugin) : this.commonjs(plugin);
     }
 
     startAddon(idOrAddon: string | Plugin) {
