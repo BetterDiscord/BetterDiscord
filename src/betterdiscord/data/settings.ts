@@ -95,6 +95,7 @@ const DefaultSettings = [
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
             {type: "switch", id: "webpackSourceViewer", value: true, enableWith: "devTools"},
+            {type: "switch", id: "reactErrorDecoder", value: true, enableWith: "devTools"},
             {type: "switch", id: "canary", value: config.isCanary, hidden: true},
         ]
     }
