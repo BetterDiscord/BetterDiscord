@@ -1,6 +1,7 @@
 import Logger from "@common/logger";
 import type {RawModule} from "../../../betterdiscord/types/discord/webpack";
 import parseDeclarations from "@common/parseDeclarations";
+import type {Webpack} from "@typed/discord";
 
 const getPrefix = /^(.*?)\(/;
 // Functions like ones from objects ({ a() {} }) will throw so we replace 'a' with 'function'
@@ -14,66 +15,69 @@ function toStringFunction(stringed: string): string {
     return stringed.replace(match[1], "function");
 }
 
-(window.webpackChunkdiscord_app ??= [])
-    .push([[Symbol()], {}, (require: any) => {
-        if (!require.b) return;
+const effect = (require: Webpack.Require) => {
+    if (!require.b) return;
 
-        require.d = (target: object, exports: any) => {
-            for (const key in exports) {
-                if (!Reflect.has(exports, key)) continue;
-                if (Reflect.has(target, key)) continue;
-
-                try {
-                    Object.defineProperty(target, key, {
-                        get: () => exports[key](),
-                        set: v => {exports[key] = () => v;},
-                        enumerable: true,
-                        configurable: true
-                    });
-                }
-                catch (error) {
-                    // eslint-disable-next-line no-console
-                    console.error(error);
-                }
+    require.d = function (exports, getters, values) {
+        for (const key in getters) {
+            if (Object.hasOwn(getters, key) && !Object.hasOwn(exports, key)) {
+                Object.defineProperty(exports, key, {
+                    enumerable: true,
+                    configurable: true,
+                    get: getters[key],
+                    set: (v) => {
+                        getters[key] = v;
+                    }
+                });
             }
-        };
+        }
+        for (const key in values) {
+            if (Object.hasOwn(values, key) && !Object.hasOwn(exports, key)) {
+                Object.defineProperty(exports, key, {
+                    enumerable: true,
+                    configurable: true,
+                    value: values[key]
+                });
+            }
+        }
+    };
 
-        const IS_CLASSNAME_MODULE = /^\d+(?:e\d+)?\((.{1,3}),.{1,3},.{1,3}\){("use strict";)?\1.exports={.+}}$/;
-        const EXTRACT_CLASS = /^(.+?)_/;
+    const IS_CLASSNAME_MODULE = /^\d+(?:e\d+)?\((.{1,3}),.{1,3},.{1,3}\){("use strict";)?\1.exports={.+}}$/;
+    const EXTRACT_CLASS = /^(.+?)_/;
 
-        const USES_STEMMER = /\((\d+)\)\.newStemmer\("[^"]+"\);/;
+    const USES_STEMMER = /\((\d+)\)\.newStemmer\("[^"]+"\);/;
 
-        function setter(original: RawModule, id: string | symbol): RawModule {
-            if ((original.__BD__?.originalModule || original).__early_patched__) return original;
+    function setter(original: RawModule, id: string | symbol): RawModule {
+        if ((original.__BD__?.originalModule || original).__early_patched__) return original;
 
-            const trueOriginal = original.__BD__?.originalModule || original;
+        const trueOriginal = original.__BD__?.originalModule || original;
 
-            const originalStr = String(original);
-            const isClassModule = IS_CLASSNAME_MODULE.test(originalStr);
-            const useStemmerMatch = originalStr.match(USES_STEMMER);
+        const originalStr = String(original);
+        const isClassModule = IS_CLASSNAME_MODULE.test(originalStr);
+        const useStemmerMatch = originalStr.match(USES_STEMMER);
 
-            let rawModule: RawModule | null = null;
-            function getRawModule() {
-                if (rawModule) return rawModule;
+        let rawModule: RawModule | null = null;
+        function getRawModule() {
+            if (rawModule) return rawModule;
 
-                try {
-                    const rawString = Function.prototype.toString.call(trueOriginal);
+            try {
+                const rawString = Function.prototype.toString.call(trueOriginal);
 
-                    // Get the path of the module
-                    const nameEnd = rawString.indexOf("(");
-                    const moduleName = rawString.slice(0, nameEnd);
-                    const nameNumber = Number(moduleName);
-                    const path = isNaN(nameNumber) ? `misc/${moduleName}.js` : `${Math.floor(nameNumber / 1000)}/${nameNumber}.js`;
+                // Get the path of the module
+                const nameEnd = rawString.indexOf("(");
+                const moduleName = rawString.slice(0, nameEnd);
+                const nameNumber = Number(moduleName);
+                const path = isNaN(nameNumber) ? `misc/${moduleName}.js` : `${Math.floor(nameNumber / 1000)}/${nameNumber}.js`;
 
-                    const moduleString = toStringFunction(rawString);
-                    const vars = parseDeclarations(moduleString);
-                    const functionBody = moduleString.indexOf(")") + 2;
+                const moduleString = toStringFunction(rawString);
+                const vars = parseDeclarations(moduleString);
+                const functionBody = moduleString.indexOf(")") + 2;
 
-                    // Add getters and setters for declarations
-                    const varGettersAndSetters = vars.map((name) => `get ${name}(){return ${name}},set ${name}(_${name}){${name}=_${name}}`);
-                    const declarationString = `Object.seal({__proto__:null,${varGettersAndSetters.join(",")}})`;
+                // Add getters and setters for declarations
+                const varGettersAndSetters = vars.map((name) => `get ${name}(){return ${name}},set ${name}(_${name}){${name}=_${name}}`);
+                const declarationString = `Object.seal({__proto__:null,${varGettersAndSetters.join(",")}})`;
 
-                    const stringedModule = `(function(){
+                const stringedModule = `(function(){
     /*
         Module Id: ${typeof id === "symbol" ? `Symbol(${id.description})` : id}
         Exposed ${vars.length} variables
@@ -83,141 +87,145 @@ function toStringFunction(stringed: string): string {
 });
 //# sourceURL=betterdiscord://betterdiscord/webpack-modules/patched/${path}`;
 
-                    // eslint-disable-next-line no-eval
-                    rawModule = (0, eval)(stringedModule);
-                }
-                catch (err) {
-                    rawModule = trueOriginal;
-
-                    Logger.error("WebpackModules", `Failed to parse module ${id.toString()} for patching, using original module instead.`, err instanceof Error ? err : new Error(String(err)));
-                }
-
-                return rawModule!;
+                // eslint-disable-next-line no-eval
+                rawModule = (0, eval)(stringedModule);
             }
-            // const usesStemmerMatch = originalStr.match(USES_STEMMER);
+            catch (err) {
+                rawModule = trueOriginal;
 
-            function newModule(this: any, module: any, exports: any, webpackRequire: any) {
-                try {
-                    if (useStemmerMatch) {
-                        const stemmerId = useStemmerMatch[1];
+                Logger.error("WebpackModules", `Failed to parse module ${id.toString()} for patching, using original module instead.`, err instanceof Error ? err : new Error(String(err)));
+            }
 
-                        if (!webpackRequire.m[stemmerId]) {
-                            Logger.debug("WebpackModules", `Injecting pseudo-stemmer module at id ${stemmerId} for module ${id.toString()}`);
+            return rawModule!;
+        }
+        // const usesStemmerMatch = originalStr.match(USES_STEMMER);
 
-                            webpackRequire.m[stemmerId] = (stemmerModule: any) => {
-                                stemmerModule.exports.newStemmer = () => {
-                                    return {
-                                        stem(word: string) {
-                                            if (typeof word !== "string") return word;
+        function newModule(this: any, module: Webpack.Module, exports: any, webpackRequire: Webpack.Require) {
+            module.id = String(id);
 
-                                            // extremely basic "stemming"
-                                            const w = word.toLowerCase();
+            try {
+                if (useStemmerMatch) {
+                    const stemmerId = useStemmerMatch[1];
 
-                                            // common suffix stripping
-                                            if (w.length > 4 && w.endsWith("ing")) return w.slice(0, -3);
-                                            if (w.length > 3 && w.endsWith("ed")) return w.slice(0, -2);
-                                            if (w.length > 3 && w.endsWith("ly")) return w.slice(0, -2);
-                                            if (w.length > 2 && w.endsWith("s")) return w.slice(0, -1);
+                    if (!webpackRequire.m[stemmerId]) {
+                        Logger.debug("WebpackModules", `Injecting pseudo-stemmer module at id ${stemmerId} for module ${id.toString()}`);
 
-                                            return w;
-                                        }
-                                    };
+                        webpackRequire.m[stemmerId] = (stemmerModule: any) => {
+                            stemmerModule.exports.newStemmer = () => {
+                                return {
+                                    stem(word: string) {
+                                        if (typeof word !== "string") return word;
+
+                                        // extremely basic "stemming"
+                                        const w = word.toLowerCase();
+
+                                        // common suffix stripping
+                                        if (w.length > 4 && w.endsWith("ing")) return w.slice(0, -3);
+                                        if (w.length > 3 && w.endsWith("ed")) return w.slice(0, -2);
+                                        if (w.length > 3 && w.endsWith("ly")) return w.slice(0, -2);
+                                        if (w.length > 2 && w.endsWith("s")) return w.slice(0, -1);
+
+                                        return w;
+                                    }
                                 };
                             };
-                        }
-                    }
-
-                    getRawModule().call(this, module, exports, webpackRequire);
-
-                    if (isClassModule) {
-                        const definers: PropertyDescriptorMap = {
-                            [Symbol.for("BetterDiscord.Polyfilled.class")]: {
-                                value: true
-                            }
                         };
-
-                        for (const key in module.exports) {
-                            if (!Object.hasOwn(module.exports, key)) continue;
-
-                            const element = module.exports[key];
-
-                            if (typeof element !== "string") return;
-
-                            const match = element.match(EXTRACT_CLASS);
-
-                            if (!match) continue;
-                            if (match[1] in module.exports) continue;
-
-                            definers[match[1]] = {value: element, enumerable: true};
-                            definers[key] = {value: element, enumerable: false};
-                        }
-
-                        Object.defineProperties(module.exports, definers);
                     }
                 }
-                finally {
-                    if (original.__BD__) {
-                        original.__BD__.runListeners.call(this, module, exports, webpackRequire);
-                    }
 
-                    try {
-                        if (
-                            typeof module.exports === "object"
-                            && module.exports !== null
-                            && module.exports.createElement
-                        ) {
-                            requestIdleCallback(() => {
-                                window.BetterDiscordRunRenderer();
-                            });
+                getRawModule().call(this, module, exports, webpackRequire);
 
-                            // setTimeout(() => window.BetterDiscordRunRenderer(), 1000);
+                if (isClassModule) {
+                    const definers: PropertyDescriptorMap = {
+                        [Symbol.for("BetterDiscord.Polyfilled.class")]: {
+                            value: true
                         }
+                    };
+
+                    for (const key in module.exports) {
+                        if (!Object.hasOwn(module.exports, key)) continue;
+
+                        const element = module.exports[key];
+
+                        if (typeof element !== "string") return;
+
+                        const match = element.match(EXTRACT_CLASS);
+
+                        if (!match) continue;
+                        if (match[1] in module.exports) continue;
+
+                        definers[match[1]] = {value: element, enumerable: true};
+                        definers[key] = {value: element, enumerable: false};
                     }
-                    catch {/* empty */}
+
+                    Object.defineProperties(module.exports, definers);
                 }
             }
+            finally {
+                if (original.__BD__) {
+                    original.__BD__.runListeners.call(this, module, exports, webpackRequire);
+                }
 
-            newModule.toString = () => originalStr;
-            newModule.__early_patched__ = true;
-            newModule.__raw_module__ = getRawModule;
+                try {
+                    if (
+                        typeof module.exports === "object"
+                        && module.exports !== null
+                        && module.exports.createElement
+                    ) {
+                        requestIdleCallback(() => {
+                            window.BetterDiscordRunRenderer();
+                        });
 
-            return newModule;
-        }
-
-        const sym = Symbol.for("BetterDiscord.ModulesTest");
-
-        const fakeModule = require.m[sym] = () => {};
-        const isModulesProxied = fakeModule !== require.m[sym];
-
-        if (isModulesProxied) {
-            const definers: PropertyDescriptorMap = {};
-
-            for (const key in require.m) {
-                if (!Object.hasOwn(require.m, key)) continue;
-                if (Object.hasOwn(require.c, key)) continue;
-
-                definers[key] = {
-                    value: setter(require.m[key], key),
-                    configurable: true,
-                    writable: true,
-                    enumerable: true
-                };
-            }
-
-            Object.defineProperties(require.m, definers);
-        }
-        else {
-            for (const key in require.m) {
-                if (!Object.hasOwn(require.m, key)) continue;
-                if (Object.hasOwn(require.c, key)) continue;
-
-                require.m[key] = setter(require.m[key], key);
+                        // setTimeout(() => window.BetterDiscordRunRenderer(), 1000);
+                    }
+                }
+                catch {/* empty */}
             }
         }
 
-        require.m = new Proxy(require.m, {
-            set(target, p, newValue, receiver) {
-                return Reflect.set(target, p, setter(newValue, p), receiver);
-            },
-        });
-    }]);
+        newModule.toString = () => originalStr;
+        newModule.__early_patched__ = true;
+        newModule.__raw_module__ = getRawModule;
+
+        return newModule;
+    }
+
+    const sym = Symbol.for("BetterDiscord.ModulesTest");
+
+    const fakeModule = require.m[sym] = () => {};
+    const isModulesProxied = fakeModule !== require.m[sym];
+
+    if (isModulesProxied) {
+        const definers: PropertyDescriptorMap = {};
+
+        for (const key in require.m) {
+            if (!Object.hasOwn(require.m, key)) continue;
+            if (Object.hasOwn(require.c, key)) continue;
+
+            definers[key] = {
+                value: setter(require.m[key], key),
+                configurable: true,
+                writable: true,
+                enumerable: true
+            };
+        }
+
+        Object.defineProperties(require.m, definers);
+    }
+    else {
+        for (const key in require.m) {
+            if (!Object.hasOwn(require.m, key)) continue;
+            if (Object.hasOwn(require.c, key)) continue;
+
+            require.m[key] = setter(require.m[key], key);
+        }
+    }
+
+    require.m = new Proxy(require.m, {
+        set(target, p, newValue, receiver) {
+            return Reflect.set(target, p, setter(newValue, p), receiver);
+        },
+    });
+};
+
+(window.rspackChunkdiscord_app ||= window.webpackChunkdiscord_app ||= []).push([[Symbol()], {}, effect]);
