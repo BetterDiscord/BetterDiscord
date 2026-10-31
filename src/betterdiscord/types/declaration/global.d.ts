@@ -37,6 +37,8 @@ declare global {
 
 interface DiscordWindow {
     webpackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;
+    rspackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;
+
     DiscordNative: DiscordNativeAPI;
     monaco: typeof import("monaco-editor");
     $type?: any; // From RDT
