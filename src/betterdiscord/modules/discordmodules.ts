@@ -16,6 +16,10 @@ interface Modules {
         AppLayerProvider: React.ComponentType<{children: React.ReactNode;}>;
         AppLayer: React.ComponentType<{children: React.ReactNode;}>;
     }
+    ReactConciler: {
+        stack: React.ComponentType<{children: React.ReactNode;}>;
+        errorStack: (e: string) => string;
+    }
 }
 
 const SyncModules = getBulkKeyed<Modules>({
@@ -68,6 +72,15 @@ const SyncModules = getBulkKeyed<Modules>({
             AppLayerProvider: m => m.displayName == "AppLayerProvider",
             AppLayer: m => m.displayName == "AppLayer"
         }
+    },
+    ReactConciler: {
+        filter: Filters.bySource(".errorRecoveryDisabledLanes|="),
+        cacheId: "core-ReactConciler",
+        map: {
+            stack: Filters.byStrings("value:", ".set"),
+            errorStack: Filters.byStrings("react.dev/errors/")
+        },
+        mapDeclarations: true
     }
 });
 
