@@ -1,5 +1,6 @@
 {
     "Panels": {
+        "plugins": "Plugins",
         "themes": "Temas",
         "customcss": "CSS Personalizado",
         "updates": "Actualizaciones"
@@ -8,6 +9,7 @@
         "settings": {
             "name": "Ajustes",
             "general": {
+                "name": "General",
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -48,7 +50,7 @@
                 "name": "Preferencias de la Ventana",
                 "removeMinimumSize": {
                     "name": "Eliminar Tamaño Mínimo",
-                    "note": "Elimina el tamaño mínimo de Discord de 940x500"
+                    "note": "Elimina el tamaño mínimo de Discord de 800x500"
                 },
                 "transparency": {
                     "name": "Activar Transparencia",
@@ -57,13 +59,62 @@
                 "frame": {
                     "name": "Marco de la Ventana",
                     "note": "Añade el marco de ventana nativo de tu sistema operativo a la ventana principal"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Gestor de Complementos",
                 "addonErrors": {
                     "name": "Mostrar Errores de Complementos",
-                    "note": "Muestra una ventana con los errores de plugin/temas"
+                    "note": "Muestra una ventana con los errores de plugin\/temas"
                 },
                 "editAction": {
                     "name": "Acción al Editar",
@@ -80,7 +131,7 @@
                 },
                 "updateInterval": {
                     "name": "Intervalo de comprobación de actualización",
-                    "note": "Con qué frecuencia se deben buscar actualizaciones de complementos/núcleo"
+                    "note": "Con qué frecuencia se deben buscar actualizaciones de complementos\/núcleo"
                 }
             },
             "customcss": {
@@ -137,6 +188,10 @@
                 "devTools": {
                     "name": "Herramientas de desarrollador",
                     "note": "Permite activar o desactivar las herramientas para desarrolladores con ctrl+mayús+i"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -146,12 +201,14 @@
                     "note": "El tema para el editor de código",
                     "options": {
                         "system": "Sistema",
+                        "vs-dark": "",
                         "vs": "Claro",
                         "hc-black": "Negro de alto contraste",
                         "hc-light": "Blanco de alto contraste"
                     }
                 },
                 "lineNumbers": {
+                    "name": "",
                     "note": "Permite mostrar los números de línea en la pantalla del editor"
                 },
                 "fontSize": {
@@ -186,6 +243,10 @@
                         "none": "Nunca",
                         "selection": "Selección"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -216,6 +277,7 @@
         "source": "Fuente",
         "invite": "Servidor de Soporte",
         "donate": "Donar",
+        "patreon": "Patreon",
         "name": "Nombre",
         "author": "Autor",
         "version": "Versión",
@@ -265,6 +327,8 @@
         "methodError": "{{method}} no pudo ser lanzado.",
         "unknownAuthor": "Autor Desconocido",
         "noDescription": "Descripción no proporcionada.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Ya existe un plugin con el nombre {{name}}",
             "theme": "Ya existe un tema con el nombre de {{name}}"
@@ -289,11 +353,13 @@
             "plugin": "No se ha podido descargar {{name}}",
             "theme": "Error al descargar el tema {{name}}"
         },
+        "successfullyDownload": "",
         "alreadyInstalled": "{{name}} Ya está instalado",
         "failedToFetch": "No se pueden obtener los complementos",
         "new": "Nuevo",
         "updated": "Actualizado",
         "downloadCount": {
+            "one": "",
             "other": "{{count}} Descargas"
         },
         "likeCount": {
@@ -309,6 +375,7 @@
                 "other": "Se han activado {{count}} plugins."
             },
             "theme": {
+                "one": "",
                 "other": "Se han habilitado {{count}} temas."
             }
         }
@@ -326,7 +393,8 @@
         "cssInstallError": "No se pudo agregar el CSS a CustomCSS.",
         "cssReverted": "CSS fue revertido.",
         "cssReverting": "Los cambios serán revertidos en 10 segundos",
-        "cssKept": "Los cambios CSS se conservan permanentemente"
+        "cssKept": "Los cambios CSS se conservan permanentemente",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "¿Estás seguro?",
@@ -339,6 +407,7 @@
         "close": "Cerrar",
         "name": "Nombre",
         "message": "Mensaje",
+        "error": "Error",
         "addonErrors": "Errores de Complementos",
         "restartRequired": "Reinicio Requerido",
         "restartNow": "Reiniciar Ahora",
@@ -346,7 +415,8 @@
         "additionalInfo": "Información Adicional",
         "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",
         "changelog": "Registro de cambios",
-        "debuglog": "El archivo de registro de depuración ha superado los 100 MB. ¿Desea borrar el registro?"
+        "debuglog": "El archivo de registro de depuración ha superado los 100 MB. ¿Desea borrar el registro?",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Ordenar por",
@@ -362,7 +432,8 @@
         "recoveryFailed": "Recuperación incompleta. Algunas acciones no se completaron."
     },
     "Updater": {
-        "updateFailedMessage": "BetterDiscord tuvo un error al actualizarse. Descargue la última versión del instalador desde nuestro sitio web\n(https://betterdiscord.app/) y reinstala.",
+        "updateFailed": "",
+        "updateFailedMessage": "BetterDiscord tuvo un error al actualizarse. Descargue la última versión del instalador desde nuestro sitio web\n(https:\/\/betterdiscord.app\/) y reinstala.",
         "updateSuccessful": "¡Actualización exitosa!",
         "updateAvailable": "BetterDiscord tiene una nueva actualización (v{{version}})",
         "viewUpdates": "Ver actualizaciones",
@@ -373,12 +444,14 @@
                 "other": "¡{{count}} plugin tienen actualizaciones!"
             },
             "theme": {
+                "one": "",
                 "other": "¡Los temas {{count}} tienen actualizaciones!"
             }
         },
         "addonUpdated": "¡{{name}} se ha actualizado a la versión {{version}}!",
         "addonUpdateFailed": "No se pudo actualizar {{name}}. Inténtelo de nuevo más tarde.",
         "checking": "¡Buscando actualizaciones!",
+        "finishedChecking": "",
         "checkForUpdates": "¡Comprueba si hay actualizaciones!",
         "updateAll": "¡Actualizar todo!",
         "noUpdatesAvailable": "No hay actualizaciones disponibles.",
@@ -401,5 +474,12 @@
     "Paginator": {
         "back": "Atrás",
         "next": "Siguiente"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

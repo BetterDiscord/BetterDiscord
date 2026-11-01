@@ -50,7 +50,7 @@
                 "name": "窗口设置",
                 "removeMinimumSize": {
                     "name": "移除窗口最小尺寸限制",
-                    "note": "移除 Discord 限制的最小窗口尺寸（940x500）"
+                    "note": "移除 Discord 限制的最小窗口尺寸（800×500）"
                 },
                 "transparency": {
                     "name": "透明化",
@@ -59,13 +59,62 @@
                 "frame": {
                     "name": "窗口框",
                     "note": "向主窗口增加原生系统窗口框"
+                },
+                "roundedCorners": {
+                    "name": "圆角",
+                    "note": "无边框窗口是否应当有圆角"
+                },
+                "acceptFirstMouse": {
+                    "name": "接受首次鼠标点击",
+                    "note": "单击不活跃窗口时是否允许直接点到网页内容"
+                },
+                "vibrancy": {
+                    "name": "振动效果",
+                    "note": "向窗口增加振动效果",
+                    "options": {
+                        "none": "无",
+                        "titlebar": "标题栏",
+                        "selection": "选中区域",
+                        "menu": "菜单",
+                        "popover": "弹出式气泡",
+                        "sidebar": "侧边栏",
+                        "header": "标题",
+                        "sheet": "表格",
+                        "window": "窗口",
+                        "hud": "HUD",
+                        "fullscreen-ui": "全屏界面",
+                        "tooltip": "工具提示",
+                        "content": "内容",
+                        "under-window": "窗口下方",
+                        "under-page": "页面下方"
+                    }
+                },
+                "visualEffectState": {
+                    "name": "视觉效果状态",
+                    "note": "指定材质外观如何反映窗口的活动状态",
+                    "options": {
+                        "followWindow": "跟随窗口",
+                        "active": "活跃",
+                        "inactive": "不活跃"
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "背景材质",
+                    "note": "设置窗口由系统绘制的背景材质，包括非客户端区域后方使用的材质",
+                    "options": {
+                        "auto": "自动",
+                        "none": "无",
+                        "mica": "云母",
+                        "acrylic": "亚克力",
+                        "tabbed": "分页"
+                    }
                 }
             },
             "addons": {
                 "name": "插件管理",
                 "addonErrors": {
                     "name": "显示插件错误",
-                    "note": "在插件/主题发生错误时显示弹窗"
+                    "note": "在插件\/主题发生错误时显示弹窗"
                 },
                 "editAction": {
                     "name": "编辑器",
@@ -78,11 +127,11 @@
                 },
                 "checkForUpdates": {
                     "name": "自动检查更新",
-                    "note": "定期检查插件和 BetterDiscord 核心程序的更新。"
+                    "note": "定期检查插件和 BetterDiscord 核心程序的更新"
                 },
                 "updateInterval": {
                     "name": "更新检查间隔时间",
-                    "note": "检查核心程序或者插件更新的频率。"
+                    "note": "检查核心程序或者插件更新的频率"
                 }
             },
             "customcss": {
@@ -115,14 +164,14 @@
                 }
             },
             "developer": {
-                "name": "开发者设置",
+                "name": "开发者选项",
                 "debuggerHotkey": {
                     "name": "调试器快捷键",
                     "note": "按下 F8 启动开发者工具调试器"
                 },
                 "reactDevTools": {
                     "name": "React 开发者工具",
-                    "note": "向 Discord 注入 React 开发者工具"
+                    "note": "向 Discord 注入本地安装的 React 开发者工具"
                 },
                 "inspectElement": {
                     "name": "元素审查快捷键",
@@ -138,14 +187,18 @@
                 },
                 "devTools": {
                     "name": "开发者工具",
-                    "note": "按下 Ctrl +Shift + I 调出开发者工具"
+                    "note": "按下 Ctrl + Shift + I 调出开发者工具"
+                },
+                "webpackSourceViewer": {
+                    "name": "Webpack源代码查看器",
+                    "note": "在开发者工具中快速查看 Webpack 模块"
                 }
             },
             "editor": {
                 "name": "编辑器选项",
                 "theme": {
                     "name": "主题",
-                    "note": "选择代码编辑器的主题。",
+                    "note": "选择代码编辑器的主题",
                     "options": {
                         "system": "跟随系统主题",
                         "vs-dark": "深色",
@@ -156,7 +209,7 @@
                 },
                 "lineNumbers": {
                     "name": "显示行数",
-                    "note": "在编辑器的侧方显示行数"
+                    "note": "在编辑器的侧边显示行数"
                 },
                 "fontSize": {
                     "name": "字号",
@@ -164,32 +217,36 @@
                 },
                 "minimap": {
                     "name": "缩略图",
-                    "note": "在编辑器的侧方显示缩略图"
+                    "note": "在编辑器的侧边显示缩略图"
                 },
                 "hover": {
                     "name": "悬浮提示条",
-                    "note": "在鼠标悬停在规则（rules）和选择器（selectors）上时显示提示条"
+                    "note": "在鼠标悬停在规则和选择器上时显示提示条"
                 },
                 "quickSuggestions": {
                     "name": "自动补全建议",
-                    "note": "在输入时显示自动补全建议。"
+                    "note": "在输入时显示自动补全建议"
                 },
                 "insertSpaces": {
                     "name": "Tab 键插入空格",
-                    "note": "按下 TAB 键时插入空格而不是制表符"
+                    "note": "按下 Tab 键时插入空格而不是制表符"
                 },
                 "tabSize": {
                     "name": "制表符大小",
                     "note": "选择制表符所包含空格的数量"
                 },
                 "renderWhitespace": {
-                    "name": "显示空白符",
-                    "note": "选择编辑器显示空白符的条件",
+                    "name": "显示空白字符",
+                    "note": "选择编辑器显示空白字符的条件",
                     "options": {
                         "all": "始终显示",
                         "none": "不显示",
-                        "selection": "仅选中项"
+                        "selection": "选中区域"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "始终位于最上层",
+                    "note": "让编辑器窗口始终处于最上层"
                 }
             }
         }
@@ -220,6 +277,7 @@
         "source": "源码",
         "invite": "支持服务器",
         "donate": "捐赠",
+        "patreon": "Patreon",
         "name": "名称",
         "author": "作者",
         "version": "版本",
@@ -249,7 +307,7 @@
             }
         },
         "results": {
-            "other": "{{count}}个结果"
+            "other": "{{count}} 个结果"
         },
         "editAddon": "编辑",
         "deleteAddon": "删除",
@@ -265,15 +323,17 @@
         "settingsError": "无法打开{{name}}设置",
         "methodError": "无法调用{{method}}。",
         "unknownAuthor": "未知的作者",
-        "noDescription": "作者没有留下任何描述",
+        "noDescription": "作者没有留下任何描述。",
+        "noSettings": "{{name}} 不具备设置面板。",
+        "isDisabled": "{{name}} 已禁用。",
         "alreadyExists": {
             "plugin": "已存在名为 {{name}} 的插件",
             "theme": "已存在名为 {{name}} 的主题"
         },
-        "metaError": "无法解析元数据",
+        "metaError": "无法解析元数据。",
         "missingNameData": "元数据缺少名称。",
-        "metaNotFound": "无法找到元数据",
-        "compileError": "无法编译。",
+        "metaNotFound": "无法找到元数据。",
+        "compileError": "无法编译。查看控制台了解详情。",
         "wasUnloaded": "已卸载{{name}}。",
         "blankSlateHeader": {
             "plugin": "您尚未安装任何插件！",
@@ -326,11 +386,12 @@
         "cssInstallError": "CSS 无法添加至自定义样式。",
         "cssReverted": "CSS 已还原。",
         "cssReverting": "改动将在10秒后还原",
-        "cssKept": "已永久保存 CSS 改动"
+        "cssKept": "已永久保存 CSS 改动",
+        "cssIsDetached": "编辑器已分离"
     },
     "Modals": {
         "confirmAction": "你确定吗？",
-        "installCss": "您是否确定要将此 CSS 添加至自定义样式？",
+        "installCss": "你确定要将此 CSS 添加至自定义样式吗？",
         "addonCrashed": "为防止程序崩溃，此插件已被禁用。请告知插件开发者。",
         "okay": "确定",
         "done": "完成",
@@ -357,15 +418,15 @@
         "descending": "倒序"
     },
     "WindowPrefs": {
-        "enabledInfo": "此选项需要透明主题才能正常工作。在 Windows 上可能会影响 Aero 的分屏和最大化手势。\n\n该变更需要重启以生效。您要立即进行重启吗？",
+        "enabledInfo": "此选项需要透明主题才能正常工作。在 Windows 上可能会影响 Aero 窗口贴靠和最大化手势。\n\n该变更需要重启以生效。您要立即进行重启吗？",
         "disabledInfo": "Discord 需要重新启动以应用最新变更。立刻进行重启吗？"
     },
     "Toasts": {
-        "recoveryFailed": "恢复中止。部分操作无法完成。"
+        "recoveryFailed": "恢复未完成。部分操作无法完成。"
     },
     "Updater": {
         "updateFailed": "更新失败！",
-        "updateFailedMessage": "BetterDiscord 更新失败。请在官网（https://betterdiscord.app/）重新下载和安装最新版本。",
+        "updateFailedMessage": "BetterDiscord 更新失败。请在官网（https:\/\/betterdiscord.app\/）重新下载和安装最新版本。",
         "updateSuccessful": "更新成功！",
         "updateAvailable": "检测到 BetterDiscord 新版本（v{{version}}）",
         "viewUpdates": "查看更新详情",
@@ -395,7 +456,7 @@
     "Settings": {
         "customColor": "自定义颜色",
         "resetSettings": "恢复默认设置",
-        "resetSettingsWarning": "即将重置默认设置，此操作无法撤销。"
+        "resetSettingsWarning": "即将重置为默认设置，此操作无法撤销。"
     },
     "Socials": {
         "twitter": "关注我们！",
@@ -404,5 +465,12 @@
     "Paginator": {
         "back": "返回",
         "next": "继续"
+    },
+    "Recovery": {
+        "button": "尝试恢复",
+        "suspect": "可能有问题的插件",
+        "report": "在 GitHub 上报告问题",
+        "safeMode": "在安全模式下重启",
+        "joinSupport": "加入支持服务器！"
     }
 }

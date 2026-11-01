@@ -50,7 +50,7 @@
                 "name": "視窗設定",
                 "removeMinimumSize": {
                     "name": "移除最小視窗尺寸限制",
-                    "note": "移除 Discord 限制的最小視窗尺寸（940x500）"
+                    "note": "移除 Discord 限制的最小視窗尺寸（800×500）"
                 },
                 "transparency": {
                     "name": "透明化",
@@ -59,13 +59,62 @@
                 "frame": {
                     "name": "視窗邊框",
                     "note": "向主視窗新增原版系統視窗邊框"
+                },
+                "roundedCorners": {
+                    "name": "圓角",
+                    "note": "無邊框視窗是否應當具備圓角"
+                },
+                "acceptFirstMouse": {
+                    "name": "接受首次滑鼠點選",
+                    "note": "點選非使用中視窗時是否會直接點到網頁內容"
+                },
+                "vibrancy": {
+                    "name": "振動效果",
+                    "note": "向視窗新增振動效果",
+                    "options": {
+                        "none": "無",
+                        "titlebar": "標題列",
+                        "selection": "選取範圍",
+                        "menu": "選單",
+                        "popover": "彈出式氣泡",
+                        "sidebar": "側邊欄",
+                        "header": "標題",
+                        "sheet": "表單",
+                        "window": "視窗",
+                        "hud": "HUD",
+                        "fullscreen-ui": "全螢幕 UI",
+                        "tooltip": "提示框",
+                        "content": "內容",
+                        "under-window": "視窗下方",
+                        "under-page": "頁面下方"
+                    }
+                },
+                "visualEffectState": {
+                    "name": "視覺效果狀態",
+                    "note": "指定材質外觀如何反映視窗的使用中狀態",
+                    "options": {
+                        "followWindow": "跟隨視窗",
+                        "active": "使用中",
+                        "inactive": "非使用中"
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "背景材質",
+                    "note": "設定視窗由系統繪製的背景材質，包括非用戶端區域後方使用的材質",
+                    "options": {
+                        "auto": "自動",
+                        "none": "無",
+                        "mica": "雲母",
+                        "acrylic": "壓克力",
+                        "tabbed": "分頁"
+                    }
                 }
             },
             "addons": {
                 "name": "擴充功能管理員",
                 "addonErrors": {
                     "name": "顯示擴充功能錯誤",
-                    "note": "在擴充功能/佈景主題發生錯誤時顯示彈出視窗"
+                    "note": "在擴充功能\/佈景主題發生錯誤時顯示彈出視窗"
                 },
                 "editAction": {
                     "name": "編輯器",
@@ -82,7 +131,7 @@
                 },
                 "updateInterval": {
                     "name": "檢查更新頻率",
-                    "note": "檢查擴充功能與BD主體更新的間隔"
+                    "note": "檢查擴充功能與 BetterDiscord 主體更新的間隔"
                 }
             },
             "customcss": {
@@ -122,7 +171,7 @@
                 },
                 "reactDevTools": {
                     "name": "React 開發人員工具",
-                    "note": "向 Discord 注入 React 開發人員工具"
+                    "note": "向 Discord 注入本機安裝的 React 開發人員工具"
                 },
                 "inspectElement": {
                     "name": "元素檢查快捷鍵",
@@ -134,11 +183,15 @@
                 },
                 "debugLogs": {
                     "name": "偵錯記錄檔",
-                    "note": "輸出控制台中的所有資訊到 BetterDiscord 資料夾下的 debug.log"
+                    "note": "輸出主控台中的所有資訊到 BetterDiscord 資料夾下的 debug.log"
                 },
                 "devTools": {
                     "name": "開發人員工具",
                     "note": "啟用切換 DevTools（Ctrl+Shift+I）"
+                },
+                "webpackSourceViewer": {
+                    "name": "Webpack 來源檢視工具",
+                    "note": "於開發人員工具中快速檢視 Webpack 模組"
                 }
             },
             "editor": {
@@ -188,8 +241,12 @@
                     "options": {
                         "all": "總是",
                         "none": "永不",
-                        "selection": "選擇"
+                        "selection": "選取範圍"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "總是在最上層",
+                    "note": "使得編輯器視窗始終在最上層"
                 }
             }
         }
@@ -220,6 +277,7 @@
         "source": "原始碼",
         "invite": "技術支援伺服器",
         "donate": "捐贈",
+        "patreon": "Patreon",
         "name": "名稱",
         "author": "作者",
         "version": "版本",
@@ -266,6 +324,8 @@
         "methodError": "無法發動 {{method}}。",
         "unknownAuthor": "未知的作者",
         "noDescription": "作者没有留下任何描述。",
+        "noSettings": "{{name}} 不具備設定面板。",
+        "isDisabled": "{{name}} 已停用。",
         "alreadyExists": {
             "plugin": "已存在相同名稱 {{name}} 的擴充功能",
             "theme": "已存在相同名稱 {{name}} 的佈景主題"
@@ -273,7 +333,7 @@
         "metaError": "無法解析元資料。",
         "missingNameData": "元資料缺少名稱。",
         "metaNotFound": "無法找到元資料。",
-        "compileError": "無法編譯。詳細資訊請見控制台。",
+        "compileError": "無法編譯。詳細資訊請見主控台。",
         "wasUnloaded": "已解除安裝 {{name}}。",
         "blankSlateHeader": {
             "plugin": "您還未新增任何擴充功能！",
@@ -326,7 +386,8 @@
         "cssInstallError": "CSS 無法新增至客製化 CSS。",
         "cssReverted": "CSS 已復原。",
         "cssReverting": "變更將於 10 秒後復原",
-        "cssKept": "已永久保留 CSS 變更"
+        "cssKept": "已永久保留 CSS 變更",
+        "cssIsDetached": "編輯器已分離"
     },
     "Modals": {
         "confirmAction": "您確定嗎？",
@@ -346,7 +407,7 @@
         "restartLater": "稍後自行重新啟動",
         "additionalInfo": "額外資訊",
         "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？",
-        "changelog": "更新日誌",
+        "changelog": "更新紀錄",
         "debuglog": "偵錯記錄檔已超過 100MB，是否清除？",
         "automaticallyEnable": "自動啟用"
     },
@@ -357,7 +418,7 @@
         "descending": "倒序"
     },
     "WindowPrefs": {
-        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap和最大化。\n\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
+        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap 和最大化。\n\n此變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
         "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
     },
     "Toasts": {
@@ -365,7 +426,7 @@
     },
     "Updater": {
         "updateFailed": "更新失敗！",
-        "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https://betterdiscord.app/) 下載最新版本的安裝程式並重新安裝。",
+        "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https:\/\/betterdiscord.app\/) 下載最新版本的安裝程式並重新安裝。",
         "updateSuccessful": "更新成功！",
         "updateAvailable": "BetterDiscord 已有新的版本 ({{version}})",
         "viewUpdates": "檢視更新",
@@ -404,5 +465,12 @@
     "Paginator": {
         "back": "返回",
         "next": "繼續"
+    },
+    "Recovery": {
+        "button": "嘗試復原",
+        "suspect": "可能有問題的擴充功能",
+        "report": "於 GitHub 回報問題",
+        "safeMode": "於安全模式下重新啟動",
+        "joinSupport": "加入技術支援伺服器！"
     }
 }

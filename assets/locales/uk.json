@@ -50,7 +50,7 @@
                 "name": "Налаштування вікна",
                 "removeMinimumSize": {
                     "name": "Прибрати мінімальний розмір",
-                    "note": "Прибирає примусовий мінімальний розмір вікна 940x500"
+                    "note": "Прибирає примусовий мінімальний розмір вікна 800x500"
                 },
                 "transparency": {
                     "name": "Увімкнути прозорість",
@@ -59,13 +59,62 @@
                 "frame": {
                     "name": "Віконна рамка",
                     "note": "Використовує системну рамку операційної системи для головного вікна"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Керування доповненнями",
                 "addonErrors": {
                     "name": "Показувати помилки доповнень",
-                    "note": "Показує діалогове вікно з помилками плагінів/тем"
+                    "note": "Показує діалогове вікно з помилками плагінів\/тем"
                 },
                 "editAction": {
                     "name": "Дія при редагуванні",
@@ -139,6 +188,10 @@
                 "devTools": {
                     "name": "Інструменти розробника",
                     "note": "Дозволяє перемикати \"Інструменти розробника\" за\nдопомогою ctrl+shift+i"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -190,6 +243,10 @@
                         "none": "Ніколи",
                         "selection": "Під час виділення"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -276,6 +333,8 @@
         "methodError": "Не вдалося викликати {{method}}",
         "unknownAuthor": "Невідомий автор",
         "noDescription": "Опис не надано.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Плагін з назвою {{name}} вже існує",
             "theme": "Тема з назвою {{name}} вже існує"
@@ -348,7 +407,8 @@
         "cssInstallError": "CSS не вдалося додати до CustomCSS.",
         "cssReverted": "CSS було відновлено до попереднього стану.",
         "cssReverting": "Зміни будуть скасовані через 10 секунд",
-        "cssKept": "Зміни в CSS зберігаються назавжди"
+        "cssKept": "Зміни в CSS зберігаються назавжди",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Ти впевнений?",
@@ -387,7 +447,7 @@
     },
     "Updater": {
         "updateFailed": "Оновлення не вдалося!",
-        "updateFailedMessage": "Оновлення BetterDiscord не вдалося. Будь ласка, завантажте останню версію інсталятора з нашого веб-сайту (https://betterdiscord.app/) і переінсталюйте програму.",
+        "updateFailedMessage": "Оновлення BetterDiscord не вдалося. Будь ласка, завантажте останню версію інсталятора з нашого веб-сайту (https:\/\/betterdiscord.app\/) і переінсталюйте програму.",
         "updateSuccessful": "Оновлення успішне!",
         "updateAvailable": "Для BetterDiscord вийшло нове оновлення (v{{version}})",
         "viewUpdates": "Переглянути оновлення",
@@ -432,5 +492,12 @@
     "Paginator": {
         "back": "Назад",
         "next": "Далі"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }
