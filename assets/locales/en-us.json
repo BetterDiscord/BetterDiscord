@@ -193,10 +193,6 @@
                     "name": "Webpack Source Viewer",
                     "note": "Quickly view webpack modules in developer tools"
                 },
-                "reactErrorDecoder": {
-                    "name": "React Error Decoder",
-                    "note": "Decodes React error codes into human-readable messages"
-                }
             },
             "editor": {
                 "name": "Editor Options",
