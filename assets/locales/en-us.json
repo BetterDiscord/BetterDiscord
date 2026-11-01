@@ -192,7 +192,7 @@
                 "webpackSourceViewer": {
                     "name": "Webpack Source Viewer",
                     "note": "Quickly view webpack modules in developer tools"
-                },
+                }
             },
             "editor": {
                 "name": "Editor Options",
