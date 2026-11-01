@@ -294,21 +294,33 @@ export function scanModule(code: string): ModuleScan {
     return scanTokens(code, tokenize(code));
 }
 
+/** Offset where each line starts */
+function getLineStarts(code: string): number[] {
+    const starts = [0];
+    for (let i = code.indexOf("\n"); i !== -1; i = code.indexOf("\n", i + 1)) starts.push(i + 1);
+    return starts;
+}
+
+/** 0-based line containing `pos` */
+function findLine(starts: number[], pos: number): number {
+    let lo = 0, hi = starts.length - 1;
+    while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        if (starts[mid] <= pos) lo = mid;
+        else hi = mid - 1;
+    }
+    return lo;
+}
+
 function scanTokens(code: string, tokens: Token[]): ModuleScan {
     const imports: ImportInfo[] = [];
     const exports: ExportInfo[] = [];
     const importMeta: ImportMetaInfo[] = [];
 
-    const lineStarts = [0];
-    for (let i = code.indexOf("\n"); i !== -1; i = code.indexOf("\n", i + 1)) lineStarts.push(i + 1);
+    const lineStarts = getLineStarts(code);
     const loc = (pos: number): {line: number; column: number;} => {
-        let lo = 0, hi = lineStarts.length - 1;
-        while (lo < hi) {
-            const mid = (lo + hi + 1) >> 1;
-            if (lineStarts[mid] <= pos) lo = mid;
-            else hi = mid - 1;
-        }
-        return {line: lo + 1, column: pos - lineStarts[lo]};
+        const line = findLine(lineStarts, pos);
+        return {line: line + 1, column: pos - lineStarts[line]};
     };
 
     // Lookups past either end of `tokens` return undefined, so these accept it
@@ -708,7 +720,7 @@ function scanTokens(code: string, tokens: Token[]): ModuleScan {
     return {imports, exports, importMeta};
 }
 
-export type ModuleType = "module" | "commonjs";
+export type ModuleType = "esm" | "commonjs";
 
 /**
  * `"esm"` if the code has ESM-only syntax (a static `import`, `export`, or `import.meta`),
@@ -717,7 +729,7 @@ export type ModuleType = "module" | "commonjs";
  */
 export function detectModuleType(code: string): ModuleType {
     const {imports, exports, importMeta} = scanModule(code);
-    return exports.length > 0 || importMeta.length > 0 || imports.some((info) => !info.dynamic) ? "module" : "commonjs";
+    return exports.length > 0 || importMeta.length > 0 || imports.some((info) => !info.dynamic) ? "esm" : "commonjs";
 }
 
 /** Scan JavaScript source for static `import` declarations and dynamic `import()` calls. */
@@ -751,7 +763,16 @@ export interface SectionReplacers {
     importMeta?: (info: ImportMetaInfo, text: string) => string | null | undefined;
 }
 
-type Section = {start: number; end: number; children: Section[]; output: string | null;} & (
+/** A piece of output and where it came from in the original code */
+interface Chunk {
+    text: string;
+    /** Original offset this chunk maps to */
+    origin: number;
+    /** true: `text` is `code.slice(origin, origin + text.length)`. false: generated, all of it maps to `origin` */
+    verbatim: boolean;
+}
+
+type Section = {start: number; end: number; children: Section[]; output: Chunk[] | null;} & (
     | {kind: "import"; info: ImportInfo;}
     | {kind: "export"; info: ExportInfo;}
     | {kind: "meta"; info: ImportMetaInfo;}
@@ -759,15 +780,13 @@ type Section = {start: number; end: number; children: Section[]; output: string 
 
 const TRAILING_SEMI = /[ \t]*;/y;
 
-/**
- * Replace whole imports, exports and `import.meta` in one pass. Each callback runs once per match.
- * Nested ones run first: for `export const load = () => import("x")`, the import callback runs, and
- * the export callback's `text` / `declaration` already contain its replacement. Fields on `info`
- * (like a dynamic import's `expression`) describe the original code, so build replacements from
- * `text` / `declaration` to keep nested replacements.
- */
-export function replaceSections(code: string, {imports, exports, importMeta}: SectionReplacers): string {
-    const scan = scanModule(code);
+const joinChunks = (chunks: Chunk[]): string => {
+    let out = "";
+    for (const c of chunks) out += c.text;
+    return out;
+};
+
+function transform(code: string, scan: ModuleScan, {imports, exports, importMeta}: SectionReplacers): Chunk[] {
     const sections: Section[] = [];
 
     if (importMeta) {
@@ -801,20 +820,40 @@ export function replaceSections(code: string, {imports, exports, importMeta}: Se
     }
 
     // code[from, to) with the children inside that range replaced
-    const stitch = (from: number, to: number, children: Section[]): string => {
-        let out = "";
+    const stitch = (from: number, to: number, children: Section[]): Chunk[] => {
+        const out: Chunk[] = [];
         let pos = from;
         for (const c of children) {
             if (c.start < from || c.end > to) continue;
-            out += code.slice(pos, c.start) + render(c);
+            if (c.start > pos) out.push({text: code.slice(pos, c.start), origin: pos, verbatim: true});
+            for (const chunk of render(c)) out.push(chunk);
             pos = c.end;
         }
-        return out + code.slice(pos, to);
+        if (to > pos) out.push({text: code.slice(pos, to), origin: pos, verbatim: true});
+        return out;
     };
 
-    const render = (s: Section): string => {
+    // Callback output → chunks. If it contains the `declaration` / `text` it was given, that part keeps
+    // its own mapping (so lines inside `export default class { ... }` still map line for line).
+    const embed = (next: string, origin: number, candidates: Array<[Chunk[], string]>): Chunk[] => {
+        for (const [inner, innerText] of candidates) {
+            const p = innerText ? next.indexOf(innerText) : -1;
+            if (p === -1) continue;
+            const out: Chunk[] = [];
+            if (p > 0) out.push({text: next.slice(0, p), origin, verbatim: false});
+            for (const c of inner) out.push(c);
+            const rest = p + innerText.length;
+            if (rest < next.length) out.push({text: next.slice(rest), origin, verbatim: false});
+            return out;
+        }
+        return [{text: next, origin, verbatim: false}];
+    };
+
+    const render = (s: Section): Chunk[] => {
         if (s.output !== null) return s.output; // already rendered (exports stitch children twice)
-        const text = stitch(s.start, s.end, s.children);
+        const chunks = stitch(s.start, s.end, s.children);
+        const text = joinChunks(chunks);
+        const candidates: Array<[Chunk[], string]> = [[chunks, text]];
         let next: string | null | undefined;
         if (s.kind === "import") {
             next = imports?.(s.info, text);
@@ -824,12 +863,26 @@ export function replaceSections(code: string, {imports, exports, importMeta}: Se
         }
         else {
             const {declarationStart, end} = s.info;
-            next = exports?.(s.info, text, declarationStart === null ? null : stitch(declarationStart, end, s.children));
+            const decl = declarationStart === null ? null : stitch(declarationStart, end, s.children);
+            const declText = decl && joinChunks(decl);
+            next = exports?.(s.info, text, declText);
+            if (decl && declText) candidates.unshift([decl, declText]);
         }
-        return (s.output = next ?? text);
+        return (s.output = next == null ? chunks : embed(next, s.start, candidates));
     };
 
     return stitch(0, code.length, roots);
+}
+
+/**
+ * Replace whole imports, exports and `import.meta` in one pass. Each callback runs once per match.
+ * Nested ones run first: for `export const load = () => import("x")`, the import callback runs, and
+ * the export callback's `text` / `declaration` already contain its replacement. Fields on `info`
+ * (like a dynamic import's `expression`) describe the original code, so build replacements from
+ * `text` / `declaration` to keep nested replacements.
+ */
+export function replaceSections(code: string, replacers: SectionReplacers): string {
+    return joinChunks(transform(code, scanModule(code), replacers));
 }
 
 /** Replace whole imports. Shorthand for `replaceSections(code, { imports: replace })`. */
@@ -845,4 +898,155 @@ export function replaceExports(code: string, replace: NonNullable<SectionReplace
 /** Replace `import.meta`. Shorthand for `replaceSections(code, { importMeta: replace })`. */
 export function replaceImportMeta(code: string, replace: NonNullable<SectionReplacers["importMeta"]>): string {
     return replaceSections(code, {importMeta: replace});
+}
+
+// ---------------------------------------------------------------------------
+// Source maps
+
+/** Source map v3 (https://tc39.es/ecma426/) */
+export interface SourceMap {
+    version: 3;
+    file?: string;
+    sources: string[];
+    sourcesContent?: string[];
+    names: string[];
+    mappings: string;
+}
+
+export interface SourceMapOptions {
+    /** Name of the original file, shown in devtools and stack traces, e.g. `"betterdiscord://plugins/Foo.plugin.js"` */
+    source: string;
+    /** Name of the generated file (optional) */
+    file?: string;
+    /**
+     * Lines that end up above the code when it runs, if you prepend anything. `new Function(...)` adds
+     * 2 in V8 (`(function anonymous(...` and `) {`). Default 0.
+     */
+    lineOffset?: number;
+    /** Embed the original code in the map so devtools can show it without fetching it. Default true. */
+    includeContent?: boolean;
+}
+
+const BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+const vlq = (n: number): string => {
+    let v = n < 0 ? (-n << 1) | 1 : n << 1;
+    let out = "";
+    do {
+        let digit = v & 31;
+        v >>>= 5;
+        if (v > 0) digit |= 32;
+        out += BASE64[digit];
+    } while (v > 0);
+    return out;
+};
+
+function buildSourceMap(code: string, tokens: Token[], chunks: Chunk[], options: SourceMapOptions): SourceMap {
+    const lineStarts = getLineStarts(code);
+    const parts: string[] = [];
+    let genLine = options.lineOffset ?? 0, genCol = 0;
+    let mapLine = 0, segmentsOnLine = 0;
+    let prevGenCol = 0, prevLine = 0, prevCol = 0;
+
+    // Mapping from the current output position to original offset `pos`
+    const emit = (pos: number): void => {
+        if (genLine !== mapLine) {
+            parts.push(";".repeat(genLine - mapLine));
+            mapLine = genLine;
+            segmentsOnLine = 0;
+            prevGenCol = 0;
+        }
+        else if (segmentsOnLine > 0) {
+            if (genCol === prevGenCol) return; // same spot as the last one
+            parts.push(",");
+        }
+        const line = findLine(lineStarts, pos), col = pos - lineStarts[line];
+        parts.push(vlq(genCol - prevGenCol) + "A" + vlq(line - prevLine) + vlq(col - prevCol)); // "A": source 0
+        prevGenCol = genCol;
+        prevLine = line;
+        prevCol = col;
+        segmentsOnLine++;
+    };
+
+    // Move the output position past code[from, to)
+    const advance = (from: number, to: number): void => {
+        const last = code.lastIndexOf("\n", to - 1);
+        if (last < from) {
+            genCol += to - from;
+            return;
+        }
+        for (let k = code.indexOf("\n", from); k !== -1 && k <= last; k = code.indexOf("\n", k + 1)) genLine++;
+        genCol = to - last - 1;
+    };
+
+    // First token starting at or after `pos`
+    const tokenAt = (pos: number): number => {
+        let lo = 0, hi = tokens.length;
+        while (lo < hi) {
+            const mid = (lo + hi) >> 1;
+            if (tokens[mid].start < pos) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
+    };
+
+    for (const c of chunks) {
+        if (!c.text) continue;
+        if (c.verbatim) {
+            // Unchanged code: a mapping at every token, so lines and columns stay exact
+            const end = c.origin + c.text.length;
+            let pos = c.origin;
+            emit(pos);
+            for (let t = tokenAt(pos + 1); t < tokens.length && tokens[t].start < end; t++) {
+                advance(pos, tokens[t].start);
+                pos = tokens[t].start;
+                emit(pos);
+            }
+            advance(pos, end);
+        }
+        else {
+            // Generated code: every line of it maps to the start of the import / export it replaced
+            let lineStart = 0;
+            emit(c.origin);
+            for (let k = c.text.indexOf("\n"); k !== -1; k = c.text.indexOf("\n", k + 1)) {
+                genLine++;
+                genCol = 0;
+                lineStart = k + 1;
+                if (lineStart < c.text.length) emit(c.origin);
+            }
+            genCol += c.text.length - lineStart;
+        }
+    }
+
+    const map: SourceMap = {version: 3, sources: [options.source], names: [], mappings: parts.join("")};
+    if (options.includeContent !== false) map.sourcesContent = [code];
+    if (options.file !== undefined) map.file = options.file;
+    return map;
+}
+
+/**
+ * Same as `replaceSections`, plus a source map from the new code back to the original. Unchanged code
+ * maps exactly (line and column). Code your callbacks generate maps to the start of the import /
+ * export it replaced, except where a callback's output contains the `declaration` or `text` it was
+ * given; that part keeps its exact mapping.
+ */
+export function replaceSectionsWithMap(
+    code: string,
+    replacers: SectionReplacers,
+    options: SourceMapOptions,
+): {code: string; map: SourceMap;} {
+    const tokens = tokenize(code);
+    const chunks = transform(code, scanTokens(code, tokens), replacers);
+    return {code: joinChunks(chunks), map: buildSourceMap(code, tokens, chunks, options)};
+}
+
+/**
+ * `//# sourceMappingURL=data:...` comment with the map inlined. Put it on its own line at the end of
+ * the code you run with `eval` / `new Function`.
+ */
+export function inlineSourceMap(map: SourceMap): string {
+    const bytes = new TextEncoder().encode(JSON.stringify(map));
+    let binary = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    return `//# sourceMappingURL=data:application/json;base64,${btoa(binary)}`;
 }

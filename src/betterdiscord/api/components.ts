@@ -16,8 +16,8 @@ import Text from "@ui/base/text";
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
-import Modal from "@ui/modals/modal.tsx";
-import CheckBox from "@ui/settings/components/checkbox.tsx";
+import Modal from "@ui/modals/modal";
+import CheckBox from "@ui/settings/components/checkbox";
 
 /**
  * `Components` is a utility containing commonly used React components. An instance is available on {@link BdApi}.

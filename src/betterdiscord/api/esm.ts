@@ -18,6 +18,21 @@ import {BoundPatcher} from "./patcher";
 import {BoundHooks} from "./hooks";
 import ReactDOM from "@modules/reactdom";
 import DOMManager from "@modules/dommanager";
+import ErrorBoundary from "@ui/errorboundary";
+import Spinner from "@ui/spinner";
+import Button from "@ui/base/button";
+import Text from "@ui/base/text";
+import Flex from "@ui/base/flex";
+import Modal from "@ui/modals/modal";
+import SettingItem from "@ui/settings/components/item";
+import CheckBox from "@ui/settings/components/checkbox";
+import Switch from "@ui/settings/components/switch";
+import Slider from "@ui/settings/components/slider";
+import ColorPicker from "@ui/settings/components/color";
+import Search from "@ui/settings/components/search";
+import Dropdown from "@ui/settings/components/dropdown";
+import TextInput from "@ui/settings/components/textbox";
+import Group from "@ui/settings/group";
 
 const WebpackInstance = new Webpack();
 
@@ -27,31 +42,51 @@ const ThemeAPI = new AddonAPI(ThemeManager);
 const baseDOMInstance = new BaseDOM();
 const baseMenu = new ContextMenu();
 
-const extendSupplyDefault = <T extends object>(item: T) => Object.freeze(Object.seal(Object.setPrototypeOf({"default": item}, item)));
+const components = {
+    Tooltip: DiscordModules.Tooltip,
+    ErrorBoundary,
+    Spinner,
+    Button,
+    Text,
+    Flex,
+    Modal,
+
+    SettingItem,
+    Group,
+
+    inputs: {
+        CheckBox,
+        Switch,
+        Text: TextInput,
+        Slider,
+        ColorPicker,
+        Dropdown,
+        Search,
+    }
+};
 
 const unboundedApi = new Map<string, unknown>([
-    ["react", extendSupplyDefault(DiscordModules.React)],
-    ["react-dom", extendSupplyDefault(ReactDOM)],
-    ["react-dom/client", extendSupplyDefault(ReactDOM)],
+    ["react", DiscordModules.React],
+    ["react-dom", ReactDOM],
+    ["react-dom/client", ReactDOM],
 
     ["@betterdiscord/addons", {themes: ThemeAPI, plugins: PluginAPI}],
-    ["@betterdiscord/addons/themes", extendSupplyDefault(ThemeAPI)],
-    ["@betterdiscord/addons/plugins", extendSupplyDefault(PluginAPI)],
+    ["@betterdiscord/addons/themes", ThemeAPI],
+    ["@betterdiscord/addons/plugins", PluginAPI],
 
-    ["@betterdiscord/utils", extendSupplyDefault(new Utils())],
-    ["@betterdiscord/utils/react", extendSupplyDefault(new ReactUtils())],
+    ["@betterdiscord/utils", new Utils()],
+    ["@betterdiscord/utils/react", new ReactUtils()],
 
-    ["@betterdiscord/ui", extendSupplyDefault(new UI())],
+    ["@betterdiscord/ui", new UI()],
 
-    ["@betterdiscord/webpack", extendSupplyDefault(WebpackInstance)],
-    ["@betterdiscord/webpack/filters", extendSupplyDefault(WebpackInstance.Filters)],
-    ["@betterdiscord/webpack/stores", extendSupplyDefault(WebpackInstance.Stores)],
+    ["@betterdiscord/webpack", WebpackInstance],
+    ["@betterdiscord/webpack/filters", WebpackInstance.Filters],
+    ["@betterdiscord/webpack/stores", WebpackInstance.Stores],
 
-    ["@betterdiscord/components", extendSupplyDefault(new Components())],
+    ["@betterdiscord/components", components],
+    ["@betterdiscord/components/inputs", components.inputs],
 
-    ["@betterdiscord/ContextMenuAPI", extendSupplyDefault(new Components())],
-
-    ["@betterdiscord/net", extendSupplyDefault(new Net())],
+    ["@betterdiscord/net", new Net()],
 ]);
 
 const cache = new Map<string, ReturnType<typeof generateRuntime>>();
@@ -160,13 +195,13 @@ function generateRuntime(pluginId: string) {
         modules: new Map([
             ...unboundedApi,
 
-            ["@betterdiscord/patcher", extendSupplyDefault(patcher)],
-            ["@betterdiscord/storage", extendSupplyDefault(data)],
-            ["@betterdiscord/dom", extendSupplyDefault(dom)],
-            ["@betterdiscord/logger", extendSupplyDefault(logger)],
-            ["@betterdiscord/commands", extendSupplyDefault(commands)],
-            ["@betterdiscord/hooks", extendSupplyDefault(hooks)],
-            ["@betterdiscord/context-menu", extendSupplyDefault(menu)],
+            ["@betterdiscord/patcher", patcher],
+            ["@betterdiscord/storage", data],
+            ["@betterdiscord/dom", dom],
+            ["@betterdiscord/logger", logger],
+            ["@betterdiscord/commands", commands],
+            ["@betterdiscord/hooks", hooks],
+            ["@betterdiscord/context-menu", menu],
         ])
     };
 }

@@ -7,7 +7,7 @@ import AddonManager from "./addonmanager";
 import {type Addon} from "@typed/addon";
 import {t} from "@common/i18n";
 import Events from "./emitter";
-import {detectModuleType, replaceSections, type ModuleType} from "./scan";
+import {detectModuleType, inlineSourceMap, replaceSectionsWithMap, type ModuleType} from "./scan";
 import {createModuleRuntime} from "../api/esm";
 import {createElement} from "react";
 
@@ -274,7 +274,9 @@ class PluginManager extends AddonManager<Plugin> {
         const exports = `${connectionKey}.exports`;
         const meta = `${connectionKey}.meta`;
 
-        const newCode = replaceSections(plugin.fileContent!, {
+        const source = `betterdiscord://betterdiscord/plugins/${plugin.filename}`;
+
+        const {code, map} = replaceSectionsWithMap(plugin.fileContent!, {
             imports(imp, text) {
                 if (imp.dynamic) {
                     if (imp.expression) {
@@ -282,23 +284,24 @@ class PluginManager extends AddonManager<Plugin> {
                     }
 
                     if (runtime.modules.has(imp.source!)) {
-                        return `${require}(${JSON.stringify(imp.source)})`;
+                        return `Promise.resolve(${require}(${JSON.stringify(imp.source)}))`;
                     }
 
                     return null;
                 }
 
                 const req = `${require}(${JSON.stringify(imp.source)})`;
-
                 if (!imp.specifiers.length) return req;
 
-                const ns = imp.specifiers.find((s) => s.kind === "namespace");
+                const [first, ...rest] = imp.specifiers.flatMap((s) => (s.kind !== "named" && s.local ? [s.local] : []));
                 const keys = imp.specifiers
-                    .filter((s) => s.kind !== "namespace")
+                    .filter((s) => s.kind === "named")
                     .map((s) => (s.imported === s.local ? s.imported : `${key(s.imported)}:${s.local}`));
 
-                if (!ns) return `const {${keys.join(",")}}=${req}`;
-                return keys.length ? `const ${ns.local}=${req},{${keys.join(",")}}=${ns.local}` : `const ${ns.local}=${req}`;
+                if (!first) return `const {${keys.join(",")}}=${req}`;
+                const decls = [`${first}=${req}`, ...rest.map((name) => `${name}=${first}`)];
+                if (keys.length) decls.push(`{${keys.join(",")}}=${first}`);
+                return `const ${decls.join(",")}`;
             },
             exports(info, _text, declaration) {
                 const set = (name: string, value: string) => `${exports}${prop(name)} = ${value};`;
@@ -318,6 +321,9 @@ class PluginManager extends AddonManager<Plugin> {
                 return `${declaration}${semi}\n${lines.join("\n")}`;
             },
             importMeta: () => meta
+        }, {
+            source,
+            lineOffset: 2
         });
 
         const isEnabled = this.isEnabled.bind(this, plugin.id);
@@ -325,12 +331,12 @@ class PluginManager extends AddonManager<Plugin> {
         const connection: EsmRuntimeConnection = {
             require(path) {
                 const module = runtime.modules.get(path);
-                if (module) return module;
+                if (module) return module as never;
                 throw new Error(`Unable to find "${path}"!`);
             },
             import(path, originalImport) {
                 const module = runtime.modules.get(path);
-                if (module) return Promise.resolve(module);
+                if (module) return Promise.resolve(module as never);
                 return originalImport();
             },
             meta: Object.freeze(Object.seal({
@@ -338,7 +344,7 @@ class PluginManager extends AddonManager<Plugin> {
                     return isEnabled();
                 },
                 manifest: Object.assign({}, plugin),
-                url: `betterdiscord://betterdiscord/plugins/${plugin.filename}`
+                url: source
             })),
             exports: {} as EsmModuleExports,
             runtime
@@ -346,7 +352,7 @@ class PluginManager extends AddonManager<Plugin> {
 
         // Evaluate the plugin
         try {
-            const updatedCode = newCode + `\n//# sourceURL=betterdiscord://betterdiscord/plugins/${plugin.filename}`;
+            const updatedCode = `${code}\n${inlineSourceMap(map)}\n//# sourceURL=${source}`;
 
             // Wrap the plugin in a function and run it
             const wrappedPlugin = new Function(connectionKey, "require", updatedCode); // eslint-disable-line no-new-func
@@ -377,7 +383,7 @@ class PluginManager extends AddonManager<Plugin> {
     initAddon(plugin: Plugin) {
         plugin.type ||= detectModuleType(plugin.fileContent!);
 
-        return plugin.type === "module" ? this.module(plugin) : this.commonjs(plugin);
+        return plugin.type === "esm" ? this.module(plugin) : this.commonjs(plugin);
     }
 
     startAddon(idOrAddon: string | Plugin) {
