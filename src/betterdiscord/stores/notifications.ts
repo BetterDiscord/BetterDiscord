@@ -32,6 +32,7 @@ class Notifications extends Store {
 
                 if (index !== -1) {
                     this.notificationsArray = this.notificationsArray.toSpliced(index, 1);
+                    this.emitChange();
                 }
             }
         };
