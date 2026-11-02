@@ -1,7 +1,9 @@
 {
     "Panels": {
+        "plugins": "Plugins",
         "themes": "Themen",
-        "customcss": "CustomCSS"
+        "customcss": "CustomCSS",
+        "updates": "Updates"
     },
     "Collections": {
         "settings": {
@@ -34,11 +36,13 @@
                 }
             },
             "store": {
+                "name": "Addon Store",
                 "alwaysEnable": {
                     "name": "Immer aktivieren",
                     "note": "Wenn standardmäßig über den Addon Store heruntergeladene Addons aktiviert werden, werden diese aktiviert."
                 },
                 "addonEmbeds": {
+                    "name": "Addon Embeds",
                     "note": "Bettet die addon Store-Karten in einen Chat ein."
                 }
             },
@@ -46,7 +50,7 @@
                 "name": "Fenster-Einstellungen",
                 "removeMinimumSize": {
                     "name": "Freie Fenstergröße",
-                    "note": "Entfernt die Beschränkung der minimalen Fenstergröße von 940x500 Pixel"
+                    "note": "Entfernt die Beschränkung der minimalen Fenstergröße von 800x500 Pixel"
                 },
                 "transparency": {
                     "name": "Transparenz aktivieren",
@@ -55,6 +59,55 @@
                 "frame": {
                     "name": "Standard-Design",
                     "note": "Stellt das Hauptfenster im Standard-Design des Betriebssystems dar"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
@@ -78,7 +131,7 @@
                 },
                 "updateInterval": {
                     "name": "Aktualisierungsintervall",
-                    "note": "Wie oft nach Addon/Core-Updates gesucht werden soll"
+                    "note": "Wie oft nach Addon\/Core-Updates gesucht werden soll"
                 }
             },
             "customcss": {
@@ -135,6 +188,10 @@
                 "devTools": {
                     "name": "Entwicklerwerkzeuge",
                     "note": "Entwicklerwerkzeuge mit Ctrl+Shift+I aktivieren"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -143,6 +200,7 @@
                     "name": "Thema",
                     "note": "Das Thema für den Code Editor",
                     "options": {
+                        "system": "System",
                         "vs-dark": "Dunkel",
                         "vs": "Hell",
                         "hc-black": "Hoher Kontrast Schwarz",
@@ -185,6 +243,10 @@
                         "none": "Niemals",
                         "selection": "Auswahl"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -204,6 +266,7 @@
             "plugin": "Offizielle Community-Plugins durchsuchen und installieren",
             "theme": "Offizielle Community-Themen durchsuchen und installieren"
         },
+        "store": "Store",
         "viewInstalled": {
             "plugin": "Installierte Plugins anzeigen",
             "theme": "Installierte Themes anzeigen"
@@ -214,7 +277,10 @@
         "source": "Quelle",
         "invite": "Support-Server",
         "donate": "Spenden",
+        "patreon": "Patreon",
+        "name": "Name",
         "author": "Autor",
+        "version": "Version",
         "added": "Hinzufügedatum",
         "modified": "Bearbeitungsdatum",
         "releaseDate": "Veröffentlichungsdatum",
@@ -222,6 +288,8 @@
         "isEnabled": "Aktiviert",
         "popularity": "Popularität",
         "isInstalled": "Installiert",
+        "downloads": "Downloads",
+        "likes": "Likes",
         "listView": "Listenansicht",
         "gridView": "Rasteransicht",
         "enableAll": "Alle aktivieren",
@@ -259,6 +327,8 @@
         "methodError": "{{method}} konnte nicht ausgeführt werden.",
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Es gibt bereits ein Plugin mit dem Namen {{name}}",
             "theme": "Es gibt bereits ein Thema mit dem Namen {{name}}"
@@ -288,10 +358,15 @@
         "failedToFetch": "Konnte Addons nicht abrufen",
         "new": "Neu",
         "updated": "Aktualisiert",
+        "downloadCount": {
+            "one": "{{count}} Download",
+            "other": "{{count}} Downloads"
+        },
         "likeCount": {
             "one": "{{count}} gefällt mir",
             "other": "{{count}} Gefällt mir"
         },
+        "tags": "Tags",
         "preview": "Vorschau",
         "official": "Offiziell",
         "manyEnabled": {
@@ -318,7 +393,8 @@
         "cssInstallError": "CSS konnte nicht zu CustomCSS hinzugefügt werden.",
         "cssReverted": "CSS wurde zurückgesetzt.",
         "cssReverting": "Änderungen werden in 10 Sekunden zurückgesetzt",
-        "cssKept": "CSS-Änderungen dauerhaft beibehalten"
+        "cssKept": "CSS-Änderungen dauerhaft beibehalten",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Bist du dir sicher?",
@@ -329,6 +405,7 @@
         "cancel": "Abbrechen",
         "nevermind": "Egal",
         "close": "Schließen",
+        "name": "Name",
         "message": "Nachricht",
         "error": "Fehler",
         "addonErrors": "Erweiterungsfehler",
@@ -356,7 +433,7 @@
     },
     "Updater": {
         "updateFailed": "Update fehlgeschlagen!",
-        "updateFailedMessage": "BetterDiscord konnte nicht aktualisiert werden. Bitte lade die neueste Version des Installers von unserer Website (https://betterdiscord.app/) herunter und installiere erneut.",
+        "updateFailedMessage": "BetterDiscord konnte nicht aktualisiert werden. Bitte lade die neueste Version des Installers von unserer Website (https:\/\/betterdiscord.app\/) herunter und installiere erneut.",
         "updateSuccessful": "Update erfolgreich!",
         "updateAvailable": "BetterDiscord hat ein neues Update (v{{version}})",
         "viewUpdates": "Aktualisierungen anzeigen",
@@ -397,5 +474,12 @@
     "Paginator": {
         "back": "Zurück",
         "next": "Weiter"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

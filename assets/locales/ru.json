@@ -50,7 +50,7 @@
                 "name": "Настройки окна",
                 "removeMinimumSize": {
                     "name": "Удалить минимальные размеры",
-                    "note": "Удаляет минимальный размер окна Discord'а 940x500"
+                    "note": "Удаляет минимальный размер окна Discord'а 800x500"
                 },
                 "transparency": {
                     "name": "Включить прозрачность",
@@ -59,13 +59,62 @@
                 "frame": {
                     "name": "Шапка окна",
                     "note": "Добавляет встроенную шапку окна системы к основному окну"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Менеджер дополнений",
                 "addonErrors": {
                     "name": "Показывать ошибки расширений",
-                    "note": "Скрывает модальные окна с ошибками плагина/темы"
+                    "note": "Скрывает модальные окна с ошибками плагина\/темы"
                 },
                 "editAction": {
                     "name": "Действие редактирования",
@@ -82,7 +131,7 @@
                 },
                 "updateInterval": {
                     "name": "Интервал проверки обновлений",
-                    "note": "Как часто проверять наличие обновлений дополнения/ядра"
+                    "note": "Как часто проверять наличие обновлений дополнения\/ядра"
                 }
             },
             "customcss": {
@@ -139,6 +188,10 @@
                 "devTools": {
                     "name": "Меню разработчика",
                     "note": "Включает возможность открыть меню разработчика при нажатии ctrl+shift+i"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -190,6 +243,10 @@
                         "none": "Никогда",
                         "selection": "Выбор"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -220,6 +277,7 @@
         "source": "Источник",
         "invite": "Сервер поддержки",
         "donate": "Донат",
+        "patreon": "Patreon",
         "name": "Имя",
         "author": "Автор",
         "version": "Версия",
@@ -275,6 +333,8 @@
         "methodError": "{{method}} не может быть уволен.",
         "unknownAuthor": "Неизвестный автор",
         "noDescription": "Нету описания.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Уже существует плагин с именем {{name}}",
             "theme": "Уже существует тема с именем {{name}}"
@@ -347,7 +407,8 @@
         "cssInstallError": "Не удалось добавить CSS в пользовательский CSS.",
         "cssReverted": "CSS отменён.",
         "cssReverting": "Изменения будут отменены через 10 секунд",
-        "cssKept": "Изменения CSS сохранены навсегда"
+        "cssKept": "Изменения CSS сохранены навсегда",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Ты уверен?",
@@ -386,7 +447,7 @@
     },
     "Updater": {
         "updateFailed": "Ошибка обновления",
-        "updateFailedMessage": "Не удалось обновить BetterDiscord. Пожалуйста скачайте последнюю версию загрузчика с нашего сайта (https://betterdiscord.app/) и переустановите программу.",
+        "updateFailedMessage": "Не удалось обновить BetterDiscord. Пожалуйста скачайте последнюю версию загрузчика с нашего сайта (https:\/\/betterdiscord.app\/) и переустановите программу.",
         "updateSuccessful": "Обновление успешно!",
         "updateAvailable": "BetterDiscord имеет обновление (v{{version}})",
         "viewUpdates": "Посмотреть обновления",
@@ -431,5 +492,12 @@
     "Paginator": {
         "back": "Назад",
         "next": "Далее"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

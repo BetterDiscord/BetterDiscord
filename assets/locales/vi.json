@@ -40,13 +40,17 @@
                 "alwaysEnable": {
                     "name": "Luôn bật",
                     "note": "Khi được bật theo mặc định, tiện ích sau khi được cài đặt từ cửa hàng tiện ích sẽ được bật."
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Cài Đặt Cửa Sổ",
                 "removeMinimumSize": {
                     "name": "Xóa Kích Thước Tối Thiểu",
-                    "note": "Xóa kích thước tối thiểu của Discord (940x500)"
+                    "note": "Xóa kích thước tối thiểu của Discord (800x500)"
                 },
                 "transparency": {
                     "name": "Bật Cửa Sổ Trong Suốt",
@@ -55,13 +59,62 @@
                 "frame": {
                     "name": "Khung Cửa Sổ",
                     "note": "Cho phép khung cửa sổ của hệ thống vào cửa sổ Discord"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Quản Lý Tiện Ích",
                 "addonErrors": {
                     "name": "Hiển Thị Lỗi Tiện Ích",
-                    "note": "Hiển thị thông báo với những tiện ích/chủ đề lỗi"
+                    "note": "Hiển thị thông báo với những tiện ích\/chủ đề lỗi"
                 },
                 "editAction": {
                     "name": "Nơi Chỉnh Sửa",
@@ -73,7 +126,8 @@
                     }
                 },
                 "checkForUpdates": {
-                    "name": "Tự động kiểm tra các bản cập nhật"
+                    "name": "Tự động kiểm tra các bản cập nhật",
+                    "note": ""
                 },
                 "updateInterval": {
                     "name": "Thời lượng kiểm tra bản cập nhật mới",
@@ -134,6 +188,10 @@
                 "devTools": {
                     "name": "Công cụ nhà phát triển",
                     "note": "Kích hoạt DevTools bằng tổ hợp Ctrl + Shift + i"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -158,6 +216,7 @@
                     "note": "Kích thước phông chữ (pt) được sử dụng trong trình chỉnh sửa"
                 },
                 "minimap": {
+                    "name": "Minimap",
                     "note": "Hiển thị Minimap ở cạnh của trình chỉnh sửa"
                 },
                 "hover": {
@@ -184,6 +243,10 @@
                         "none": "Không bao giờ",
                         "selection": "Tùy chọn"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -214,6 +277,7 @@
         "source": "Nguồn",
         "invite": "Máy chủ hỗ trợ",
         "donate": "Ủng hộ",
+        "patreon": "Patreon",
         "name": "Tên",
         "author": "Tác giả",
         "version": "Phiên bản",
@@ -260,6 +324,8 @@
         "methodError": "{{method}} không thể được kích hoạt.",
         "unknownAuthor": "Tác giả không xác định",
         "noDescription": "Không có miêu tả.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Đã tồn tại plugin với tên {{name}}",
             "theme": "Đã tồn tại chủ đề với tên {{name}}"
@@ -320,7 +386,8 @@
         "cssInstallError": "Lỗi khi thêm CSS vào CustomCSS.",
         "cssReverted": "CSS đã được hoàn tác.",
         "cssReverting": "Thay đổi sẽ được hoàn tác trong 10 giây nữa",
-        "cssKept": "Thay đổi CSS đã được thêm vĩnh viễn"
+        "cssKept": "Thay đổi CSS đã được thêm vĩnh viễn",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Bạn chắc chắn chứ?",
@@ -359,7 +426,7 @@
     },
     "Updater": {
         "updateFailed": "Cập Nhật Thất Bại!",
-        "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
+        "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https:\/\/betterdiscord.app\/) và cài đặt lại.",
         "updateSuccessful": "Cập Nhật Thành Công!",
         "updateAvailable": "BetterDiscord có cập nhật mới (v{{version}})",
         "viewUpdates": "Xem cập nhật",
@@ -398,5 +465,12 @@
     "Paginator": {
         "back": "Quay lại",
         "next": "Tiếp theo"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

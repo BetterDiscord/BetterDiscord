@@ -2,6 +2,7 @@
     "Panels": {
         "plugins": "Plugin",
         "themes": "Tema",
+        "customcss": "Custom CSS",
         "updates": "Pembaruan"
     },
     "Collections": {
@@ -49,7 +50,7 @@
                 "name": "Preferensi Jendela",
                 "removeMinimumSize": {
                     "name": "Hapus Ukuran Maksimal",
-                    "note": "Hapus paksaan Discord maksimal ukuran jendela dari 940x500"
+                    "note": "Hapus paksaan Discord maksimal ukuran jendela dari 800x500"
                 },
                 "transparency": {
                     "name": "Aktifkan Transparansi",
@@ -58,13 +59,62 @@
                 "frame": {
                     "name": "Bingkai Jendela",
                     "note": "Menambahkan bingkai jendela sistem operasi asli ke jendela utama"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Pengolah Addon",
                 "addonErrors": {
                     "name": "Tampilkan Kesalahan Addon",
-                    "note": "Tampilkan sebuah popup dengan kesalahan tema/plugin"
+                    "note": "Tampilkan sebuah popup dengan kesalahan tema\/plugin"
                 },
                 "editAction": {
                     "name": "Edit Aksi",
@@ -81,11 +131,13 @@
                 },
                 "updateInterval": {
                     "name": "Interval Cek Pembaruan",
-                    "note": "Seberapa sering memeriksa pembaruan addon/inti"
+                    "note": "Seberapa sering memeriksa pembaruan addon\/inti"
                 }
             },
             "customcss": {
+                "name": "Custom CSS",
                 "customcss": {
+                    "name": "Custom CSS",
                     "note": "Mengaktifkan tab Custom CSS"
                 },
                 "liveUpdate": {
@@ -134,7 +186,12 @@
                     "note": "Menyalin semua output dari konsol ke berkas debug.log di folder BetterDiscord"
                 },
                 "devTools": {
+                    "name": "DevTools",
                     "note": "Aktifkan DevTools dengan Ctrl+Shift+I"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -186,6 +243,10 @@
                         "none": "Tidak Pernah",
                         "selection": "Pilihan"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -216,6 +277,7 @@
         "source": "Sumber",
         "invite": "Server Dukungan",
         "donate": "Donasi",
+        "patreon": "Patreon",
         "name": "Nama",
         "author": "Pembuat",
         "version": "Versi",
@@ -247,6 +309,7 @@
         "results": {
             "other": "{{count}} Hasil"
         },
+        "editAddon": "Edit",
         "deleteAddon": "Hapus",
         "downloadAddon": "Unduh",
         "confirmDelete": "Apakah anda yakin ingin menghapus {{name}}?",
@@ -261,6 +324,8 @@
         "methodError": "{{method}} tidak dapat dipecat.",
         "unknownAuthor": "Pembuat Tidak Dikenal",
         "noDescription": "Deskripsi tidak ditunjukan.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Sudah ada plugin dengan nama {{name}}",
             "theme": "Sudah ada tema dengan nama {{name}}"
@@ -321,7 +386,8 @@
         "cssInstallError": "CSS gagal untuk ditambahkan pada Custom CSS.",
         "cssReverted": "CSS telah dikembalikan.",
         "cssReverting": "Perubahan akan dikembalikan dalam 10 detik",
-        "cssKept": "Perubahan CSS disimpan secara permanen"
+        "cssKept": "Perubahan CSS disimpan secara permanen",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Anda yakin?",
@@ -360,7 +426,7 @@
     },
     "Updater": {
         "updateFailed": "Pembaruan Gagal!",
-        "updateFailedMessage": "BetterDiscord gagal untuk diperbarui. Dimohon unduh installer versi terkini dari situs web kami (https://betterdiscord.app/) dan instal ulang.",
+        "updateFailedMessage": "BetterDiscord gagal untuk diperbarui. Dimohon unduh installer versi terkini dari situs web kami (https:\/\/betterdiscord.app\/) dan instal ulang.",
         "updateSuccessful": "Sukses Pembaruan!",
         "updateAvailable": "BetterDiscord memiliki pembaruan baru (v{{version}})",
         "viewUpdates": "Lihat Pembaruan",
@@ -399,5 +465,12 @@
     "Paginator": {
         "back": "Kembali",
         "next": "Berikut"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

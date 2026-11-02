@@ -21,13 +21,36 @@
                 "mediaKeys": {
                     "name": "Απενεργοποίηση Πλήκτρων Πολυμέσων",
                     "note": "Αποτροπή παρέμβασης του Discord στα πλήκτρα πολυμέσων μετά την αναπαραγωγή βίντεο."
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Ιδιότητες Παραθύρου",
                 "removeMinimumSize": {
                     "name": "Απομάκρυνση Ελάχιστου Μεγέθους",
-                    "note": "Απομακρύνει τον περιορισμό του Discord για ελάχιστες διαστάσεις παραθύρου στα 940 x 500"
+                    "note": "Απομακρύνει τον περιορισμό του Discord για ελάχιστες διαστάσεις παραθύρου στα 800 x 500"
                 },
                 "transparency": {
                     "name": "Ενεργοποίηση Διαφάνειας",
@@ -36,21 +59,79 @@
                 "frame": {
                     "name": "Πλαίσιο Παραθύρου",
                     "note": "Προσθέτει το πλαίσιο του συστήματος στο βασικό παράθυρο"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Διαχειριστής Προσθέτων",
                 "addonErrors": {
                     "name": "Εμφάνιση Σφαλμάτων Προσθέτων",
-                    "note": "Εμφάνιση σφαλμάτων προσθέτων/θεμάτων σε παράθυρο"
+                    "note": "Εμφάνιση σφαλμάτων προσθέτων\/θεμάτων σε παράθυρο"
                 },
                 "editAction": {
                     "name": "Ενέργεια Επεξεργασίας",
                     "note": "Η θέση εμφάνισης προσθέτων και θεμάτων κατά την επεξεργασία",
                     "options": {
                         "detached": "Αποσπώμενο Παράθυρο",
+                        "external": "",
                         "system": "Επεξεργαστής Συστήματος"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -77,6 +158,7 @@
                     "options": {
                         "settings": "Μενού Ρυθμίσεων",
                         "detached": "Αποσπώμενο παράθυρο",
+                        "external": "",
                         "system": "Επεξεργαστής Συστήματος"
                     }
                 }
@@ -106,10 +188,25 @@
                 "devTools": {
                     "name": "Εργαλεία Δημιουργού",
                     "note": "Ενεργοποιεί την εναλλαγή των Εργαλείων Δημιουργού με το Ctrl+Shift+I"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
                 "name": "Ιδιότητες Επεξεργαστή",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
                 "lineNumbers": {
                     "name": "Αριθμοί γραμμών",
                     "note": "Ενεργοποιείται η εμφάνιση των αριθμών γραμμών στη πλευρά του επεξεργαστή"
@@ -130,6 +227,14 @@
                     "name": "Γρήγορες Προτάσεις",
                     "note": "Ενεργοποιεί την εμφάνιση των αυτοσυμπληρούμενων προτάσεων κατά την δακτυλογράφηση"
                 },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
                 "renderWhitespace": {
                     "name": "Εμφάνιση Διαστήματος",
                     "note": "Όταν τα διαστήματα πρέπει να φαίνονται από τον επεξεργαστή",
@@ -138,6 +243,10 @@
                         "none": "Ποτέ",
                         "selection": "Επιλογή"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -145,20 +254,67 @@
     "Addons": {
         "title": "{{name}} v{{version}} από {{author}}",
         "byline": "από {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Επαναφόρτωση",
         "addonSettings": "Ρυθμίσεις",
         "website": "Ιστοσελίδα",
         "source": "Προέλευση",
         "invite": "Διακομιστής Υποστήριξης",
         "donate": "Δωρεά",
+        "patreon": "",
         "name": "Ονομασία",
         "author": "Δημιουργός",
         "version": "Έκδοση",
         "added": "Ημερομηνία που Προστέθηκε",
         "modified": "Ημερομηνία που Τροποποιήθηκε",
+        "releaseDate": "",
+        "lastUpdated": "",
         "isEnabled": "Ενεργοποιημένα",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "other": ""
+        },
         "editAddon": "Επεξεργασία",
         "deleteAddon": "Διαγραφή",
+        "downloadAddon": "",
         "confirmDelete": "Θέλετε να διαγράψετε το πρόσθετο {{name}};",
         "confirmationText": "Έχετε μη αποθηκευμένες αλλαγές στο πρόσθετο {{name}}. Με το κλείσιμο του παραθύρου θα χαθούν όλες αυτές οι αλλαγές.",
         "enabled": "Το πρόσθετο {{name}} έχει ενεργοποιηθεί.",
@@ -171,12 +327,58 @@
         "methodError": "Η μέθοδος {{method}} δεν μπορεί να ενεργοποιηθεί.",
         "unknownAuthor": "Άγνωστος Δημιουργός",
         "noDescription": "Η περιγραφή δεν παρέχεται.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "Τα μεταδεδομένα δεν μπορούν να αναγνωστούν.",
         "missingNameData": "Τα μεταδεδομένα απώλεσαν δεδομένα ονόματος.",
         "metaNotFound": "Τα μεταδεδομένα δεν βρέθηκαν.",
         "compileError": "Αδύνατη η μετατροπή. Δείτε την κονσόλα για λεπτομέρειες.",
         "wasUnloaded": "Το πρόσθετο {{name}} αποφορτώθηκε.",
-        "wasLoaded": "Το πρόσθετο {{name}} v{{version}} φορτώθηκε."
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "Το πρόσθετο {{name}} v{{version}} φορτώθηκε.",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Έχετε μη αποθηκευμένες αλλαγές στο Προσαρμοσμένο CSS. Με το κλείσιμο αυτού του παραθύρου, θα χάσετε όλες αυτές τις αλλαγές.",
@@ -185,10 +387,19 @@
         "openNative": "Άνοιγμα στον Επεξεργαστή Συστήματος",
         "openDetached": "Αποσπώμενο Παράθυρο",
         "settings": "Ρυθμίσεις Επεξεργαστή",
-        "editorTitle": "Επεξεργαστής Προσαρμοσμένου CSS"
+        "editorTitle": "Επεξεργαστής Προσαρμοσμένου CSS",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Σίγουρα;",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Εντάξει",
         "done": "Ολοκληρώθηκε",
         "cancel": "Άκυρο",
@@ -202,7 +413,10 @@
         "restartNow": "Επανεκκίνηση Τώρα",
         "restartLater": "Επανεκκίνηση Αργότερα",
         "additionalInfo": "Πρόσθετες Πληροφορίες",
-        "restartPrompt": "Για να εφαρμοστεί, το Discord πρέπει να επανεκκινηθεί. Θέλετε επανεκκίνηση τώρα;"
+        "restartPrompt": "Για να εφαρμοστεί, το Discord πρέπει να επανεκκινηθεί. Θέλετε επανεκκίνηση τώρα;",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Ταξινόμηση κατά",
@@ -214,18 +428,58 @@
         "enabledInfo": "Αυτή η επιλογή απαιτεί διαφανές θέμα ώστε να λειτουργεί σωστά. Στα Windows ίσως επηρεάσει την προσαρμογή aero ή τη μεγιστοποίηση.\n\nΓια να ενεργοποιηθεί, το Discord πρέπει να επανεκκινηθεί. Επανεκκίνηση τώρα;",
         "disabledInfo": "Για να ενεργοποιηθεί, το Discord πρέπει να επανεκκινηθεί. Επανεκκίνηση τώρα;"
     },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
         "updateFailed": "Η ενημέρωση Απέτυχε!",
-        "updateFailedMessage": "Το BetterDiscord απέτυχε να ενημερωθεί. Λάβετε την τελευταία έκδοση του προγράμματος εγκατάστασης από την ιστοσελίδα μας (https://betterdiscord.app/) και κάντε επανεγκατάσταση.",
+        "updateFailedMessage": "Το BetterDiscord απέτυχε να ενημερωθεί. Λάβετε την τελευταία έκδοση του προγράμματος εγκατάστασης από την ιστοσελίδα μας (https:\/\/betterdiscord.app\/) και κάντε επανεγκατάσταση.",
         "updateSuccessful": "Η Ενημέρωση ήταν Επιτυχής!",
         "updateAvailable": "Το BetterDiscord έχει μια νέα ενημερωση (v{{version}})",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
         "addonUpdated": "Το {{name}} έχει ενημερωθεί στην έκδοση {{version}}!",
+        "addonUpdateFailed": "",
         "checking": "Έλεγχος για ενημερώσεις!",
         "finishedChecking": "Ολοκλήρωση ελέγχου για ενημερώσεις!",
         "checkForUpdates": "Έλεγχος Για Ενημερώσεις!",
         "updateAll": "Ενημέρωση Όλων!",
         "noUpdatesAvailable": "Καμιά διαθέσιμη ενημέρωση.",
         "versionAvailable": "Η έκδοση {{version}} είναι διαθέσιμη!",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "Ενημέρωση!"
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

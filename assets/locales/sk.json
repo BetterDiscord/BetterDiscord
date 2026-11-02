@@ -1,7 +1,9 @@
 {
     "Panels": {
         "plugins": "Pluginy",
-        "themes": "Témy"
+        "themes": "Témy",
+        "customcss": "",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -19,13 +21,36 @@
                 "mediaKeys": {
                     "name": "Zakázať Média tlačidlá",
                     "note": "Zabráni Discordu prevziať kontrolu nad média tlačidlami po prehratí videa."
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Vlastnosti Okna",
                 "removeMinimumSize": {
                     "name": "Zrušiť minimálnu velkosť",
-                    "note": "Zruší minimálnu veľkosť Discord okna 940x500"
+                    "note": "Zruší minimálnu veľkosť Discord okna 800x500"
                 },
                 "transparency": {
                     "name": "Povoliť priehľadnosť",
@@ -34,6 +59,55 @@
                 "frame": {
                     "name": "Rám okna",
                     "note": "Pridá klasický OS rám pre hlavné okno"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
@@ -47,12 +121,23 @@
                     "note": "Kde sa pluginy a témy zobrazia pri editovaní",
                     "options": {
                         "detached": "Oddelené okno",
+                        "external": "",
                         "system": "Systémový editor"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
+                "name": "",
                 "customcss": {
+                    "name": "",
                     "note": "Aktivuje kartu \"Custom CSS\""
                 },
                 "liveUpdate": {
@@ -73,6 +158,7 @@
                     "options": {
                         "settings": "Menu nastavení",
                         "detached": "Oddelené okno",
+                        "external": "",
                         "system": "Systémový editor"
                     }
                 }
@@ -84,6 +170,7 @@
                     "note": "Povolí spustenie debuggera pri stlačení F8"
                 },
                 "reactDevTools": {
+                    "name": "",
                     "note": "Pridá inštaláciu React Developer Tools do Discordu"
                 },
                 "inspectElement": {
@@ -97,6 +184,69 @@
                 "debugLogs": {
                     "name": "Výpis ladenia",
                     "note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -104,19 +254,73 @@
     "Addons": {
         "title": "{{name}} v{{version}} od {{author}}",
         "byline": "od {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Znova načítať",
         "addonSettings": "Nastavenia",
         "website": "Stránka",
         "source": "Zdroj",
         "invite": "Server podpory",
         "donate": "Prispieť",
+        "patreon": "",
         "name": "Meno",
         "author": "Autor",
         "version": "Verzia",
         "added": "Dátum pridania",
         "modified": "Dátum zmeny",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
         "editAddon": "Upraviť",
         "deleteAddon": "Zmazať",
+        "downloadAddon": "",
         "confirmDelete": "Ste si istý, že chcete zmazať {{name}}?",
         "confirmationText": "Máte neuložené zmeny pre {{name}}. Zatvorením tohto okna stratíte všetky zmeny.",
         "enabled": "{{name}} bol aktivovaný.",
@@ -129,11 +333,66 @@
         "methodError": "{{method}} nemohla byť vykonaná.",
         "unknownAuthor": "Neznámy Autor",
         "noDescription": "Bez popisu.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "META sa nepodarila načítať.",
         "missingNameData": "META chýbajúce dáta názvu.",
         "metaNotFound": "META nebola nájedná.",
         "compileError": "Nepodarilo sa zostaviť.",
-        "wasUnloaded": "{{name}} bol odpojený."
+        "wasUnloaded": "{{name}} bol odpojený.",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
@@ -141,10 +400,20 @@
         "save": "Uložiť",
         "openNative": "Otvoriť v Systémovom Editore",
         "openDetached": "Oddeliť Okno",
-        "settings": "Nastavenia Editora"
+        "settings": "Nastavenia Editora",
+        "editorTitle": "",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Ste si istý?",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Ok",
         "done": "Dokončiť",
         "cancel": "Zrušiť",
@@ -158,7 +427,10 @@
         "restartNow": "Reštartovať Teraz",
         "restartLater": "Reštartovať Neskôr",
         "additionalInfo": "Ďalšie Info",
-        "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+        "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Triediť podľa",
@@ -169,5 +441,63 @@
     "WindowPrefs": {
         "enabledInfo": "Táto možnosť si vyžaduje priehľadnú tému, aby správne fungovala. V systéme Windows to môže spôsobiť prerušenie a maximalizáciu vášho aero.\n\nNa to, aby sa prejavila účinnosť, je potrebné reštartovať Discord. Chcete reštartovať teraz?",
         "disabledInfo": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+    },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
+        "addonUpdateFailed": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
+        "updateButton": ""
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

@@ -22,18 +22,35 @@
                     "name": "Medya Tuşlarını Deaktive Et",
                     "note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
                 },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
                 "notificationPosition": {
-                    "name": "Bildirim"
+                    "name": "Bildirim",
+                    "note": ""
                 },
                 "notificationEnabled": {
-                    "name": "Bildirimleri göster"
+                    "name": "Bildirimleri göster",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Pencere Tercihleri",
                 "removeMinimumSize": {
                     "name": "Minimum boyutu kaldır",
-                    "note": "Discord'un 940x500 boyut limitini kaldırır"
+                    "note": "Discord'un 800x500 boyut limitini kaldırır"
                 },
                 "transparency": {
                     "name": "Şeffaflığı Etkinleştir",
@@ -42,21 +59,79 @@
                 "frame": {
                     "name": "Pencere Çerçevesi",
                     "note": "Yerel işletim sistemi penceresini ana pencereye ekler"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Eklenti Yöneticisi",
                 "addonErrors": {
                     "name": "Eklenti Hatalarını Göster",
-                    "note": "Eklenti/tema hatalarında yazı baloncuğu gösterir"
+                    "note": "Eklenti\/tema hatalarında yazı baloncuğu gösterir"
                 },
                 "editAction": {
                     "name": "Eylemi düzenle",
                     "note": "Eklenti ve temaları düzenlerken çıkacakları yer",
                     "options": {
                         "detached": "Bağımsız Pencere",
+                        "external": "",
                         "system": "Sistem Düzenleyici"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -83,6 +158,7 @@
                     "options": {
                         "settings": "Ayarlar Menüsü",
                         "detached": "Bağımsız Pencere",
+                        "external": "",
                         "system": "Sistem Editörü"
                     }
                 }
@@ -110,7 +186,12 @@
                     "note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
                 },
                 "devTools": {
-                    "name": "Geliştirici Araçları"
+                    "name": "Geliştirici Araçları",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -127,28 +208,45 @@
                     }
                 },
                 "lineNumbers": {
-                    "name": "Sıralı Sayılar"
+                    "name": "Sıralı Sayılar",
+                    "note": ""
                 },
                 "fontSize": {
-                    "name": "Yazı Tipi Büyüklüğü"
+                    "name": "Yazı Tipi Büyüklüğü",
+                    "note": ""
                 },
                 "minimap": {
-                    "name": "Ufak harita"
+                    "name": "Ufak harita",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
                 },
                 "quickSuggestions": {
-                    "name": "Hızlı Öneriler"
+                    "name": "Hızlı Öneriler",
+                    "note": ""
                 },
                 "insertSpaces": {
-                    "name": "Boşluk Ekleme"
+                    "name": "Boşluk Ekleme",
+                    "note": ""
                 },
                 "tabSize": {
-                    "name": "Sekme Büyüklüğü"
+                    "name": "Sekme Büyüklüğü",
+                    "note": ""
                 },
                 "renderWhitespace": {
+                    "name": "",
+                    "note": "",
                     "options": {
                         "all": "Her zaman",
-                        "none": "Asla"
+                        "none": "Asla",
+                        "selection": ""
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -156,13 +254,30 @@
     "Addons": {
         "title": "{{author}} tarafından {{name}} v{{version}}",
         "byline": "{{author}} tarafından",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
         "store": "Mağaza",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Yeniden-Başlat",
         "addonSettings": "Ayarlar",
         "website": "Dça Sitesi",
         "source": "Kaynak",
         "invite": "Destek Sunucusu",
         "donate": "Bağış",
+        "patreon": "",
         "name": "İsim",
         "author": "Yapımcı",
         "version": "Versiyon",
@@ -176,10 +291,20 @@
         "downloads": "İndirilenler",
         "likes": "Beğeniler",
         "listView": "Liste Bakışı",
+        "gridView": "",
         "enableAll": "Hepsini Aktif Et",
         "disableAll": "Hepsini Deaktif Et",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
         "search": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
             "theme": {
+                "one": "",
                 "other": "{{count}} Tema Arat"
             }
         },
@@ -202,14 +327,35 @@
         "methodError": "{{method}} çalıştırılamadı.",
         "unknownAuthor": "Bilinmeyen Yapımcı",
         "noDescription": "Açıklama Yok.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "META ayrıştırılamadı.",
         "missingNameData": "META isim verisi yok.",
         "metaNotFound": "META bulunamadı.",
         "compileError": "Derlenemedi.",
         "wasUnloaded": "{{name}} çıkarıldı.",
         "blankSlateHeader": {
+            "plugin": "",
             "theme": "Hiç bir temaya sahip değilsin!"
         },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
         "new": "Yeni",
         "updated": "Güncellenmiş",
         "downloadCount": {
@@ -217,11 +363,22 @@
             "other": "{{count}} İndirlenler"
         },
         "likeCount": {
+            "one": "",
             "other": "{{count}} Beğeniler"
         },
         "tags": "Etiketlemeler",
         "preview": "Önizleme",
-        "official": "Resmi"
+        "official": "Resmi",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
@@ -230,10 +387,19 @@
         "openNative": "Sistem Editöründe aç",
         "openDetached": "Pencereyi Ayır",
         "settings": "Editör Ayarları",
-        "editorTitle": "Özel CSS Editörü"
+        "editorTitle": "Özel CSS Editörü",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Emin Misin?",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Tamam",
         "done": "Bitti",
         "cancel": "İptal",
@@ -248,7 +414,9 @@
         "restartLater": "Sonra Yeniden Başlat",
         "additionalInfo": "Ek Bilgi",
         "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
-        "changelog": "Değişiklik Tablosu"
+        "changelog": "Değişiklik Tablosu",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Göre Sırala",
@@ -260,11 +428,27 @@
         "enabledInfo": "Bu seçeneğin düzgün çalışması için şeffaf bir tema gerekiyor.\nWindows'da bu aero snapping ve maksimize etmeyi bozabilir.\n\nEtki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
         "disabledInfo": "Etki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
     },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
         "updateFailed": "Güncelleme başarısız!",
+        "updateFailedMessage": "",
         "updateSuccessful": "Güncelleme Başarılı!",
         "updateAvailable": "BetterDiscord'un s{{version}} güncellemesi yayınlandı",
         "viewUpdates": "Güncellemeleri Gör",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
         "addonUpdateFailed": "{{name}} Güncellemesi Başarısız. Lütfem sonra yeniden deneyin.",
         "checking": "Güncellemeler kontrol ediliyor!",
         "finishedChecking": "Güncellemeleri kontrol etmeyi bitirildi!",
@@ -272,6 +456,10 @@
         "updateAll": "Tümünü Güncelle!",
         "noUpdatesAvailable": "Mevcut güncelleme yok.",
         "versionAvailable": "Sürüm {{version}} artık kullanılabilir!",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "Güncelleme!"
     },
     "Settings": {
@@ -286,5 +474,12 @@
     "Paginator": {
         "back": "Geri",
         "next": "Sonraki"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }
