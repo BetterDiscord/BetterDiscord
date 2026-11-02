@@ -1,12 +1,13 @@
 export interface Require {
     <T = any>(id: PropertyKey): T;
-    d(target: object, exports: Record<string, () => any>): void;
+    d(target: object, getters: Record<string, () => any>, values: Record<string, any>): void;
     c: Record<PropertyKey, Module>;
     m: Record<PropertyKey, RawModule>;
     e(id: PropertyKey): Promise<unknown>;
     l(url: string, onLoad: (event: Event) => void, key: string, id: string): void;
     p: string,
     u: (id: string) => string;
+    b: string;
 }
 
 export interface Module<T extends any = any> {
