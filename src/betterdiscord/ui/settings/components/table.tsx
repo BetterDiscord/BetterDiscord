@@ -11,7 +11,7 @@ import CheckBox from "./checkbox";
 import type {TableCellValue, TableColumn, TableColumns, TableRow} from "@data/settings";
 
 interface TablePropsBase {
-    columns?: TableColumns;
+    columns: TableColumns;
     id?: string;
     addLabel?: string;
     itemName?: string | [string, string];
