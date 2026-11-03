@@ -103,9 +103,9 @@ export default function ColorPicker(props: ColorpickerProps) {
     const face = (color: ColorType) => alpha ? {"--bd-picker-face": resolveColor(color)} as React.CSSProperties : {backgroundColor: resolveColor(color)};
 
     const controls = <div className="bd-color-picker-controls">
-            {defaultColor && <DiscordModules.Tooltip text="Default" position="bottom">
+            {defaultColor && <DiscordModules.Tooltip text={t("Settings.defaultColor")} position="bottom">
                 {tooltipProps => (
-                    <button {...tooltipProps} type="button" aria-label="Default" aria-pressed={intValue === resolveColor(defaultColor, false)} disabled={disabled} className="bd-color-picker-default" style={face(defaultColor)} onClick={() => setState(defaultColor)}>
+                    <button {...tooltipProps} type="button" aria-label={t("Settings.defaultColor")} aria-pressed={intValue === resolveColor(defaultColor, false)} disabled={disabled} className="bd-color-picker-default" style={face(defaultColor)} onClick={() => setState(defaultColor)}>
                         {intValue === resolveColor(defaultColor, false)
                             ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultColor, true))} />
                             : null

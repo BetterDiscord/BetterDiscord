@@ -478,6 +478,7 @@
     },
     "Settings": {
         "customColor": "Custom Color",
+        "defaultColor": "Default",
         "opacity": "Opacity",
         "presetColors": "Preset Colors",
         "resetSettings": "Reset Settings",
