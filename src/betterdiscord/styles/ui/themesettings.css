@@ -58,3 +58,43 @@
     font-size: 14px;
     text-align: center;
 }
+
+/* Slider, then its value, which stays visible instead of only showing on hover */
+.bd-theme-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.bd-theme-slider-row .bd-slider-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.bd-theme-slider-row .bd-slider-track {
+    min-width: 0;
+}
+
+.bd-theme-slider-value {
+    min-width: 56px;
+    color: var(--text-strong);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.bd-theme-number {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* BD's 65px number field cuts off values like 1.25 or 240 */
+.bd-theme-settings .bd-number-input-wrapper .bd-number-input {
+    width: 80px;
+}
+
+.bd-theme-number-unit {
+    color: var(--text-muted);
+    font-weight: 500;
+}

@@ -87,7 +87,7 @@ export default function ColorPicker(props: ColorpickerProps) {
             {
                 colors.map((int, index) => (
                     <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => setState(int)}>
-                        {intValue === int
+                        {intValue === resolveColor(int, false)
                             ? <CheckIcon size="16px" color={getContrastColor(hexValue)} />
                             : null
                         }
