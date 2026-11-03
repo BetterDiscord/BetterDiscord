@@ -14,7 +14,10 @@ interface CheckboxPropsBase {
     label?: React.ReactNode,
     labelClassName?: string,
     disabled?: boolean,
-    reverse?: boolean;
+    reverse?: boolean,
+    ariaLabel?: string;
+    grow?: number;
+    shrink?: number;
 }
 
 export type CheckboxProps = CheckboxPropsBase & BaseSettingProps<boolean>;
@@ -26,6 +29,8 @@ export default function CheckBox(props: CheckboxProps) {
         <Flex
             className={clsx("bd-checkbox", props.className, {"bd-checkbox-disabled": disabled, "bd-checkbox-has-label": props.label, "bd-checkbox-reverse": props.reverse})}
             align={Flex.Align.CENTER}
+            grow={props.grow}
+            shrink={props.shrink}
             direction={props.reverse ? Flex.Direction.HORIZONTAL_REVERSE : Flex.Direction.HORIZONTAL}
             onClick={toggle}
         >
@@ -33,6 +38,7 @@ export default function CheckBox(props: CheckboxProps) {
                 type="checkbox"
                 checked={state}
                 id={props.id}
+                aria-label={props.ariaLabel}
                 className={clsx("bd-checkbox-input", props.inputClassName)}
             />
             <div className={clsx("bd-checkbox-box", props.iconClassName)}>

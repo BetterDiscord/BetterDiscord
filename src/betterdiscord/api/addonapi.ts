@@ -1,5 +1,9 @@
 import type AddonManager from "@modules/addonmanager";
 import type {Addon} from "@typed/addon";
+import {t} from "@common/i18n";
+import Toasts from "@stores/toasts";
+import AddonSettingsRoute from "@stores/addonsettings";
+import Settings from "@ui/settings";
 
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are available on {@link BdApi}.
@@ -57,6 +61,31 @@ class AddonAPI<T extends Addon> {
      * @returns Array of all addon instances
      */
     getAll() {return this.#manager.addonList.map(a => this.#manager.resolveAddon(a.id));}
+
+    /**
+     * Opens the settings page for an addon that implements `getSettingsPanel`.
+     * @param idOrFile Addon name, ID, or filename
+     * @returns Whether the settings page was opened
+     */
+    openSettings(idOrFile: string) {
+        const addon = this.#manager.resolveAddon(idOrFile);
+        if (!addon) return false;
+
+        if (!this.#manager.isEnabled(addon.id)) {
+            Toasts.warning(t("Addons.isDisabled", {name: addon.name}));
+            return false;
+        }
+
+        const instance = (addon as {instance?: {getSettingsPanel?: unknown;};}).instance;
+        if (typeof instance?.getSettingsPanel !== "function") {
+            Toasts.warning(t("Addons.noSettings", {name: addon.name}));
+            return false;
+        }
+
+        AddonSettingsRoute.open(this.#manager.prefix, addon.id);
+        Settings.openSettingsPage(this.#manager.prefix + "s");
+        return true;
+    }
 }
 
 Object.freeze(AddonAPI);

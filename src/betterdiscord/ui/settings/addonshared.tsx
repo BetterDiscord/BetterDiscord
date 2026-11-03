@@ -36,11 +36,23 @@ export function saveState(type: string, control: string, value: any) {
 export interface AddonContext {
     title: string;
     toggleStore(): void;
+    closeSettings(): void;
     showingStore: boolean;
     store: AddonManager;
 }
 
 export const addonContext = React.createContext<AddonContext>({} as AddonContext);
+
+export function addonText(value: string | {toString(): string;} | undefined) {
+    return typeof value == "string" ? value : value?.toString?.() || "";
+}
+
+export function authorByline(author: React.ReactNode) {
+    const parts: Array<string | React.ReactNode> = t("Addons.byline").split(/({{[A-Za-z]+}})/);
+    const index = parts.findIndex(part => part === "{{author}}");
+    if (index !== -1) parts[index] = author;
+    return parts;
+}
 
 interface AddonHeaderProps {
     children: React.ReactNode;

@@ -19,9 +19,9 @@ import Button from "./base/button";
 import {HistoryIcon} from "lucide-react";
 import {t} from "@common/i18n";
 import Modals from "./modals";
+import AddonSettingsRoute from "@stores/addonsettings";
 import changelog from "@data/changelog";
 import {type Plugin} from "@modules/pluginmanager";
-import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
@@ -29,7 +29,7 @@ import type {GroupOnChange} from "./settings/group";
 
 const ContextMenu = new ContextMenuPatcher();
 
-const UserSettings = getByKeys<any>(["openUserSettings", "USER_SETTINGS_MODAL_KEY"], {firstId: 840065, cacheId: "core-settings-usersettings"});
+const UserSettings = getByKeys<any>(["openUserSettings"], {firstId: 840065, cacheId: "core-settings-usersettings"});
 
 const SettingsRenderer = new class SettingsRenderer {
     initialize() {
@@ -630,8 +630,9 @@ function useAddonMenu(manager: AddonManager) {
 
                 const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
 
-                if (hasSettings) {
-                    Modals.showAddonSettingsModal(name, (addon as Plugin).instance.getSettingsPanel!());
+                if (hasSettings && addon) {
+                    AddonSettingsRoute.open(manager.prefix, addon.id);
+                    openCategory(manager.prefix + "s");
                 }
                 else {
                     toasts.warning(t("Addons.noSettings", {name}));
@@ -650,9 +651,8 @@ function useAddonMenu(manager: AddonManager) {
                     label={t("Addons.openStore", {context: manager.prefix})}
                     id={`${manager.prefix}-store`}
                     action={() => {
+                        AddonSettingsRoute.openStore(manager.prefix);
                         openCategory(manager.prefix + "s");
-                        // If the addon store instantly opens have it just stop basically
-                        DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => (elem as HTMLElement)?.click());
                     }}
                 />
             </ContextMenu.Group>

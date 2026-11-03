@@ -484,5 +484,28 @@
         "report": "Report on Github",
         "safeMode": "Relaunch in Safe Mode",
         "joinSupport": "Join Support Server!"
+    },
+    "Table": {
+        "search": "Search",
+        "noMatches": "No matches",
+        "none": "None",
+        "duplicate": "Duplicate",
+        "delete": "Delete",
+        "emptyTitle": "Nothing here yet",
+        "emptyBody": "Add a row to get started.",
+        "add": "Add",
+        "rowActions": "Row actions",
+        "reorder": "Reorder row {{index}}",
+        "actionsFor": "Actions for row {{index}}",
+        "remove": "Remove {{name}}",
+        "count": "{{count}} {{name}}",
+        "item": {
+            "one": "item",
+            "other": "items"
+        },
+        "selected": {
+            "one": "{{count}} selected",
+            "other": "{{count}} selected"
+        }
     }
 }

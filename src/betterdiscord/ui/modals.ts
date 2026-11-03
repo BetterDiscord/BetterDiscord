@@ -260,17 +260,15 @@ export default class Modals {
         }
     }
 
-    static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactNode) | ReactNode | ComponentType) {
-
-        let child = panel;
-        if (panel instanceof Node || typeof (panel) === "string") {
+    static createAddonSettingsContent(panel: Element | string | (() => ReactNode) | ReactNode | ComponentType): ReactNode {
+        let child: ReactNode | ComponentType = panel as ReactNode;
+        if (panel instanceof Node || typeof panel === "string") {
+            const element = panel;
             child = class ReactWrapper extends React.Component<any, {hasError: boolean;}> {
-                element: Element | string;
                 elementRef: RefObject<Element | string | null>;
                 constructor(props?: any) {
                     super(props);
                     this.elementRef = React.createRef();
-                    this.element = panel as (Element | string);
                     this.state = {hasError: false};
                 }
 
@@ -279,7 +277,7 @@ export default class Modals {
                 }
 
                 componentDidMount() {
-                    if (this.element instanceof Node) (this.elementRef as RefObject<Element>).current?.appendChild(this.element as Element);
+                    if (element instanceof Node) (this.elementRef as RefObject<Element>).current?.appendChild(element);
                 }
 
                 render() {
@@ -287,12 +285,17 @@ export default class Modals {
                     return React.createElement("div", {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef,
-                        dangerouslySetInnerHTML: typeof (this.element) === "string" ? {__html: this.element} : undefined
+                        dangerouslySetInnerHTML: typeof element === "string" ? {__html: element} : undefined
                     });
                 }
             };
         }
-        if (typeof (child) === "function") child = React.createElement(child);
+        if (typeof child === "function") return React.createElement(child);
+        return child as ReactNode;
+    }
+
+    static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactNode) | ReactNode | ComponentType) {
+        const child = this.createAddonSettingsContent(panel);
 
         const options = {
             className: "bd-addon-modal",

@@ -155,6 +155,30 @@ if (config.isDevelopment) {
                 },
                 {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
                 {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultColor: "#ffffff"},
+                {
+                    name: "Table test",
+                    note: "Just testing it",
+                    type: "table",
+                    id: "tabletest",
+                    value: [
+                        {
+                            keyword: "test",
+                            mode: "test",
+                            ids: ["test1", "test2", "test3"],
+                            exactMatch: true,
+                            enabled: true
+                        }
+                    ],
+                    columns: {
+                        keyword: {type: "string", label: "Keyword"},
+                        mode: {type: "dropdown", label: "Mode", options: [{label: "Blacklist", value: "Blacklist"}, {label: "Whitelist", value: "Whitelist"}]},
+                        bool1: {type: "boolean", label: "Boolean 1"},
+                        bool2: {type: "boolean", label: "Boolean 2"},
+                        action: {type: "dropdown", label: "Action", options: [{label: "Toast", value: "Toast"}, {label: "Log", value: "Log"}, {label: "Ignore", value: "Ignore"}], enableWith: "enabled"},
+                        actions: {type: "multiselect", label: "Actions", options: [{label: "Toast", value: "Toast"}, {label: "Log", value: "Log"}, {label: "Ignore", value: "Ignore"}], enableWith: "enabled"},
+                        enabled: {type: "switch", label: "Enabled"}
+                    }
+                },
             ]
         } as SettingsCategory
     );
@@ -163,7 +187,7 @@ if (config.isDevelopment) {
 export default DefaultSettings;
 
 
-export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";
+export type SettingType = "button" | "custom" | "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number" | "table";
 
 export interface BaseSettingItem {
     type: SettingType;
@@ -279,7 +303,56 @@ export interface MultipleFileSetting extends ValueSettingItem<string[]> {
 
 export type FileSetting = SingleFileSetting | MultipleFileSetting;
 
-type BaseSetting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting;
+export interface TableOption {
+    label: string;
+    value: string | number;
+    icon?: string;
+}
+
+export interface TableColumnBase {
+    label: string;
+    enableWith?: string;
+    width?: string;
+    align?: "start" | "center";
+    default?: TableCellValue;
+}
+
+export type TableColumn = TableColumnBase & (
+    | {
+        type: "string";
+        placeholder?: string;
+    }
+    | {
+        type: "array";
+        placeholder?: string;
+        placeholderFilled?: string;
+        invalidHint?: string;
+        validate?(value: string): boolean;
+    }
+    | {
+        type: "boolean" | "switch";
+    }
+    | {
+        type: "dropdown" | "multiselect";
+        options: TableOption[];
+        search?: boolean;
+    }
+);
+
+export type TableColumns = Record<string, TableColumn> | Array<TableColumn & {id: string;}>;
+
+export type TableCellValue = string | number | boolean | Array<string | number>;
+
+export type TableRow = Record<string, TableCellValue>;
+
+export interface TableSetting extends ValueSettingItem<TableRow[]> {
+    type: "table";
+    columns: TableColumns;
+    addLabel?: string;
+    itemName?: string | [string, string];
+}
+
+type BaseSetting<T = any> = FileSetting | NumberSetting | PositionSetting | ColorSetting | KeybindSetting | RadioSetting<T> | TextSetting | SliderSetting | DropdownSetting<T> | SwitchSetting | TableSetting;
 
 export type Setting<T = any> = Omit<BaseSetting<T>, "defaultValue"> & {
     defaultValue?: never | unknown | any | T;
