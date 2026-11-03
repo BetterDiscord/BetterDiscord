@@ -1,6 +1,7 @@
 import path from "path";
 import {readCssUrl} from "./panel";
-import type {SavedValues} from "./values";
+import type {ProbeVerdict, SavedValues} from "./values";
+import type {ThemeSetting} from "./types";
 
 
 /** The largest image a user can pick, in bytes. BD reads the whole file each time a theme with it starts. */
@@ -223,6 +224,30 @@ export function readImageName(value: string): string | null {
 /** Whether a value names a copied image, even one BD can't read, such as a hand-edited `bd-image:` link. */
 export function isImageRef(value: string) {
     return readCssUrl(value).startsWith(imageScheme);
+}
+
+/**
+ * Probes values the way `probe` does, except that an image whose copy is missing or unreadable counts as
+ * invalid, so the page keeps the setting's default. `onMissing` hears about each such value.
+ */
+export function probeWithImages(
+    images: ThemeImages,
+    entries: Array<[ThemeSetting, string]>,
+    probe: (entries: Array<[ThemeSetting, string]>) => ProbeVerdict[],
+    onMissing: (setting: ThemeSetting) => void
+): ProbeVerdict[] {
+    const isMissing = entries.map(([, value]) => {
+        if (!isImageRef(value)) return false;
+        const name = readImageName(value);
+        return name === null || images.urlFor(name) === null;
+    });
+
+    const probed = probe(entries.filter((_, i) => !isMissing[i]));
+    return entries.map(([setting], i) => {
+        if (!isMissing[i]) return probed.shift()!;
+        onMissing(setting);
+        return "invalid";
+    });
 }
 
 function extensionOf(name: string) {

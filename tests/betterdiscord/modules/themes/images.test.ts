@@ -1,6 +1,8 @@
 import {describe, test, expect, beforeEach} from "bun:test";
 import path from "path";
-import {ThemeImages, detectImageType, imageRef, isImageRef, maxImageBytes, readImageName} from "@modules/themes/images";
+import {ThemeImages, detectImageType, imageRef, isImageRef, maxImageBytes, probeWithImages, readImageName} from "@modules/themes/images";
+import {parseThemeSettings} from "@modules/themes/settings";
+import type {ThemeSetting} from "@modules/themes/types";
 
 const folder = path.join("data", "canary", "theme-images");
 
@@ -278,5 +280,52 @@ describe("ThemeImages", () => {
         images.discard("0000000000a1.png");
         expect(files.has(inFolder("0000000000a1.png"))).toBe(false);
         expect(revoked).toEqual(["blob:test/1"]);
+    });
+});
+
+describe("probeWithImages", () => {
+    const settings = parseThemeSettings([
+        "@property --bg { syntax: \"<url>\"; inherits: true; initial-value: url(\"data:,\"); name: \"Background\"; }",
+        "@property --logo { syntax: \"<url>\"; inherits: true; initial-value: url(\"data:,\"); name: \"Logo\"; }",
+        "@property --accent { syntax: \"<color>\"; inherits: true; initial-value: red; name: \"Accent\"; }"
+    ].join("\n")).settings;
+    const [bg, logo, accent] = settings;
+
+    function run(entries: Array<[ThemeSetting, string]>) {
+        const probed: string[] = [];
+        const missing: string[] = [];
+        const verdicts = probeWithImages(makeImages(), entries, rest => {
+            probed.push(...rest.map(([, value]) => value));
+            return rest.map(() => "changed");
+        }, setting => missing.push(setting.property));
+        return {verdicts, probed, missing};
+    }
+
+    test("probes an image whose copy is there like any other value", () => {
+        files.set(inFolder("0000000000a1.png"), png);
+        const {verdicts, probed, missing} = run([[bg, "url(\"bd-image:0000000000a1.png\")"], [accent, "blue"]]);
+
+        expect(verdicts).toEqual(["changed", "changed"]);
+        expect(probed).toEqual(["url(\"bd-image:0000000000a1.png\")", "blue"]);
+        expect(missing).toEqual([]);
+    });
+
+    test("calls a missing copy invalid without probing it, and keeps the order", () => {
+        files.set(inFolder("0000000000a2.png"), png);
+        const {verdicts, probed, missing} = run([
+            [bg, "url(\"bd-image:0000000000a1.png\")"],
+            [accent, "blue"],
+            [logo, "url(\"bd-image:0000000000a2.png\")"]
+        ]);
+
+        expect(verdicts).toEqual(["invalid", "changed", "changed"]);
+        expect(probed).toEqual(["blue", "url(\"bd-image:0000000000a2.png\")"]);
+        expect(missing).toEqual(["--bg"]);
+    });
+
+    test("calls a bd-image link with a name BD doesn't make invalid", () => {
+        const {verdicts, missing} = run([[bg, "url(\"bd-image:../notes.txt\")"]]);
+        expect(verdicts).toEqual(["invalid"]);
+        expect(missing).toEqual(["--bg"]);
     });
 });
