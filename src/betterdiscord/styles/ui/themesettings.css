@@ -1,0 +1,60 @@
+.bd-theme-settings-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.bd-button.bd-theme-settings-reset-all {
+    gap: 6px;
+    min-height: 32px;
+    padding: 2px 12px;
+}
+
+.bd-setting-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.bd-theme-setting-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
+}
+
+.bd-theme-setting-reset:hover {
+    color: var(--interactive-text-hover);
+    background: var(--interactive-background-hover);
+}
+
+.bd-theme-setting-reset:focus-visible {
+    outline: 2px solid var(--bd-brand);
+}
+
+.bd-theme-setting-invalid .bd-text-input,
+.bd-theme-setting-invalid .bd-text-input:focus-within {
+    border-color: var(--status-danger);
+}
+
+.bd-theme-setting-error {
+    margin-top: 6px;
+    color: var(--text-feedback-critical);
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.bd-theme-settings-stopped {
+    padding: 24px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
