@@ -1,10 +1,12 @@
-import React, {useCallback, useMemo, useState, type ReactNode} from "react";
-import {RotateCcwIcon} from "lucide-react";
+import {webUtils} from "electron";
+import React, {useCallback, useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
+import {RotateCcwIcon, XIcon} from "lucide-react";
 
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
-import ThemeValues from "@modules/themes/store";
+import ThemeValues, {themeImages} from "@modules/themes/store";
+import {describeUrlValue, imageRef, maxImageBytes, type CopyError} from "@modules/themes/images";
 import {groupSettings, maxRadioChoices, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, writeCssUrl, writeNumber, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
@@ -39,7 +41,7 @@ export default function ThemeSettingsPanel({themeId}: {themeId: string;}) {
     }
 
     const {ungrouped, groups} = groupSettings(theme.properties);
-    const renderSetting = (setting: ThemeSetting) => <SettingRow key={setting.property} theme={theme} setting={setting} hasSavedValue={setting.property in saved} />;
+    const renderSetting = (setting: ThemeSetting) => <SettingRow key={setting.property} theme={theme} setting={setting} savedValue={saved[setting.property]} />;
 
     return <div className="bd-theme-settings">
         <div className="bd-theme-settings-toolbar">
@@ -66,7 +68,9 @@ function confirmResetAll(theme: Theme) {
 interface SettingRowProps {
     theme: Theme;
     setting: ThemeSetting;
-    hasSavedValue: boolean;
+
+    /** The value saved for the setting, which differs from the applied one when the page can't use it. */
+    savedValue: string | undefined;
 }
 
 /**
@@ -75,7 +79,7 @@ interface SettingRowProps {
  */
 type ApplyValue = (value: string) => string | null;
 
-function SettingRow({theme, setting, hasSavedValue}: SettingRowProps) {
+function SettingRow({theme, setting, savedValue}: SettingRowProps) {
     const control = useMemo(() => pickControl(setting), [setting]);
     const applied = ThemeValues.getValue(theme, setting.property);
 
@@ -98,8 +102,8 @@ function SettingRow({theme, setting, hasSavedValue}: SettingRowProps) {
     }, [theme, setting.property]);
 
     const custom = useCustomChoice(control, applied, apply);
-    const {element, inline, below} = buildControl(setting, control, applied, apply, custom);
-    const reset = hasSavedValue && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
+    const {element, inline, below} = buildControl(setting, control, applied, apply, savedValue, custom);
+    const reset = savedValue !== undefined && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
 
     // The error goes under the part that can take a refused value, which is the Custom control when it sits below
     const controlClass = "bd-theme-setting-control" + (isInvalid ? " bd-theme-setting-invalid" : "");
@@ -134,7 +138,7 @@ interface BuiltControl {
  * Builds the control for a setting's current value. A number or color the control can't show, such as `calc()`
  * or `oklch()`, gets a text field instead. A `custom` control needs the row's `CustomChoice`.
  */
-function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue, custom?: CustomChoice | null): BuiltControl {
+function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue, savedValue: string | undefined, custom?: CustomChoice | null): BuiltControl {
     const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
         element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />,
         inline: true
@@ -155,7 +159,7 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
         case "custom": {
             if (!custom) return textField();
             const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
-            const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply).element;
+            const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply, savedValue).element;
 
             // A dropdown stays in the header like any other dropdown, and the Custom control goes under the note
             if (control.display === "dropdown") {
@@ -222,7 +226,10 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
             return textField(readCssString, quoteCssString);
 
         case "url":
-            return textField(readCssUrl, writeCssUrl);
+            return {
+                element: <UrlSetting id={setting.property} value={value} savedValue={savedValue} initialValue={setting.initialValue} apply={apply} />,
+                inline: true
+            };
     }
 }
 
@@ -317,6 +324,79 @@ function TextSetting({id, value, read, write, apply}: TextSettingProps) {
     };
 
     return <Textbox id={id} value={draft} onChange={change} />;
+}
+
+/** The formats the image store accepts, so the file dialog offers them first. */
+const imageAccept = "image/png,image/jpeg,image/gif,image/webp,image/avif,image/svg+xml";
+
+const copyErrorText: Record<CopyError, () => string> = {
+    notImage: () => t("ThemeSettings.imageNotImage"),
+    tooLarge: () => t("ThemeSettings.imageTooLarge", {size: maxImageBytes / 1024 / 1024}),
+    unreadable: () => t("ThemeSettings.imageUnreadable")
+};
+
+interface UrlSettingProps {
+    id: string;
+    value: string;
+    savedValue: string | undefined;
+    initialValue: string;
+    apply: ApplyValue;
+}
+
+/**
+ * A link field with a Browse button for a local image. A picked image replaces the field with a thumbnail and a
+ * button that clears it back to the default. A refused file shows why, and nothing changes.
+ */
+function UrlSetting({id, value, savedValue, initialValue, apply}: UrlSettingProps) {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    // A refused file's message stays until the value changes
+    const [copyError, setCopyError] = useState<CopyError | null>(null);
+    const [shownValue, setShownValue] = useState(value);
+    if (value !== shownValue) {
+        setShownValue(value);
+        setCopyError(null);
+    }
+
+    const pick = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.currentTarget.files?.[0];
+
+        // Cleared so that picking the same file again still counts as a change
+        event.currentTarget.value = "";
+        if (!file) return;
+
+        const result = themeImages.copy(webUtils.getPathForFile(file));
+        if ("error" in result) {
+            setCopyError(result.error);
+            return;
+        }
+        setCopyError(null);
+        if (apply(writeCssUrl(imageRef(result.name))) === null) themeImages.discard(result.name);
+    };
+
+    const view = describeUrlValue(value, savedValue);
+    let message: string | null = null;
+    if (copyError) message = copyErrorText[copyError]();
+    else if (view.kind === "link" && view.isImageMissing) message = t("ThemeSettings.imageMissing");
+
+    return <div className="bd-theme-url">
+        <div className="bd-theme-url-row">
+            {view.kind === "image"
+                ? <div className="bd-theme-image">
+                    <img className="bd-theme-image-thumb" src={themeImages.urlFor(view.name) ?? undefined} alt="" />
+                    <span className="bd-theme-image-label">{t("ThemeSettings.localImage")}</span>
+                    <button type="button" className="bd-theme-image-clear" aria-label={t("ThemeSettings.removeImage")} onClick={() => apply(initialValue)}>
+                        <XIcon size="16px" />
+                    </button>
+                </div>
+                : <TextSetting id={id} value={value} read={readCssUrl} write={writeCssUrl} apply={apply} />}
+            <Button size={Button.Sizes.NONE} color={Button.Colors.PRIMARY} className="bd-theme-url-browse" onClick={() => inputRef.current?.click()}>
+                {t("Settings.browse")}
+            </Button>
+            <input ref={inputRef} type="file" hidden accept={imageAccept} onChange={pick} />
+        </div>
+        {message && <div className="bd-theme-setting-error" role="alert">{message}</div>}
+    </div>;
 }
 
 function ResetButton({name, onClick}: {name: string; onClick(): void;}) {

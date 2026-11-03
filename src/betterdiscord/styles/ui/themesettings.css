@@ -185,3 +185,87 @@
 .bd-theme-custom.bd-theme-custom-below {
     margin-left: 0;
 }
+
+/* A link setting: the field or the picked image, with Browse beside it */
+.bd-theme-url {
+    display: inline-flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.bd-theme-url-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.bd-button.bd-theme-url-browse {
+    min-height: 40px;
+    padding: 2px 16px;
+}
+
+/* The message wraps at the row's width instead of widening it */
+.bd-theme-url .bd-theme-setting-error {
+    width: 0;
+    min-width: 100%;
+}
+
+.bd-theme-image {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 250px;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 4px;
+    border: 1px solid var(--input-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--input-background-default);
+}
+
+/* The color picker's checkerboard shows through a see-through image */
+.bd-theme-image-thumb {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    object-fit: cover;
+    background: repeating-conic-gradient(#808080 0 25%, #C0C0C0 0 50%) 0 0 / 10px 10px;
+}
+
+.bd-theme-image-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-default);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bd-theme-image-clear {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
+}
+
+.bd-theme-image-clear:hover {
+    color: var(--interactive-text-hover);
+    background: var(--interactive-background-hover);
+}
+
+.bd-theme-image-clear:focus-visible {
+    outline: 2px solid var(--bd-brand);
+}
