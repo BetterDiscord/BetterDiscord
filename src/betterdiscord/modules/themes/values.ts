@@ -92,8 +92,9 @@ export class ThemeValues extends Store {
             return "default";
         }
 
-        this.updateSaved(theme.id, {...this.getSaved(theme.id), [property]: value});
+        // Applied first, so a listener that reads `getValue` during the change sees the new value
         this.updateApplied(theme.id, {...this.applied.get(theme.id), [property]: value});
+        this.updateSaved(theme.id, {...this.getSaved(theme.id), [property]: value});
         return "saved";
     }
 
@@ -168,11 +169,12 @@ export class ThemeValues extends Store {
     }
 
     private removeValues(themeId: string, properties: string[]) {
-        const saved = this.getSaved(themeId);
-        if (properties.some(p => p in saved)) this.updateSaved(themeId, omit(saved, properties));
-
+        // Applied first, so a listener that reads `getValue` during the change sees the new value
         const applied = this.applied.get(themeId);
         if (applied && properties.some(p => p in applied)) this.updateApplied(themeId, omit(applied, properties));
+
+        const saved = this.getSaved(themeId);
+        if (properties.some(p => p in saved)) this.updateSaved(themeId, omit(saved, properties));
     }
 
     private updateSaved(themeId: string, values: Record<string, string>) {
