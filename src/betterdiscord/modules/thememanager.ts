@@ -8,6 +8,7 @@ import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
 import {parseThemeSettings} from "./themes/settings";
 import {readRegisteredProperties, removeDroppedSettings} from "./themes/browsercheck";
+import ThemeValues from "./themes/store";
 import type {ThemeSetting, ThemeSettingWarning} from "./themes/types";
 
 
@@ -69,6 +70,9 @@ class ThemeManager extends AddonManager<Theme> {
             this.logSettingWarnings(theme, warnings);
         }
 
+        // After the browser check, so a value for a setting it removed isn't applied
+        ThemeValues.apply(theme);
+
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
         else this.initialAddonsLoaded++;
 
@@ -80,9 +84,19 @@ class ThemeManager extends AddonManager<Theme> {
         if (!theme) return false;
 
         DOMManager.removeTheme(theme.slug + "-theme-container");
+        ThemeValues.remove(theme);
         Toasts.error(t("Addons.disabled", {name: theme.name, version: theme.version}));
 
         return true;
+    }
+
+    /** Deleting the file also deletes the theme's saved values. Unloading or reloading a theme keeps them. */
+    deleteAddon(idOrFileOrAddon: string | Theme) {
+        const theme = this.resolveAddon(idOrFileOrAddon);
+        if (!theme) return;
+
+        super.deleteAddon(theme);
+        ThemeValues.forget(theme.id);
     }
 
     logSettingWarnings(theme: Theme, warnings: ThemeSettingWarning[]) {
