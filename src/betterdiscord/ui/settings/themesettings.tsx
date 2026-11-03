@@ -391,7 +391,7 @@ function UrlSetting({id, value, savedValue, initialValue, apply}: UrlSettingProp
                 </div>
                 : <TextSetting id={id} value={value} read={readCssUrl} write={writeCssUrl} apply={apply} />}
             <Button size={Button.Sizes.NONE} color={Button.Colors.PRIMARY} className="bd-theme-url-browse" onClick={() => inputRef.current?.click()}>
-                {t("ThemeSettings.browse")}
+                {t("Settings.browse")}
             </Button>
             <input ref={inputRef} type="file" hidden accept={imageAccept} onChange={pick} />
         </div>

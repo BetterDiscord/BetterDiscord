@@ -393,7 +393,6 @@
         "notEnabled": "{{name}} isn't enabled, so its settings can't be changed.",
         "custom": "Custom",
         "unit": "Unit for {{name}}",
-        "browse": "Browse",
         "localImage": "Local image",
         "removeImage": "Remove image",
         "imageNotImage": "This file isn't an image BetterDiscord can use. Pick a PNG, JPEG, GIF, WebP, AVIF or SVG.",
@@ -484,6 +483,7 @@
         "updateButton": "Update!"
     },
     "Settings": {
+        "browse": "Browse",
         "customColor": "Custom Color",
         "defaultColor": "Default",
         "opacity": "Opacity",
