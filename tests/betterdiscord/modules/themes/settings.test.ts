@@ -27,7 +27,6 @@ describe("parseThemeSettings", () => {
                 property: "--x",
                 syntax: {raw: "<color>", keywords: [], type: "color"},
                 initialValue: "#5865f2",
-                inherits: true,
                 name: "Accent color",
                 note: "The main accent",
                 units: [],
@@ -88,10 +87,10 @@ describe("parseThemeSettings", () => {
             expect(setting.units).toEqual(["px", "rem", "vw", "vh"]);
         });
 
-        test("<length> with inherits: false leaves out rem", () => {
-            const setting = settingFor({"syntax": `"<length>"`, "initial-value": "12px", "inherits": "false"});
-            expect(setting.inherits).toBe(false);
-            expect(setting.units).toEqual(["px", "vw", "vh"]);
+        test("inherits: false gets no setting, with a warning", () => {
+            const source = rule("--x", {"syntax": `"<length>"`, "initial-value": "12px", "inherits": "false"});
+            expect(parseThemeSettings(source).settings).toEqual([]);
+            expect(warningsFor(source)).toEqual([expect.stringContaining("`inherits: false`")]);
         });
 
         test("<length> | <percentage> and <length-percentage> are the same", () => {
@@ -176,7 +175,8 @@ describe("parseThemeSettings", () => {
         });
 
         test("accepts inherits in any case", () => {
-            expect(settingFor({"syntax": `"<color>"`, "initial-value": "red", "inherits": "FALSE"}).inherits).toBe(false);
+            expect(settingFor({"syntax": `"<color>"`, "initial-value": "red", "inherits": "TRUE"})).toBeDefined();
+            expect(settingFor({"syntax": `"<color>"`, "initial-value": "red", "inherits": "FALSE"})).toBeUndefined();
         });
 
         test("ignores a palette on a syntax without <color>", () => {
@@ -199,9 +199,9 @@ describe("parseThemeSettings", () => {
             expect(warningsFor(em)[0]).toContain("`em`");
         });
 
-        test("ignores a rem range when inherits is false", () => {
-            const source = rule("--x", {"syntax": `"<length>"`, "initial-value": "1px", "inherits": "false", "min": "0rem", "max": "2rem"});
-            expect(parseThemeSettings(source).settings[0].range).toBeUndefined();
+        test("accepts a rem range", () => {
+            const source = rule("--x", {"syntax": `"<length>"`, "initial-value": "1px", "min": "0rem", "max": "2rem"});
+            expect(parseThemeSettings(source).settings[0].range).toEqual({min: 0, max: 2, unit: "rem"});
         });
 
         test("ignores a unit on a <number> range", () => {
