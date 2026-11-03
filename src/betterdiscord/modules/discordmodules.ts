@@ -2,6 +2,7 @@ import {memoize} from "@common/utils";
 import type {RemoteModule, UserAgentInfo, Dispatcher, InviteActions, SimpleMarkdown, ReactSpring, MessageUtils, PromptToUpload, DiscordTooltip, SimpleMarkdownWrapper} from "@typed/discord/modules";
 import {Filters, getBulkKeyed, getByKeys, getBySource, getByStrings, getModule} from "@webpack";
 import type React from "react";
+import type {Fiber} from "react-reconciler";
 
 interface Modules {
     React: typeof React;
@@ -19,6 +20,8 @@ interface Modules {
     ReactConciler: {
         stack: React.ComponentType<{children: React.ReactNode;}>;
         errorStack: (e: string) => string;
+        enqueueConcurrentRenderForLane?: (fiber: Fiber, lane: number) => object | null;
+        scheduleUpdateOnFiber?: (root: object, fiber: Fiber, lane: number) => void;
     }
 }
 
@@ -78,7 +81,9 @@ const SyncModules = getBulkKeyed<Modules>({
         cacheId: "core-ReactConciler",
         map: {
             stack: Filters.byStrings("value:", ".set"),
-            errorStack: Filters.byStrings("react.dev/errors/")
+            errorStack: Filters.byStrings("react.dev/errors/"),
+            enqueueConcurrentRenderForLane: Filters.byRegex(/\((\w+),(\w+)\)\{return \w+\(\1,null,null,\2\),\w+\(\1\)\}$/),
+            scheduleUpdateOnFiber: Filters.byStrings(".cancelPendingCommit)&&(")
         },
         mapDeclarations: true
     }
