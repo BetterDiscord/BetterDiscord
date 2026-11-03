@@ -14,36 +14,490 @@
                     "name": "Balso atjungimas",
                     "note": "Atsijunkite nuo balso serverio užveriant „Discord“"
                 },
+                "showToasts": {
+                    "name": "",
+                    "note": ""
+                },
                 "mediaKeys": {
-                    "name": "Išjungti medijos klavišus"
+                    "name": "Išjungti medijos klavišus",
+                    "note": ""
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
                 },
                 "notificationPosition": {
-                    "name": "Pranešimas"
+                    "name": "Pranešimas",
+                    "note": ""
                 },
                 "notificationEnabled": {
-                    "name": "Rodyti pranešimus"
+                    "name": "Rodyti pranešimus",
+                    "note": ""
                 }
             },
             "store": {
-                "name": "Priedų parduotuvė"
+                "name": "Priedų parduotuvė",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "window": {
+                "name": "",
+                "removeMinimumSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "transparency": {
+                    "name": "",
+                    "note": ""
+                },
+                "frame": {
+                    "name": "",
+                    "note": ""
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
+                }
+            },
+            "addons": {
+                "name": "",
+                "addonErrors": {
+                    "name": "",
+                    "note": ""
+                },
+                "editAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "detached": "",
+                        "external": "",
+                        "system": ""
+                    }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "customcss": {
+                "name": "",
+                "customcss": {
+                    "name": "",
+                    "note": ""
+                },
+                "liveUpdate": {
+                    "name": "",
+                    "note": ""
+                },
+                "startDetached": {
+                    "name": "",
+                    "note": ""
+                },
+                "nativeOpen": {
+                    "name": "",
+                    "note": ""
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "external": "",
+                        "system": ""
+                    }
+                }
+            },
+            "developer": {
+                "name": "",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
+                }
             },
             "editor": {
                 "name": "Rengyklės parinktys",
                 "theme": {
-                    "name": "Tema"
+                    "name": "Tema",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
     },
+    "Addons": {
+        "title": "",
+        "byline": "",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
+        "reload": "",
+        "addonSettings": "",
+        "website": "",
+        "source": "",
+        "invite": "",
+        "donate": "",
+        "patreon": "",
+        "name": "",
+        "author": "",
+        "version": "",
+        "added": "",
+        "modified": "",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "editAddon": "",
+        "deleteAddon": "",
+        "downloadAddon": "",
+        "confirmDelete": "",
+        "confirmationText": "",
+        "enabled": "",
+        "disabled": "",
+        "couldNotEnable": "",
+        "couldNotDisable": "",
+        "couldNotStart": "",
+        "couldNotStop": "",
+        "settingsError": "",
+        "methodError": "",
+        "unknownAuthor": "",
+        "noDescription": "",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
+        "compileError": "",
+        "wasUnloaded": "",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        }
+    },
+    "CustomCSS": {
+        "confirmationText": "",
+        "update": "",
+        "save": "",
+        "openNative": "",
+        "openDetached": "",
+        "settings": "",
+        "editorTitle": "",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
+    },
+    "Modals": {
+        "confirmAction": "",
+        "installCss": "",
+        "addonCrashed": "",
+        "okay": "",
+        "done": "",
+        "cancel": "",
+        "nevermind": "",
+        "close": "",
+        "name": "",
+        "message": "",
+        "error": "",
+        "addonErrors": "",
+        "restartRequired": "",
+        "restartNow": "",
+        "restartLater": "",
+        "additionalInfo": "",
+        "restartPrompt": "",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
+    },
+    "Sorting": {
+        "sortBy": "",
+        "order": "",
+        "ascending": "",
+        "descending": ""
+    },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
+        "addonUpdateFailed": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
         "versionAvailable": "Versija {{version}} dabar pasiekiamas.",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "Atnaujinti!"
     },
     "Settings": {
-        "customColor": "Pasirinktinė spalva"
+        "customColor": "Pasirinktinė spalva",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
     },
     "Socials": {
         "twitter": "Sekite mus!",
         "github": "Duokite žvaigždutę mums!"
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

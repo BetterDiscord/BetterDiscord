@@ -1,5 +1,6 @@
 {
     "Panels": {
+        "plugins": "Plugins",
         "themes": "Thèmes",
         "customcss": "CSS Personnalisé",
         "updates": "Mises à jour"
@@ -26,6 +27,7 @@
                     "note": "Ajoute des attributs à divers éléments pour aider la création de thèmes."
                 },
                 "notificationPosition": {
+                    "name": "Notification",
                     "note": "Vous permet de choisir où les notifications apparaissent."
                 },
                 "notificationEnabled": {
@@ -38,13 +40,17 @@
                 "alwaysEnable": {
                     "name": "Toujours activer",
                     "note": "Lorsque cette option est activée par défaut, les extensions téléchargées via la boutique d'extension seront activées."
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Préférences d'affichage",
                 "removeMinimumSize": {
                     "name": "Supprimer la taille minimale",
-                    "note": "Empêche Discord de forcer sa taille de fenêtre minimale de 940x500"
+                    "note": "Empêche Discord de forcer sa taille de fenêtre minimale de 800x500"
                 },
                 "transparency": {
                     "name": "Activer la transparence",
@@ -53,13 +59,62 @@
                 "frame": {
                     "name": "Cadre de fenêtre",
                     "note": "Ajoute le cadre de fenêtre natif de l'OS à la fenêtre principale"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Gestionnaire d'extensions",
                 "addonErrors": {
                     "name": "Afficher les erreurs d'extension",
-                    "note": "Affiche une modale avec les erreurs de plugin/thème"
+                    "note": "Affiche une modale avec les erreurs de plugin\/thème"
                 },
                 "editAction": {
                     "name": "Action pour l'édition",
@@ -71,11 +126,12 @@
                     }
                 },
                 "checkForUpdates": {
-                    "name": "Rechercher les mises à jour automatiquement"
+                    "name": "Rechercher les mises à jour automatiquement",
+                    "note": ""
                 },
                 "updateInterval": {
                     "name": "Intervalle de recherche des mises à jour",
-                    "note": "À quelle fréquence la recherche de mises à jour principales/des extensions est effectuée"
+                    "note": "À quelle fréquence la recherche de mises à jour principales\/des extensions est effectuée"
                 }
             },
             "customcss": {
@@ -132,6 +188,10 @@
                 "devTools": {
                     "name": "Outils développeur",
                     "note": "Permet d'activer les outils développeur avec Ctrl+Maj+I"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -156,7 +216,12 @@
                     "note": "Taille de la police (pt) à utiliser dans l'éditeur"
                 },
                 "minimap": {
+                    "name": "Minimap",
                     "note": "Permet d'afficher les numéros de ligne sur le côté de l'éditeur"
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
                 },
                 "quickSuggestions": {
                     "name": "Suggestions rapides",
@@ -178,6 +243,10 @@
                         "none": "Jamais",
                         "selection": "Sélection"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -194,7 +263,8 @@
             "theme": "Ouvrir la boutique de thèmes"
         },
         "storeMessage": {
-            "plugin": "Parcourir et installer les plugins officiels de la communauté"
+            "plugin": "Parcourir et installer les plugins officiels de la communauté",
+            "theme": ""
         },
         "store": "Boutique",
         "viewInstalled": {
@@ -204,10 +274,13 @@
         "reload": "Recharger",
         "addonSettings": "Paramètres",
         "website": "Site web",
+        "source": "Source",
         "invite": "Serveur d'assistance",
         "donate": "Faire un don",
+        "patreon": "Patreon",
         "name": "Nom",
         "author": "Auteur",
+        "version": "Version",
         "added": "Date d'ajout",
         "modified": "Date de modification",
         "releaseDate": "Date de publication",
@@ -254,6 +327,8 @@
         "methodError": "{{method}} n'a pas pu être lancé.",
         "unknownAuthor": "Auteur inconnu",
         "noDescription": "Description manquante.",
+        "noSettings": "",
+        "isDisabled": "",
         "alreadyExists": {
             "plugin": "Il y a déjà un plugin nommé {{name}}",
             "theme": "Il y a déjà un thème nommé {{name}}"
@@ -309,7 +384,7 @@
         "confirmationText": "Certaines modifications de votre CSS personnalisé n'ont pas été enregistrées. Fermer cette fenêtre vous fera perdre ces changements.",
         "update": "Mise à jour",
         "save": "Sauvegarder",
-        "openNative": "Ouvrir dans l'Éditeur Système",
+        "openNative": "",
         "openDetached": "Détacher la fenêtre",
         "settings": "Paramètres de l'éditeur",
         "editorTitle": "Éditeur de CSS personnalisé",
@@ -318,7 +393,8 @@
         "cssInstallError": "Échec de l'ajout de CSS dans CustomCSS.",
         "cssReverted": "Le CSS a été restauré.",
         "cssReverting": "Les changements seront annulés dans 10 secondes",
-        "cssKept": "Changements CSS conservés de façon permanente"
+        "cssKept": "Changements CSS conservés de façon permanente",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Êtes-vous sûr·e ?",
@@ -330,6 +406,7 @@
         "nevermind": "J'ai changé d'avis",
         "close": "Fermer",
         "name": "Nom",
+        "message": "Message",
         "error": "Erreur",
         "addonErrors": "Erreurs d'extension",
         "restartRequired": "Redémarrage requis",
@@ -356,7 +433,7 @@
     },
     "Updater": {
         "updateFailed": "La mise à jour a échoué !",
-        "updateFailedMessage": "Échec de la mise à jour de BetterDiscord. Veuillez télécharger la version la plus récente de l'installeur sur notre site (https://betterdiscord.app/) et réinstaller.",
+        "updateFailedMessage": "Échec de la mise à jour de BetterDiscord. Veuillez télécharger la version la plus récente de l'installeur sur notre site (https:\/\/betterdiscord.app\/) et réinstaller.",
         "updateSuccessful": "Mise à jour réussie !",
         "updateAvailable": "Mise à jour de BetterDiscord disponible (v{{version}})",
         "viewUpdates": "Voir les mises à jour",
@@ -397,5 +474,12 @@
     "Paginator": {
         "back": "Précédent",
         "next": "Suivant"
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

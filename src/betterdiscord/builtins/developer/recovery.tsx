@@ -6,7 +6,7 @@ import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
 import PluginManager, {type Plugin} from "@modules/pluginmanager";
 import Modals from "@ui/modals";
-import {Filters, getByPrototypes, getBySource, getProxy} from "@webpack";
+import {Filters, getByPrototypes, getProxy} from "@webpack";
 import type {ErrorBoundary, TransitionTo} from "@typed/discord/modules";
 import SimpleMarkdownExt from "@structs/markdown";
 import Notifications from "@stores/notifications";
@@ -15,7 +15,6 @@ import {Check, ChevronDown, ChevronRightIcon, Copy, GithubIcon, MessageCircleWar
 import config from "@stores/config.ts";
 import {Logo} from "@ui/logo.tsx";
 import Ipc from "@modules/ipc.ts";
-import type {Webpack} from "@typed/discord";
 import type {Fiber} from "react-reconciler";
 import Patcher from "@modules/patcher";
 
@@ -243,25 +242,44 @@ function ErrorDetails({instance, pluginInfo, stack}: {instance: ErrorBoundary, p
     );
 }
 
+const REACT_ERROR_CODES = `https://raw.githubusercontent.com/facebook/react/v${DiscordModules.React.version}/scripts/error-codes/codes.json`;
 
 export default new class Recovery extends Builtin {
     initialize() {
         this.patchErrorBoundry();
         this.patchReactReconcilerCapturedStacks();
+        this.fetchErrorCodes();
+        this.patchErrorCodes();
         return super.initialize();
     }
 
     lastThrownComponent: React.ComponentType | null = null;
+    private errors = new Map<string, string>();
 
     // https://github.com/react/react/blob/098d2e87a1f7142947418d15f63f975b58c4685b/packages/react-reconciler/src/ReactCapturedValue.js#L22
     patchReactReconcilerCapturedStacks() {
-        const [declarations, key] = getBySource<Webpack.ModuleWithKey<() => {source: Fiber;}>>([".errorRecoveryDisabledLanes|="], {
-            declarationFilter: Filters.byStrings("value:", ".set"),
-            withKey: true
-        })!;
-
-        this.after(declarations, key, (_, __, res) => {
+        this.after(DiscordModules.ReactConciler, "stack", (_, __, res) => {
             this.lastThrownComponent = (res.source?.return as Fiber || res.source as Fiber).elementType;
+        });
+    }
+
+    private async fetchErrorCodes() {
+        const res = await fetch(REACT_ERROR_CODES);
+        const json = await res.json();
+        this.errors = new Map(Object.entries(json));
+        return json;
+    }
+
+    private patchErrorCodes() {
+        this.after(DiscordModules.ReactConciler, "errorStack", (_, args: unknown[], res: string) => {
+            const [code, ...values] = args;
+            const template = this.errors.get(String(code));
+            if (!template) return res;
+
+            let i = 0;
+            // %s.$s fix.
+            const message = template.replace(/%s/g, () => String(values[i++] ?? ""));
+            return `${message} (#${code})`;
         });
     }
 
