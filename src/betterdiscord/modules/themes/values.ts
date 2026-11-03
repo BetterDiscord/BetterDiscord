@@ -25,6 +25,9 @@ export interface ThemeValuesOptions {
     /** Puts a running theme's values on the page. An empty object removes the theme's tag. */
     write(theme: Theme, values: Readonly<Record<string, string>>): void;
 
+    /** Frees what `probe` set up for a theme that stopped. */
+    release(theme: Theme): void;
+
     /** Runs a callback before the next repaint. */
     requestFrame(callback: () => void): void;
 
@@ -136,6 +139,7 @@ export class ThemeValues extends Store {
         this.applied.delete(theme.id);
         this.pendingFrame.delete(theme.id);
         this.options.write(running ?? theme, noValues);
+        this.options.release(running ?? theme);
     }
 
     /** Deletes every saved value for a theme, for when BD deletes the theme's file. */

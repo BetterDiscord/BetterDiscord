@@ -6,13 +6,14 @@ import Logger from "@common/logger";
 import {useInsertionEffect, useState} from "react";
 
 
-export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
+export type Files = "settings" | "plugins" | "themes" | "theme-settings" | "misc" | "addon-store";
 
 class JsonStore extends Store {
     private cache: Record<Files, Record<string, unknown> | undefined> = {
         "settings": undefined,
         "plugins": undefined,
         "themes": undefined,
+        "theme-settings": undefined,
         "misc": undefined,
         "addon-store": undefined
     };

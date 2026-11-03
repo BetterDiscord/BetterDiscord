@@ -32,10 +32,11 @@ let saves: SavedValues[];
 let writes: Array<[string, Record<string, string>]>;
 let probes: string[][];
 let frames: Array<() => void>;
+let releases: string[];
 
 /** Builds a store that records into this test's arrays, so a timer left over from another test can't reach them. */
 function makeValues(saveDelay = 0) {
-    const log = {saves, writes, probes, frames};
+    const log = {saves, writes, probes, frames, releases};
     return new ThemeValues({
         load: () => stored,
         save: values => log.saves.push(structuredClone(values)),
@@ -44,6 +45,7 @@ function makeValues(saveDelay = 0) {
             return entries.map(([, value]) => fakeProbe(value));
         },
         write: (theme, values) => log.writes.push([theme.id, {...values}]),
+        release: theme => log.releases.push(theme.id),
         requestFrame: callback => log.frames.push(callback),
         saveDelay
     });
@@ -61,6 +63,7 @@ beforeEach(() => {
     writes = [];
     probes = [];
     frames = [];
+    releases = [];
 });
 
 describe("ThemeValues", () => {
@@ -287,6 +290,7 @@ describe("ThemeValues", () => {
 
             values.remove(theme);
             expect(writes).toEqual([["Midnight", {}]]);
+            expect(releases).toEqual(["Midnight"]);
             expect(values.getSaved("Midnight")).toEqual({"--accent": "blue"});
             expect(values.getValue(theme, "--accent")).toBe("blue");
             expect(values.setValue(theme, "--accent", "green")).toBe("invalid");

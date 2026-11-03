@@ -28,6 +28,7 @@ export default class DOMManager {
     static get bdScripts() {return this.getElement("bd-scripts")!;}
     static get bdStyles() {return this.getElement("bd-styles")!;}
     static get bdThemes() {return this.getElement("bd-themes")!;}
+    static get bdThemeSettings() {return this.getElement("bd-theme-settings")!;}
     static get bdCustomCSS() {return this.getElement("style#customcss")!;}
 
     static escapeID(id: string) {
@@ -222,4 +223,5 @@ DOMManager.createElement("bd-body", {target: document.body});
 DOMManager.createElement("bd-scripts", {target: DOMManager.bdHead});
 DOMManager.createElement("bd-styles", {target: DOMManager.bdHead});
 DOMManager.createElement("bd-themes", {target: DOMManager.bdHead});
+DOMManager.createElement("bd-theme-settings", {target: DOMManager.bdHead});
 DOMManager.createElement("style", {id: "customcss", target: DOMManager.bdHead});
