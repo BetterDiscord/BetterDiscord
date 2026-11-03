@@ -31,12 +31,12 @@ let stored: unknown;
 let saves: SavedValues[];
 let writes: Array<[string, Record<string, string>]>;
 let probes: string[][];
-let frames: Array<() => void>;
+let timers: Array<{callback: () => void, delay: number, cancelled: boolean}>;
 let releases: string[];
 
-/** Builds a store that records into this test's arrays, so a timer left over from another test can't reach them. */
-function makeValues(saveDelay = 0) {
-    const log = {saves, writes, probes, frames, releases};
+/** Builds a store that records into this test's arrays, and whose timers only run from `runTimers`. */
+function makeValues() {
+    const log = {saves, writes, probes, timers, releases};
     return new ThemeValues({
         load: () => stored,
         save: values => log.saves.push(structuredClone(values)),
@@ -46,23 +46,34 @@ function makeValues(saveDelay = 0) {
         },
         write: (theme, values) => log.writes.push([theme.id, {...values}]),
         release: theme => log.releases.push(theme.id),
-        requestFrame: callback => log.frames.push(callback),
-        saveDelay
+        schedule: (callback, delay) => {
+            const timer = {callback, delay, cancelled: false};
+            log.timers.push(timer);
+            return () => timer.cancelled = true;
+        },
+        delay: 100
     });
 }
 
-function runFrames() {
-    for (const callback of frames.splice(0)) callback();
+/** Timers that were scheduled and not cancelled. */
+function liveTimers() {
+    return timers.filter(timer => !timer.cancelled);
 }
 
-const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+/** Runs the timers that are waiting, as if the delay passed. */
+function runTimers() {
+    for (const timer of liveTimers()) {
+        timer.cancelled = true;
+        timer.callback();
+    }
+}
 
 beforeEach(() => {
     stored = undefined;
     saves = [];
     writes = [];
     probes = [];
-    frames = [];
+    timers = [];
     releases = [];
 });
 
@@ -98,7 +109,7 @@ describe("ThemeValues", () => {
 
             expect(values.setValue(theme, "--accent", "bad)")).toBe("invalid");
             expect(values.getSaved("Midnight")).toBe(before);
-            expect(frames).toEqual([]);
+            expect(timers).toEqual([]);
         });
 
         test("refuses a theme that isn't running or a property that isn't a setting", () => {
@@ -153,8 +164,8 @@ describe("ThemeValues", () => {
         });
     });
 
-    describe("live apply", () => {
-        test("writes to the page once per frame, with the latest values", () => {
+    describe("debounce", () => {
+        test("writes to the page and saves once, after changes stop", () => {
             const values = makeValues();
             const theme = makeTheme();
             values.apply(theme);
@@ -163,25 +174,56 @@ describe("ThemeValues", () => {
             values.setValue(theme, "--radius", "2px");
             values.setValue(theme, "--accent", "blue");
             expect(writes).toEqual([]);
-            expect(frames).toHaveLength(1);
+            expect(saves).toEqual([]);
+            expect(liveTimers()).toHaveLength(1);
+            expect(liveTimers()[0].delay).toBe(100);
 
-            runFrames();
+            runTimers();
             expect(writes).toEqual([["Midnight", {"--radius": "2px", "--accent": "blue"}]]);
+            expect(saves).toEqual([{Midnight: {"--radius": "2px", "--accent": "blue"}}]);
         });
 
-        test("writes an empty set when the last value goes back to the default", () => {
+        test("getValue returns the new value while the write waits", () => {
+            const values = makeValues();
+            const theme = makeTheme();
+            values.apply(theme);
+
+            values.setValue(theme, "--radius", "2px");
+            expect(writes).toEqual([]);
+            expect(values.getValue(theme, "--radius")).toBe("2px");
+        });
+
+        test("a value set back to the default waits like any other", () => {
+            stored = {Midnight: {"--radius": "2px"}};
+            const values = makeValues();
+            const theme = makeTheme();
+            values.apply(theme);
+            writes.length = 0;
+
+            expect(values.setValue(theme, "--radius", "4px")).toBe("default");
+            expect(writes).toEqual([]);
+            expect(values.getValue(theme, "--radius")).toBe("4px");
+
+            runTimers();
+            expect(writes).toEqual([["Midnight", {}]]);
+            expect(saves).toEqual([{}]);
+        });
+
+        test("a reset writes and saves at once, along with anything waiting", () => {
             stored = {Midnight: {"--accent": "blue"}};
             const values = makeValues();
             const theme = makeTheme();
             values.apply(theme);
             writes.length = 0;
 
+            values.setValue(theme, "--radius", "1rem");
             values.reset(theme, "--accent");
-            runFrames();
-            expect(writes).toEqual([["Midnight", {}]]);
+            expect(writes).toEqual([["Midnight", {"--radius": "1rem"}]]);
+            expect(saves).toEqual([{Midnight: {"--radius": "1rem"}}]);
+            expect(liveTimers()).toEqual([]);
         });
 
-        test("skips a pending frame for a theme that stopped", () => {
+        test("skips a waiting write for a theme that stopped, but still saves", () => {
             const values = makeValues();
             const theme = makeTheme();
             values.apply(theme);
@@ -189,47 +231,51 @@ describe("ThemeValues", () => {
             values.remove(theme);
             writes.length = 0;
 
-            runFrames();
+            runTimers();
             expect(writes).toEqual([]);
+            expect(saves).toEqual([{Midnight: {"--accent": "blue"}}]);
+        });
+
+        test("apply writes at once and drops a waiting write for the same theme", () => {
+            const values = makeValues();
+            const theme = makeTheme();
+            values.apply(theme);
+            values.setValue(theme, "--accent", "blue");
+
+            values.apply(makeTheme());
+            expect(writes).toEqual([["Midnight", {"--accent": "blue"}]]);
+            runTimers();
+            expect(writes).toHaveLength(1);
         });
     });
 
     describe("saving", () => {
-        test("debounces the disk write", async () => {
-            const values = makeValues(20);
-            const theme = makeTheme();
-            values.apply(theme);
-
-            values.setValue(theme, "--accent", "blue");
-            values.setValue(theme, "--radius", "1rem");
-            expect(saves).toEqual([]);
-
-            await wait(40);
-            expect(saves).toEqual([{Midnight: {"--accent": "blue", "--radius": "1rem"}}]);
-        });
-
         test("flush writes pending changes at once, and only when there are some", () => {
-            const values = makeValues(10_000);
+            const values = makeValues();
             const theme = makeTheme();
             values.apply(theme);
 
             values.flush();
             expect(saves).toEqual([]);
+            expect(writes).toEqual([]);
 
             values.setValue(theme, "--accent", "blue");
             values.flush();
+            expect(writes).toEqual([["Midnight", {"--accent": "blue"}]]);
             expect(saves).toEqual([{Midnight: {"--accent": "blue"}}]);
+            expect(liveTimers()).toEqual([]);
+
             values.flush();
             expect(saves).toHaveLength(1);
+            expect(writes).toHaveLength(1);
         });
 
         test("drops a theme's entry once its last value is reset", () => {
             stored = {Midnight: {"--accent": "blue"}, Other: {"--x": "1px"}};
-            const values = makeValues(10_000);
+            const values = makeValues();
             const theme = makeTheme();
 
             values.reset(theme, "--accent");
-            values.flush();
             expect(saves).toEqual([{Other: {"--x": "1px"}}]);
         });
 
@@ -264,7 +310,8 @@ describe("ThemeValues", () => {
             const values = makeValues();
             values.resetAll(makeTheme());
             expect(values.getSaved("Midnight")).toEqual({});
-            expect(frames).toEqual([]);
+            expect(writes).toEqual([]);
+            expect(saves).toEqual([{}]);
         });
     });
 
@@ -327,7 +374,7 @@ describe("ThemeValues", () => {
     describe("forget", () => {
         test("deletes a theme's values and saves", () => {
             stored = {Midnight: {"--accent": "blue"}, Other: {"--x": "1px"}};
-            const values = makeValues(10_000);
+            const values = makeValues();
             let changes = 0;
             values.addChangeListener(() => changes++);
 
@@ -339,7 +386,7 @@ describe("ThemeValues", () => {
         });
 
         test("does nothing for a theme without values", () => {
-            const values = makeValues(10_000);
+            const values = makeValues();
             values.forget("Midnight");
             values.flush();
             expect(saves).toEqual([]);

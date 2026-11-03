@@ -239,7 +239,7 @@ describe("parseThemeSettings", () => {
     describe("no setting", () => {
         test("a rule without name is skipped without a warning", () => {
             const source = rule("--x", {"syntax": `"<color>"`, "initial-value": "red", "name": null});
-            expect(parseThemeSettings(source)).toEqual({settings: [], warnings: []});
+            expect(parseThemeSettings(source)).toEqual({settings: [], warnings: [], rootValues: []});
         });
 
         test.each([
@@ -415,11 +415,11 @@ describe("parseThemeSettings", () => {
     });
 
     test("ignores a commented-out rule", () => {
-        expect(parseThemeSettings(`/* ${rule("--x", {"syntax": `"<color>"`, "initial-value": "red"})} */`)).toEqual({settings: [], warnings: []});
+        expect(parseThemeSettings(`/* ${rule("--x", {"syntax": `"<color>"`, "initial-value": "red"})} */`)).toEqual({settings: [], warnings: [], rootValues: []});
     });
 
     test("a theme with no @property rules", () => {
-        expect(parseThemeSettings(`/**\n * @name Plain\n */\n:root { --a: red; }\n.a { color: var(--a); }`)).toEqual({settings: [], warnings: []});
+        expect(parseThemeSettings(`/**\n * @name Plain\n */\n:root { --a: red; }\n.a { color: var(--a); }`)).toEqual({settings: [], warnings: [], rootValues: []});
     });
 
     test("the full example theme", () => {
@@ -481,6 +481,31 @@ describe("parseThemeSettings", () => {
         ]);
         expect(settings[2]).toMatchObject({range: {min: 0, max: 24, step: 1, unit: "px"}, units: ["px"]});
         expect(settings[1].palette).toEqual(["#5865f2", "#eb459e", "#57f287"]);
+    });
+
+    describe("root values", () => {
+        test("lists plain :root and html values whose text differs from the initial value", () => {
+            const source = [
+                rule("--x", {"syntax": `"<color>"`, "initial-value": "#ffffff"}),
+                ":root { --x: #fff; }\n",
+                "html { --x: #ffffff; }\n",
+                ":root, html { --x:  rgb(0 0 0); }\n"
+            ].join("");
+            expect(parseThemeSettings(source).rootValues).toEqual([
+                {property: "--x", value: "#fff", line: 7},
+                {property: "--x", value: "rgb(0 0 0)", line: 9}
+            ]);
+        });
+
+        test("leaves out overrides, keyframes and variables that aren't settings", () => {
+            const source = [
+                rule("--x", {"syntax": `"<length>"`, "initial-value": "4px"}),
+                ":root { --x: 8px !important; --other: 1px; }\n",
+                ".app { --x: 8px; }\n",
+                "@keyframes grow { to { --x: 8px; } }\n"
+            ].join("");
+            expect(parseThemeSettings(source).rootValues).toEqual([]);
+        });
     });
 });
 

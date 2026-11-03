@@ -6,8 +6,9 @@ import AddonManager from "./addonmanager";
 import {type Addon} from "@typed/addon";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
-import {parseThemeSettings} from "./themes/settings";
-import {readRegisteredProperties, removeDroppedSettings} from "./themes/browsercheck";
+import {parseThemeSettings, type RootValue} from "./themes/settings";
+import {findRootDefaults, readRegisteredProperties, removeDroppedSettings} from "./themes/browsercheck";
+import {probeValues} from "./themes/probe";
 import ThemeValues from "./themes/store";
 import type {ThemeSetting, ThemeSettingWarning} from "./themes/types";
 
@@ -28,8 +29,14 @@ class ThemeManager extends AddonManager<Theme> {
     language = "css";
     order = 4;
 
-    /** Themes parsed since BD last read their file, whose settings the browser hasn't confirmed yet. */
-    private uncheckedThemes = new WeakSet<Theme>();
+    /**
+     * Themes parsed since BD last read their file, whose settings the browser hasn't confirmed yet, with the
+     * `:root` values the browser check compares against each setting's default.
+     */
+    private uncheckedThemes = new WeakMap<Theme, RootValue[]>();
+
+    /** The ids of the themes on the page, in the order they started. */
+    private runningThemes = new Set<string>();
 
     startAddons() {
         for (const addon of this.addonList) {
@@ -44,10 +51,10 @@ class ThemeManager extends AddonManager<Theme> {
         theme.css = theme.fileContent!;
         delete theme.fileContent;
 
-        const {settings, warnings} = parseThemeSettings(theme.css);
+        const {settings, warnings, rootValues} = parseThemeSettings(theme.css);
         theme.properties = settings;
         this.logSettingWarnings(theme, warnings);
-        this.uncheckedThemes.add(theme);
+        this.uncheckedThemes.set(theme, rootValues);
         return true;
     }
 
@@ -63,12 +70,18 @@ class ThemeManager extends AddonManager<Theme> {
         const style = DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
 
         // The browser's verdict can only change with the source, so this runs once per read of the file
-        if (this.uncheckedThemes.has(theme)) {
+        const rootValues = this.uncheckedThemes.get(theme);
+        if (rootValues) {
             this.uncheckedThemes.delete(theme);
             const {settings, warnings} = removeDroppedSettings(theme.properties ?? [], readRegisteredProperties(style.sheet));
             theme.properties = settings;
+            warnings.push(...findRootDefaults(settings, rootValues, entries => probeValues(theme.id, settings, entries)));
+            warnings.sort((a, b) => a.line - b.line);
             this.logSettingWarnings(theme, warnings);
         }
+
+        this.warnSharedNames(theme);
+        this.runningThemes.add(theme.id);
 
         // After the browser check, so a value for a setting it removed isn't applied
         ThemeValues.apply(theme);
@@ -85,6 +98,7 @@ class ThemeManager extends AddonManager<Theme> {
 
         DOMManager.removeTheme(theme.slug + "-theme-container");
         ThemeValues.remove(theme);
+        this.runningThemes.delete(theme.id);
         Toasts.error(t("Addons.disabled", {name: theme.name, version: theme.version}));
 
         return true;
@@ -97,6 +111,26 @@ class ThemeManager extends AddonManager<Theme> {
 
         super.deleteAddon(theme);
         ThemeValues.forget(theme.id);
+    }
+
+    /**
+     * Warns when a starting theme has a setting with the same name as a setting in a theme that's already running.
+     * Names are shared by the whole page, so the theme that started last decides the syntax and default, and the
+     * two panels change the same variable.
+     */
+    warnSharedNames(theme: Theme) {
+        const names = new Set(theme.properties?.map(s => s.property));
+        if (!names.size) return;
+
+        for (const id of this.runningThemes) {
+            const other = this.resolveAddon(id);
+            if (!other || other.id === theme.id) continue;
+
+            const shared = other.properties?.filter(s => names.has(s.property)).map(s => `\`${s.property}\``) ?? [];
+            if (!shared.length) continue;
+
+            Logger.warn(this.name, `${theme.name}: has settings that ${other.name} also has (${shared.join(", ")}). A property name is shared by the whole page, so ${theme.name} now decides their syntax and default, and both themes' panels change the same values.`);
+        }
     }
 
     logSettingWarnings(theme: Theme, warnings: ThemeSettingWarning[]) {

@@ -28,11 +28,11 @@ export interface ThemeValuesOptions {
     /** Frees what `probe` set up for a theme that stopped. */
     release(theme: Theme): void;
 
-    /** Runs a callback before the next repaint. */
-    requestFrame(callback: () => void): void;
+    /** Runs a callback after `delay` milliseconds, and returns a function that cancels it. */
+    schedule(callback: () => void, delay: number): () => void;
 
-    /** How long the disk write waits for more changes, in milliseconds. */
-    saveDelay: number;
+    /** How long the page and disk writes wait for more changes, in milliseconds. */
+    delay: number;
 }
 
 const noValues: Readonly<Record<string, string>> = Object.freeze({});
@@ -42,8 +42,9 @@ const noValues: Readonly<Record<string, string>> = Object.freeze({});
  * Only values that differ from a setting's default are saved. Stopping or reloading a theme leaves its values
  * alone, so only a reset or `forget` removes them.
  *
- * It emits a change synchronously whenever the saved values change. The page updates on the next frame, and the
- * file once changes stop for `saveDelay`.
+ * It emits a change synchronously whenever the saved values change, and `getValue` returns the new value at once.
+ * The page and the file update together once changes stop for `delay`, because each write to the page restyles
+ * all of Discord. A reset, `apply` and `remove` reach the page at once.
  */
 export class ThemeValues extends Store {
     private options: ThemeValuesOptions;
@@ -55,8 +56,10 @@ export class ThemeValues extends Store {
     /** The values on the page for each running theme. A saved value that no longer fits its setting is left out. */
     private applied = new Map<string, Readonly<Record<string, string>>>();
 
-    private pendingFrame = new Set<string>();
-    private saveTimer: ReturnType<typeof setTimeout> | null = null;
+    /** Running themes whose applied values changed since the last write to the page. */
+    private pendingWrites = new Set<string>();
+    private hasUnsavedChanges = false;
+    private cancelFlush: (() => void) | null = null;
 
     constructor(options: ThemeValuesOptions) {
         super();
@@ -101,11 +104,13 @@ export class ThemeValues extends Store {
     /** Removes one saved value, so the setting goes back to its default. */
     reset(theme: Theme, property: string) {
         this.removeValues(theme.id, [property]);
+        this.flush();
     }
 
     /** Removes every saved value for a theme. */
     resetAll(theme: Theme) {
         this.removeValues(theme.id, Object.keys(this.getSaved(theme.id)));
+        this.flush();
     }
 
     /**
@@ -129,7 +134,7 @@ export class ThemeValues extends Store {
         });
 
         this.applied.set(theme.id, applied);
-        this.pendingFrame.delete(theme.id);
+        this.pendingWrites.delete(theme.id);
         if (Object.keys(applied).length) this.options.write(theme, applied);
     }
 
@@ -138,7 +143,7 @@ export class ThemeValues extends Store {
         const running = this.running.get(theme.id);
         this.running.delete(theme.id);
         this.applied.delete(theme.id);
-        this.pendingFrame.delete(theme.id);
+        this.pendingWrites.delete(theme.id);
         this.options.write(running ?? theme, noValues);
         this.options.release(running ?? theme);
     }
@@ -150,15 +155,24 @@ export class ThemeValues extends Store {
 
         const {[themeId]: _, ...rest} = saved;
         this.saved = rest;
-        this.scheduleSave();
+        this.hasUnsavedChanges = true;
+        this.scheduleFlush();
         this.emitChange();
     }
 
-    /** Writes pending changes to disk now instead of waiting. */
+    /** Writes pending changes to the page and to disk now instead of waiting. */
     flush() {
-        if (this.saveTimer === null) return;
-        clearTimeout(this.saveTimer);
-        this.saveTimer = null;
+        this.cancelFlush?.();
+        this.cancelFlush = null;
+
+        for (const themeId of this.pendingWrites) {
+            const theme = this.running.get(themeId);
+            if (theme) this.options.write(theme, this.applied.get(themeId) ?? noValues);
+        }
+        this.pendingWrites.clear();
+
+        if (!this.hasUnsavedChanges) return;
+        this.hasUnsavedChanges = false;
         this.options.save(this.load());
     }
 
@@ -180,28 +194,24 @@ export class ThemeValues extends Store {
     private updateSaved(themeId: string, values: Record<string, string>) {
         const {[themeId]: _, ...rest} = this.load();
         this.saved = Object.keys(values).length ? {...rest, [themeId]: Object.freeze(values)} : rest;
-        this.scheduleSave();
+        this.hasUnsavedChanges = true;
+        this.scheduleFlush();
         this.emitChange();
     }
 
     private updateApplied(themeId: string, values: Record<string, string>) {
         this.applied.set(themeId, values);
-        if (this.pendingFrame.has(themeId)) return;
-
-        this.pendingFrame.add(themeId);
-        this.options.requestFrame(() => {
-            if (!this.pendingFrame.delete(themeId)) return;
-            const theme = this.running.get(themeId);
-            if (theme) this.options.write(theme, this.applied.get(themeId) ?? noValues);
-        });
+        this.pendingWrites.add(themeId);
+        this.scheduleFlush();
     }
 
-    private scheduleSave() {
-        if (this.saveTimer !== null) clearTimeout(this.saveTimer);
-        this.saveTimer = setTimeout(() => {
-            this.saveTimer = null;
-            this.options.save(this.load());
-        }, this.options.saveDelay);
+    /** Restarts the wait, so a drag writes once after it stops instead of on every step. */
+    private scheduleFlush() {
+        this.cancelFlush?.();
+        this.cancelFlush = this.options.schedule(() => {
+            this.cancelFlush = null;
+            this.flush();
+        }, this.options.delay);
     }
 }
 

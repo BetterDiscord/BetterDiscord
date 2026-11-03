@@ -1,4 +1,6 @@
+import type {RootValue} from "./settings";
 import type {ThemeSetting, ThemeSettingWarning} from "./types";
+import type {ProbeVerdict} from "./values";
 
 /** What the browser registered for one `@property` rule. */
 export interface RegisteredProperty {
@@ -71,6 +73,34 @@ export function removeDroppedSettings(settings: ThemeSetting[], registered: Regi
     }
 
     return {settings: kept, warnings};
+}
+
+/**
+ * Warns about each plain `:root` or `html` value that computes to something else than its setting's
+ * `initial-value`. The page shows that value while the panel shows the default, and picking the default in the
+ * panel brings that value back instead of the `initial-value`. `probe` compares values the way the browser
+ * computes them, so `#fff` against `#ffffff` doesn't warn. A value that doesn't fit the syntax is left out,
+ * because the browser drops it.
+ */
+export function findRootDefaults(settings: ThemeSetting[], rootValues: RootValue[], probe: (entries: Array<[ThemeSetting, string]>) => ProbeVerdict[]) {
+    const entries: Array<[ThemeSetting, RootValue]> = [];
+    for (const rootValue of rootValues) {
+        const setting = settings.find(s => s.property === rootValue.property);
+        if (setting) entries.push([setting, rootValue]);
+    }
+    if (!entries.length) return [];
+
+    const verdicts = probe(entries.map(([setting, rootValue]) => [setting, rootValue.value]));
+    const warnings: ThemeSettingWarning[] = [];
+    entries.forEach(([setting, rootValue], i) => {
+        if (verdicts[i] !== "changed") return;
+        warnings.push({
+            property: setting.property,
+            line: rootValue.line,
+            message: `is set to \`${rootValue.value}\` here, which differs from its \`initial-value\` of \`${setting.initialValue}\`. The page shows \`${rootValue.value}\` while the panel shows the default, and picking the default brings this value back. Remove this line, or move the value into \`initial-value\`.`
+        });
+    });
+    return warnings;
 }
 
 function collapse(text: string) {
