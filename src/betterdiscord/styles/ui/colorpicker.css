@@ -94,3 +94,16 @@
     width: 18px;
     margin: 2px 2px;
 }
+
+/* The default box and the swatches are buttons, so they drop the browser's button look */
+.bd-color-picker-default,
+.bd-color-picker-swatch-item {
+    padding: 0;
+    border: none;
+}
+
+.bd-color-picker-default:focus-visible,
+.bd-color-picker-swatch-item:focus-visible {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 1px;
+}

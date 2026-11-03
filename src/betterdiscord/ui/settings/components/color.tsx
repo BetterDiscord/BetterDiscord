@@ -66,12 +66,12 @@ export default function ColorPicker(props: ColorpickerProps) {
         <div className="bd-color-picker-controls">
             {defaultColor && <DiscordModules.Tooltip text="Default" position="bottom">
                 {tooltipProps => (
-                    <div {...tooltipProps} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultColor)}} onClick={() => setState(defaultColor)}>
+                    <button {...tooltipProps} type="button" aria-label="Default" aria-pressed={intValue === resolveColor(defaultColor, false)} disabled={disabled} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultColor)}} onClick={() => setState(defaultColor)}>
                         {intValue === resolveColor(defaultColor, false)
                             ? <CheckIcon size="25px" color={getContrastColor(resolveColor(defaultColor, true))} />
                             : null
                         }
-                    </div>
+                    </button>
                 )}
             </DiscordModules.Tooltip>}
             <DiscordModules.Tooltip text={t("Settings.customColor")} position="bottom">
@@ -83,15 +83,15 @@ export default function ColorPicker(props: ColorpickerProps) {
                 )}
             </DiscordModules.Tooltip>
         </div>
-        {colors?.length > 0 && <div className="bd-color-picker-swatch">
+        {colors?.length > 0 && <div className="bd-color-picker-swatch" role="group" aria-label={t("Settings.presetColors")}>
             {
                 colors.map((int, index) => (
-                    <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => setState(int)}>
-                        {intValue === int
+                    <button key={index} type="button" aria-label={resolveColor(int)} aria-pressed={intValue === resolveColor(int, false)} disabled={disabled} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => setState(int)}>
+                        {intValue === resolveColor(int, false)
                             ? <CheckIcon size="16px" color={getContrastColor(hexValue)} />
                             : null
                         }
-                    </div>
+                    </button>
                 ))
             }
         </div>}

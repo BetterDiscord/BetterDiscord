@@ -125,6 +125,20 @@ describe("ThemeValues", () => {
             expect(changes).toBe(1);
         });
 
+        test("a change listener reads the new value from getValue", () => {
+            const values = makeValues();
+            const theme = makeTheme();
+            values.apply(theme);
+            const seen: string[] = [];
+            values.addChangeListener(() => seen.push(values.getValue(theme, "--accent")));
+
+            values.setValue(theme, "--accent", "blue");
+            values.reset(theme, "--accent");
+            values.setValue(theme, "--accent", "green");
+            values.resetAll(theme);
+            expect(seen).toEqual(["blue", "red", "green", "red"]);
+        });
+
         test("replaces the saved object on every change, so it works as a snapshot", () => {
             const values = makeValues();
             const theme = makeTheme();

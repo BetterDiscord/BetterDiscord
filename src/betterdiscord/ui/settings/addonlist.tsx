@@ -19,7 +19,10 @@ import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, Stre
 import {useStateFromStores} from "@ui/hooks";
 import {type Addon, type AddonType} from "@typed/addon";
 import type AddonManager from "@modules/addonmanager";
-import type {Plugin} from "@modules/pluginmanager";
+import type {Plugin, PluginInstance} from "@modules/pluginmanager";
+import type {Theme} from "@modules/thememanager";
+import {themeHasSettings} from "@modules/themes/panel";
+import ThemeSettingsPanel from "./themesettings";
 
 
 
@@ -178,10 +181,18 @@ export default function AddonList({store}: {store: AddonManager;}) {
         }
 
         return sorted.map(addon => {
-            const hasSettings = (addon as Plugin).instance
-                ? typeof (addon as Plugin).instance?.getSettingsPanel === "function"
-                : Boolean(store.prefix === "plugin" && addon.fileContent?.includes("getSettingsPanel"));
-            const getSettings = hasSettings && (addon as Plugin).instance?.getSettingsPanel?.bind((addon as Plugin).instance);
+            let hasSettings: boolean;
+            let getSettings: false | undefined | PluginInstance["getSettingsPanel"];
+            if (store.prefix === "theme") {
+                hasSettings = themeHasSettings(addon as Theme);
+                getSettings = hasSettings && (() => <ThemeSettingsPanel themeId={addon.id} />);
+            }
+            else {
+                hasSettings = (addon as Plugin).instance
+                    ? typeof (addon as Plugin).instance?.getSettingsPanel === "function"
+                    : Boolean(store.prefix === "plugin" && addon.fileContent?.includes("getSettingsPanel"));
+                getSettings = hasSettings && (addon as Plugin).instance?.getSettingsPanel?.bind((addon as Plugin).instance);
+            }
             return <ErrorBoundary id={addon.id} name="AddonCard">
                 <AddonCard store={store} disabled={addon.partial} type={store.prefix as AddonType} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} />
             </ErrorBoundary>;

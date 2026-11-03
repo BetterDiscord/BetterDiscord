@@ -1,0 +1,172 @@
+.bd-theme-settings-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.bd-button.bd-theme-settings-reset-all {
+    gap: 6px;
+    min-height: 32px;
+    padding: 2px 12px;
+}
+
+.bd-setting-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.bd-theme-setting-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
+}
+
+.bd-theme-setting-reset:hover {
+    color: var(--interactive-text-hover);
+    background: var(--interactive-background-hover);
+}
+
+.bd-theme-setting-reset:focus-visible {
+    outline: 2px solid var(--bd-brand);
+}
+
+.bd-theme-setting-invalid .bd-text-input,
+.bd-theme-setting-invalid .bd-text-input:focus-within {
+    border-color: var(--status-danger);
+}
+
+.bd-theme-setting-error {
+    margin-top: 6px;
+    color: var(--text-feedback-critical);
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.bd-theme-settings-stopped {
+    padding: 24px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Slider, then its value, which stays visible instead of only showing on hover */
+.bd-theme-slider-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+}
+
+.bd-theme-slider-row .bd-slider-wrap {
+    flex: 1;
+    min-width: 180px;
+}
+
+.bd-theme-slider-row .bd-slider-track {
+    min-width: 0;
+}
+
+.bd-theme-slider-value {
+    min-width: 56px;
+    color: var(--text-strong);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.bd-theme-number {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* BD's 65px number field cuts off values like 1.25 or 240 */
+.bd-theme-settings .bd-number-input-wrapper .bd-number-input {
+    width: 80px;
+}
+
+.bd-theme-number-unit {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* On a narrow modal, a wide control drops under its label instead of squeezing it */
+.bd-theme-settings .bd-setting-header {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.bd-theme-settings .bd-setting-header > .bd-theme-setting-control {
+    margin-left: auto;
+}
+
+/* Unit picker: a segmented row of radio buttons */
+.bd-theme-unit-picker {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--input-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--input-background-default);
+}
+
+.bd-theme-unit-picker label {
+    position: relative;
+}
+
+.bd-theme-unit-picker label + label {
+    border-left: 1px solid var(--input-border-default);
+}
+
+.bd-theme-unit-picker input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.bd-theme-unit-picker span {
+    display: block;
+    min-width: 36px;
+    padding: 9px 10px;
+    color: var(--interactive-text-default);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: center;
+}
+
+.bd-theme-unit-picker input:checked + span {
+    background: var(--bd-brand);
+    color: var(--white-500);
+}
+
+.bd-theme-unit-picker input:focus-visible + span {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: -2px;
+}
+
+/* The keyword dropdown keeps its own width instead of stretching across the panel */
+.bd-theme-keyword-dropdown {
+    display: flex;
+}
+
+/* TODO: reconsider below, this looks weird */
+
+/* Custom: the type's control sits under the keywords, marked by a line on its left */
+.bd-theme-custom {
+    margin: 4px 0 0 19px;
+    padding: 12px 0 4px 16px;
+    border-left: 2px solid var(--bd-brand);
+}
