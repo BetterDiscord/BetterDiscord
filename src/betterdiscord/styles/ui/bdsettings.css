@@ -101,6 +101,16 @@
   color: var(--interactive-text-active);
 }
 
+.bd-select-options:focus-visible {
+  outline: none;
+}
+
+/* Only a list opened from the keyboard shows which option the arrow keys are on */
+.bd-select-options:focus-visible .bd-select-option.active {
+  outline: 2px solid var(--bd-brand);
+  outline-offset: -2px;
+}
+
 .bd-setting-item .bd-select {
   min-width: 200px;
 }
