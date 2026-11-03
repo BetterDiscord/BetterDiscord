@@ -21,6 +21,9 @@ import {t} from "@common/i18n";
 import Modals from "./modals";
 import changelog from "@data/changelog";
 import {type Plugin} from "@modules/pluginmanager";
+import type {Theme} from "@modules/thememanager";
+import {themeHasSettings} from "@modules/themes/panel";
+import ThemeSettingsPanel from "./settings/themesettings";
 import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
@@ -625,6 +628,11 @@ function useAddonMenu(manager: AddonManager) {
 
                 if (!manager.isEnabled(name)) {
                     toasts.warning(t("Addons.isDisabled", {name}));
+                    return;
+                }
+
+                if (manager.prefix === "theme" && addon && themeHasSettings(addon as Theme)) {
+                    Modals.showAddonSettingsModal(name, <ThemeSettingsPanel themeId={addon.id} />);
                     return;
                 }
 
