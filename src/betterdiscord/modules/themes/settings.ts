@@ -1,9 +1,21 @@
 import {parseCssString, scanCss, splitTopLevel, type ScanContext, type ScannedDeclaration, type ScannedPropertyRule} from "./scanner";
 import type {ThemeSetting, ThemeSettingRange, ThemeSettingSyntax, ThemeSettingType, ThemeSettingWarning} from "./types";
 
+/**
+ * A plain `:root` or `html` declaration of a setting's variable whose text differs from the setting's
+ * `initial-value`. The page shows this value until the user changes the setting, so the browser check warns when
+ * it computes to something else than the `initial-value`.
+ */
+export interface RootValue {
+    property: string;
+    value: string;
+    line: number;
+}
+
 export interface ThemeSettingsResult {
     settings: ThemeSetting[];
     warnings: ThemeSettingWarning[];
+    rootValues: RootValue[];
 }
 
 /** Data types that get a control, by the name inside `<…>`. */
@@ -67,6 +79,7 @@ export function parseThemeSettings(source: string): ThemeSettingsResult {
     winners.sort((a, b) => properties.indexOf(a) - properties.indexOf(b));
 
     const settings: ThemeSetting[] = [];
+    const rootValues: RootValue[] = [];
     for (const rule of winners) {
         const setting = validateRule(rule, warnings);
         if (!setting) continue;
@@ -74,11 +87,12 @@ export function parseThemeSettings(source: string): ThemeSettingsResult {
         settings.push(setting);
         const override = findOverrides(setting, declarations);
         if (override) warnings.push(override);
+        rootValues.push(...findRootValues(setting, declarations));
     }
 
     // Warnings follow the file, the way a theme dev reads it
     warnings.sort((a, b) => a.line - b.line);
-    return {settings, warnings};
+    return {settings, warnings, rootValues};
 }
 
 /**
@@ -325,7 +339,7 @@ function findOverrides(setting: ThemeSetting, declarations: ScannedDeclaration[]
 
     for (const declaration of declarations) {
         if (declaration.property !== setting.property) continue;
-        if (declaration.context.some(c => c.kind === "at-rule" && c.name === "keyframes")) continue;
+        if (isInKeyframes(declaration)) continue;
 
         const reason = overrideReason(declaration);
         if (reason) places.push(`line ${declaration.line} (${reason})`);
@@ -340,6 +354,19 @@ function findOverrides(setting: ThemeSetting, declarations: ScannedDeclaration[]
         line: setting.line,
         message: `is also set where it beats BD's \`:root\` rule, so the user's value won't show there: ${shown}${more}. Leave the default to \`initial-value\`, or set it on \`:root\` without \`!important\`.`
     };
+}
+
+/** The plain `:root` and `html` declarations of a setting's variable whose text differs from its `initial-value`. */
+function findRootValues(setting: ThemeSetting, declarations: ScannedDeclaration[]): RootValue[] {
+    const collapse = (text: string) => text.replace(/\s+/g, " ");
+    return declarations
+        .filter(d => d.property === setting.property && !isInKeyframes(d) && !overrideReason(d))
+        .filter(d => collapse(d.value) !== collapse(setting.initialValue))
+        .map(d => ({property: d.property, value: d.value, line: d.line}));
+}
+
+function isInKeyframes(declaration: ScannedDeclaration) {
+    return declaration.context.some(c => c.kind === "at-rule" && c.name === "keyframes");
 }
 
 function overrideReason(declaration: ScannedDeclaration) {

@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {readRegisteredProperties, removeDroppedSettings, type RegisteredProperty} from "@modules/themes/browsercheck";
+import {findRootDefaults, readRegisteredProperties, removeDroppedSettings, type RegisteredProperty} from "@modules/themes/browsercheck";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 const source = `@property --a {
@@ -59,6 +59,39 @@ describe("removeDroppedSettings", () => {
         const result = removeDroppedSettings(settings, []);
         expect(result.settings).toEqual([]);
         expect(result.warnings).toHaveLength(2);
+    });
+});
+
+describe("findRootDefaults", () => {
+    const rootSource = `@property --accent { syntax: "<color>"; inherits: true; initial-value: #ffffff; name: "Accent"; }
+@property --radius { syntax: "<length>"; inherits: true; initial-value: 4px; name: "Radius"; }
+:root {
+    --accent: #fff;
+    --radius: 8px;
+    --accent: nonsense;
+}`;
+    const parsed = parseThemeSettings(rootSource);
+
+    /** Treats `#fff` as the default and `nonsense` as invalid, like the browser would for a `<color>`. */
+    const probe = (entries: Array<[unknown, string]>) => entries.map(([, value]) => value === "#fff" ? "default" as const : value === "nonsense" ? "invalid" as const : "changed" as const);
+
+    test("warns only about a value that computes to something else than the default", () => {
+        const warnings = findRootDefaults(parsed.settings, parsed.rootValues, probe);
+        expect(warnings.map(w => [w.property, w.line])).toEqual([["--radius", 5]]);
+        expect(warnings[0].message).toContain("`8px`");
+        expect(warnings[0].message).toContain("`4px`");
+    });
+
+    test("skips values for settings the browser dropped, and doesn't probe without values", () => {
+        let probed = false;
+        const spy = (entries: Array<[unknown, string]>) => {
+            probed = true;
+            return probe(entries);
+        };
+        expect(findRootDefaults(parsed.settings.slice(0, 1), [], spy)).toEqual([]);
+        expect(probed).toBe(false);
+        expect(findRootDefaults([], parsed.rootValues, spy)).toEqual([]);
+        expect(probed).toBe(false);
     });
 });
 
