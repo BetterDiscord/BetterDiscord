@@ -62,13 +62,14 @@
 /* Slider, then its value, which stays visible instead of only showing on hover */
 .bd-theme-slider-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 16px;
+    gap: 10px 16px;
 }
 
 .bd-theme-slider-row .bd-slider-wrap {
     flex: 1;
-    min-width: 0;
+    min-width: 180px;
 }
 
 .bd-theme-slider-row .bd-slider-track {
@@ -85,6 +86,7 @@
 
 .bd-theme-number {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
 }
@@ -97,4 +99,74 @@
 .bd-theme-number-unit {
     color: var(--text-muted);
     font-weight: 500;
+}
+
+/* On a narrow modal, a wide control drops under its label instead of squeezing it */
+.bd-theme-settings .bd-setting-header {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.bd-theme-settings .bd-setting-header > .bd-theme-setting-control {
+    margin-left: auto;
+}
+
+/* Unit picker: a segmented row of radio buttons */
+.bd-theme-unit-picker {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--input-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--input-background-default);
+}
+
+.bd-theme-unit-picker label {
+    position: relative;
+}
+
+.bd-theme-unit-picker label + label {
+    border-left: 1px solid var(--input-border-default);
+}
+
+.bd-theme-unit-picker input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.bd-theme-unit-picker span {
+    display: block;
+    min-width: 36px;
+    padding: 9px 10px;
+    color: var(--interactive-text-default);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: center;
+}
+
+.bd-theme-unit-picker input:checked + span {
+    background: var(--bd-brand);
+    color: var(--white-500);
+}
+
+.bd-theme-unit-picker input:focus-visible + span {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: -2px;
+}
+
+/* The keyword dropdown keeps its own width instead of stretching across the panel */
+.bd-theme-keyword-dropdown {
+    display: flex;
+}
+
+/* TODO: reconsider below, this looks weird */
+
+/* Custom: the type's control sits under the keywords, marked by a line on its left */
+.bd-theme-custom {
+    margin: 4px 0 0 19px;
+    padding: 12px 0 4px 16px;
+    border-left: 2px solid var(--bd-brand);
 }

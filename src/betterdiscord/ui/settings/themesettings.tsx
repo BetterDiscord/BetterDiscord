@@ -132,28 +132,36 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
         case "dropdown":
             return {element: <Dropdown options={control.options} value={value} onChange={apply} />, inline: true};
 
+        case "custom":
+            return {element: <CustomSetting setting={setting} control={control} value={value} apply={apply} />, inline: false}; // TODO: consider `control.display === "dropdown"` for inline
+
         case "slider": {
-            const number = readNumber(value, control.unit);
-            if (number === null) return textField();
+            const parsed = readNumber(value, control.units);
+            if (!parsed) return textField();
+            const {number, unit} = parsed;
             return {
                 element: <div className="bd-theme-slider-row">
-                    <Slider min={control.min} max={control.max} step={control.step} units={control.unit} value={number} onChange={n => apply(writeNumber(n, control.unit))} />
-                    <div className="bd-theme-slider-value">{writeNumber(number, control.unit)}</div>
+                    <Slider min={control.min} max={control.max} step={control.step} units={unit} value={number} onChange={n => apply(writeNumber(n, unit))} />
+                    <div className="bd-theme-slider-value">{writeNumber(number, unit)}</div>
+                    {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
                 </div>,
-                inline: true
+                inline: false
             };
         }
 
         case "number": {
-            const number = readNumber(value, control.unit);
-            if (number === null) return textField();
+            const parsed = readNumber(value, control.units);
+            if (!parsed) return textField();
+            const {number, unit} = parsed;
             const change = (n: number) => {
-                if (Number.isFinite(n)) apply(writeNumber(n, control.unit));
+                if (Number.isFinite(n)) apply(writeNumber(n, unit));
             };
             return {
                 element: <div className="bd-theme-number">
                     <NumberInput min={control.min} max={control.max} step={control.step} value={number} onChange={change} />
-                    {control.unit && <span className="bd-theme-number-unit">{control.unit}</span>}
+                    {control.units.length > 1
+                        ? <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />
+                        : unit && <span className="bd-theme-number-unit">{unit}</span>}
                 </div>,
                 inline: true
             };
@@ -174,10 +182,68 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
 
         case "url":
             return textField(readCssUrl, writeCssUrl);
-
-        default:
-            return textField();
     }
+}
+
+interface UnitPickerProps {
+    setting: ThemeSetting;
+    units: string[];
+    value: string;
+    onChange(unit: string): void;
+}
+
+/** A row of radio buttons, one per unit. Switching units keeps the number, so 12px becomes 12rem. */
+function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
+    return <div className="bd-theme-unit-picker" role="radiogroup" aria-label={t("ThemeSettings.unit", {name: setting.name})}>
+        {units.map(unit => <label key={unit}>
+            <input type="radio" name={`${setting.property}-unit`} value={unit} checked={unit === value} onChange={() => onChange(unit)} />
+            <span>{unit}</span>
+        </label>)}
+    </div>;
+}
+
+/** Stands for the Custom option among the keywords, and can't match any keyword. */
+const customChoice = Symbol("custom");
+
+interface CustomSettingProps {
+    setting: ThemeSetting;
+    control: Extract<ThemeControl, {kind: "custom";}>;
+    value: string;
+    apply: ApplyValue;
+}
+
+/**
+ * The keyword control with a Custom option. Picking Custom applies the starter value, so the control always matches
+ * the page. A setting with no starter, such as a link, shows an empty field and waits for the user.
+ */
+function CustomSetting({setting, control, value, apply}: CustomSettingProps) {
+    const isKeyword = control.options.some(o => o.value === value);
+    const [isWaiting, setIsWaiting] = useState(false);
+    if (isWaiting && !isKeyword) setIsWaiting(false);
+
+    const isCustom = !isKeyword || isWaiting;
+
+    const pick = (choice: string | typeof customChoice) => {
+        if (choice !== customChoice) {
+            setIsWaiting(false);
+            apply(choice);
+            return;
+        }
+        if (isCustom) return;
+        if (control.starter === null) setIsWaiting(true);
+        else apply(control.starter);
+    };
+
+    const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
+    const picked = isCustom ? customChoice : value;
+    const picker = control.display === "radio"
+        ? <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={picked} onChange={pick} />
+        : <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={picked} onChange={pick} /></div>;
+
+    return <>
+        {picker}
+        {isCustom && <div className="bd-theme-custom">{buildControl(setting, control.control, isKeyword ? "" : value, apply).element}</div>}
+    </>;
 }
 
 interface TextSettingProps {

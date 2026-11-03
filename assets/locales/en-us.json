@@ -390,7 +390,9 @@
         "resetAllTitle": "Reset all settings?",
         "resetAllMessage": "Every setting in {{name}} goes back to the theme's default. This can't be undone.",
         "invalid": "Not a valid value, the previous value will be kept.",
-        "notEnabled": "{{name}} isn't enabled, so its settings can't be changed."
+        "notEnabled": "{{name}} isn't enabled, so its settings can't be changed.",
+        "custom": "Custom",
+        "unit": "Unit for {{name}}"
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",

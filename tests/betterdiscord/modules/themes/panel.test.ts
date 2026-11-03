@@ -81,9 +81,9 @@ describe("pickControl", () => {
     });
 
     test("gives a number with both ends of its range a slider, and a number field otherwise", () => {
-        expect(pickControl(setting("<number>", "0.5", "min: 0; max: 1; step: 0.05;"))).toEqual({kind: "slider", min: 0, max: 1, step: 0.05, unit: ""});
-        expect(pickControl(setting("<integer>", "3"))).toEqual({kind: "number", min: undefined, max: undefined, step: 1, unit: ""});
-        expect(pickControl(setting("<number>", "3", "min: 0;"))).toEqual({kind: "number", min: 0, max: undefined, step: 1, unit: ""});
+        expect(pickControl(setting("<number>", "0.5", "min: 0; max: 1; step: 0.05;"))).toEqual({kind: "slider", min: 0, max: 1, step: 0.05, units: []});
+        expect(pickControl(setting("<integer>", "3"))).toEqual({kind: "number", min: undefined, max: undefined, step: 1, units: []});
+        expect(pickControl(setting("<number>", "3", "min: 0;"))).toEqual({kind: "number", min: 0, max: undefined, step: 1, units: []});
     });
 
     test("picks a slider step that suits the range when none is given", () => {
@@ -92,9 +92,15 @@ describe("pickControl", () => {
         expect(pickControl(setting("<integer>", "1", "min: 0; max: 4;"))).toMatchObject({step: 1});
     });
 
-    test("uses the one unit a setting allows", () => {
-        expect(pickControl(setting("<length>", "8px", "min: 0px; max: 24px;"))).toEqual({kind: "slider", min: 0, max: 24, step: 1, unit: "px"});
-        expect(pickControl(setting("<percentage>", "50%"))).toEqual({kind: "number", min: undefined, max: undefined, step: 1, unit: "%"});
+    test("offers the units a setting allows, locked to one by a range with a unit", () => {
+        expect(pickControl(setting("<length>", "8px", "min: 0px; max: 24px;"))).toEqual({kind: "slider", min: 0, max: 24, step: 1, units: ["px"]});
+        expect(pickControl(setting("<length>", "8px", "min: 0; max: 24;"))).toEqual({kind: "slider", min: 0, max: 24, step: 1, units: ["px", "rem", "vw", "vh"]});
+        expect(pickControl(setting("<length>", "8px"))).toEqual({kind: "number", min: undefined, max: undefined, step: 1, units: ["px", "rem", "vw", "vh"]});
+        expect(pickControl(setting("<percentage>", "50%"))).toEqual({kind: "number", min: undefined, max: undefined, step: 1, units: ["%"]});
+    });
+
+    test("gives a mixed range a number field with every unit", () => {
+        expect(pickControl(setting("<length>", "0px", "min: 0px; max: 2rem;"))).toMatchObject({kind: "number", units: ["px", "rem", "vw", "vh"]});
     });
 
     test("gives colors, strings and links their own controls", () => {
@@ -103,9 +109,28 @@ describe("pickControl", () => {
         expect(pickControl(setting("<url>", "url(\"a.png\")"))).toEqual({kind: "url"});
     });
 
-    test("falls back to a text field for several units and for keywords plus a type", () => {
-        expect(pickControl(setting("<length>", "8px"))).toEqual({kind: "text"});
-        expect(pickControl(setting("none | <color>", "none"))).toEqual({kind: "text"});
+    test("gives keywords plus a type a Custom option with the type's control", () => {
+        expect(pickControl(setting("none | <color>", "none"))).toEqual({
+            kind: "custom",
+            display: "radio",
+            options: [{value: "none", label: "None"}],
+            control: {kind: "color", palette: undefined},
+            starter: "#000000"
+        });
+    });
+
+    test("counts Custom as an option when choosing a dropdown", () => {
+        expect(pickControl(setting("light | dark | <color>", "dark"))).toMatchObject({kind: "custom", display: "radio"});
+        expect(pickControl(setting("a | b | c | <color>", "a"))).toMatchObject({kind: "custom", display: "dropdown"});
+    });
+
+    test("starts Custom from a value that suits the type", () => {
+        expect(pickControl(setting("none | <color>", "none", "palette: #5865f2, #eb459e;"))).toMatchObject({starter: "#5865f2"});
+        expect(pickControl(setting("auto | <length>", "auto"))).toMatchObject({starter: "0px"});
+        expect(pickControl(setting("auto | <length>", "auto", "min: 4; max: 40;"))).toMatchObject({starter: "4px"});
+        expect(pickControl(setting("auto | <number>", "auto", "min: 0.5;"))).toMatchObject({starter: "0.5"});
+        expect(pickControl(setting("none | <string>", "none"))).toMatchObject({starter: "\"\""});
+        expect(pickControl(setting("none | <url>", "none"))).toMatchObject({starter: null});
     });
 });
 
@@ -119,23 +144,26 @@ describe("keywordLabel", () => {
 });
 
 describe("readNumber and writeNumber", () => {
-    test("read a number in the expected unit", () => {
-        expect(readNumber("12px", "px")).toBe(12);
-        expect(readNumber(" 1.25rem", "rem")).toBe(1.25);
-        expect(readNumber("-.5", "")).toBe(-0.5);
-        expect(readNumber("50%", "%")).toBe(50);
-        expect(readNumber("12PX", "px")).toBe(12);
+    const lengths = ["px", "rem", "vw", "vh"];
+
+    test("read a number and its unit when the unit is offered", () => {
+        expect(readNumber("12px", lengths)).toEqual({number: 12, unit: "px"});
+        expect(readNumber(" 1.25rem", lengths)).toEqual({number: 1.25, unit: "rem"});
+        expect(readNumber("-.5", [])).toEqual({number: -0.5, unit: ""});
+        expect(readNumber("50%", ["%"])).toEqual({number: 50, unit: "%"});
+        expect(readNumber("12PX", lengths)).toEqual({number: 12, unit: "px"});
     });
 
-    test("count a plain 0 in any unit", () => {
-        expect(readNumber("0", "px")).toBe(0);
-        expect(readNumber("3", "px")).toBeNull();
+    test("count a plain 0 as the first unit", () => {
+        expect(readNumber("0", lengths)).toEqual({number: 0, unit: "px"});
+        expect(readNumber("3", lengths)).toBeNull();
     });
 
-    test("refuse another unit or anything that isn't one number", () => {
-        expect(readNumber("12rem", "px")).toBeNull();
-        expect(readNumber("calc(1rem + 2px)", "px")).toBeNull();
-        expect(readNumber("12px", "")).toBeNull();
+    test("refuse a unit that isn't offered, or anything that isn't one number", () => {
+        expect(readNumber("12em", lengths)).toBeNull();
+        expect(readNumber("12rem", ["px"])).toBeNull();
+        expect(readNumber("calc(1rem + 2px)", lengths)).toBeNull();
+        expect(readNumber("12px", [])).toBeNull();
     });
 
     test("write without float noise", () => {

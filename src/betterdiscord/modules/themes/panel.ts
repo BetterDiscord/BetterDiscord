@@ -47,50 +47,72 @@ export interface KeywordOption {
     label: string;
 }
 
-/** The control a setting gets in the panel. `text` is a plain field for the CSS value as written. */
-export type ThemeControl =
-    | {kind: "switch";}
-    | {kind: "radio" | "dropdown"; options: KeywordOption[];}
-    | {kind: "slider"; min: number; max: number; step: number; unit: string;}
-    | {kind: "number"; min?: number; max?: number; step: number; unit: string;}
+/** A control for a setting's data type, without any keywords. */
+export type TypeControl =
+    | {kind: "slider"; min: number; max: number; step: number; units: string[];}
+    | {kind: "number"; min?: number; max?: number; step: number; units: string[];}
     | {kind: "color"; palette?: string[];}
     | {kind: "string";}
-    | {kind: "url";}
-    | {kind: "text";};
+    | {kind: "url";};
+
+/**
+ * The control a setting gets in the panel. A number's `units` lists the units the user may pick from, in order,
+ * and is empty for a plain number. `custom` is a keyword control with one more option, Custom, which reveals the
+ * data type's control and starts it at `starter`. A null starter means Custom waits for the user to type a value.
+ */
+export type ThemeControl =
+    | TypeControl
+    | {kind: "switch";}
+    | {kind: "radio" | "dropdown"; options: KeywordOption[];}
+    | {kind: "custom"; display: "radio" | "dropdown"; options: KeywordOption[]; control: TypeControl; starter: string | null;};
 
 /** Picks the control for a setting from its syntax and range. */
 export function pickControl(setting: ThemeSetting): ThemeControl {
     const {keywords, type} = setting.syntax;
+    const options = keywords.map(value => ({value, label: keywordLabel(value)}));
 
     if (!type) {
         if (keywords.length === 2 && keywords.includes("true") && keywords.includes("false")) return {kind: "switch"};
-        const options = keywords.map(value => ({value, label: keywordLabel(value)}));
         return {kind: keywords.length > 3 ? "dropdown" : "radio", options};
     }
 
-    // TODO: keywords plus a type get a Custom option that reveals the type's control
-    if (keywords.length) return {kind: "text"};
+    const control = pickTypeControl(setting);
+    if (!keywords.length) return control;
 
+    // Custom counts as one more option when choosing between a radio and a dropdown
+    const display = keywords.length + 1 > 3 ? "dropdown" : "radio";
+    return {kind: "custom", display, options, control, starter: customStarter(control)};
+}
+
+function pickTypeControl(setting: ThemeSetting): TypeControl {
+    const {type} = setting.syntax;
     if (type === "color") return {kind: "color", palette: setting.palette};
     if (type === "string") return {kind: "string"};
     if (type === "url") return {kind: "url"};
-    return pickNumericControl(setting) ?? {kind: "text"};
-}
 
-/** A slider when the range has both ends, and a number field otherwise. Null when the setting needs a unit picker. */
-function pickNumericControl(setting: ThemeSetting): ThemeControl | null {
-    const isUnitless = setting.syntax.type === "number" || setting.syntax.type === "integer";
-    // TODO: a setting that offers several units gets a unit picker
-    if (!isUnitless && setting.units.length !== 1) return null;
-
-    const unit = isUnitless ? "" : setting.units[0];
-    const isInteger = setting.syntax.type === "integer";
+    const isInteger = type === "integer";
     const {min, max, step} = setting.range ?? {};
+    const {units} = setting;
 
     if (min !== undefined && max !== undefined) {
-        return {kind: "slider", min, max, step: step ?? defaultSliderStep(min, max, isInteger), unit};
+        return {kind: "slider", min, max, step: step ?? defaultSliderStep(min, max, isInteger), units};
     }
-    return {kind: "number", min, max, step: step ?? 1, unit};
+    return {kind: "number", min, max, step: step ?? 1, units};
+}
+
+/**
+ * The value Custom applies when the user picks it, so the keyword control always matches the page: the first
+ * swatch or black for a color, the bottom of the range or 0 for a number, and an empty string for a string. A link
+ * has nothing sensible to start from.
+ */
+function customStarter(control: TypeControl) {
+    switch (control.kind) {
+        case "color": return control.palette?.[0] ?? "#000000";
+        case "slider": return writeNumber(control.min, control.units[0] ?? "");
+        case "number": return writeNumber(control.min ?? 0, control.units[0] ?? "");
+        case "string": return quoteCssString("");
+        case "url": return null;
+    }
 }
 
 /** Whole steps for a wide range, so 0 to 24px moves in pixels, and a hundredth of a narrow range such as 0 to 1. */
@@ -108,16 +130,18 @@ export function keywordLabel(keyword: string) {
 const numberPattern = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/i;
 
 /**
- * Reads a value such as `12px` as a number in the given unit. Returns null for anything else, such as another
- * unit or `calc()`, so the panel can fall back to a text field. A plain `0` counts in any unit.
+ * Reads a value such as `12px` as a number and one of the given units. Returns null for anything else, such as
+ * another unit or `calc()`, so the panel can fall back to a text field. A plain `0` counts as the first unit.
  */
-export function readNumber(value: string, unit: string) {
+export function readNumber(value: string, units: readonly string[]) {
     const match = numberPattern.exec(value.trim());
     if (!match) return null;
 
     const number = Number(match[1]);
-    const valueUnit = match[2].toLowerCase();
-    if (valueUnit === unit || (valueUnit === "" && number === 0)) return number;
+    const unit = match[2].toLowerCase();
+    if (units.length === 0) return unit ? null : {number, unit};
+    if (units.includes(unit)) return {number, unit};
+    if (unit === "" && number === 0) return {number, unit: units[0]};
     return null;
 }
 
