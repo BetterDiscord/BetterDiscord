@@ -38,6 +38,7 @@ export default function CheckBox(props: CheckboxProps) {
                 type="checkbox"
                 checked={state}
                 id={props.id}
+                disabled={disabled}
                 aria-label={props.ariaLabel}
                 className={clsx("bd-checkbox-input", props.inputClassName)}
             />
