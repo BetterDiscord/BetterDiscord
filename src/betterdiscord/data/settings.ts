@@ -306,6 +306,7 @@ export type FileSetting = SingleFileSetting | MultipleFileSetting;
 export interface TableOption {
     label: string;
     value: string | number;
+    id?: string;
     icon?: string;
 }
 

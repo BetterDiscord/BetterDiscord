@@ -50,7 +50,7 @@
                 "name": "Preferências da Janela",
                 "removeMinimumSize": {
                     "name": "Remover Tamanho Mínimo",
-                    "note": "Remove o tamanho mínimo forçado pelo discord de 940x500"
+                    "note": "Remove o tamanho mínimo forçado pelo discord de 800x500"
                 },
                 "transparency": {
                     "name": "Habilitar Transparência",
@@ -59,13 +59,62 @@
                 "frame": {
                     "name": "Moldura da Janela",
                     "note": "Adiciona a moldura nativa na janela principal"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Gerenciador de Addons",
                 "addonErrors": {
                     "name": "Mostrar erros dos Addons",
-                    "note": "Mostra um modal com os erros do plugin/tema"
+                    "note": "Mostra um modal com os erros do plugin\/tema"
                 },
                 "editAction": {
                     "name": "Ação de Edição",
@@ -137,7 +186,12 @@
                     "note": "Salva todas os logs do console no arquivo debug.log dentro da pasta do BetterDiscord"
                 },
                 "devTools": {
+                    "name": "DevTools",
                     "note": "Habilita a ativação do DevTools com ctrl+shift+i"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
@@ -170,25 +224,97 @@
                     "note": "Permite exibir as dicas de referência ao passar o ponteiro sobre regras e seletores"
                 },
                 "quickSuggestions": {
-                    "name": "Sugestões Rápidas"
+                    "name": "Sugestões Rápidas",
+                    "note": ""
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
     },
     "Addons": {
+        "title": "",
         "byline": "por {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Recarregar",
         "addonSettings": "Configurações",
         "website": "Site",
+        "source": "",
         "invite": "Servidor de Suporte",
         "donate": "Doar",
+        "patreon": "",
         "name": "Nome",
         "author": "Autor",
         "version": "Versão",
         "added": "Date de Adição",
         "modified": "Data de Modificação",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "other": ""
+        },
         "editAddon": "Editar",
         "deleteAddon": "Remover",
+        "downloadAddon": "",
         "confirmDelete": "Você tem certeza que quer remover o {{name}}?",
         "confirmationText": "Você tem mudanças ainda não salvas em {{name}}. Fechar essa janela fará você perder todas elas.",
         "enabled": "{{name}} foi ativado.",
@@ -201,31 +327,56 @@
         "methodError": "{{method}} não pode ser disparado.",
         "unknownAuthor": "Autor Desconhecido",
         "noDescription": "Descrição não fornecida.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "META não pode ser reconhecida.",
         "missingNameData": "META sem dados de nome.",
         "metaNotFound": "META não encontrado.",
         "compileError": "Não foi possível compilar.",
         "wasUnloaded": "{{name}} foi descarregado.",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
         "successfullyDownload": "Baixado com sucesso {{name}}",
         "alreadyInstalled": "{{name}} já está instalado",
         "failedToFetch": "Não foi possível carregar os complementos",
         "new": "Novo",
         "updated": "Atualizado",
         "downloadCount": {
-            "one": "Baixado {{count}} vezes"
+            "one": "Baixado {{count}} vezes",
+            "other": ""
         },
         "likeCount": {
-            "one": "Curtido {{count}} vezes"
+            "one": "Curtido {{count}} vezes",
+            "other": ""
         },
         "tags": "Marcadores",
         "preview": "Pré-visualização",
         "official": "Oficial",
         "manyEnabled": {
             "plugin": {
-                "one": "Um plugin foi ativado."
+                "one": "Um plugin foi ativado.",
+                "other": ""
             },
             "theme": {
-                "one": "Um tema foi ativado."
+                "one": "Um tema foi ativado.",
+                "other": ""
             }
         }
     },
@@ -242,7 +393,8 @@
         "cssInstallError": "CSS falhou em ser adicionado ao CustomCSS.",
         "cssReverted": "CSS foi revertido.",
         "cssReverting": "As alterações serão revertidas em 10 segundos",
-        "cssKept": "Alterações CSS mantidas permanentemente"
+        "cssKept": "Alterações CSS mantidas permanentemente",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Você Tem Certeza?",
@@ -281,17 +433,19 @@
     },
     "Updater": {
         "updateFailed": "Falha na Atualização!",
-        "updateFailedMessage": "Falha ao atualizar o BetterDiscord. Por favor, baixe a versão mais recente do instalador do nosso site (https://betterdiscord.app/) e reinstale.",
+        "updateFailedMessage": "Falha ao atualizar o BetterDiscord. Por favor, baixe a versão mais recente do instalador do nosso site (https:\/\/betterdiscord.app\/) e reinstale.",
         "updateSuccessful": "Atualizado com sucesso!",
         "updateAvailable": "BetterDiscord tem uma nova atualização (v{{version}})",
         "viewUpdates": "Ver Atualizações",
         "addonUpdaterNotificationTitle": "Atualizador de Complementos",
         "addonUpdatesAvailable": {
             "plugin": {
-                "one": "Um complemento tem uma atualização!"
+                "one": "Um complemento tem uma atualização!",
+                "other": ""
             },
             "theme": {
-                "one": "Um tema tem uma atualização!"
+                "one": "Um tema tem uma atualização!",
+                "other": ""
             }
         },
         "addonUpdated": "{{name}} foi atualizado para a versão {{version}}!",
@@ -318,6 +472,14 @@
         "github": "Favorite-nos!"
     },
     "Paginator": {
-        "back": "Voltar"
+        "back": "Voltar",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

@@ -38,14 +38,19 @@
             "store": {
                 "name": "Sklep z dodatkami",
                 "alwaysEnable": {
-                    "name": "Zawsze włączony"
+                    "name": "Zawsze włączony",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
                 "name": "Ustawienia okna",
                 "removeMinimumSize": {
                     "name": "Usuń limit minimalnego rozmiaru okna",
-                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
+                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (800x500)"
                 },
                 "transparency": {
                     "name": "Włącz przezroczystość",
@@ -54,6 +59,55 @@
                 "frame": {
                     "name": "Ramka okna",
                     "note": "Dodaje systemową ramkę do okna Discorda"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
@@ -67,8 +121,17 @@
                     "note": "Ustawia domyślny edytor kodu wtyczek i motywów",
                     "options": {
                         "detached": "Osobne okno",
+                        "external": "",
                         "system": "Edytor systemowy"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -95,6 +158,7 @@
                     "options": {
                         "settings": "Ustawienia",
                         "detached": "Osobne okno",
+                        "external": "",
                         "system": "Edytor systemowy"
                     }
                 }
@@ -106,6 +170,7 @@
                     "note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
                 },
                 "reactDevTools": {
+                    "name": "",
                     "note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
                 },
                 "inspectElement": {
@@ -123,10 +188,25 @@
                 "devTools": {
                     "name": "Narzędzia dla programistów",
                     "note": "Umożliwia wyświetlenie panelu narzędzi dla programistów po użyciu skrótu klawiszowego Ctrl+Shift+I"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
                 "name": "Ustawienia edytora",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
                 "lineNumbers": {
                     "name": "Numery wierszy",
                     "note": "Wyświetla numery wierszy po lewej stronie edytora"
@@ -147,6 +227,14 @@
                     "name": "Podpowiadanie składni",
                     "note": "Włącza automatyczne podpowiadanie składni podczas pisania kodu"
                 },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
                 "renderWhitespace": {
                     "name": "Pokaż białe znaki",
                     "note": "Określa, kiedy białe znaki będą wyświetlane w edytorze",
@@ -155,6 +243,10 @@
                         "none": "Nigdy",
                         "selection": "Przy zaznaczaniu"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -162,20 +254,73 @@
     "Addons": {
         "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
         "byline": "autorstwa {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Odśwież",
         "addonSettings": "Ustawienia",
         "website": "Strona internetowa",
         "source": "Źródło",
         "invite": "Wspomóż serwer",
         "donate": "Przekaż darowiznę",
+        "patreon": "",
         "name": "Nazwa",
         "author": "Twórca",
         "version": "Wersja",
         "added": "Data dodania",
         "modified": "Data modyfikacji",
+        "releaseDate": "",
+        "lastUpdated": "",
         "isEnabled": "Stan",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
         "editAddon": "Edytuj",
         "deleteAddon": "Usuń",
+        "downloadAddon": "",
         "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
         "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje odrzucenie wszystkich zmian.",
         "enabled": "Dodatek {{name}} został włączony.",
@@ -188,12 +333,66 @@
         "methodError": "Metoda {{method}} nie może zostać wywołana.",
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
         "metaNotFound": "Nie odnaleziono metadanych.",
         "compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
-        "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany."
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany.",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje odrzucenie wszystkich zmian.",
@@ -202,10 +401,19 @@
         "openNative": "Otwórz w edytorze systemowym",
         "openDetached": "Otwórz w osobnym oknie",
         "settings": "Ustawienia edytora",
-        "editorTitle": "Edytor niestandardowego kodu CSS"
+        "editorTitle": "Edytor niestandardowego kodu CSS",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Czy na pewno chcesz to zrobić?",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Tak",
         "done": "Potwierdź",
         "cancel": "Anuluj",
@@ -219,7 +427,10 @@
         "restartNow": "Uruchom ponownie teraz",
         "restartLater": "Uruchom ponownie później",
         "additionalInfo": "Dodatkowe informacje",
-        "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
+        "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Sortuj wg",
@@ -231,18 +442,62 @@
         "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
     },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
         "updateFailed": "Aktualizacja nie powiodła się!",
-        "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
+        "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https:\/\/betterdiscord.app\/) i zainstaluj aplikację ponownie.",
         "updateSuccessful": "Aktualizacja powiodła się!",
         "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "many": "",
+                "other": ""
+            }
+        },
         "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
+        "addonUpdateFailed": "",
         "checking": "Sprawdzanie dostępności aktualizacji!",
         "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
         "checkForUpdates": "Sprawdź dostępność aktualizacji",
         "updateAll": "Zaktualizuj wszystko",
         "noUpdatesAvailable": "Brak dostępnych aktualizacji.",
         "versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "Zaktualizuj"
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }
