@@ -157,6 +157,16 @@
     outline-offset: -2px;
 }
 
+/* The unit dropdown is only as wide as a unit, unlike a setting's own dropdown */
+.bd-setting-item .bd-theme-unit-dropdown .bd-select {
+    min-width: 0;
+    padding-inline: 10px;
+}
+
+.bd-theme-unit-dropdown .bd-select-arrow {
+    margin-left: 6px;
+}
+
 /* The keyword dropdown keeps its own width instead of stretching across the panel */
 .bd-theme-keyword-dropdown {
     display: flex;
@@ -169,4 +179,9 @@
     margin: 4px 0 0 19px;
     padding: 12px 0 4px 16px;
     border-left: 2px solid var(--bd-brand);
+}
+
+/* Under a dropdown there are no radio labels to line up with, so the Custom control isn't indented */
+.bd-theme-custom.bd-theme-custom-below {
+    margin-left: 0;
 }

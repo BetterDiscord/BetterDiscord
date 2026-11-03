@@ -66,6 +66,9 @@ export type ThemeControl =
     | {kind: "radio" | "dropdown"; options: KeywordOption[];}
     | {kind: "custom"; display: "radio" | "dropdown"; options: KeywordOption[]; control: TypeControl; starter: string | null;};
 
+/** The most choices shown as radio buttons. A list with more choices gets a dropdown, which keeps the row narrow. */
+export const maxRadioChoices = 3;
+
 /** Picks the control for a setting from its syntax and range. */
 export function pickControl(setting: ThemeSetting): ThemeControl {
     const {keywords, type} = setting.syntax;
@@ -73,14 +76,14 @@ export function pickControl(setting: ThemeSetting): ThemeControl {
 
     if (!type) {
         if (keywords.length === 2 && keywords.includes("true") && keywords.includes("false")) return {kind: "switch"};
-        return {kind: keywords.length > 3 ? "dropdown" : "radio", options};
+        return {kind: keywords.length > maxRadioChoices ? "dropdown" : "radio", options};
     }
 
     const control = pickTypeControl(setting);
     if (!keywords.length) return control;
 
     // Custom counts as one more option when choosing between a radio and a dropdown
-    const display = keywords.length + 1 > 3 ? "dropdown" : "radio";
+    const display = keywords.length + 1 > maxRadioChoices ? "dropdown" : "radio";
     return {kind: "custom", display, options, control, starter: customStarter(control)};
 }
 

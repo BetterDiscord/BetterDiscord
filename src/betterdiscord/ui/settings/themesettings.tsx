@@ -5,7 +5,7 @@ import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
 import ThemeValues from "@modules/themes/store";
-import {groupSettings, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, writeCssUrl, writeNumber, type ThemeControl} from "@modules/themes/panel";
+import {groupSettings, maxRadioChoices, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, writeCssUrl, writeNumber, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
@@ -97,24 +97,44 @@ function SettingRow({theme, setting, hasSavedValue}: SettingRowProps) {
         return newValue;
     }, [theme, setting.property]);
 
-    const {element, inline} = buildControl(setting, control, applied, apply);
+    const custom = useCustomChoice(control, applied, apply);
+    const {element, inline, below} = buildControl(setting, control, applied, apply, custom);
     const reset = hasSavedValue && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
 
-    return <SettingItem id={setting.property} name={setting.name} note={setting.note} inline={inline} action={reset}>
-        <div className={"bd-theme-setting-control" + (isInvalid ? " bd-theme-setting-invalid" : "")}>
+    // The error goes under the part that can take a refused value, which is the Custom control when it sits below
+    const controlClass = "bd-theme-setting-control" + (isInvalid ? " bd-theme-setting-invalid" : "");
+    const error = isInvalid && <div className="bd-theme-setting-error" role="alert">{t("ThemeSettings.invalid")}</div>;
+
+    return <SettingItem
+        id={setting.property}
+        name={setting.name}
+        note={setting.note}
+        inline={inline}
+        action={reset}
+        below={below && <div className={controlClass}>{below}{error}</div>}
+    >
+        <div className={below ? "bd-theme-setting-control" : controlClass}>
             {element}
-            {isInvalid && <div className="bd-theme-setting-error" role="alert">{t("ThemeSettings.invalid")}</div>}
+            {!below && error}
         </div>
     </SettingItem>;
 }
 
 const identity = (value: string) => value;
 
+interface BuiltControl {
+    element: ReactNode;
+    inline: boolean;
+
+    /** Shown under the setting's note, for an inline control that has more to show. */
+    below?: ReactNode;
+}
+
 /**
  * Builds the control for a setting's current value. A number or color the control can't show, such as `calc()`
- * or `oklch()`, gets a text field instead.
+ * or `oklch()`, gets a text field instead. A `custom` control needs the row's `CustomChoice`.
  */
-function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue): {element: ReactNode; inline: boolean;} {
+function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue, custom?: CustomChoice | null): BuiltControl {
     const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
         element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />,
         inline: true
@@ -132,8 +152,28 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
         case "dropdown":
             return {element: <Dropdown options={control.options} value={value} onChange={apply} />, inline: true};
 
-        case "custom":
-            return {element: <CustomSetting setting={setting} control={control} value={value} apply={apply} />, inline: false}; // TODO: consider `control.display === "dropdown"` for inline
+        case "custom": {
+            if (!custom) return textField();
+            const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
+            const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply).element;
+
+            // A dropdown stays in the header like any other dropdown, and the Custom control goes under the note
+            if (control.display === "dropdown") {
+                return {
+                    element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
+                    inline: true,
+                    below: typeControl && <div className="bd-theme-custom bd-theme-custom-below">{typeControl}</div>
+                };
+            }
+
+            return {
+                element: <>
+                    <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={custom.picked} onChange={custom.pick} />
+                    {typeControl && <div className="bd-theme-custom">{typeControl}</div>}
+                </>,
+                inline: false
+            };
+        }
 
         case "slider": {
             const parsed = readNumber(value, control.units);
@@ -192,9 +232,19 @@ interface UnitPickerProps {
     onChange(unit: string): void;
 }
 
-/** A row of radio buttons, one per unit. Switching units keeps the number, so 12px becomes 12rem. */
+/**
+ * A row of radio buttons, one per unit, or a dropdown when there are too many units to fit beside a label.
+ * Switching units keeps the number, so 12px becomes 12rem.
+ */
 function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
-    return <div className="bd-theme-unit-picker" role="radiogroup" aria-label={t("ThemeSettings.unit", {name: setting.name})}>
+    const label = t("ThemeSettings.unit", {name: setting.name});
+    if (units.length > maxRadioChoices) {
+        return <div className="bd-theme-unit-dropdown" role="group" aria-label={label}>
+            <Dropdown options={units.map(unit => ({value: unit, label: unit}))} value={value} onChange={onChange} />
+        </div>;
+    }
+
+    return <div className="bd-theme-unit-picker" role="radiogroup" aria-label={label}>
         {units.map(unit => <label key={unit}>
             <input type="radio" name={`${setting.property}-unit`} value={unit} checked={unit === value} onChange={() => onChange(unit)} />
             <span>{unit}</span>
@@ -205,22 +255,25 @@ function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
 /** Stands for the Custom option among the keywords, and can't match any keyword. */
 const customChoice = Symbol("custom");
 
-interface CustomSettingProps {
-    setting: ThemeSetting;
-    control: Extract<ThemeControl, {kind: "custom";}>;
-    value: string;
-    apply: ApplyValue;
+/** What a `custom` control shows, and how picking from its keywords and Custom changes the value. */
+interface CustomChoice {
+    isKeyword: boolean;
+    isCustom: boolean;
+    picked: string | typeof customChoice;
+    pick(choice: string | typeof customChoice): void;
 }
 
 /**
- * The keyword control with a Custom option. Picking Custom applies the starter value, so the control always matches
- * the page. A setting with no starter, such as a link, shows an empty field and waits for the user.
+ * Tracks the Custom option of a `custom` control, and is null for any other control. Picking Custom applies the
+ * starter value, so the control always matches the page. A setting with no starter, such as a link, shows an empty
+ * field and waits for the user.
  */
-function CustomSetting({setting, control, value, apply}: CustomSettingProps) {
-    const isKeyword = control.options.some(o => o.value === value);
+function useCustomChoice(control: ThemeControl, value: string, apply: ApplyValue): CustomChoice | null {
     const [isWaiting, setIsWaiting] = useState(false);
-    if (isWaiting && !isKeyword) setIsWaiting(false);
+    if (control.kind !== "custom") return null;
 
+    const isKeyword = control.options.some(o => o.value === value);
+    if (isWaiting && !isKeyword) setIsWaiting(false);
     const isCustom = !isKeyword || isWaiting;
 
     const pick = (choice: string | typeof customChoice) => {
@@ -234,16 +287,7 @@ function CustomSetting({setting, control, value, apply}: CustomSettingProps) {
         else apply(control.starter);
     };
 
-    const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
-    const picked = isCustom ? customChoice : value;
-    const picker = control.display === "radio"
-        ? <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={picked} onChange={pick} />
-        : <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={picked} onChange={pick} /></div>;
-
-    return <>
-        {picker}
-        {isCustom && <div className="bd-theme-custom">{buildControl(setting, control.control, isKeyword ? "" : value, apply).element}</div>}
-    </>;
+    return {isKeyword, isCustom, picked: isCustom ? customChoice : value, pick};
 }
 
 interface TextSettingProps {
