@@ -42,6 +42,8 @@ const themeValues = new ThemeValues({
     write: (theme, values) => writeSettingsTag(theme.slug, themeImages.resolve(values)),
     release: theme => {
         releaseProbes(theme.id);
+
+        // Every image on the page is also saved, so the saved values name every image to free
         themeImages.release(themeValues.getSaved(theme.id));
     },
     schedule: (callback, delay) => {

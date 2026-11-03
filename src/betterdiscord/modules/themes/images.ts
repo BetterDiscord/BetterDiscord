@@ -1,5 +1,5 @@
 import path from "path";
-import {readCssUrl} from "./panel";
+import {readCssUrl, writeCssUrl} from "./panel";
 import type {ProbeVerdict, SavedValues} from "./values";
 import type {ThemeSetting} from "./types";
 
@@ -100,6 +100,19 @@ export class ThemeImages {
 
         this.urls.set(name, this.makeUrl(bytes, type));
         return {name};
+    }
+
+    /**
+     * Copies a file the user picked and applies a link to the copy. The copy is discarded when `apply` refuses the
+     * link, so nothing is left behind.
+     *
+     * @returns Why the file was refused, or null when it was copied.
+     */
+    pick(source: string, apply: (value: string) => string | null): CopyError | null {
+        const result = this.copy(source);
+        if ("error" in result) return result.error;
+        if (apply(writeCssUrl(imageRef(result.name))) === null) this.discard(result.name);
+        return null;
     }
 
     /** Deletes a copy that never got saved, such as one the theme refused. */

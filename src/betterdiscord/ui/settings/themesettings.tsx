@@ -1,13 +1,13 @@
 import {webUtils} from "electron";
-import React, {useCallback, useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
+import React, {useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
 import {RotateCcwIcon, XIcon} from "lucide-react";
 
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
 import ThemeValues, {themeImages} from "@modules/themes/store";
-import {describeUrlValue, imageRef, maxImageBytes, type CopyError} from "@modules/themes/images";
-import {groupSettings, maxRadioChoices, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, writeCssUrl, writeNumber, type ThemeControl} from "@modules/themes/panel";
+import {describeUrlValue, maxImageBytes, type CopyError} from "@modules/themes/images";
+import {customChoice, groupSettings, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
@@ -81,28 +81,24 @@ type ApplyValue = (value: string) => string | null;
 
 function SettingRow({theme, setting, savedValue}: SettingRowProps) {
     const control = useMemo(() => pickControl(setting), [setting]);
-    const applied = ThemeValues.getValue(theme, setting.property);
+    const applied = useStateFromStores(ThemeValues, () => ThemeValues.getValue(theme, setting.property), [theme, setting.property]);
 
-    // The invalid message stays until a value is accepted, or the value changes from somewhere else such as a reset
-    const [isInvalid, setIsInvalid] = useState(false);
-    const [checkedValue, setCheckedValue] = useState(applied);
-    if (applied !== checkedValue) {
-        setCheckedValue(applied);
-        setIsInvalid(false);
-    }
+    // The applied value when a value was refused, so the message stays until a value is accepted or the value
+    // changes from somewhere else, such as a reset
+    const [refusedAt, setRefusedAt] = useState<string | null>(null);
+    const isInvalid = refusedAt === applied;
 
-    const apply = useCallback<ApplyValue>(value => {
-        const isRefused = ThemeValues.setValue(theme, setting.property, value) === "invalid";
-        setIsInvalid(isRefused);
-        if (isRefused) return null;
-
-        const newValue = ThemeValues.getValue(theme, setting.property);
-        setCheckedValue(newValue);
+    const apply: ApplyValue = value => {
+        const newValue = ThemeValues.setValue(theme, setting.property, value);
+        setRefusedAt(newValue === null ? applied : null);
         return newValue;
-    }, [theme, setting.property]);
+    };
 
+    // `custom` is set exactly when the control is a `custom` one
     const custom = useCustomChoice(control, applied, apply);
-    const {element, inline, below} = buildControl(setting, control, applied, apply, savedValue, custom);
+    const {element, inline, below} = control.kind === "custom"
+        ? buildCustomControl(setting, control, custom!, applied, apply, savedValue)
+        : buildControl(setting, control, applied, apply, savedValue);
     const reset = savedValue !== undefined && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
 
     // The error goes under the part that can take a refused value, which is the Custom control when it sits below
@@ -134,11 +130,13 @@ interface BuiltControl {
     below?: ReactNode;
 }
 
+type CustomControl = Extract<ThemeControl, {kind: "custom";}>;
+
 /**
  * Builds the control for a setting's current value. A number or color the control can't show, such as `calc()`
- * or `oklch()`, gets a text field instead. A `custom` control needs the row's `CustomChoice`.
+ * or `oklch()`, gets a text field instead.
  */
-function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue, savedValue: string | undefined, custom?: CustomChoice | null): BuiltControl {
+function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, CustomControl>, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
     const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
         element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />,
         inline: true
@@ -155,29 +153,6 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
 
         case "dropdown":
             return {element: <Dropdown options={control.options} value={value} onChange={apply} />, inline: true};
-
-        case "custom": {
-            if (!custom) return textField();
-            const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
-            const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply, savedValue).element;
-
-            // A dropdown stays in the header like any other dropdown, and the Custom control goes under the note
-            if (control.display === "dropdown") {
-                return {
-                    element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
-                    inline: true,
-                    below: typeControl && <div className="bd-theme-custom bd-theme-custom-below">{typeControl}</div>
-                };
-            }
-
-            return {
-                element: <>
-                    <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={custom.picked} onChange={custom.pick} />
-                    {typeControl && <div className="bd-theme-custom">{typeControl}</div>}
-                </>,
-                inline: false
-            };
-        }
 
         case "slider": {
             const parsed = readNumber(value, control.units);
@@ -214,10 +189,12 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
         case "color": {
             const hex = pickerHex(value);
             if (!hex) return textField();
-            const change = (color: string | number) => apply(typeof color === "number" ? "#" + color.toString(16).padStart(6, "0") : color);
-            const asHex = (color: string) => (pickerHex(color) ?? color) as HexString;
+
+            // The picker only takes hex, so a default or palette color it can't show, such as `oklch()`, is left out
+            const defaultHex = pickerHex(setting.initialValue) ?? undefined;
+            const palette = control.palette?.map(color => pickerHex(color)).filter(color => color !== null);
             return {
-                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={asHex(setting.initialValue)} colors={control.palette?.map(asHex)} onChange={change} />,
+                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={defaultHex as HexString | undefined} colors={palette as HexString[] | undefined} onChange={color => apply(color as string)} />,
                 inline: true
             };
         }
@@ -231,6 +208,29 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
                 inline: true
             };
     }
+}
+
+/** Builds a `custom` control: its keywords and Custom, and the type's control when Custom is picked. */
+function buildCustomControl(setting: ThemeSetting, control: CustomControl, custom: CustomChoice, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
+    const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
+    const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply, savedValue).element;
+
+    // A dropdown stays in the header like any other dropdown, and the Custom control goes under the note
+    if (control.display === "dropdown") {
+        return {
+            element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
+            inline: true,
+            below: typeControl && <div className="bd-theme-custom bd-theme-custom-below">{typeControl}</div>
+        };
+    }
+
+    return {
+        element: <>
+            <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={custom.picked} onChange={custom.pick} />
+            {typeControl && <div className="bd-theme-custom">{typeControl}</div>}
+        </>,
+        inline: false
+    };
 }
 
 interface UnitPickerProps {
@@ -260,14 +260,8 @@ function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
     </div>;
 }
 
-/** Stands for the Custom option among the keywords, and can't match any keyword. */
-const customChoice = Symbol("custom");
-
 /** What a `custom` control shows, and how picking from its keywords and Custom changes the value. */
-interface CustomChoice {
-    isKeyword: boolean;
-    isCustom: boolean;
-    picked: string | typeof customChoice;
+interface CustomChoice extends CustomChoiceState {
     pick(choice: string | typeof customChoice): void;
 }
 
@@ -280,22 +274,17 @@ function useCustomChoice(control: ThemeControl, value: string, apply: ApplyValue
     const [isWaiting, setIsWaiting] = useState(false);
     if (control.kind !== "custom") return null;
 
-    const isKeyword = control.options.some(o => o.value === value);
-    if (isWaiting && !isKeyword) setIsWaiting(false);
-    const isCustom = !isKeyword || isWaiting;
+    const state = readCustomChoice(control.options, value, isWaiting);
+    if (isWaiting && !state.isKeyword) setIsWaiting(false);
 
     const pick = (choice: string | typeof customChoice) => {
-        if (choice !== customChoice) {
-            setIsWaiting(false);
-            apply(choice);
-            return;
-        }
-        if (isCustom) return;
-        if (control.starter === null) setIsWaiting(true);
-        else apply(control.starter);
+        const action = pickCustomChoice(control, choice, state.isCustom);
+        if (!action) return;
+        setIsWaiting("wait" in action);
+        if ("apply" in action) apply(action.apply);
     };
 
-    return {isKeyword, isCustom, picked: isCustom ? customChoice : value, pick};
+    return {...state, pick};
 }
 
 interface TextSettingProps {
@@ -308,22 +297,15 @@ interface TextSettingProps {
 
 /** A text field that keeps what the user typed, even when it's invalid, until the value changes from somewhere else. */
 function TextSetting({id, value, read, write, apply}: TextSettingProps) {
-    const [draft, setDraft] = useState(() => read(value));
-
-    // The applied value the draft last matched
-    const [shownValue, setShownValue] = useState(value);
-    if (value !== shownValue) {
-        setShownValue(value);
-        setDraft(read(value));
-    }
+    // What the user typed, and the applied value it goes with
+    const [draft, setDraft] = useState<{text: string; value: string;} | null>(null);
 
     const change = (text: string) => {
-        setDraft(text);
         const newValue = apply(write(text));
-        if (newValue !== null) setShownValue(newValue);
+        setDraft({text, value: newValue ?? value});
     };
 
-    return <Textbox id={id} value={draft} onChange={change} />;
+    return <Textbox id={id} value={draft?.value === value ? draft.text : read(value)} onChange={change} />;
 }
 
 /** The formats the image store accepts, so the file dialog offers them first. */
@@ -350,13 +332,8 @@ interface UrlSettingProps {
 function UrlSetting({id, value, savedValue, initialValue, apply}: UrlSettingProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // A refused file's message stays until the value changes
-    const [copyError, setCopyError] = useState<CopyError | null>(null);
-    const [shownValue, setShownValue] = useState(value);
-    if (value !== shownValue) {
-        setShownValue(value);
-        setCopyError(null);
-    }
+    // Why a picked file was refused, and the value it was picked over, so the message stays until the value changes
+    const [refusal, setRefusal] = useState<{error: CopyError; value: string;} | null>(null);
 
     const pick = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.currentTarget.files?.[0];
@@ -365,18 +342,13 @@ function UrlSetting({id, value, savedValue, initialValue, apply}: UrlSettingProp
         event.currentTarget.value = "";
         if (!file) return;
 
-        const result = themeImages.copy(webUtils.getPathForFile(file));
-        if ("error" in result) {
-            setCopyError(result.error);
-            return;
-        }
-        setCopyError(null);
-        if (apply(writeCssUrl(imageRef(result.name))) === null) themeImages.discard(result.name);
+        const error = themeImages.pick(webUtils.getPathForFile(file), apply);
+        setRefusal(error && {error, value});
     };
 
     const view = describeUrlValue(value, savedValue);
     let message: string | null = null;
-    if (copyError) message = copyErrorText[copyError]();
+    if (refusal?.value === value) message = copyErrorText[refusal.error]();
     else if (view.kind === "link" && view.isImageMissing) message = t("ThemeSettings.imageMissing");
 
     return <div className="bd-theme-url">

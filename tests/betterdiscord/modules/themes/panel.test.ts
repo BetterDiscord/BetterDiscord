@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {groupSettings, keywordLabel, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
+import {customChoice, groupSettings, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 function rule(property: string, group?: string) {
@@ -134,6 +134,23 @@ describe("pickControl", () => {
     });
 });
 
+describe("custom choices", () => {
+    const options = [{value: "none", label: "None"}];
+
+    test("show Custom for a value that isn't a keyword, or while waiting for one", () => {
+        expect(readCustomChoice(options, "none", false)).toEqual({isKeyword: true, isCustom: false, picked: "none"});
+        expect(readCustomChoice(options, "url(\"a.png\")", false)).toEqual({isKeyword: false, isCustom: true, picked: customChoice});
+        expect(readCustomChoice(options, "none", true)).toEqual({isKeyword: true, isCustom: true, picked: customChoice});
+    });
+
+    test("picking a keyword applies it, and picking Custom applies the starter or waits", () => {
+        expect(pickCustomChoice({starter: "#000000"}, "none", true)).toEqual({apply: "none"});
+        expect(pickCustomChoice({starter: "#000000"}, customChoice, false)).toEqual({apply: "#000000"});
+        expect(pickCustomChoice({starter: null}, customChoice, false)).toEqual({wait: true});
+        expect(pickCustomChoice({starter: null}, customChoice, true)).toBeNull();
+    });
+});
+
 describe("keywordLabel", () => {
     test("turns dashes into spaces in sentence case and keeps the rest as written", () => {
         expect(keywordLabel("high-contrast")).toBe("High contrast");
@@ -191,6 +208,12 @@ describe("CSS strings and links", () => {
         expect(readCssUrl("url(https://a.b/c.png)")).toBe("https://a.b/c.png");
         expect(readCssUrl("url( 'a.png' )")).toBe("a.png");
         expect(readCssUrl("none")).toBe("none");
+    });
+
+    test("show the blank data: link as an empty field, and write an empty field as it", () => {
+        expect(readCssUrl("url(\"data:,\")")).toBe("");
+        expect(readCssUrl("url(data:,)")).toBe("");
+        expect(writeCssUrl("  ")).toBe("url(\"data:,\")");
     });
 });
 
