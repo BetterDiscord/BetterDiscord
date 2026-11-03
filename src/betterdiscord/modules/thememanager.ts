@@ -1,32 +1,21 @@
 import Config from "@stores/config";
 import Toasts from "@stores/toasts";
+import Logger from "@common/logger";
 
 import AddonManager from "./addonmanager";
 import {type Addon} from "@typed/addon";
 import DOMManager from "./dommanager";
 import {t} from "@common/i18n";
+import {parseThemeSettings} from "./themes/settings";
+import {readRegisteredProperties, removeDroppedSettings} from "./themes/browsercheck";
+import type {ThemeSetting, ThemeSettingWarning} from "./themes/types";
 
 
 export interface Theme extends Addon {
     css: string;
-    properties?: Record<string, Record<string, string | boolean>>;
-}
 
-const propertyRegex = /@property\s+--([A-Za-z0-9-_]+)\s*\{(.+?)\}/gs;
-
-function parseProperty(raw: string) {
-    const out: Record<string, string | boolean> = {};
-    const rules = raw.split(";");
-    for (const rule of rules) {
-        const split = rule.split(":");
-        const name = split[0].trim();
-        const value = split.slice(1).join(":").trim();
-        if (!name) continue;
-        if (name === "inherits") out[name] = value === "true";
-        else if (name === "syntax") out[name] = value.replaceAll(`"`, "");
-        else out[name] = value;
-    }
-    return out;
+    /** The theme's settings, filled the first time it starts. */
+    properties?: ThemeSetting[];
 }
 
 class ThemeManager extends AddonManager<Theme> {
@@ -37,6 +26,9 @@ class ThemeManager extends AddonManager<Theme> {
     prefix = "theme" as const;
     language = "css";
     order = 4;
+
+    /** Themes parsed since BD last read their file, whose settings the browser hasn't confirmed yet. */
+    private uncheckedThemes = new WeakSet<Theme>();
 
     startAddons() {
         for (const addon of this.addonList) {
@@ -51,9 +43,10 @@ class ThemeManager extends AddonManager<Theme> {
         theme.css = theme.fileContent!;
         delete theme.fileContent;
 
-        // Set the custom properties
-        const properties = this.extractCustomProperties(theme.css);
-        theme.properties = properties;
+        const {settings, warnings} = parseThemeSettings(theme.css);
+        theme.properties = settings;
+        this.logSettingWarnings(theme, warnings);
+        this.uncheckedThemes.add(theme);
         return true;
     }
 
@@ -66,7 +59,16 @@ class ThemeManager extends AddonManager<Theme> {
             if (!loaded) return false;
         }
 
-        DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
+        const style = DOMManager.injectTheme(theme.slug + "-theme-container", theme.css);
+
+        // The browser's verdict can only change with the source, so this runs once per read of the file
+        if (this.uncheckedThemes.has(theme)) {
+            this.uncheckedThemes.delete(theme);
+            const {settings, warnings} = removeDroppedSettings(theme.properties ?? [], readRegisteredProperties(style.sheet));
+            theme.properties = settings;
+            this.logSettingWarnings(theme, warnings);
+        }
+
         if (this.hasInitialized) Toasts.success(t("Addons.enabled", {name: theme.name, version: theme.version}));
         else this.initialAddonsLoaded++;
 
@@ -83,14 +85,10 @@ class ThemeManager extends AddonManager<Theme> {
         return true;
     }
 
-    extractCustomProperties(css: string) {
-        const out: Record<string, Record<string, string | boolean>> = {};
-        const matches = css.matchAll(propertyRegex);
-        for (const match of matches) {
-            if (match.length !== 3) continue;
-            out[match[1]] = parseProperty(match[2]);
+    logSettingWarnings(theme: Theme, warnings: ThemeSettingWarning[]) {
+        for (const warning of warnings) {
+            Logger.warn(this.name, `${theme.name}: ${warning.property} (line ${warning.line}) ${warning.message}`);
         }
-        return out;
     }
 }
 

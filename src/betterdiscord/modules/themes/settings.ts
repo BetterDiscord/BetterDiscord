@@ -82,6 +82,8 @@ export function parseThemeSettings(source: string): ThemeSettingsResult {
         if (override) warnings.push(override);
     }
 
+    // Warnings follow the file, the way a theme dev reads it
+    warnings.sort((a, b) => a.line - b.line);
     return {settings, warnings};
 }
 
@@ -358,4 +360,15 @@ function overrideReason(declaration: ScannedDeclaration) {
 
     const isWeak = splitTopLevel(styleRules[0].selector, ",").every(part => weakSelectors.has(part.replace(/\s+/g, " ").toLowerCase()));
     return isWeak ? null : `\`${styleRules[0].selector}\``;
+}
+
+const namedPropertyPattern = /@property\s[^{]*\{(?:[^}]*?[\s;])?name\s*:/i;
+
+/**
+ * A quick check for whether a theme that hasn't started yet has settings, for its settings button. It looks
+ * for an `@property` rule with a `name` in the source text without parsing it, so a commented-out rule also
+ * counts.
+ */
+export function hasThemeSettings(source: string) {
+    return namedPropertyPattern.test(source);
 }

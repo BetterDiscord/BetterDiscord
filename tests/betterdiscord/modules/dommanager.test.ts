@@ -173,5 +173,10 @@ describe("DOMManager", () => {
             const theme = DOMManager.getElement(`#${testId}`, DOMManager.bdThemes) as HTMLStyleElement;
             expect(theme.textContent).toBe(newCSS);
         });
+
+        test("should return the theme's style element", () => {
+            const style = DOMManager.injectTheme(testId, testCSS);
+            expect(style).toBe(DOMManager.getElement(`#${testId}`, DOMManager.bdThemes) as HTMLStyleElement);
+        });
     });
 });

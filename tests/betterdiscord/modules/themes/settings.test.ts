@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {parseThemeSettings} from "@modules/themes/settings";
+import {hasThemeSettings, parseThemeSettings} from "@modules/themes/settings";
 
 /** Builds one `@property` rule. Pass a descriptor as null to leave it out. */
 function rule(property: string, descriptors: Record<string, string | null>) {
@@ -481,5 +481,20 @@ describe("parseThemeSettings", () => {
         ]);
         expect(settings[2]).toMatchObject({range: {min: 0, max: 24, step: 1, unit: "px"}, units: ["px"]});
         expect(settings[1].palette).toEqual(["#5865f2", "#eb459e", "#57f287"]);
+    });
+});
+
+describe("hasThemeSettings", () => {
+    test("finds an @property rule with a name", () => {
+        expect(hasThemeSettings(`@property --a { syntax: "<color>"; name: "A"; }`)).toBe(true);
+        expect(hasThemeSettings(`@property --a{name:"A"}`)).toBe(true);
+        expect(hasThemeSettings(`@property --a {\n  syntax: "<color>";\n  NAME : "A";\n}`)).toBe(true);
+    });
+
+    test("ignores rules without a name", () => {
+        expect(hasThemeSettings(`@property --a { syntax: "<color>"; inherits: true; }`)).toBe(false);
+        expect(hasThemeSettings(`@property --a { font-name: x; }`)).toBe(false);
+        expect(hasThemeSettings(`@property --a { syntax: "*"; } .x { name: y; }`)).toBe(false);
+        expect(hasThemeSettings(`:root { --a: red; }`)).toBe(false);
     });
 });
