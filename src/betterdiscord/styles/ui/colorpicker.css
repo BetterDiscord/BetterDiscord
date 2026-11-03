@@ -3,12 +3,20 @@
     justify-content: center;
 }
 
+/* With alpha, the opacity slider sits under the Default box and the picker */
+.bd-color-picker-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .bd-color-picker-container.bd-color-picker-disabled {
     cursor: not-allowed;
     opacity: 0.5;
 }
 
 .bd-color-picker-container.bd-color-picker-disabled > .bd-color-picker-controls,
+.bd-color-picker-container.bd-color-picker-disabled > .bd-color-picker-column,
 .bd-color-picker-container.bd-color-picker-disabled > .bd-color-picker-swatch {
     pointer-events: none;
 }
@@ -106,4 +114,72 @@
 .bd-color-picker-swatch-item:focus-visible {
     outline: 2px solid var(--bd-brand);
     outline-offset: 1px;
+}
+
+/* With alpha, the Default box and the picker paint their color over a checkerboard, so transparency shows */
+.bd-color-picker-alpha {
+    --bd-checkerboard: repeating-conic-gradient(#808080 0 25%, #C0C0C0 0 50%) 0 0 / 10px 10px;
+}
+
+.bd-color-picker-container.bd-color-picker-alpha .bd-color-picker-default,
+.bd-color-picker-container.bd-color-picker-alpha .bd-color-picker-custom {
+    background: linear-gradient(var(--bd-picker-face), var(--bd-picker-face)), var(--bd-checkerboard);
+    border-radius: 4px;
+}
+
+.bd-color-picker-container.bd-color-picker-alpha .bd-color-picker-custom {
+    margin-top: 1px;
+}
+
+/* The system picker stays on top to take clicks, but its own face can't show alpha */
+.bd-color-picker-container.bd-color-picker-alpha .bd-color-picker {
+    display: block;
+    margin-top: 0;
+    opacity: 0;
+}
+
+.bd-color-picker-container.bd-color-picker-alpha .bd-color-picker-custom:focus-within {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 1px;
+}
+
+.bd-color-picker-opacity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 1px;
+}
+
+.bd-color-picker-opacity input {
+    flex: 1;
+    min-width: 0;
+    height: 12px;
+    margin: 0;
+    border-radius: 6px;
+    background: linear-gradient(to right, transparent, var(--bd-opacity-color)), var(--bd-checkerboard);
+    appearance: none;
+    cursor: pointer;
+}
+
+.bd-color-picker-opacity input::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--white-500);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 25%), 0 1px 3px rgb(0 0 0 / 40%);
+    appearance: none;
+}
+
+.bd-color-picker-opacity input:focus-visible {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 2px;
+}
+
+.bd-color-picker-opacity-value {
+    min-width: 40px;
+    color: var(--text-strong);
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
 }

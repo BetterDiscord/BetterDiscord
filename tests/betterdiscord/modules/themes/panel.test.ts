@@ -195,14 +195,45 @@ describe("CSS strings and links", () => {
 });
 
 describe("pickerHex", () => {
-    test("gives the picker a 6-digit hex", () => {
-        expect(pickerHex("#5865F2")).toBe("#5865f2");
-        expect(pickerHex("#f0a")).toBe("#ff00aa");
+    /** Answers like a canvas for the few colors these tests use. */
+    const fakeCanvas = (value: string) => ({
+        "gray": "#808080",
+        "transparent": "rgba(0, 0, 0, 0)",
+        "rgb(88 101 242 / 50%)": "rgba(88, 101, 242, 0.5)",
+        "hsl(0 100% 50%)": "#ff0000",
+        "rgb(1 2 3 / 100%)": "#010203"
+    } as Record<string, string>)[value] ?? null;
+
+    test("gives the picker a hex, with alpha only when the color is see-through", () => {
+        expect(pickerHex("#5865F2", fakeCanvas)).toBe("#5865f2");
+        expect(pickerHex("#f0a", fakeCanvas)).toBe("#ff00aa");
+        expect(pickerHex("#5865f280", fakeCanvas)).toBe("#5865f280");
+        expect(pickerHex("#f0a8", fakeCanvas)).toBe("#ff00aa88");
+        expect(pickerHex("#5865f2ff", fakeCanvas)).toBe("#5865f2");
+    });
+
+    test("reads named colors, rgb() and hsl() through the browser", () => {
+        expect(pickerHex("Gray", fakeCanvas)).toBe("#808080");
+        expect(pickerHex("transparent", fakeCanvas)).toBe("#00000000");
+        expect(pickerHex("rgb(88 101 242 / 50%)", fakeCanvas)).toBe("#5865f280");
+        expect(pickerHex("hsl(0 100% 50%)", fakeCanvas)).toBe("#ff0000");
+        expect(pickerHex("rgb(1 2 3 / 100%)", fakeCanvas)).toBe("#010203");
     });
 
     test("refuses colors the picker can't show", () => {
-        expect(pickerHex("red")).toBeNull();
-        expect(pickerHex("#5865f280")).toBeNull();
-        expect(pickerHex("oklch(70% 0.1 200)")).toBeNull();
+        const readColor = (value: string) => {
+            throw new Error(`read ${value}`);
+        };
+        expect(pickerHex("oklch(70% 0.1 200)", readColor)).toBeNull();
+        expect(pickerHex("currentcolor", readColor)).toBeNull();
+        expect(pickerHex("light-dark(red, blue)", readColor)).toBeNull();
+        expect(pickerHex("color-mix(in srgb, red, blue)", readColor)).toBeNull();
+        expect(pickerHex("rgb(calc(10 + 1) 0 0)", readColor)).toBeNull();
+        expect(pickerHex("#12345", readColor)).toBeNull();
+    });
+
+    test("refuses a value the browser refuses", () => {
+        expect(pickerHex("notacolor", fakeCanvas)).toBeNull();
+        expect(pickerHex("rgb(1 2)", fakeCanvas)).toBeNull();
     });
 });

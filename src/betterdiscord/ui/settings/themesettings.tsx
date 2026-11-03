@@ -211,8 +211,9 @@ function buildControl(setting: ThemeSetting, control: ThemeControl, value: strin
             const hex = pickerHex(value);
             if (!hex) return textField();
             const change = (color: string | number) => apply(typeof color === "number" ? "#" + color.toString(16).padStart(6, "0") : color);
+            const asHex = (color: string) => (pickerHex(color) ?? color) as HexString;
             return {
-                element: <ColorPicker value={hex as HexString} defaultColor={(pickerHex(setting.initialValue) ?? setting.initialValue) as HexString} colors={control.palette as HexString[] | undefined} onChange={change} />,
+                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={asHex(setting.initialValue)} colors={control.palette?.map(asHex)} onChange={change} />,
                 inline: true
             };
         }

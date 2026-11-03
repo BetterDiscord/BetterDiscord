@@ -175,10 +175,58 @@ export function readCssUrl(value: string) {
     return parseCssString(match[1]) ?? match[1];
 }
 
-/** The 6-digit hex the color picker can show, or null for any other color. A 3-digit hex is expanded. */
-export function pickerHex(value: string) {
-    const hex = value.trim().toLowerCase();
-    if (/^#[0-9a-f]{6}$/.test(hex)) return hex;
-    if (/^#[0-9a-f]{3}$/.test(hex)) return "#" + [...hex.slice(1)].map(c => c + c).join("");
-    return null;
+/**
+ * Serializes a color the way a canvas's `fillStyle` does: `#rrggbb` for an opaque sRGB color, `rgba(r, g, b, a)`
+ * for a see-through one, or null when the browser refuses the value.
+ */
+export type ReadColor = (value: string) => string | null;
+
+/**
+ * The hex the color picker can show, with 6 digits or with 8 when the color is see-through, or null for any other
+ * color. A short hex is expanded. Named colors, `rgb()` and `hsl()` go through `readColor`, so `gray` becomes
+ * `#808080`. A color that depends on where it's used, such as `currentcolor` or `light-dark()`, stays null, and so
+ * does one outside sRGB, such as `oklch()`.
+ */
+export function pickerHex(value: string, readColor: ReadColor = readCanvasColor): string | null {
+    const color = value.trim().toLowerCase();
+    if (/^#[0-9a-f]{3,4}$/.test(color)) return trimOpaque("#" + [...color.slice(1)].map(c => c + c).join(""));
+    if (/^#(?:[0-9a-f]{6}|[0-9a-f]{8})$/.test(color)) return trimOpaque(color);
+
+    const isPlainColor = /^(?:[a-z]+|(?:rgba?|hsla?)\([^()]*\))$/.test(color) && color !== "currentcolor";
+    if (!isPlainColor) return null;
+
+    const read = readColor(color);
+    if (read && /^#[0-9a-f]{6}$/.test(read)) return read;
+
+    const match = read && /^rgba?\((\d+), (\d+), (\d+)(?:, ([\d.]+))?\)$/.exec(read);
+    if (!match) return null;
+    const bytes = [match[1], match[2], match[3]].map(Number);
+    if (match[4] !== undefined) bytes.push(Math.round(Number(match[4]) * 255));
+    return trimOpaque("#" + bytes.map(b => b.toString(16).padStart(2, "0")).join(""));
+}
+
+/** Drops a fully opaque alpha, so `#5865f2ff` and `#5865f2` are the same value. */
+function trimOpaque(hex: string) {
+    return hex.length === 9 && hex.endsWith("ff") ? hex.slice(0, 7) : hex;
+}
+
+let canvasContext: CanvasRenderingContext2D | null | undefined;
+
+/** Reads a color through a canvas, which parses it without restyling the page. */
+function readCanvasColor(value: string) {
+    try {
+        canvasContext ??= document.createElement("canvas").getContext("2d");
+    }
+    catch {
+        canvasContext = null;
+    }
+    if (!canvasContext) return null;
+
+    // A refused value leaves the old fill in place, so two different starting fills tell a refusal apart
+    canvasContext.fillStyle = "#000000";
+    canvasContext.fillStyle = value;
+    const first = String(canvasContext.fillStyle);
+    canvasContext.fillStyle = "#ffffff";
+    canvasContext.fillStyle = value;
+    return first === String(canvasContext.fillStyle) ? first : null;
 }
