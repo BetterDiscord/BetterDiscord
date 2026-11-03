@@ -29,12 +29,6 @@ const typeUnits: Partial<Record<ThemeSettingType, string[]>> = {
     "time": ["ms", "s"]
 };
 
-/**
- * Units that a property with `inherits: false` can't use. BD sets those properties by registering them again
- * with the user's value as `initial-value`, which the browser refuses when it depends on the element.
- */
-const unitsNeedingInheritance = new Set(["rem"]);
-
 /** At-rules whose `@property` rules the browser always registers. */
 const groupingAtRules = new Set(["layer", "scope"]);
 
@@ -149,6 +143,7 @@ function validateRule(rule: ScannedPropertyRule, warnings: ThemeSettingWarning[]
 
     const inherits = descriptors.inherits.toLowerCase();
     if (inherits !== "true" && inherits !== "false") return warn(`has \`inherits: ${descriptors.inherits}\`, but it must be \`true\` or \`false\`, ${ignoredRuleSuffix}.`);
+    if (inherits === "false") return warn("has `inherits: false`, so it gets no setting, because BD sets values on `:root` and only an inheriting property passes them down to the page.");
 
     const syntax = parseSyntax(rawSyntax.trim());
     if ("problem" in syntax) return warn(syntax.problem);
@@ -168,7 +163,6 @@ function validateRule(rule: ScannedPropertyRule, warnings: ThemeSettingWarning[]
         property,
         syntax,
         initialValue,
-        inherits: inherits === "true",
         name,
         units: [],
         line
@@ -183,7 +177,6 @@ function validateRule(rule: ScannedPropertyRule, warnings: ThemeSettingWarning[]
     }
 
     let units = typeUnits[syntax.type!] ?? [];
-    if (!setting.inherits) units = units.filter(unit => !unitsNeedingInheritance.has(unit));
 
     const range = readRange(rule, syntax, units, warnings);
     if (range) {

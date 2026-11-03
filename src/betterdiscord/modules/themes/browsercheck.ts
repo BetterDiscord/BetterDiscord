@@ -41,8 +41,8 @@ function isGroupingRule(rule: CSSRule): rule is CSSGroupingRule {
 
 /**
  * Removes the settings whose rule the browser dropped, with a warning for each. A setting counts as kept when
- * the last registered rule with its name has the same syntax, `inherits` and initial value. That catches a last
- * copy the browser dropped while it kept an earlier one.
+ * the last registered rule with its name has the same syntax and initial value, and `inherits: true`. That
+ * catches a last copy the browser dropped while it kept an earlier one.
  */
 export function removeDroppedSettings(settings: ThemeSetting[], registered: RegisteredProperty[]) {
     const lastByName = new Map<string, RegisteredProperty>();
@@ -55,7 +55,7 @@ export function removeDroppedSettings(settings: ThemeSetting[], registered: Regi
         const rule = lastByName.get(setting.property);
         const isKept = rule
             && collapse(rule.syntax.replace(/^["']|["']$/g, "")) === collapse(setting.syntax.raw)
-            && rule.inherits === setting.inherits
+            && rule.inherits
             && collapse(rule.initialValue ?? "") === collapse(setting.initialValue);
 
         if (isKept) {

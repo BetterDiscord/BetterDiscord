@@ -44,8 +44,6 @@ export interface ThemeSetting {
     /** The trimmed source text of `initial-value`, which is also the reset value. */
     initialValue: string;
 
-    inherits: boolean;
-
     /** The setting's label, from the `name` descriptor with its quotes removed. */
     name: string;
 

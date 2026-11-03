@@ -10,7 +10,7 @@ const source = `@property --a {
 }
 @property --b {
     syntax: "<length>";
-    inherits: false;
+    inherits: true;
     initial-value: /* a comment */ 8px;
     name: "B";
 }`;
@@ -20,7 +20,7 @@ const {settings} = parseThemeSettings(source);
 /** The rules as Chromium reports them for `source`, with the syntax quoted and comments gone. */
 const registered: RegisteredProperty[] = [
     {name: "--a", syntax: `"light  |  dark | <color>"`, inherits: true, initialValue: "dark"},
-    {name: "--b", syntax: `"<length>"`, inherits: false, initialValue: "8px"}
+    {name: "--b", syntax: `"<length>"`, inherits: true, initialValue: "8px"}
 ];
 
 describe("removeDroppedSettings", () => {
@@ -41,7 +41,7 @@ describe("removeDroppedSettings", () => {
         const otherSyntax = [registered[0], {...registered[1], syntax: `"<length> | auto"`}];
         expect(removeDroppedSettings(settings, otherSyntax).settings.map(s => s.property)).toEqual(["--a"]);
 
-        const otherInherits = [registered[0], {...registered[1], inherits: true}];
+        const otherInherits = [registered[0], {...registered[1], inherits: false}];
         expect(removeDroppedSettings(settings, otherInherits).settings.map(s => s.property)).toEqual(["--a"]);
     });
 
