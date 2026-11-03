@@ -2,6 +2,7 @@ import React, {type ChangeEvent, type KeyboardEvent} from "react";
 import {useItemProps, type BaseSettingProps} from "./utils";
 
 interface BaseTextboxProps {
+    id?: string;
     maxLength?: number;
     placeholder?: string;
     onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
@@ -12,12 +13,13 @@ interface BaseTextboxProps {
 export type TextboxProps = BaseTextboxProps & BaseSettingProps<string>;
 
 export default function Textbox(props: TextboxProps) {
-    const {maxLength, placeholder, onKeyDown} = props;
+    const {id, maxLength, placeholder, onKeyDown} = props;
 
     const {state, setState, disabled} = useItemProps<string, ChangeEvent<HTMLInputElement>>(props, e => e.currentTarget.value);
 
     return (
         <input
+            id={id}
             onChange={setState}
             onKeyDown={onKeyDown}
             type="text"

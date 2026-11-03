@@ -478,6 +478,7 @@
     },
     "Settings": {
         "customColor": "Custom Color",
+        "presetColors": "Preset Colors",
         "resetSettings": "Reset Settings",
         "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
     },

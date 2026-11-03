@@ -116,7 +116,7 @@ const identity = (value: string) => value;
  */
 function buildControl(setting: ThemeSetting, control: ThemeControl, value: string, apply: ApplyValue): {element: ReactNode; inline: boolean;} {
     const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
-        element: <TextSetting value={value} read={read} write={write} apply={apply} />,
+        element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />,
         inline: true
     });
 
@@ -247,6 +247,7 @@ function CustomSetting({setting, control, value, apply}: CustomSettingProps) {
 }
 
 interface TextSettingProps {
+    id: string;
     value: string;
     read(value: string): string;
     write(text: string): string;
@@ -254,7 +255,7 @@ interface TextSettingProps {
 }
 
 /** A text field that keeps what the user typed, even when it's invalid, until the value changes from somewhere else. */
-function TextSetting({value, read, write, apply}: TextSettingProps) {
+function TextSetting({id, value, read, write, apply}: TextSettingProps) {
     const [draft, setDraft] = useState(() => read(value));
 
     // The applied value the draft last matched
@@ -270,7 +271,7 @@ function TextSetting({value, read, write, apply}: TextSettingProps) {
         if (newValue !== null) setShownValue(newValue);
     };
 
-    return <Textbox value={draft} onChange={change} />;
+    return <Textbox id={id} value={draft} onChange={change} />;
 }
 
 function ResetButton({name, onClick}: {name: string; onClick(): void;}) {
