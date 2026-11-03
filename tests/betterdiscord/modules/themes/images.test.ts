@@ -1,6 +1,6 @@
 import {describe, test, expect, beforeEach} from "bun:test";
 import path from "path";
-import {ThemeImages, detectImageType, imageRef, isImageRef, maxImageBytes, probeWithImages, readImageName} from "@modules/themes/images";
+import {ThemeImages, describeUrlValue, detectImageType, imageRef, isImageRef, maxImageBytes, probeWithImages, readImageName} from "@modules/themes/images";
 import {parseThemeSettings} from "@modules/themes/settings";
 import type {ThemeSetting} from "@modules/themes/types";
 
@@ -327,5 +327,23 @@ describe("probeWithImages", () => {
         const {verdicts, missing} = run([[bg, "url(\"bd-image:../notes.txt\")"]]);
         expect(verdicts).toEqual(["invalid"]);
         expect(missing).toEqual(["--bg"]);
+    });
+});
+
+describe("describeUrlValue", () => {
+    const image = "url(\"bd-image:0000000000a1.png\")";
+
+    test("shows a picked image", () => {
+        expect(describeUrlValue(image, image)).toEqual({kind: "image", name: "0000000000a1.png"});
+    });
+
+    test("shows the link field for a link or the default", () => {
+        expect(describeUrlValue("url(\"https://example.com/a.png\")", "url(\"https://example.com/a.png\")")).toEqual({kind: "link", isImageMissing: false});
+        expect(describeUrlValue("url(\"data:,\")", undefined)).toEqual({kind: "link", isImageMissing: false});
+    });
+
+    test("says when a saved image couldn't be used, so the page shows the default", () => {
+        expect(describeUrlValue("url(\"data:,\")", image)).toEqual({kind: "link", isImageMissing: true});
+        expect(describeUrlValue("url(\"data:,\")", "url(\"bd-image:hand-edited\")")).toEqual({kind: "link", isImageMissing: true});
     });
 });

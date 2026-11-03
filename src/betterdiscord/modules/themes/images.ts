@@ -227,6 +227,21 @@ export function isImageRef(value: string) {
 }
 
 /**
+ * What a `<url>` setting's control shows: the picked image, or the link field. The field says when the saved value
+ * names a copy the page couldn't use, because the copy is missing.
+ */
+export type UrlSettingView =
+    | {kind: "image"; name: string;}
+    | {kind: "link"; isImageMissing: boolean;};
+
+/** Works out a `<url>` control's view from the value the page uses and the saved value. */
+export function describeUrlValue(applied: string, saved: string | undefined): UrlSettingView {
+    const name = readImageName(applied);
+    if (name) return {kind: "image", name};
+    return {kind: "link", isImageMissing: saved !== undefined && saved !== applied && isImageRef(saved)};
+}
+
+/**
  * Probes values the way `probe` does, except that an image whose copy is missing or unreadable counts as
  * invalid, so the page keeps the setting's default. `onMissing` hears about each such value.
  */
