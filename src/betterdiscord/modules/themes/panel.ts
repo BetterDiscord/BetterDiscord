@@ -124,6 +124,52 @@ function defaultSliderStep(min: number, max: number, isInteger: boolean) {
     return (max - min) / 100;
 }
 
+/**
+ * The values a slider marks under its track: the bottom, the middle and the top of its range. The middle is
+ * rounded to the slider's step, so clicking its marker picks a value the slider can hold.
+ */
+export function sliderMarkers(min: number, max: number, step: number) {
+    const middle = Number((min + Math.round((max - min) / 2 / step) * step).toFixed(6));
+    return [...new Set([min, middle, max])];
+}
+
+/** Whether a control sits beside its label instead of on its own line under the note. */
+export function isInline(control: ThemeControl) {
+    if (control.kind === "radio") return false;
+    if (control.kind === "custom") return control.display === "dropdown";
+    return true;
+}
+
+/** Stands for the Custom option among a `custom` control's keywords, and can't match any keyword. */
+export const customOption = Symbol("custom");
+
+/** What a `custom` control shows for a value. */
+export interface CustomChoiceState {
+    isKeyword: boolean;
+
+    /** The type's control shows, because the value isn't a keyword or the user picked Custom and hasn't typed yet. */
+    isCustom: boolean;
+
+    picked: string | typeof customOption;
+}
+
+/** Works out what a `custom` control shows. `isWaiting` is true after the user picks Custom on a setting without a starter. */
+export function readCustomChoice(options: readonly KeywordOption[], value: string, isWaiting: boolean): CustomChoiceState {
+    const isKeyword = options.some(o => o.value === value);
+    const isCustom = !isKeyword || isWaiting;
+    return {isKeyword, isCustom, picked: isCustom ? customOption : value};
+}
+
+/**
+ * What picking an option in a `custom` control does. A keyword applies at once. Custom applies the starter, or
+ * waits for the user to type when there's none, and does nothing when Custom is already showing.
+ */
+export function pickCustomChoice(control: {starter: string | null;}, choice: string | typeof customOption, isCustom: boolean): {apply: string;} | {wait: true;} | null {
+    if (choice !== customOption) return {apply: choice};
+    if (isCustom) return null;
+    return control.starter === null ? {wait: true} : {apply: control.starter};
+}
+
 /** Turns a keyword into a label, so `high-contrast` reads "High contrast". */
 export function keywordLabel(keyword: string) {
     const words = keyword.replace(/[-_]+/g, " ").trim();
@@ -163,16 +209,26 @@ export function readCssString(value: string) {
     return parseCssString(value.trim()) ?? value;
 }
 
-/** Wraps a link in `url()`. */
+/**
+ * The empty `data:` link, which themes use as a blank image. The link field shows it as an empty field, and an
+ * empty field writes it.
+ */
+const blankLink = "data:,";
+
+/** Wraps a link in `url()`. An empty link becomes the blank image. */
 export function writeCssUrl(link: string) {
-    return `url(${quoteCssString(link.trim())})`;
+    return `url(${quoteCssString(link.trim() || blankLink)})`;
 }
 
-/** Reads the link inside `url()`, quoted or not. Returns the value as it is when it isn't one `url()`. */
+/**
+ * Reads the link inside `url()`, quoted or not, and reads the blank image as an empty link. Returns the value as
+ * it is when it isn't one `url()`.
+ */
 export function readCssUrl(value: string) {
     const match = /^url\(\s*([^]*?)\s*\)$/i.exec(value.trim());
     if (!match) return value;
-    return parseCssString(match[1]) ?? match[1];
+    const link = parseCssString(match[1]) ?? match[1];
+    return link === blankLink ? "" : link;
 }
 
 /**

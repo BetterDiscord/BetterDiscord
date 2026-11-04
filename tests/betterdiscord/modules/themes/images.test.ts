@@ -281,6 +281,33 @@ describe("ThemeImages", () => {
         expect(files.has(inFolder("0000000000a1.png"))).toBe(false);
         expect(revoked).toEqual(["blob:test/1"]);
     });
+
+    test("pick applies a link to the copy", () => {
+        files.set("a.png", png);
+        const applied: string[] = [];
+        expect(makeImages().pick("a.png", value => {
+            applied.push(value);
+            return value;
+        })).toBeNull();
+        expect(applied).toEqual([`url("${imageRef("0000000000a1.png")}")`]);
+        expect(files.has(inFolder("0000000000a1.png"))).toBe(true);
+    });
+
+    test("pick discards the copy when the value is refused, and reports a refused file", () => {
+        files.set("a.png", png);
+        files.set("notes.png", text("just some text"));
+        const images = makeImages();
+
+        expect(images.pick("a.png", () => null)).toBeNull();
+        expect(files.has(inFolder("0000000000a1.png"))).toBe(false);
+
+        let isApplied = false;
+        expect(images.pick("notes.png", value => {
+            isApplied = true;
+            return value;
+        })).toBe("notImage");
+        expect(isApplied).toBe(false);
+    });
 });
 
 describe("probeWithImages", () => {

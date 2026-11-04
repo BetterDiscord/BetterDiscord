@@ -95,10 +95,13 @@ export interface AddonCardProps {
     editAddon(): void;
     deleteAddon(): void;
     getSettingsPanel?: PluginInstance["getSettingsPanel"];
+
+    /** Opens the addon's settings in a modal of its own, instead of the addon settings modal with `getSettingsPanel`. */
+    openSettings?(): void;
     store: AddonManager;
 }
 
-export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}: AddonCardProps) {
+export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel, openSettings}: AddonCardProps) {
 
     const onChange = useCallback(() => {
         if (parentChange) parentChange(addon.id);
@@ -108,13 +111,14 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         if (!hasSettings || !enabled) return;
         const name = getString(addon.name);
         try {
-            Modals.showAddonSettingsModal(name, getSettingsPanel!());
+            if (openSettings) openSettings();
+            else Modals.showAddonSettingsModal(name, getSettingsPanel!());
         }
         catch (err) {
             Toasts.show(t("Addons.settingsError", {name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err as Error);
         }
-    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
+    }, [hasSettings, enabled, addon.name, getSettingsPanel, openSettings]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;

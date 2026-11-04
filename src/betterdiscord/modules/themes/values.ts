@@ -3,9 +3,6 @@ import type {Theme} from "@modules/thememanager";
 import type {ThemeSetting} from "./types";
 
 
-/** What `setValue` did: stored the value, removed a saved value because the new one is the default, or nothing. */
-export type SetResult = "saved" | "default" | "invalid";
-
 /** How a value compares to its setting's default once the browser has computed both. */
 export type ProbeVerdict = "invalid" | "default" | "changed";
 
@@ -50,15 +47,16 @@ export class ThemeValues extends Store {
     private options: ThemeValuesOptions;
     private saved: SavedValues | null = null;
 
-    /** Running themes by id. */
-    private running = new Map<string, Theme>();
-
-    /** The values on the page for each running theme. A saved value that no longer fits its setting is left out. */
+    /**
+     * The values on the page for each running theme, so a theme is running exactly when it has an entry here. A
+     * saved value that no longer fits its setting is left out.
+     */
     private applied = new Map<string, Readonly<Record<string, string>>>();
 
     /** Running themes whose applied values changed since the last write to the page. */
-    private pendingWrites = new Set<string>();
-    private hasUnsavedChanges = false;
+    private pendingWrites = new Map<string, Theme>();
+
+    /** Cancels the wait before the next flush. Set only while changes wait. */
     private cancelFlush: (() => void) | null = null;
 
     constructor(options: ThemeValuesOptions) {
@@ -71,45 +69,49 @@ export class ThemeValues extends Store {
         return this.load()[themeId] ?? noValues;
     }
 
-    /** The value the page uses for a setting: the applied value, or else the setting's default. */
+    /**
+     * The value the page uses for a setting: the applied value, or else the setting's default. A theme that isn't
+     * running has nothing on the page, so it always gets the default.
+     */
     getValue(theme: Theme, property: string) {
         const setting = theme.properties?.find(s => s.property === property);
-        const value = this.running.has(theme.id) ? this.applied.get(theme.id)?.[property] : this.getSaved(theme.id)[property];
-        return value ?? setting?.initialValue ?? "";
+        return this.applied.get(theme.id)?.[property] ?? setting?.initialValue ?? "";
     }
 
     /**
      * Checks a value in the browser and stores it when it differs from the default. A value that computes to the
      * default removes any saved value instead. The theme must be running.
+     *
+     * @returns The value the page now uses, or null when the value was refused and nothing changed.
      */
-    setValue(theme: Theme, property: string, value: string): SetResult {
+    setValue(theme: Theme, property: string, value: string): string | null {
         const setting = theme.properties?.find(s => s.property === property);
-        if (!setting || !this.running.has(theme.id)) return "invalid";
+        if (!setting || !this.applied.has(theme.id)) return null;
 
         value = value.trim();
         const [verdict] = this.options.probe(theme, [[setting, value]]);
-        if (verdict === "invalid") return "invalid";
+        if (verdict === "invalid") return null;
 
         if (verdict === "default") {
-            this.removeValues(theme.id, [property]);
-            return "default";
+            this.removeValues(theme, [property]);
         }
-
-        // Applied first, so a listener that reads `getValue` during the change sees the new value
-        this.updateApplied(theme.id, {...this.applied.get(theme.id), [property]: value});
-        this.updateSaved(theme.id, {...this.getSaved(theme.id), [property]: value});
-        return "saved";
+        else {
+            // Applied first, so a listener that reads `getValue` during the change sees the new value
+            this.updateApplied(theme, {...this.applied.get(theme.id), [property]: value});
+            this.updateSaved(theme.id, {...this.getSaved(theme.id), [property]: value});
+        }
+        return this.getValue(theme, property);
     }
 
     /** Removes one saved value, so the setting goes back to its default. */
     reset(theme: Theme, property: string) {
-        this.removeValues(theme.id, [property]);
+        this.removeValues(theme, [property]);
         this.flush();
     }
 
     /** Removes every saved value for a theme. */
     resetAll(theme: Theme) {
-        this.removeValues(theme.id, Object.keys(this.getSaved(theme.id)));
+        this.removeValues(theme, Object.keys(this.getSaved(theme.id)));
         this.flush();
     }
 
@@ -119,8 +121,6 @@ export class ThemeValues extends Store {
      * reload may come from a file that's only half written.
      */
     apply(theme: Theme) {
-        this.running.set(theme.id, theme);
-
         const entries: Array<[ThemeSetting, string]> = [];
         for (const [property, value] of Object.entries(this.getSaved(theme.id))) {
             const setting = theme.properties?.find(s => s.property === property);
@@ -140,40 +140,26 @@ export class ThemeValues extends Store {
 
     /** Takes a stopping theme's values off the page. Its saved values stay. */
     remove(theme: Theme) {
-        const running = this.running.get(theme.id);
-        this.running.delete(theme.id);
         this.applied.delete(theme.id);
         this.pendingWrites.delete(theme.id);
-        this.options.write(running ?? theme, noValues);
-        this.options.release(running ?? theme);
+        this.options.write(theme, noValues);
+        this.options.release(theme);
     }
 
     /** Deletes every saved value for a theme, for when BD deletes the theme's file. */
     forget(themeId: string) {
-        const saved = this.load();
-        if (!(themeId in saved)) return;
-
-        const {[themeId]: _, ...rest} = saved;
-        this.saved = rest;
-        this.hasUnsavedChanges = true;
-        this.scheduleFlush();
-        this.emitChange();
+        if (themeId in this.load()) this.updateSaved(themeId, {});
     }
 
-    /** Writes pending changes to the page and to disk now instead of waiting. */
+    /**
+     * Writes waiting changes to the page and to disk now instead of waiting. Every change that waits also changes the
+     * saved values, so a flush always saves.
+     */
     flush() {
-        this.cancelFlush?.();
+        if (!this.cancelFlush) return;
+        this.cancelFlush();
         this.cancelFlush = null;
-
-        for (const themeId of this.pendingWrites) {
-            const theme = this.running.get(themeId);
-            if (theme) this.options.write(theme, this.applied.get(themeId) ?? noValues);
-        }
-        this.pendingWrites.clear();
-
-        if (!this.hasUnsavedChanges) return;
-        this.hasUnsavedChanges = false;
-        this.options.save(this.load());
+        this.writeAndSave();
     }
 
     private load(): SavedValues {
@@ -182,26 +168,25 @@ export class ThemeValues extends Store {
         return this.saved;
     }
 
-    private removeValues(themeId: string, properties: string[]) {
+    private removeValues(theme: Theme, properties: string[]) {
         // Applied first, so a listener that reads `getValue` during the change sees the new value
-        const applied = this.applied.get(themeId);
-        if (applied && properties.some(p => p in applied)) this.updateApplied(themeId, omit(applied, properties));
+        const applied = this.applied.get(theme.id);
+        if (applied && properties.some(p => p in applied)) this.updateApplied(theme, omit(applied, properties));
 
-        const saved = this.getSaved(themeId);
-        if (properties.some(p => p in saved)) this.updateSaved(themeId, omit(saved, properties));
+        const saved = this.getSaved(theme.id);
+        if (properties.some(p => p in saved)) this.updateSaved(theme.id, omit(saved, properties));
     }
 
     private updateSaved(themeId: string, values: Record<string, string>) {
         const {[themeId]: _, ...rest} = this.load();
         this.saved = Object.keys(values).length ? {...rest, [themeId]: Object.freeze(values)} : rest;
-        this.hasUnsavedChanges = true;
         this.scheduleFlush();
         this.emitChange();
     }
 
-    private updateApplied(themeId: string, values: Record<string, string>) {
-        this.applied.set(themeId, values);
-        this.pendingWrites.add(themeId);
+    private updateApplied(theme: Theme, values: Record<string, string>) {
+        this.applied.set(theme.id, values);
+        this.pendingWrites.set(theme.id, theme);
         this.scheduleFlush();
     }
 
@@ -210,8 +195,14 @@ export class ThemeValues extends Store {
         this.cancelFlush?.();
         this.cancelFlush = this.options.schedule(() => {
             this.cancelFlush = null;
-            this.flush();
+            this.writeAndSave();
         }, this.options.delay);
+    }
+
+    private writeAndSave() {
+        for (const [themeId, theme] of this.pendingWrites) this.options.write(theme, this.applied.get(themeId) ?? noValues);
+        this.pendingWrites.clear();
+        this.options.save(this.load());
     }
 }
 

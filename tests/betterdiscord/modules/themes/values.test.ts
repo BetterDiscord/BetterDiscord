@@ -84,7 +84,7 @@ describe("ThemeValues", () => {
             const theme = makeTheme();
             values.apply(theme);
 
-            expect(values.setValue(theme, "--accent", "  oklch(0.7 0.1 200) ")).toBe("saved");
+            expect(values.setValue(theme, "--accent", "  oklch(0.7 0.1 200) ")).toBe("oklch(0.7 0.1 200)");
             expect(values.getSaved("Midnight")).toEqual({"--accent": "oklch(0.7 0.1 200)"});
             expect(values.getValue(theme, "--accent")).toBe("oklch(0.7 0.1 200)");
         });
@@ -95,7 +95,7 @@ describe("ThemeValues", () => {
             const theme = makeTheme();
             values.apply(theme);
 
-            expect(values.setValue(theme, "--accent", "red")).toBe("default");
+            expect(values.setValue(theme, "--accent", "red")).toBe("red");
             expect(values.getSaved("Midnight")).toEqual({});
             expect(values.getValue(theme, "--accent")).toBe("red");
         });
@@ -107,7 +107,7 @@ describe("ThemeValues", () => {
             values.apply(theme);
             const before = values.getSaved("Midnight");
 
-            expect(values.setValue(theme, "--accent", "bad)")).toBe("invalid");
+            expect(values.setValue(theme, "--accent", "bad)")).toBeNull();
             expect(values.getSaved("Midnight")).toBe(before);
             expect(timers).toEqual([]);
         });
@@ -115,10 +115,10 @@ describe("ThemeValues", () => {
         test("refuses a theme that isn't running or a property that isn't a setting", () => {
             const values = makeValues();
             const theme = makeTheme();
-            expect(values.setValue(theme, "--accent", "blue")).toBe("invalid");
+            expect(values.setValue(theme, "--accent", "blue")).toBeNull();
 
             values.apply(theme);
-            expect(values.setValue(theme, "--missing", "blue")).toBe("invalid");
+            expect(values.setValue(theme, "--missing", "blue")).toBeNull();
             expect(probes).toEqual([]);
         });
 
@@ -200,7 +200,7 @@ describe("ThemeValues", () => {
             values.apply(theme);
             writes.length = 0;
 
-            expect(values.setValue(theme, "--radius", "4px")).toBe("default");
+            expect(values.setValue(theme, "--radius", "4px")).toBe("4px");
             expect(writes).toEqual([]);
             expect(values.getValue(theme, "--radius")).toBe("4px");
 
@@ -353,8 +353,8 @@ describe("ThemeValues", () => {
             expect(writes).toEqual([["Midnight", {}]]);
             expect(releases).toEqual(["Midnight"]);
             expect(values.getSaved("Midnight")).toEqual({"--accent": "blue"});
-            expect(values.getValue(theme, "--accent")).toBe("blue");
-            expect(values.setValue(theme, "--accent", "green")).toBe("invalid");
+            expect(values.getValue(theme, "--accent")).toBe("red");
+            expect(values.setValue(theme, "--accent", "green")).toBeNull();
         });
 
         test("a reload applies the saved values to the new theme object", () => {
@@ -367,7 +367,7 @@ describe("ThemeValues", () => {
             const reloaded = makeTheme();
             values.apply(reloaded);
             expect(writes).toEqual([["Midnight", {"--accent": "blue"}]]);
-            expect(values.setValue(reloaded, "--radius", "1rem")).toBe("saved");
+            expect(values.setValue(reloaded, "--radius", "1rem")).toBe("1rem");
         });
     });
 

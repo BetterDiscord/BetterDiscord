@@ -486,10 +486,15 @@
         "browse": "Browse",
         "customColor": "Custom Color",
         "defaultColor": "Default",
+        "eyedropper": "Pick a color from the screen",
+        "hex": "Hex",
+        "hue": "Hue",
         "opacity": "Opacity",
         "presetColors": "Preset Colors",
         "resetSettings": "Reset Settings",
-        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
+        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone.",
+        "saturationBrightness": "Saturation and brightness",
+        "saturationBrightnessValue": "Saturation {{saturation}}%, brightness {{brightness}}%"
     },
     "Socials": {
         "twitter": "Follow Us!",

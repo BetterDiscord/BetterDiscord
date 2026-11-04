@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {groupSettings, keywordLabel, pickControl, pickerHex, quoteCssString, readCssString, readCssUrl, readNumber, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
+import {customOption, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 function rule(property: string, group?: string) {
@@ -134,6 +134,49 @@ describe("pickControl", () => {
     });
 });
 
+describe("sliderMarkers", () => {
+    test("marks the bottom, the middle and the top of the range", () => {
+        expect(sliderMarkers(0, 24, 1)).toEqual([0, 12, 24]);
+        expect(sliderMarkers(0.5, 2, 0.05)).toEqual([0.5, 1.25, 2]);
+    });
+
+    test("rounds the middle to the step", () => {
+        expect(sliderMarkers(0, 25, 1)).toEqual([0, 13, 25]);
+        expect(sliderMarkers(0, 100, 30)).toEqual([0, 60, 100]);
+    });
+
+    test("leaves out a middle that lands on an end", () => {
+        expect(sliderMarkers(0, 1, 1)).toEqual([0, 1]);
+    });
+});
+
+describe("isInline", () => {
+    test("puts radios on their own line and everything else beside the label", () => {
+        expect(isInline(pickControl(setting("high-contrast | soft", "soft")))).toBe(false);
+        expect(isInline(pickControl(setting("none | <color>", "none")))).toBe(false);
+        expect(isInline(pickControl(setting("a | b | c | <color>", "a")))).toBe(true);
+        expect(isInline(pickControl(setting("<length>", "4px", "min: 0; max: 24;")))).toBe(true);
+        expect(isInline(pickControl(setting("true | false", "true")))).toBe(true);
+    });
+});
+
+describe("custom choices", () => {
+    const options = [{value: "none", label: "None"}];
+
+    test("show Custom for a value that isn't a keyword, or while waiting for one", () => {
+        expect(readCustomChoice(options, "none", false)).toEqual({isKeyword: true, isCustom: false, picked: "none"});
+        expect(readCustomChoice(options, "url(\"a.png\")", false)).toEqual({isKeyword: false, isCustom: true, picked: customOption});
+        expect(readCustomChoice(options, "none", true)).toEqual({isKeyword: true, isCustom: true, picked: customOption});
+    });
+
+    test("picking a keyword applies it, and picking Custom applies the starter or waits", () => {
+        expect(pickCustomChoice({starter: "#000000"}, "none", true)).toEqual({apply: "none"});
+        expect(pickCustomChoice({starter: "#000000"}, customOption, false)).toEqual({apply: "#000000"});
+        expect(pickCustomChoice({starter: null}, customOption, false)).toEqual({wait: true});
+        expect(pickCustomChoice({starter: null}, customOption, true)).toBeNull();
+    });
+});
+
 describe("keywordLabel", () => {
     test("turns dashes into spaces in sentence case and keeps the rest as written", () => {
         expect(keywordLabel("high-contrast")).toBe("High contrast");
@@ -191,6 +234,12 @@ describe("CSS strings and links", () => {
         expect(readCssUrl("url(https://a.b/c.png)")).toBe("https://a.b/c.png");
         expect(readCssUrl("url( 'a.png' )")).toBe("a.png");
         expect(readCssUrl("none")).toBe("none");
+    });
+
+    test("show the blank data: link as an empty field, and write an empty field as it", () => {
+        expect(readCssUrl("url(\"data:,\")")).toBe("");
+        expect(readCssUrl("url(data:,)")).toBe("");
+        expect(writeCssUrl("  ")).toBe("url(\"data:,\")");
     });
 });
 
