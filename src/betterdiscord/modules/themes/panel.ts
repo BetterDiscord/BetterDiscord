@@ -124,6 +124,22 @@ function defaultSliderStep(min: number, max: number, isInteger: boolean) {
     return (max - min) / 100;
 }
 
+/**
+ * The values a slider marks under its track: the bottom, the middle and the top of its range. The middle is
+ * rounded to the slider's step, so clicking its marker picks a value the slider can hold.
+ */
+export function sliderMarkers(min: number, max: number, step: number) {
+    const middle = Number((min + Math.round((max - min) / 2 / step) * step).toFixed(6));
+    return [...new Set([min, middle, max])];
+}
+
+/** Whether a control sits beside its label instead of on its own line under the note. */
+export function isInline(control: ThemeControl) {
+    if (control.kind === "radio") return false;
+    if (control.kind === "custom") return control.display === "dropdown";
+    return true;
+}
+
 /** Stands for the Custom option among a `custom` control's keywords, and can't match any keyword. */
 export const customChoice = Symbol("custom");
 

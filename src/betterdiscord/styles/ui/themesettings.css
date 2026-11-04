@@ -59,29 +59,19 @@
     text-align: center;
 }
 
-/* Slider, then its value, which stays visible instead of only showing on hover */
-.bd-theme-slider-row {
+/* An inline slider keeps a fixed width beside its label, with room under it for the markers */
+.bd-theme-slider {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 10px 16px;
+    gap: 16px;
 }
 
-.bd-theme-slider-row .bd-slider-wrap {
-    flex: 1;
-    min-width: 180px;
+.bd-theme-slider .bd-slider-wrap {
+    width: 220px;
 }
 
-.bd-theme-slider-row .bd-slider-track {
+.bd-theme-slider .bd-slider-track {
     min-width: 0;
-}
-
-.bd-theme-slider-value {
-    min-width: 56px;
-    color: var(--text-strong);
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
 }
 
 .bd-theme-number {

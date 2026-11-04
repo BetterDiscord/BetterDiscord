@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {customChoice, groupSettings, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
+import {customChoice, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 function rule(property: string, group?: string) {
@@ -131,6 +131,32 @@ describe("pickControl", () => {
         expect(pickControl(setting("auto | <number>", "auto", "min: 0.5;"))).toMatchObject({starter: "0.5"});
         expect(pickControl(setting("none | <string>", "none"))).toMatchObject({starter: "\"\""});
         expect(pickControl(setting("none | <url>", "none"))).toMatchObject({starter: null});
+    });
+});
+
+describe("sliderMarkers", () => {
+    test("marks the bottom, the middle and the top of the range", () => {
+        expect(sliderMarkers(0, 24, 1)).toEqual([0, 12, 24]);
+        expect(sliderMarkers(0.5, 2, 0.05)).toEqual([0.5, 1.25, 2]);
+    });
+
+    test("rounds the middle to the step", () => {
+        expect(sliderMarkers(0, 25, 1)).toEqual([0, 13, 25]);
+        expect(sliderMarkers(0, 100, 30)).toEqual([0, 60, 100]);
+    });
+
+    test("leaves out a middle that lands on an end", () => {
+        expect(sliderMarkers(0, 1, 1)).toEqual([0, 1]);
+    });
+});
+
+describe("isInline", () => {
+    test("puts radios on their own line and everything else beside the label", () => {
+        expect(isInline(pickControl(setting("high-contrast | soft", "soft")))).toBe(false);
+        expect(isInline(pickControl(setting("none | <color>", "none")))).toBe(false);
+        expect(isInline(pickControl(setting("a | b | c | <color>", "a")))).toBe(true);
+        expect(isInline(pickControl(setting("<length>", "4px", "min: 0; max: 24;")))).toBe(true);
+        expect(isInline(pickControl(setting("true | false", "true")))).toBe(true);
     });
 });
 

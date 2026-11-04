@@ -59,7 +59,7 @@ export default function Slider(props: SliderProps) {
                 const markerValue = typeof m === "number" ? m : m.value;
                 const markerLabel = typeof m === "number" ? m : m?.label;
                 const showUnits = units && typeof m === "number";
-                return <div className="bd-slider-marker" style={{left: percent(markerValue) + "%"}} onClick={() => setState(markerValue)}>
+                return <div key={markerValue} className="bd-slider-marker" style={{left: percent(markerValue) + "%"}} onClick={() => setState(markerValue)}>
                     {markerLabel}{showUnits && units}
                 </div>;
             })}

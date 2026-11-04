@@ -7,7 +7,7 @@ import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
 import ThemeValues, {themeImages} from "@modules/themes/store";
 import {describeUrlValue, maxImageBytes, type CopyError} from "@modules/themes/images";
-import {customChoice, groupSettings, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
+import {customChoice, groupSettings, isInline, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
@@ -96,7 +96,7 @@ function SettingRow({theme, setting, savedValue}: SettingRowProps) {
 
     // `custom` is set exactly when the control is a `custom` one
     const custom = useCustomChoice(control, applied, apply);
-    const {element, inline, below} = control.kind === "custom"
+    const {element, below} = control.kind === "custom"
         ? buildCustomControl(setting, control, custom!, applied, apply, savedValue)
         : buildControl(setting, control, applied, apply, savedValue);
     const reset = savedValue !== undefined && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
@@ -109,7 +109,7 @@ function SettingRow({theme, setting, savedValue}: SettingRowProps) {
         id={setting.property}
         name={setting.name}
         note={setting.note}
-        inline={inline}
+        inline={isInline(control)}
         action={reset}
         below={below && <div className={controlClass}>{below}{error}</div>}
     >
@@ -124,7 +124,6 @@ const identity = (value: string) => value;
 
 interface BuiltControl {
     element: ReactNode;
-    inline: boolean;
 
     /** Shown under the setting's note, for an inline control that has more to show. */
     below?: ReactNode;
@@ -138,33 +137,31 @@ type CustomControl = Extract<ThemeControl, {kind: "custom";}>;
  */
 function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, CustomControl>, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
     const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
-        element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />,
-        inline: true
+        element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />
     });
 
     switch (control.kind) {
         case "switch":
-            return {element: <Switch id={setting.property} value={value === "true"} onChange={isOn => apply(isOn ? "true" : "false")} />, inline: true};
+            return {element: <Switch id={setting.property} value={value === "true"} onChange={isOn => apply(isOn ? "true" : "false")} />};
 
         case "radio": {
             const options = control.options.map(o => ({name: o.label, value: o.value}));
-            return {element: <Radio name={setting.property} options={options} value={value} onChange={apply} />, inline: false};
+            return {element: <Radio name={setting.property} options={options} value={value} onChange={apply} />};
         }
 
         case "dropdown":
-            return {element: <Dropdown options={control.options} value={value} onChange={apply} />, inline: true};
+            return {element: <Dropdown options={control.options} value={value} onChange={apply} />};
 
         case "slider": {
             const parsed = readNumber(value, control.units);
             if (!parsed) return textField();
             const {number, unit} = parsed;
+            const markers = sliderMarkers(control.min, control.max, control.step).map(m => ({value: m, label: writeNumber(m, unit)}));
             return {
-                element: <div className="bd-theme-slider-row">
-                    <Slider min={control.min} max={control.max} step={control.step} units={unit} value={number} onChange={n => apply(writeNumber(n, unit))} />
-                    <div className="bd-theme-slider-value">{writeNumber(number, unit)}</div>
+                element: <div className="bd-theme-slider">
                     {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
-                </div>,
-                inline: false
+                    <Slider min={control.min} max={control.max} step={control.step} units={unit} markers={markers} value={number} onChange={n => apply(writeNumber(n, unit))} />
+                </div>
             };
         }
 
@@ -181,8 +178,7 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
                     {control.units.length > 1
                         ? <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />
                         : unit && <span className="bd-theme-number-unit">{unit}</span>}
-                </div>,
-                inline: true
+                </div>
             };
         }
 
@@ -194,8 +190,7 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
             const defaultHex = pickerHex(setting.initialValue) ?? undefined;
             const palette = control.palette?.map(color => pickerHex(color)).filter(color => color !== null);
             return {
-                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={defaultHex as HexString | undefined} colors={palette as HexString[] | undefined} onChange={color => apply(color as string)} />,
-                inline: true
+                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={defaultHex as HexString | undefined} colors={palette as HexString[] | undefined} onChange={color => apply(color as string)} />
             };
         }
 
@@ -204,8 +199,7 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
 
         case "url":
             return {
-                element: <UrlSetting id={setting.property} value={value} savedValue={savedValue} initialValue={setting.initialValue} apply={apply} />,
-                inline: true
+                element: <UrlSetting id={setting.property} value={value} savedValue={savedValue} initialValue={setting.initialValue} apply={apply} />
             };
     }
 }
@@ -219,7 +213,6 @@ function buildCustomControl(setting: ThemeSetting, control: CustomControl, custo
     if (control.display === "dropdown") {
         return {
             element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
-            inline: true,
             below: typeControl && <div className="bd-theme-custom bd-theme-custom-below">{typeControl}</div>
         };
     }
@@ -228,8 +221,7 @@ function buildCustomControl(setting: ThemeSetting, control: CustomControl, custo
         element: <>
             <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={custom.picked} onChange={custom.pick} />
             {typeControl && <div className="bd-theme-custom">{typeControl}</div>}
-        </>,
-        inline: false
+        </>
     };
 }
 

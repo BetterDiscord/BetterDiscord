@@ -72,6 +72,7 @@
 
 .bd-select-options {
   position: fixed;
+  position-anchor: auto;
   inset-block-start: anchor(end);
   inset-inline-start: anchor(start);
   background: var(--background-surface-higher);
