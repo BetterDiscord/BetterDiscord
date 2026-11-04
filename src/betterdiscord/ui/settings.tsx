@@ -23,7 +23,7 @@ import changelog from "@data/changelog";
 import {type Plugin} from "@modules/pluginmanager";
 import type {Theme} from "@modules/thememanager";
 import {themeHasSettings} from "@modules/themes/panel";
-import ThemeSettingsPanel from "./settings/themesettings";
+import {showThemeSettings} from "./settings/themesettings";
 import DOMManager from "@modules/dommanager";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
@@ -632,7 +632,7 @@ function useAddonMenu(manager: AddonManager) {
                 }
 
                 if (manager.prefix === "theme" && addon && themeHasSettings(addon as Theme)) {
-                    Modals.showAddonSettingsModal(name, <ThemeSettingsPanel themeId={addon.id} />);
+                    showThemeSettings(name, addon.id);
                     return;
                 }
 

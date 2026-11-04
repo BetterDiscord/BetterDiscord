@@ -1,5 +1,5 @@
 import {webUtils} from "electron";
-import React, {useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
+import React, {useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
 import {RotateCcwIcon, XIcon} from "lucide-react";
 
 import {t} from "@common/i18n";
@@ -12,6 +12,13 @@ import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
 import Button from "@ui/base/button";
+import Text from "@ui/base/text";
+import Flex from "@ui/base/flex";
+import ErrorBoundary from "@ui/errorboundary";
+import ModalRoot from "@ui/modals/root";
+import ModalHeader from "@ui/modals/header";
+import ModalContent from "@ui/modals/content";
+import ModalFooter from "@ui/modals/footer";
 
 import Drawer from "./drawer";
 import SettingItem from "./components/item";
@@ -25,8 +32,45 @@ import ColorPicker from "./components/color";
 import type {HexString} from "@data/settings";
 
 
+/** Opens a theme's settings in a modal, with Reset all in the footer across from Done. */
+export function showThemeSettings(name: string, themeId: string) {
+    return Modals.openModal(props => <ErrorBoundary id="showThemeSettings" name="Modals">
+        <ThemeSettingsModal {...props as ModalProps} name={name} themeId={themeId} />
+    </ErrorBoundary>);
+}
+
+interface ModalProps {
+    transitionState?: number;
+    onClose?(): void;
+}
+
+function ThemeSettingsModal({transitionState, onClose, name, themeId}: ModalProps & {name: string; themeId: string;}) {
+    const theme = useStateFromStores(ThemeManager, () => ThemeManager.resolveAddon(themeId) as Theme | undefined, [themeId]);
+    const hasSaved = useStateFromStores(ThemeValues, () => Object.keys(ThemeValues.getSaved(themeId)).length > 0, [themeId]);
+    const doneRef = useRef<HTMLButtonElement>(null);
+
+    // Done takes focus when the modal opens, as it does in the addon settings modal
+    useEffect(() => {
+        setTimeout(() => doneRef.current?.focus(), 0);
+    }, []);
+
+    return <ModalRoot transitionState={transitionState} size={ModalRoot.Sizes.MEDIUM} className="bd-addon-modal">
+        <ModalHeader>
+            <Text tag="h1" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong={true}>{`${name} Settings`}</Text>
+        </ModalHeader>
+        <ModalContent><ThemeSettingsPanel themeId={themeId} /></ModalContent>
+        <ModalFooter justify={Flex.Justify.BETWEEN}>
+            <Button type="submit" buttonRef={doneRef} color={Button.Colors.BRAND} onClick={() => onClose?.()}>{t("Modals.done")}</Button>
+            <Button color={Button.Colors.PRIMARY} className="bd-theme-settings-reset-all" disabled={!theme || !hasSaved} onClick={() => theme && confirmResetAll(theme)}>
+                <RotateCcwIcon size="16px" />
+                {t("ThemeSettings.resetAll")}
+            </Button>
+        </ModalFooter>
+    </ModalRoot>;
+}
+
 /**
- * The settings panel for one theme, shown in the addon settings modal. It looks the theme up by id on every
+ * The settings panel for one theme, shown in the theme settings modal. It looks the theme up by id on every
  * change, because reloading a theme's file replaces its object.
  */
 export default function ThemeSettingsPanel({themeId}: {themeId: string;}) {
@@ -44,12 +88,6 @@ export default function ThemeSettingsPanel({themeId}: {themeId: string;}) {
     const renderSetting = (setting: ThemeSetting) => <SettingRow key={setting.property} theme={theme} setting={setting} savedValue={saved[setting.property]} />;
 
     return <div className="bd-theme-settings">
-        <div className="bd-theme-settings-toolbar">
-            <Button size={Button.Sizes.NONE} color={Button.Colors.PRIMARY} className="bd-theme-settings-reset-all" disabled={!Object.keys(saved).length} onClick={() => confirmResetAll(theme)}>
-                <RotateCcwIcon size="16px" />
-                {t("ThemeSettings.resetAll")}
-            </Button>
-        </div>
         {ungrouped.map(renderSetting)}
         {groups.map(group => <Drawer key={group.name} name={group.name} collapsible={true} shown={true}>
             {group.settings.map(renderSetting)}
