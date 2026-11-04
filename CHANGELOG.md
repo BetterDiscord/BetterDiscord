@@ -5,6 +5,20 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### 1.14.4
 
 ### Added
+- React error decoder
+
+### Removed
+
+### Changed
+
+### Fixed
+- BD now loads on rspack 2.3.x
+- Fixed modal sizing
+- macOS secure storage issue
+
+### 1.14.4
+
+### Added
 
 ### Removed
 

@@ -24,9 +24,9 @@ const effect = (require: Webpack.Require) => {
                 Object.defineProperty(exports, key, {
                     enumerable: true,
                     configurable: true,
-                    get: getters[key],
+                    get: () => getters[key](),
                     set: (v) => {
-                        getters[key] = v;
+                        getters[key] = () => v;
                     }
                 });
             }
@@ -36,6 +36,7 @@ const effect = (require: Webpack.Require) => {
                 Object.defineProperty(exports, key, {
                     enumerable: true,
                     configurable: true,
+                    writable: true,
                     value: values[key]
                 });
             }
