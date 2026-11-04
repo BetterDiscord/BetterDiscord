@@ -1,0 +1,39 @@
+name: Locale Check
+
+# pull_request_target so this can comment on PRs from forks, PR code is never checked out
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    paths:
+      - "assets/locales/*.json"
+      - "!assets/locales/en-us.json"
+
+permissions:
+  pull-requests: write
+
+jobs:
+  redirect-to-crowdin:
+    # Skip the Crowdin bot's own PRs via the branch name check
+    if: github.event.pull_request.head.ref != 'l10n_crowdin_translations'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const marker = "<!-- locale-check -->";
+            const {owner, repo} = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number});
+            if (comments.some(c => c.body?.includes(marker))) return;
+
+            await github.rest.issues.createComment({owner, repo, issue_number, body: [
+                marker,
+                "Thanks for helping with translations! :earth_americas:",
+                "",
+                "Translations are managed on [Crowdin](https://translate.betterdiscord.app) and synced into this repository automatically, so any changes made directly to the files in `assets/locales/` (other than `en-us.json`) will be overwritten by the next sync.",
+                "",
+                "Please submit your translations on Crowdin instead. If you're adding new strings, only `en-us.json` needs to be changed. See [CONTRIBUTING.md](https://github.com/BetterDiscord/BetterDiscord/blob/development/CONTRIBUTING.md#translations) for more details."
+            ].join("\n")});

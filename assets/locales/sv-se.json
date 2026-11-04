@@ -21,14 +21,37 @@
                 "mediaKeys": {
                     "name": "Inaktivera mediaknapparna",
                     "note": "Hindrar Discord från att ta över mediaknapparna efter att du har spelat upp en video."
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
+                "name": "Fönsterinställningar",
                 "removeMinimumSize": {
                     "name": "Ta bort minimistorleken",
                     "note": "Tar bort Discords minimifönsterstorlek på 800x500"
                 },
-                "name": "Fönsterinställningar",
                 "transparency": {
                     "name": "Aktivera Genomskinlighet",
                     "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
@@ -36,6 +59,55 @@
                 "frame": {
                     "name": "Fönsterram",
                     "note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
@@ -43,6 +115,23 @@
                 "addonErrors": {
                     "name": "Visa tilläggsfel",
                     "note": "Visar en modalruta med tillägg- och temafel"
+                },
+                "editAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "detached": "",
+                        "external": "",
+                        "system": ""
+                    }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -62,10 +151,32 @@
                 "nativeOpen": {
                     "name": "Öppna I Standardredigerare",
                     "note": "Öppnar CSS filen i operativsystemets standardredigerare när \"Egen CSS\"-fliken klickas"
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "external": "",
+                        "system": ""
+                    }
                 }
             },
             "developer": {
                 "name": "Utvecklarinställningar",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
                 "devToolsWarning": {
                     "name": "Stäng av utvecklarverktygsvarningar",
                     "note": "Hindrar Discord från att skriva ut sitt \"Vänta!\"-meddelande"
@@ -75,10 +186,27 @@
                     "note": "Allt från konsolen hamnar i filen debug.log i BetterDiscord mappen"
                 },
                 "devTools": {
-                    "name": "Utvecklarverktyg"
+                    "name": "Utvecklarverktyg",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
+                "name": "",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
                 "lineNumbers": {
                     "name": "Radnummer",
                     "note": "Visar radnummer i marginalen i redigeringsfönstret"
@@ -87,17 +215,38 @@
                     "name": "Teckenstorlek",
                     "note": "Storlek på typsnittet som används i redigeringsfönstret"
                 },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
                 "quickSuggestions": {
                     "name": "Snabbförslag",
                     "note": "Aktiverar autokompletteringsförslag när du skriver"
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
                 },
                 "renderWhitespace": {
                     "name": "Visa blanksteg",
                     "note": "När blanksteg ska markeras i redigeringsfönstret",
                     "options": {
                         "all": "Alltid",
-                        "none": "Aldrig"
+                        "none": "Aldrig",
+                        "selection": ""
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -105,21 +254,69 @@
     "Addons": {
         "title": "{{name}} v{{version}} av {{author}}",
         "byline": "av {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Ladda om",
         "addonSettings": "Inställningar",
         "website": "Webbplats",
         "source": "Källa",
         "invite": "Supportserver",
         "donate": "Donera",
-        "patreon": "Patreon",
+        "patreon": "",
         "name": "Namn",
         "author": "Upphovsman",
-        "version": "Version",
+        "version": "",
         "added": "Tilläggsdatum",
         "modified": "Ändringsdatum",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "Aktiverad",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "Listvy",
+        "gridView": "Rutnätsvy",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "other": ""
+        },
         "editAddon": "Redigera",
         "deleteAddon": "Ta bort",
+        "downloadAddon": "",
         "confirmDelete": "Är du säker på att du vill ta bort {{name}}?",
+        "confirmationText": "",
         "enabled": "{{name}} har aktiverats.",
         "disabled": "{{name}} har inaktiverats.",
         "couldNotEnable": "{{name}} kunde inte aktiverats.",
@@ -127,12 +324,61 @@
         "couldNotStart": "{{name}} kunde inte startas.",
         "couldNotStop": "{{name}} kunde inte stoppas.",
         "settingsError": "Kunde inte öppna inställningarna för {{namn}}",
+        "methodError": "",
         "unknownAuthor": "Okänd upphovsman",
         "noDescription": "Beskrivning saknas.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
         "compileError": "Kunde inte kompileras. Se konsolen för mer information.",
-        "isEnabled": "Aktiverad",
-        "listView": "Listvy",
-        "gridView": "Rutnätsvy"
+        "wasUnloaded": "",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
@@ -141,11 +387,21 @@
         "openNative": "Öppna I Standardredigerare",
         "openDetached": "Koppla Loss Fönster",
         "settings": "Inställningar för redigerare",
-        "editorTitle": "Egen CSS-redigerare"
+        "editorTitle": "Egen CSS-redigerare",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Är du säker?",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Okej",
+        "done": "",
         "cancel": "Avbryt",
         "nevermind": "Avbryt",
         "close": "Stäng",
@@ -156,7 +412,11 @@
         "restartRequired": "Omstart krävs",
         "restartNow": "Starta om nu",
         "restartLater": "Starta om senare",
-        "restartPrompt": "För att ändringarna ska träda i kraft måste Discord startas om. Vill du starta om nu?"
+        "additionalInfo": "",
+        "restartPrompt": "För att ändringarna ska träda i kraft måste Discord startas om. Vill du starta om nu?",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Sortera efter",
@@ -164,15 +424,62 @@
         "ascending": "Stigande",
         "descending": "Fallande"
     },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
         "updateFailed": "Uppdateringen misslyckades!",
-        "updateFailedMessage": "BetterDiscord kunde inte uppdateras. Ladda ned den senaste versionen av installationsprogrammet från vår webbplats (https://betterdiscord.app/) och installera om BetterDiscord.",
+        "updateFailedMessage": "BetterDiscord kunde inte uppdateras. Ladda ned den senaste versionen av installationsprogrammet från vår webbplats (https:\/\/betterdiscord.app\/) och installera om BetterDiscord.",
         "updateSuccessful": "Uppdateringen lyckades!",
+        "updateAvailable": "",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
+        "addonUpdateFailed": "",
         "checking": "Söker efter uppdateringar!",
         "finishedChecking": "Sökningen efter uppdateringar är slutförd!",
         "checkForUpdates": "Sök efter uppdateringar!",
         "updateAll": "Uppdatera alla!",
         "noUpdatesAvailable": "Det finns inga uppdateringar tillgängliga.",
+        "versionAvailable": "",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "Uppdatera!"
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

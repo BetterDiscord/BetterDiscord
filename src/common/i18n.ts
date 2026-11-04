@@ -34,11 +34,12 @@ interface InitOptions {
 
 function isValidPlural(value: unknown): value is Plural {
     if (typeof value !== "object" || value === null) return false;
-    return Object.keys(value).some(k => ["zero", "one", "two", "few", "many", "other"].includes(k));
+    // Crowdin exports untranslated strings as empty, so those don't count
+    return Object.entries(value).some(([k, v]) => ["zero", "one", "two", "few", "many", "other"].includes(k) && v);
 }
 
 function isValidTranslation(value: unknown): value is Translation {
-    return typeof value === "string" || isValidPlural(value);
+    return (typeof value === "string" && value !== "") || isValidPlural(value);
 }
 
 function isValidLocale(locale: string): locale is Locale {
@@ -84,7 +85,7 @@ const i18n = {
 
         if (typeof count !== "number" || isNaN(count)) {
             Logger.warn("i18n", `Invalid count provided for pluralization: ${count}. Returning 'other' form.`);
-            return target.other ?? target.one ?? "Translation error";
+            return target.other || target.one || "Translation error";
         }
 
         const hasZero = "zero" in target;
@@ -92,14 +93,14 @@ const i18n = {
 
         if (!selection) {
             Logger.warn("i18n", `No plural selection for ${currentLocale} with count ${count}`);
-            return target.other ?? target.one ?? "Translation error";
+            return target.other || target.one || "Translation error";
         }
 
         if (selection in target && target[selection]) {
             return target[selection]!;
         }
 
-        return target.other ?? target.one ?? `Missing plural form: ${selection}`;
+        return target.other || target.one || `Missing plural form: ${selection}`;
     },
 
     /** @private */

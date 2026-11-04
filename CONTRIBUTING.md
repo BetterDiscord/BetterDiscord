@@ -34,19 +34,19 @@ See our [Code of Conduct](https://github.com/BetterDiscord/BetterDiscord/blob/ma
 
 ### BetterDiscord Architecture
 
-BetterDiscord is currently broken up into three packages--the local injector, the preload, and the renderer application. They form this miniature monorepo that is managed by [`pnpm`](https://pnpm.io/).
+BetterDiscord is a single TypeScript project built and tested with [Bun](https://bun.sh). The code in `src/` is split by where it runs inside Discord, and each part is built separately into the `dist` folder.
 
-#### Injector
+#### Main Process
 
-The main job of this package is to inject into Discord and load the renderer package. The injector and its code live in the `injector` folder.
+This code runs in Electron's main process, loaded by the `index.js` that the inject script places in Discord's install. It sets up Discord's `BrowserWindow`, IPC, and the content security policy. The main process code lives in `src/electron/main`.
 
 #### Preload
 
-Preload is the preload script for Discord's main `BrowserWindow` object. This sets up our cross-context APIs. The preload package and its code live in the `preload` folder.
+Preload is the preload script for Discord's main `BrowserWindow` object. This sets up our cross-context APIs. The preload code lives in `src/electron/preload`.
 
 #### Renderer Application
 
-This is the main payload of BetterDiscord. This is what gets executed in the renderer context by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, and more. The renderer and its code live in the `renderer` folder.
+This is the main payload of BetterDiscord. This is what gets executed in Discord's renderer context, and it's where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, and more. The renderer code lives in `src/betterdiscord`, and code shared between all of these lives in `src/common`.
 
 ## How Can I Contribute?
 
@@ -119,15 +119,18 @@ Unsure where to begin contributing? You can start by looking through `help-wante
 
 #### Local development
 
-BetterDiscord can be developed and tested locally. First, clone the repo and run `pnpm install && pnpm build` this will generate a `dist` folder with compiled files. Next you'll need to inject your local setup to your desired release channel. There is a script in the repository to do this automatically for most cases. Just run `pnpm inject <channel>` where `<channel>` is the release channel--any of: stable, canary, ptb. Then for this to take effect, you'll need to fully restart Discord. Any future modifications to the renderer portion will be picked up on Discord reload. Preload and injector changes will require restarts.
+BetterDiscord can be developed and tested locally with [Bun](https://bun.sh). First, clone the repo and run `bun install && bun run build`, which will generate a `dist` folder with compiled files. Next you'll need to inject your local setup to your desired release channel. There is a script in the repository to do this automatically for most cases. Just run `bun run inject <channel>` where `<channel>` is the release channel--any of: stable, canary, ptb. Then for this to take effect, you'll need to fully restart Discord. After that, rebuild with `bun run build` (or keep `bun run watch` running) and any modifications to the renderer portion will be picked up on Discord reload. Main process and preload changes will require restarts.
+
+Before opening a pull request, run `bun run test`, `bun run lint` and `bun run typecheck`, since the CI runs the same checks.
 
 ### Pull Requests
 
 Please follow these steps to have your contribution considered by the maintainers:
 
-1. Use a pull request template, if one exists.
-2. Follow the [styleguides](#styleguides)
-3. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
+1. Open your pull request against the `development` branch.
+2. Use a pull request template, if one exists.
+3. Follow the [styleguides](#styleguides)
+4. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
@@ -138,6 +141,8 @@ BetterDiscord supports a number of languages thanks to translations provided by 
 * Do not submit translations generated with a translation such as Google Translate, DeepL, or anything of the sorts.
   * Crowdin's tools can be used for assistance but not full human replacements
 * Only submit translations for languages you are at the very least fluent in, better yet if it's your first language.
+* Do not open pull requests that change the files in `assets/locales/` directly. They are synced from Crowdin automatically and any changes made to them will be overwritten.
+  * The exception is `en-us.json`, which is the source for all translations. When adding new strings to BetterDiscord, add them only to `en-us.json` and they will become available on Crowdin once merged.
 
 ## Styleguides
 
@@ -151,7 +156,7 @@ BetterDiscord supports a number of languages thanks to translations provided by 
 
 ### JavaScript Styleguide
 
-All JavaScript must adhere to the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/.eslintrc) of the repo.
+All JavaScript and TypeScript must adhere to the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/eslint.config.js) of the repo.
 
 Some other style related points not covered by ESLint:
 
@@ -174,7 +179,7 @@ Some other style related points not covered by ESLint:
 * Place class properties in the following order:
     * Class methods and properties (methods starting with `static`)
     * Instance methods and properties
-* Place requires in the following order:
+* Place imports in the following order:
     * Built in Node Modules (such as `path`)
     * Repo level global imports (such as `modules`, `builtins`)
     * Local Modules (using relative paths)
@@ -182,8 +187,8 @@ Some other style related points not covered by ESLint:
     * Keep modules namespaced and organized
     * This includes Node Modules (such as `fs`)
 ```js
-const fs = require("fs"); // Use this
-const {readFile, writeFile} = require("fs"); // Avoid this
+import fs from "fs"; // Use this
+import {readFile, writeFile} from "fs"; // Avoid this
 
 import Utilities from "./utilities"; // Use this
 import {deepclone, isEmpty} from "./utilties"; // Avoid this
@@ -191,7 +196,7 @@ import {deepclone, isEmpty} from "./utilties"; // Avoid this
 
 ### CSS Styleguide
 
-All CSS must adhere to the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/renderer/.stylelintrc) of the repo.
+All CSS must adhere to the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/.stylelintrc) of the repo.
 
 Some other style related points not covered by StyleLint:
 

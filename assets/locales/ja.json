@@ -21,14 +21,37 @@
                 "mediaKeys": {
                     "name": "メディアキー無効化",
                     "note": "ビデオ再生後にDiscordがメディアキーを乗っ取るのを防ぎます。"
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
+                "name": "ウィンドウ設定",
                 "removeMinimumSize": {
                     "name": "最小サイズ削除",
                     "note": "Discordの最小ウィンドウサイズである800x500を強制的に解除します。"
                 },
-                "name": "ウィンドウ設定",
                 "transparency": {
                     "name": "透過を有効",
                     "note": "Discordのメインウィンドウを透過します(要再起動)。"
@@ -36,21 +59,79 @@
                 "frame": {
                     "name": "ウィンドウフレームの表示",
                     "note": "メインウィンドウにOSごとのウィンドウフレームを追加します。"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "アドオンマネージャー",
                 "addonErrors": {
                     "name": "アドオンエラーの表示",
-                    "note": "プラグイン/テーマのエラーを表示します。"
+                    "note": "プラグイン\/テーマのエラーを表示します。"
                 },
                 "editAction": {
                     "name": "アドオンの編集",
                     "note": "プラグインとテーマの編集時の表示位置。",
                     "options": {
                         "detached": "Discord内で開く",
+                        "external": "",
                         "system": "外部エディタで開く"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -77,6 +158,7 @@
                     "options": {
                         "settings": "設定メニュー",
                         "detached": "内部エディター",
+                        "external": "",
                         "system": "システム既定のエディター"
                     }
                 }
@@ -106,10 +188,25 @@
                 "devTools": {
                     "name": "デベロッパーツール",
                     "note": "ctrl+shift+iでデベロッパーツールの切り替えができます。"
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "editor": {
                 "name": "エディターの設定",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
                 "lineNumbers": {
                     "name": "行番号",
                     "note": "エディターの横に行番号を表示します。"
@@ -130,6 +227,14 @@
                     "name": "入力補助",
                     "note": "入力中にオートコンプリートの候補を表示します。"
                 },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
                 "renderWhitespace": {
                     "name": "空白を表示",
                     "note": "エディターで空白を表示する場合",
@@ -138,27 +243,75 @@
                         "none": "無し",
                         "selection": "選択"
                     }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
     },
     "Addons": {
-        "title": "{{name}} v{{version}} by {{author}}",
-        "byline": "by {{author}}",
+        "title": "",
+        "byline": "",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "リロード",
         "addonSettings": "設定",
         "website": "ウェブサイト",
         "source": "ソース",
         "invite": "サポートサーバー",
         "donate": "寄付",
-        "patreon": "Patreon",
+        "patreon": "",
         "name": "名称",
         "author": "作者",
         "version": "バージョン",
         "added": "追加日",
         "modified": "更新日",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "有効",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "other": ""
+            },
+            "theme": {
+                "other": ""
+            }
+        },
+        "results": {
+            "other": ""
+        },
         "editAddon": "編集",
         "deleteAddon": "削除",
+        "downloadAddon": "",
         "confirmDelete": "本当に{{name}}を削除しますか？",
         "confirmationText": "{{name}}に未保存のデータがあります。このウィンドウを閉じると、それらの変更はすべて失われます。",
         "enabled": "{{name}}を有効化しました。",
@@ -171,13 +324,54 @@
         "methodError": "{{method}}を起動できませんでした。",
         "unknownAuthor": "作者不明",
         "noDescription": "説明はありません。",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "METAを解析できませんでした。",
         "missingNameData": "METAの名前データがありません。",
         "metaNotFound": "METAが見つかりませんでした。",
         "compileError": "コンパイルできませんでした。詳しくはコンソールをご覧ください。",
         "wasUnloaded": "{{name}}が解除されました。",
-        "isEnabled": "有効",
-        "wasLoaded": "{{name}}のv{{version}}が読み込まれました。"
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "{{name}}のv{{version}}が読み込まれました。",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "other": ""
+        },
+        "likeCount": {
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "other": ""
+            },
+            "theme": {
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "カスタムCSSに未保存のデータがあります。このウィンドウを閉じると、これらの変更はすべて失われます。",
@@ -186,15 +380,24 @@
         "openNative": "外部エディタで開く",
         "openDetached": "別ウィンドウで開く",
         "settings": "エディター設定",
-        "editorTitle": "カスタムCSSエディター"
+        "editorTitle": "カスタムCSSエディター",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "本当によろしいですか？",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "はい",
-        "done": "Done",
+        "done": "",
         "cancel": "いいえ",
-        "nevermind": "Nevermind",
-        "close": "Close",
+        "nevermind": "",
+        "close": "",
         "name": "名前",
         "message": "メッセージ",
         "error": "エラー",
@@ -203,7 +406,10 @@
         "restartNow": "今すぐ再起動",
         "restartLater": "後で再起動",
         "additionalInfo": "その他の情報",
-        "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
+        "restartPrompt": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "並び順",
@@ -215,18 +421,56 @@
         "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
         "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
     },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
     "Updater": {
         "updateFailed": "アップデートに失敗しました！",
-        "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https://betterdiscord.app/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
+        "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https:\/\/betterdiscord.app\/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
         "updateSuccessful": "アップデートに成功しました！",
         "updateAvailable": "BetterDiscordに新しいアップデート(v{{version}})があります。",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "other": ""
+            },
+            "theme": {
+                "other": ""
+            }
+        },
         "addonUpdated": "{{name}}がバージョン{{version}}にアップデートされました！",
+        "addonUpdateFailed": "",
         "checking": "アップデートを確認",
         "finishedChecking": "アップデートの確認が終了しました！",
         "checkForUpdates": "アップデートを確認",
         "updateAll": "全てアップデート",
         "noUpdatesAvailable": "アップデートはありません。",
         "versionAvailable": "バージョン{{version}}を公開しました。",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
         "updateButton": "アップデート"
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

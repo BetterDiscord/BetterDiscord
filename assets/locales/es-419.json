@@ -1,14 +1,15 @@
 {
     "Panels": {
-        "plugins": "Plugins",
+        "plugins": "",
         "themes": "Temas",
-        "customcss": "CSS Personalizado"
+        "customcss": "CSS Personalizado",
+        "updates": ""
     },
     "Collections": {
         "settings": {
             "name": "Ajustes",
             "general": {
-                "name": "General",
+                "name": "",
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -20,14 +21,37 @@
                 "mediaKeys": {
                     "name": "Desactivar las Teclas Multimedia",
                     "note": "Evita que Discord se apropie de tus teclas multimedia después de reproducir un vídeo"
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
+                "name": "Preferencias de la Ventana",
                 "removeMinimumSize": {
                     "name": "Eliminar Tamaño Mínimo",
                     "note": "Elimina el tamaño mínimo de Discord de 800x500"
                 },
-                "name": "Preferencias de la Ventana",
                 "transparency": {
                     "name": "Activar Transparencia",
                     "note": "Hace que la ventana principal pueda ser transparente (requiere reinicio)"
@@ -35,21 +59,79 @@
                 "frame": {
                     "name": "Marco de la Ventana",
                     "note": "Añade el marco de ventana nativo de tu sistema operativo a la ventana principal"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Gestor de Complementos",
                 "addonErrors": {
                     "name": "Mostrar Errores de Complementos",
-                    "note": "Muestra una ventana con los errores de plugin/temas"
+                    "note": "Muestra una ventana con los errores de plugin\/temas"
                 },
                 "editAction": {
                     "name": "Acción al Editar",
                     "note": "Donde aparecerán los plugins y temas al editarlos",
                     "options": {
                         "detached": "Ventana Independiente",
+                        "external": "",
                         "system": "Editor del Sistema"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -76,6 +158,7 @@
                     "options": {
                         "settings": "Menú de Ajustes",
                         "detached": "Ventana Independiente",
+                        "external": "",
                         "system": "Editor del Sistema"
                     }
                 }
@@ -87,7 +170,7 @@
                     "note": "Permite activar el depurador al presionar la tecla F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
+                    "name": "",
                     "note": "Inyecta tu instalación local de React Developer Tools en Discord"
                 },
                 "inspectElement": {
@@ -101,6 +184,69 @@
                 "debugLogs": {
                     "name": "Registros de Depuración",
                     "note": "Envía todo lo que aparece en la consola a un archivo llamado debug.log en la carpeta de BetterDiscord"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -108,20 +254,67 @@
     "Addons": {
         "title": "{{name}} v{{version}} por {{author}}",
         "byline": "por {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Recargar",
         "addonSettings": "Ajustes",
         "website": "Sitio web",
         "source": "Fuente",
         "invite": "Servidor de Soporte",
         "donate": "Donar",
-        "patreon": "Patreon",
+        "patreon": "",
         "name": "Nombre",
         "author": "Autor",
         "version": "Versión",
         "added": "Fecha de Adición",
         "modified": "Fecha de Modificación",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "other": ""
+        },
         "editAddon": "Editar",
         "deleteAddon": "Eliminar",
+        "downloadAddon": "",
         "confirmDelete": "¿Estás seguro de que quieres borrar {{name}}?",
         "confirmationText": "Tiene cambios no guardados en {{name}}. Al cerrar esta ventana se perderán todos los cambios.",
         "enabled": "{{name}} ha sido activado.",
@@ -134,11 +327,58 @@
         "methodError": "{{method}} no pudo ser lanzado.",
         "unknownAuthor": "Autor Desconocido",
         "noDescription": "Descripción no proporcionada.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "El META no pudo ser analizado.",
         "missingNameData": "El META no contiene datos del nombre.",
         "metaNotFound": "El META no ha sido encontrado.",
         "compileError": "No se ha podido compilar.",
-        "wasUnloaded": "{{name}} ha sido descargado."
+        "wasUnloaded": "{{name}} ha sido descargado.",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Tienes cambios sin guardar en tu CSS Personalizado. Al cerrar esta ventana se perderán todos los cambios.",
@@ -147,10 +387,19 @@
         "openNative": "Abrir en el Editor del Sistema",
         "openDetached": "Mostrar en Ventana Independiente",
         "settings": "Ajustes del Editor",
-        "editorTitle": "Editor de CSS Personalizado"
+        "editorTitle": "Editor de CSS Personalizado",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "¿Estás seguro?",
+        "installCss": "",
+        "addonCrashed": "",
         "okay": "Vale",
         "done": "Hecho",
         "cancel": "Cancelar",
@@ -158,13 +407,16 @@
         "close": "Cerrar",
         "name": "Nombre",
         "message": "Mensaje",
-        "error": "Error",
+        "error": "",
         "addonErrors": "Errores de Complementos",
         "restartRequired": "Reinicio Requerido",
         "restartNow": "Reiniciar Ahora",
         "restartLater": "Reiniciar más Tarde",
         "additionalInfo": "Información Adicional",
-        "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?"
+        "restartPrompt": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Ordenar por",
@@ -175,5 +427,59 @@
     "WindowPrefs": {
         "enabledInfo": "Esta opción requiere un tema transparente para que funcione correctamente. En Windows esto podría hacer que el ajuste automático de la ventana (Aero Snap) y la maximización dejen de funcionar.\n\nPara que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",
         "disabledInfo": "Para que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?"
+    },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
+        "addonUpdateFailed": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
+        "updateButton": ""
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }

@@ -55,6 +55,12 @@ if (!app.isReady()) {
             // eslint-disable-next-line @typescript-eslint/no-require-imports
             const pkg = require(path.join(asar, "package.json"));
 
+            // Electron names the app after our app/package.json, and on macOS that name picks the Keychain item
+            // safeStorage encrypts the login with. Use the real app's name so the login survives (un)injecting.
+            // See https://github.com/electron/electron/blob/v42.7.1/lib/browser/init.ts#L124-L129
+            const name = pkg.productName ?? pkg.name;
+            if (name) app.setName(`${name}`.trim());
+
             require.main.filename = path.resolve(asar, pkg.main);
         }
         catch {/* empty */}

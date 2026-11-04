@@ -22,7 +22,6 @@
         "@types/react-dom": "^19.1.2",
         "@types/react-reconciler": "^0.32.0",
         "bun-style-loader": "^0.4.0",
-        "dotenv": "^16.4.5",
         "dpdm": "^3.14.0",
         "electron": "^36.2.1",
         "esbuild": "^0.24.2",
@@ -470,8 +469,6 @@
     "dir-glob": ["dir-glob@3.0.1", "", { "dependencies": { "path-type": "^4.0.0" } }, "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA=="],
 
     "doctrine": ["doctrine@2.1.0", "", { "dependencies": { "esutils": "^2.0.2" } }, "sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw=="],
-
-    "dotenv": ["dotenv@16.4.7", "", {}, "sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ=="],
 
     "dpdm": ["dpdm@3.14.0", "", { "dependencies": { "chalk": "^4.1.2", "fs-extra": "^11.1.1", "glob": "^10.3.4", "ora": "^5.4.1", "tslib": "^2.6.2", "typescript": "^5.2.2", "yargs": "^17.7.2" }, "bin": { "dpdm": "lib/bin/dpdm.js" } }, "sha512-YJzsFSyEtj88q5eTELg3UWU7TVZkG1dpbF4JDQ3t1b07xuzXmdoGeSz9TKOke1mUuOpWlk4q+pBh+aHzD6GBTg=="],
 

@@ -41,8 +41,13 @@ describe("i18n", function () {
                 },
                 onlyOne: {
                     one: "Single thing"
+                },
+                untranslated: {
+                    one: "One file",
+                    other: "{{count}} files"
                 }
             },
+            untranslated: "Not translated yet",
             withReplacements: "Hello {{name}}, you have {{count}} messages",
             withFunction: "Result: {{getValue}}",
             withObject: "Object: {{obj}}",
@@ -70,7 +75,13 @@ describe("i18n", function () {
         },
         "hi": {
             simple: "नमस्ते",
+            untranslated: "",
             plurals: {
+                untranslated: {
+                    one: "",
+                    many: "",
+                    other: ""
+                },
                 item: {
                     one: "एक आइटम",
                     few: "कुछ आइटम",
@@ -202,6 +213,16 @@ describe("i18n", function () {
         test("Should return error if key missing in both locales", function () {
             i18n.setLocale("es-ES");
             expect(t("completely.nonexistent")).toBe("String not found!");
+        });
+
+        test("Should fall back when translation is an empty string", function () {
+            i18n.setLocale("hi");
+            expect(t("untranslated")).toBe("Not translated yet");
+        });
+
+        test("Should fall back when all plural forms are empty", function () {
+            i18n.setLocale("hi");
+            expect(t("plurals.untranslated", {count: 3})).toBe("3 files");
         });
     });
 

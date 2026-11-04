@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "plugin-uri",
         "themes": "temă",
-        "customcss": "CSS personalizat"
+        "customcss": "CSS personalizat",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -20,14 +21,37 @@
                 "mediaKeys": {
                     "name": "Dezactivează tastele Media",
                     "note": "Previn-o Discord din a fura tastele media după redarea unui videoclip."
+                },
+                "themeAttributes": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationPosition": {
+                    "name": "",
+                    "note": ""
+                },
+                "notificationEnabled": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "store": {
+                "name": "",
+                "alwaysEnable": {
+                    "name": "",
+                    "note": ""
+                },
+                "addonEmbeds": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "window": {
+                "name": "Preferinte în privința mărimii ferestrei",
                 "removeMinimumSize": {
                     "name": "Elimină mărimea minimă",
                     "note": "Elimina marimea minima de 800x500 a ferestrei"
                 },
-                "name": "Preferinte în privința mărimii ferestrei",
                 "transparency": {
                     "name": "Activează Transparența",
                     "note": "Fă ca fereastra principală să fie transparentă (necesită repornire)"
@@ -35,21 +59,79 @@
                 "frame": {
                     "name": "Cadrul ferestrei",
                     "note": "Adaugă cadrul sistemului de operare în fereastra principală"
+                },
+                "roundedCorners": {
+                    "name": "",
+                    "note": ""
+                },
+                "acceptFirstMouse": {
+                    "name": "",
+                    "note": ""
+                },
+                "vibrancy": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "none": "",
+                        "titlebar": "",
+                        "selection": "",
+                        "menu": "",
+                        "popover": "",
+                        "sidebar": "",
+                        "header": "",
+                        "sheet": "",
+                        "window": "",
+                        "hud": "",
+                        "fullscreen-ui": "",
+                        "tooltip": "",
+                        "content": "",
+                        "under-window": "",
+                        "under-page": ""
+                    }
+                },
+                "visualEffectState": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "followWindow": "",
+                        "active": "",
+                        "inactive": ""
+                    }
+                },
+                "backgroundMaterial": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "auto": "",
+                        "none": "",
+                        "mica": "",
+                        "acrylic": "",
+                        "tabbed": ""
+                    }
                 }
             },
             "addons": {
                 "name": "Manager de adăugiri",
                 "addonErrors": {
                     "name": "Arată erorile adăugirilor",
-                    "note": "Afișează un modal cu erorile plugin-urilor/temelor"
+                    "note": "Afișează un modal cu erorile plugin-urilor\/temelor"
                 },
                 "editAction": {
                     "name": "Modifică acțiunea",
                     "note": "Unde apar plugin-urile si temele atunci când sunt editate",
                     "options": {
                         "detached": "Fereastră detașabilă",
+                        "external": "",
                         "system": "Editor de sistem"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "",
+                    "note": ""
+                },
+                "updateInterval": {
+                    "name": "",
+                    "note": ""
                 }
             },
             "customcss": {
@@ -76,6 +158,7 @@
                     "options": {
                         "settings": "Meniu de setări",
                         "detached": "Fereastră detașabilă",
+                        "external": "",
                         "system": "Editor de sistem"
                     }
                 }
@@ -87,7 +170,7 @@
                     "note": "Activează deschiderea debugger-ului la apasarea tastei F8"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
+                    "name": "",
                     "note": "Instalează React Developer Tools in Discord"
                 },
                 "inspectElement": {
@@ -99,8 +182,71 @@
                     "note": "Opreste Discord-ul din a afișa mesajul \"Stai puțin!\""
                 },
                 "debugLogs": {
-                    "name": "Debug Logs",
+                    "name": "",
                     "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "webpackSourceViewer": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "theme": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "system": "",
+                        "vs-dark": "",
+                        "vs": "",
+                        "hc-black": "",
+                        "hc-light": ""
+                    }
+                },
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "insertSpaces": {
+                    "name": "",
+                    "note": ""
+                },
+                "tabSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                },
+                "alwaysOnTop": {
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -108,20 +254,70 @@
     "Addons": {
         "title": "{{name}} v{{version}} de {{author}}",
         "byline": "de {{author}}",
+        "openFolder": {
+            "plugin": "",
+            "theme": ""
+        },
+        "openStore": {
+            "plugin": "",
+            "theme": ""
+        },
+        "storeMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "store": "",
+        "viewInstalled": {
+            "plugin": "",
+            "theme": ""
+        },
         "reload": "Reîmprospatează",
         "addonSettings": "Setări",
         "website": "Site Web",
         "source": "Sursă",
         "invite": "Susține Server-ul",
         "donate": "Donează",
-        "patreon": "Patreon",
+        "patreon": "",
         "name": "Nume",
         "author": "Autor",
         "version": "Versiune",
         "added": "Data adăugării",
         "modified": "Data modificării",
+        "releaseDate": "",
+        "lastUpdated": "",
+        "isEnabled": "",
+        "popularity": "",
+        "isInstalled": "",
+        "downloads": "",
+        "likes": "",
+        "listView": "",
+        "gridView": "",
+        "enableAll": "",
+        "disableAll": "",
+        "enableAllWarning": {
+            "plugin": "",
+            "theme": ""
+        },
+        "search": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "other": ""
+            }
+        },
+        "results": {
+            "one": "",
+            "few": "",
+            "other": ""
+        },
         "editAddon": "Modifică",
         "deleteAddon": "Șterge",
+        "downloadAddon": "",
         "confirmDelete": "Ești sigur că vrei să ștergi {{name}} ?",
         "confirmationText": "Ai schimbări nesalvate la {{name}}. Închiderea acestei ferestre v-a duce la pierderea tuturor modificărilor.",
         "enabled": "{{name}} a fost activat.",
@@ -134,11 +330,62 @@
         "methodError": "{{method}} nu a putut fi executat.",
         "unknownAuthor": "Autor necunoscut",
         "noDescription": "Fără descriere.",
+        "noSettings": "",
+        "isDisabled": "",
+        "alreadyExists": {
+            "plugin": "",
+            "theme": ""
+        },
         "metaError": "META nu a putut fi analizat.",
         "missingNameData": "META nu are un nume.",
         "metaNotFound": "META nu a putut fi găsit.",
         "compileError": "Nu s-a putut incărca.",
-        "wasUnloaded": "{{name}} a fost dezactivat."
+        "wasUnloaded": "{{name}} a fost dezactivat.",
+        "blankSlateHeader": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateMessage": {
+            "plugin": "",
+            "theme": ""
+        },
+        "blankSlateHeaderGeneric": "",
+        "blankSlateMessageGeneric": "",
+        "wasLoaded": "",
+        "failedToDownload": {
+            "plugin": "",
+            "theme": ""
+        },
+        "successfullyDownload": "",
+        "alreadyInstalled": "",
+        "failedToFetch": "",
+        "new": "",
+        "updated": "",
+        "downloadCount": {
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        "likeCount": {
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        "tags": "",
+        "preview": "",
+        "official": "",
+        "manyEnabled": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "other": ""
+            }
+        }
     },
     "CustomCSS": {
         "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
@@ -147,11 +394,20 @@
         "openNative": "Deschide în editorul de sistem",
         "openDetached": "Detașează fereastra",
         "settings": "Setările editor-ului",
-        "editorTitle": "Editor de CSS personalizat"
+        "editorTitle": "Editor de CSS personalizat",
+        "cssInstallSuccess": "",
+        "cssInstalled": "",
+        "cssInstallError": "",
+        "cssReverted": "",
+        "cssReverting": "",
+        "cssKept": "",
+        "cssIsDetached": ""
     },
     "Modals": {
         "confirmAction": "Ești sigur ?",
-        "okay": "Okay",
+        "installCss": "",
+        "addonCrashed": "",
+        "okay": "",
         "done": "Gata",
         "cancel": "Anulează",
         "nevermind": "Nu contează",
@@ -164,7 +420,10 @@
         "restartNow": "Repornește acum",
         "restartLater": "Reîncarcă mai târziu",
         "additionalInfo": "Informații adiționale",
-        "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
+        "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?",
+        "changelog": "",
+        "debuglog": "",
+        "automaticallyEnable": ""
     },
     "Sorting": {
         "sortBy": "Sortează După",
@@ -175,5 +434,61 @@
     "WindowPrefs": {
         "enabledInfo": "Această opțiune necesită o temă transparentă pentru a funcționa normal. \nPe Windows ar putea putea să strice maximizarea.\nPentru ca aceste efecte să intre în vigoare, Discord trebuie să repornească. Dorești să il repornești acum ?",
         "disabledInfo": "Pentru ca aceste setări să intre în efect, Discord trebuie să repornească. Dorești să îl repornești acum ?"
+    },
+    "Toasts": {
+        "recoveryFailed": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "viewUpdates": "",
+        "addonUpdaterNotificationTitle": "",
+        "addonUpdatesAvailable": {
+            "plugin": {
+                "one": "",
+                "few": "",
+                "other": ""
+            },
+            "theme": {
+                "one": "",
+                "few": "",
+                "other": ""
+            }
+        },
+        "addonUpdated": "",
+        "addonUpdateFailed": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": {
+            "plugin": "",
+            "theme": ""
+        },
+        "updateButton": ""
+    },
+    "Settings": {
+        "customColor": "",
+        "resetSettings": "",
+        "resetSettingsWarning": ""
+    },
+    "Socials": {
+        "twitter": "",
+        "github": ""
+    },
+    "Paginator": {
+        "back": "",
+        "next": ""
+    },
+    "Recovery": {
+        "button": "",
+        "suspect": "",
+        "report": "",
+        "safeMode": "",
+        "joinSupport": ""
     }
 }
