@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useMemo, type ReactNode} from "react";
 import {useItemProps, type BaseSettingProps} from "./utils";
 
 export interface RadioOption {
@@ -6,6 +6,9 @@ export interface RadioOption {
     value: any;
     color?: string;
     description?: string;
+
+    /** Shown in the option's row after its label, such as a field for a custom value. Clicks on it don't pick the option. */
+    control?: ReactNode;
 }
 
 interface BaseRadioProps {
@@ -48,18 +51,28 @@ export default function Radio(props: RadioProps) {
             {options.map((opt, i) => {
                 const isSelected = index === i;
 
-                return (
-                    <label key={i} className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
-                        <input onChange={setState.bind(null, opt.value, false)} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
+                const optionClass = "bd-radio-option" + (isSelected ? " bd-radio-selected" : "");
+                const style = {borderColor: opt.color ?? "transparent"};
+                const body = <>
+                    <input onChange={setState.bind(null, opt.value, false)} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
 
-                        <RadioIndicator checked={isSelected} />
+                    <RadioIndicator checked={isSelected} />
 
-                        <div className="bd-radio-label-wrap">
-                            <div className="bd-radio-label">{opt.name}</div>
-                            <div className="bd-radio-description">{opt.description}</div>
-                        </div>
-                    </label>
-                );
+                    <div className="bd-radio-label-wrap">
+                        <div className="bd-radio-label">{opt.name}</div>
+                        <div className="bd-radio-description">{opt.description}</div>
+                    </div>
+                </>;
+
+                // The control sits outside the label, so clicking or typing in it leaves the option as it is
+                if (opt.control) {
+                    return <div key={i} className={optionClass + " bd-radio-option-with-control"} style={style}>
+                        <label className="bd-radio-option-label">{body}</label>
+                        <div className="bd-radio-option-control">{opt.control}</div>
+                    </div>;
+                }
+
+                return <label key={i} className={optionClass} style={style}>{body}</label>;
             })}
         </div>
     );

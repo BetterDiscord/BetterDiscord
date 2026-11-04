@@ -34,7 +34,7 @@
     color: var(--interactive-text-active);
 }
 
-.bd-radio-option input {
+.bd-radio-option input[type="radio"] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
@@ -72,4 +72,25 @@
     font-size: 14px;
     line-height: 18px;
     font-weight: 400;
+}
+
+/* An option with a control: the label keeps the click area, and the control sits at the end of the row */
+.bd-radio-option.bd-radio-option-with-control {
+    flex-wrap: wrap;
+    padding: 4px 16px 4px 0;
+    cursor: default;
+}
+
+.bd-radio-option-label {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0 8px 16px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.bd-radio-option-control {
+    margin-left: auto;
+    min-width: 0;
 }

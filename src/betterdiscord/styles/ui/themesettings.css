@@ -162,18 +162,47 @@
     display: flex;
 }
 
-/* TODO: reconsider below, this looks weird */
-
-/* Custom: the type's control sits under the keywords, marked by a line on its left */
+/* Custom under radios: the type's control, greyed out and unclickable until Custom is picked */
 .bd-theme-custom {
-    margin: 4px 0 0 19px;
-    padding: 12px 0 4px 16px;
-    border-left: 2px solid var(--bd-brand);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
-/* Under a dropdown there are no radio labels to line up with, so the Custom control isn't indented */
-.bd-theme-custom.bd-theme-custom-below {
-    margin-left: 0;
+.bd-theme-custom:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* A Custom option's row is as tight as an inline row, so its controls take the inline sizes */
+.bd-theme-custom .bd-color-picker-swatch {
+    max-width: 220px;
+    margin-top: 1px;
+}
+
+.bd-theme-custom .bd-color-picker-default,
+.bd-theme-custom .bd-color-picker {
+    width: 50px;
+    height: 40px;
+}
+
+.bd-theme-custom .bd-color-picker-swatch-item {
+    width: 18px;
+    height: 18px;
+    margin: 2px;
+}
+
+/* Beats the top margin slider.css gives a slider that isn't inline */
+.bd-setting-item .bd-theme-custom .bd-slider-wrap {
+    margin-top: 0;
+}
+
+/* Custom under a dropdown: the type's control on its own line, aligned right under the dropdown */
+.bd-theme-custom-below {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
 }
 
 /* A link setting: the field or the picked image, with Browse beside it */

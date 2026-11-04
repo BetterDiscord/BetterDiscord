@@ -204,24 +204,28 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
     }
 }
 
-/** Builds a `custom` control: its keywords and Custom, and the type's control when Custom is picked. */
+/**
+ * Builds a `custom` control: its keywords and Custom, and the type's control. Under a dropdown the type's control
+ * shows under the note once Custom is picked. Under radios it sits in the Custom option's row and is greyed out
+ * until Custom is picked, showing the value Custom would apply.
+ */
 function buildCustomControl(setting: ThemeSetting, control: CustomControl, custom: CustomChoice, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
     const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
-    const typeControl = custom.isCustom && buildControl(setting, control.control, custom.isKeyword ? "" : value, apply, savedValue).element;
+    const typeValue = custom.isKeyword ? control.starter ?? "" : value;
+    const typeControl = buildControl(setting, control.control, typeValue, apply, savedValue).element;
 
-    // A dropdown stays in the header like any other dropdown, and the Custom control goes under the note
     if (control.display === "dropdown") {
         return {
             element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
-            below: typeControl && <div className="bd-theme-custom bd-theme-custom-below">{typeControl}</div>
+            below: custom.isCustom && <div className="bd-theme-custom-below">{typeControl}</div>
         };
     }
 
+    // A disabled fieldset disables every field and button inside it, and the class stops clicks on the rest
+    const customControl = <fieldset className="bd-theme-custom" disabled={!custom.isCustom}>{typeControl}</fieldset>;
+    const radioOptions = options.map(o => ({name: o.label, value: o.value, control: o.value === customChoice ? customControl : undefined}));
     return {
-        element: <>
-            <Radio name={setting.property} options={options.map(o => ({name: o.label, value: o.value}))} value={custom.picked} onChange={custom.pick} />
-            {typeControl && <div className="bd-theme-custom">{typeControl}</div>}
-        </>
+        element: <Radio name={setting.property} options={radioOptions} value={custom.picked} onChange={custom.pick} />
     };
 }
 
