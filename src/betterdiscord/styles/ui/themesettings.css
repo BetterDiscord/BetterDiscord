@@ -177,7 +177,6 @@
 
 /* A Custom option's row is as tight as an inline row, so its controls take the inline sizes */
 .bd-theme-custom .bd-color-picker-swatch {
-    max-width: 220px;
     margin-top: 1px;
 }
 
