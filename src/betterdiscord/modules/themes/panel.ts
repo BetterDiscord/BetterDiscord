@@ -141,7 +141,7 @@ export function isInline(control: ThemeControl) {
 }
 
 /** Stands for the Custom option among a `custom` control's keywords, and can't match any keyword. */
-export const customChoice = Symbol("custom");
+export const customOption = Symbol("custom");
 
 /** What a `custom` control shows for a value. */
 export interface CustomChoiceState {
@@ -150,22 +150,22 @@ export interface CustomChoiceState {
     /** The type's control shows, because the value isn't a keyword or the user picked Custom and hasn't typed yet. */
     isCustom: boolean;
 
-    picked: string | typeof customChoice;
+    picked: string | typeof customOption;
 }
 
 /** Works out what a `custom` control shows. `isWaiting` is true after the user picks Custom on a setting without a starter. */
 export function readCustomChoice(options: readonly KeywordOption[], value: string, isWaiting: boolean): CustomChoiceState {
     const isKeyword = options.some(o => o.value === value);
     const isCustom = !isKeyword || isWaiting;
-    return {isKeyword, isCustom, picked: isCustom ? customChoice : value};
+    return {isKeyword, isCustom, picked: isCustom ? customOption : value};
 }
 
 /**
  * What picking an option in a `custom` control does. A keyword applies at once. Custom applies the starter, or
  * waits for the user to type when there's none, and does nothing when Custom is already showing.
  */
-export function pickCustomChoice(control: {starter: string | null;}, choice: string | typeof customChoice, isCustom: boolean): {apply: string;} | {wait: true;} | null {
-    if (choice !== customChoice) return {apply: choice};
+export function pickCustomChoice(control: {starter: string | null;}, choice: string | typeof customOption, isCustom: boolean): {apply: string;} | {wait: true;} | null {
+    if (choice !== customOption) return {apply: choice};
     if (isCustom) return null;
     return control.starter === null ? {wait: true} : {apply: control.starter};
 }

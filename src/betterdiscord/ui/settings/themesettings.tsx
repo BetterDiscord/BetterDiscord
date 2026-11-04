@@ -7,7 +7,7 @@ import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
 import ThemeValues, {themeImages} from "@modules/themes/store";
 import {describeUrlValue, maxImageBytes, type CopyError} from "@modules/themes/images";
-import {customChoice, groupSettings, isInline, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
+import {customOption, groupSettings, isInline, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
@@ -248,7 +248,7 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
  * until Custom is picked, showing the value Custom would apply.
  */
 function buildCustomControl(setting: ThemeSetting, control: CustomControl, custom: CustomChoice, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
-    const options = [...control.options, {value: customChoice, label: t("ThemeSettings.custom")}];
+    const options = [...control.options, {value: customOption, label: t("ThemeSettings.custom")}];
     const typeValue = custom.isKeyword ? control.starter ?? "" : value;
     const typeControl = buildControl(setting, control.control, typeValue, apply, savedValue).element;
 
@@ -261,7 +261,7 @@ function buildCustomControl(setting: ThemeSetting, control: CustomControl, custo
 
     // A disabled fieldset disables every field and button inside it, and the class stops clicks on the rest
     const customControl = <fieldset className="bd-theme-custom" disabled={!custom.isCustom}>{typeControl}</fieldset>;
-    const radioOptions = options.map(o => ({name: o.label, value: o.value, control: o.value === customChoice ? customControl : undefined}));
+    const radioOptions = options.map(o => ({name: o.label, value: o.value, control: o.value === customOption ? customControl : undefined}));
     return {
         element: <Radio name={setting.property} options={radioOptions} value={custom.picked} onChange={custom.pick} />
     };
@@ -296,7 +296,7 @@ function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
 
 /** What a `custom` control shows, and how picking from its keywords and Custom changes the value. */
 interface CustomChoice extends CustomChoiceState {
-    pick(choice: string | typeof customChoice): void;
+    pick(choice: string | typeof customOption): void;
 }
 
 /**
@@ -311,7 +311,7 @@ function useCustomChoice(control: ThemeControl, value: string, apply: ApplyValue
     const state = readCustomChoice(control.options, value, isWaiting);
     if (isWaiting && !state.isKeyword) setIsWaiting(false);
 
-    const pick = (choice: string | typeof customChoice) => {
+    const pick = (choice: string | typeof customOption) => {
         const action = pickCustomChoice(control, choice, state.isCustom);
         if (!action) return;
         setIsWaiting("wait" in action);

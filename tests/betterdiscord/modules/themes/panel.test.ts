@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {customChoice, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
+import {customOption, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 function rule(property: string, group?: string) {
@@ -165,15 +165,15 @@ describe("custom choices", () => {
 
     test("show Custom for a value that isn't a keyword, or while waiting for one", () => {
         expect(readCustomChoice(options, "none", false)).toEqual({isKeyword: true, isCustom: false, picked: "none"});
-        expect(readCustomChoice(options, "url(\"a.png\")", false)).toEqual({isKeyword: false, isCustom: true, picked: customChoice});
-        expect(readCustomChoice(options, "none", true)).toEqual({isKeyword: true, isCustom: true, picked: customChoice});
+        expect(readCustomChoice(options, "url(\"a.png\")", false)).toEqual({isKeyword: false, isCustom: true, picked: customOption});
+        expect(readCustomChoice(options, "none", true)).toEqual({isKeyword: true, isCustom: true, picked: customOption});
     });
 
     test("picking a keyword applies it, and picking Custom applies the starter or waits", () => {
         expect(pickCustomChoice({starter: "#000000"}, "none", true)).toEqual({apply: "none"});
-        expect(pickCustomChoice({starter: "#000000"}, customChoice, false)).toEqual({apply: "#000000"});
-        expect(pickCustomChoice({starter: null}, customChoice, false)).toEqual({wait: true});
-        expect(pickCustomChoice({starter: null}, customChoice, true)).toBeNull();
+        expect(pickCustomChoice({starter: "#000000"}, customOption, false)).toEqual({apply: "#000000"});
+        expect(pickCustomChoice({starter: null}, customOption, false)).toEqual({wait: true});
+        expect(pickCustomChoice({starter: null}, customOption, true)).toBeNull();
     });
 });
 
