@@ -85,7 +85,7 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
         ? <a className="bd-link bd-link-website" href={addon.authorLink} target="_blank" rel="noopener noreferrer">{author}</a>
         : <span>{author}</span>;
 
-    return [
+    useLayoutEffect(() => {
         set(
             <SettingsTitle
                 key="title"
@@ -99,8 +99,11 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
                     </div>
                 )}
             />
-        ),
-        <div key="content" ref={rootRef} className="bd-addon-settings">
+        );
+    }, [set, close, title, name]);
+
+    return (
+        <div ref={rootRef} className="bd-addon-settings">
             <div className="bd-addon-settings-intro">
                 <div className="bd-addon-settings-heading">
                     <span className="bd-addon-settings-name">{name}</span>
@@ -115,5 +118,5 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
                     : <ErrorBoundary id={`addon-settings-${addon.id}`} name="Addon Settings">{panel?.content}</ErrorBoundary>}
             </div>
         </div>
-    ];
+    );
 }

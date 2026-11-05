@@ -79,10 +79,13 @@ export default function Select(props: SelectProps) {
     const chosen = multiple ? options.filter(option => picked.some(value => value == option.value)) : [];
     const chosenKey = chosen.map(option => String(option.value)).join("\0");
     const [fitKey, setFitKey] = useState(chosenKey);
-    if (fitKey !== chosenKey) {
-        setFitKey(chosenKey);
-        setSummarize(false);
-    }
+
+    React.useEffect(() => {
+        if (fitKey !== chosenKey) {
+            setFitKey(chosenKey);
+            setSummarize(false);
+        }
+    }, [chosenKey, fitKey]);
 
     const change = useCallbackRef((val: any) => {
         setState(val);
