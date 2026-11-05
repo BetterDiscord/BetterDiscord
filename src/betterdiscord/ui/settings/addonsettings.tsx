@@ -1,5 +1,5 @@
 import Logger from "@common/logger";
-import React, {useCallback, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import {ChevronRightIcon} from "lucide-react";
 import SimpleMarkdown from "@structs/markdown";
@@ -12,7 +12,6 @@ import {useStateFromStores} from "@ui/hooks";
 import {SettingsTitleContext} from "@ui/settings";
 import {addonContext, addonText, authorByline} from "./addonshared";
 import type {Plugin} from "@modules/pluginmanager";
-import type {ReactNode} from "react";
 
 function sameSnapshot(left: {addon: Plugin; instance: Plugin["instance"];} | null, right: {addon: Plugin; instance: Plugin["instance"];} | null) {
     return left?.addon === right?.addon && left?.instance === right?.instance;
@@ -26,12 +25,27 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
         if (!addon) return null;
         return {addon, instance: addon.instance};
     }, [addonId], sameSnapshot);
-    const [panel, setPanel] = useState<{content: ReactNode; error: Error | null;} | null>(null);
     const rootRef = useRef<HTMLDivElement>(null);
 
     const close = useCallback(() => {
         closeSettings();
     }, [closeSettings]);
+
+    const panel = useMemo<{content: ReactNode; error: Error | null;} | null>(() => {
+        if (!snapshot) return null;
+        const instance = snapshot.instance;
+        if (!instance || typeof instance.getSettingsPanel !== "function") return {content: null, error: new Error("No settings panel")};
+        try {
+            const next = instance.getSettingsPanel();
+            if (next == null) return {content: null, error: new Error("No settings panel")};
+            return {content: Modals.createAddonSettingsContent(next), error: null};
+        }
+        catch (err) {
+            return {content: null, error: err instanceof Error ? err : new Error(String(err))};
+        }
+    }, [snapshot]);
+
+    const titleName = snapshot ? addonText(snapshot.addon.name) : null;
 
     useLayoutEffect(() => {
         const root = rootRef.current;
@@ -42,37 +56,33 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
         return () => host.classList.remove("bd-addon-settings-host");
     }, [addonId]);
 
+    useLayoutEffect(() => {
+        if (titleName == null) return;
+        set(
+            <SettingsTitle
+                key="title"
+                text={(
+                    <div className="bd-addon-title" data-showing-settings="true">
+                        <span onClick={close}>{title}</span>
+                        <span className="bd-addon-title-current">
+                            <ChevronRightIcon size="24px" />
+                            <span>{titleName}</span>
+                        </span>
+                    </div>
+                )}
+            />
+        );
+    }, [set, close, title, titleName]);
+
     useEffect(() => {
-        if (!snapshot) {
-            closeSettings();
-            return;
-        }
-
-        const name = addonText(snapshot.addon.name);
-        const fail = (error: Error) => {
-            setPanel({content: null, error});
-            Toasts.show(t("Addons.settingsError", {name}), {type: "error"});
-            Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", error);
-        };
-
-        const instance = snapshot.instance;
-        if (!instance || typeof instance.getSettingsPanel !== "function") {
-            fail(new Error("No settings panel"));
-            return;
-        }
-
-        try {
-            const next = instance.getSettingsPanel();
-            if (next == null) {
-                fail(new Error("No settings panel"));
-                return;
-            }
-            setPanel({content: Modals.createAddonSettingsContent(next), error: null});
-        }
-        catch (err) {
-            fail(err instanceof Error ? err : new Error(String(err)));
-        }
+        if (!snapshot) closeSettings();
     }, [snapshot, closeSettings]);
+
+    useEffect(() => {
+        if (!panel?.error || titleName == null) return;
+        Toasts.show(t("Addons.settingsError", {name: titleName}), {type: "error"});
+        Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + titleName + ".", panel.error);
+    }, [panel, titleName]);
 
     if (!snapshot) return null;
 
@@ -84,23 +94,6 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
     const authorNode = addon.authorLink
         ? <a className="bd-link bd-link-website" href={addon.authorLink} target="_blank" rel="noopener noreferrer">{author}</a>
         : <span>{author}</span>;
-
-    useLayoutEffect(() => {
-        set(
-            <SettingsTitle
-                key="title"
-                text={(
-                    <div className="bd-addon-title" data-showing-settings="true">
-                        <span onClick={close}>{title}</span>
-                        <span className="bd-addon-title-current">
-                            <ChevronRightIcon size="24px" />
-                            <span>{name}</span>
-                        </span>
-                    </div>
-                )}
-            />
-        );
-    }, [set, close, title, name]);
 
     return (
         <div ref={rootRef} className="bd-addon-settings">

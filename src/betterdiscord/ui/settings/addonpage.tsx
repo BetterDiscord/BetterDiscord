@@ -19,20 +19,30 @@ export default function AddonPage(props: {title: string; store: AddonManager;}) 
     const closeSettings = useCallback(() => setOpenedId(null), []);
     const showingStore = showStore || pendingStore;
 
-    useLayoutEffect(() => {
-        if (!pendingSettings) return;
-        const exists = props.store.addonList.some(addon => addon.id === pendingSettings);
-        AddonSettingsRoute.close();
-        if (!exists) return;
-        setOpenedId(pendingSettings);
-        setShowStore(false);
-    }, [pendingSettings, props.store]);
+    const [seenSettings, setSeenSettings] = useState<string | null>(null);
+    if (pendingSettings !== seenSettings) {
+        setSeenSettings(pendingSettings);
+        if (pendingSettings && props.store.addonList.some(addon => addon.id === pendingSettings)) {
+            setOpenedId(pendingSettings);
+            setShowStore(false);
+        }
+    }
+
+    const [seenStore, setSeenStore] = useState(false);
+    if (pendingStore !== seenStore) {
+        setSeenStore(pendingStore);
+        if (pendingStore) {
+            setOpenedId(null);
+            setShowStore(true);
+        }
+    }
 
     useLayoutEffect(() => {
-        if (!pendingStore) return;
-        setOpenedId(null);
-        setShowStore(true);
-        AddonSettingsRoute.consumeStore(props.store.prefix);
+        if (pendingSettings) AddonSettingsRoute.close();
+    }, [pendingSettings]);
+
+    useLayoutEffect(() => {
+        if (pendingStore) AddonSettingsRoute.consumeStore(props.store.prefix);
     }, [pendingStore, props.store.prefix]);
 
     return (

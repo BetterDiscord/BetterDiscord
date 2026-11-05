@@ -175,7 +175,9 @@ function ArrayCell({column, value, disabled, onChange}: {column: Extract<Column,
                         event.preventDefault();
                         commit(event.currentTarget.value);
                     }
-                    else if (event.key === "Backspace" && !event.currentTarget.value && list.length) onChange(list.slice(0, -1));
+                    else if (event.key === "Backspace" && !event.currentTarget.value && list.length) {
+                        onChange(list.slice(0, -1));
+                    }
                 }}
                 onBlur={(event) => {
                     if (event.currentTarget.value) commit(event.currentTarget.value);
@@ -289,61 +291,53 @@ export default function Table(props: TableProps) {
         return () => observer.disconnect();
     }, [tracks, rows.length]);
 
-    useEffect(() => {
-        setRowKeys(keys => {
-            if (keys.length === rows.length) return keys;
-            if (keys.length > rows.length) return keys.slice(0, rows.length);
-            return keys.concat(Array.from({length: rows.length - keys.length}, () => crypto.randomUUID()));
-        });
-    }, [rows.length]);
+    const keys = rows.map((_, index) => rowKeys[index] ?? `row-${index}`);
 
     const updateCell = (index: number, id: string, value: TableCellValue) => {
         setState(rows.map((row, rowIndex) => rowIndex === index ? {...row, [id]: value} : row));
     };
 
     const removeRow = (index: number) => {
-        setRowKeys(keys => keys.filter((_, keyIndex) => keyIndex !== index));
+        setRowKeys(keys.filter((_, keyIndex) => keyIndex !== index));
         setState(rows.filter((_, rowIndex) => rowIndex !== index));
     };
 
     const duplicateRow = (index: number) => {
         const next = rows.slice();
         next.splice(index + 1, 0, copyRow(rows[index]));
-        setRowKeys(keys => {
-            const copy = keys.slice();
-            copy.splice(index + 1, 0, crypto.randomUUID());
-            return copy;
-        });
+        const copy = keys.slice();
+        copy.splice(index + 1, 0, crypto.randomUUID());
+        setRowKeys(copy);
         setState(next);
     };
 
     const addRow = () => {
-        setRowKeys(keys => [...keys, crypto.randomUUID()]);
+        setRowKeys([...keys, crypto.randomUUID()]);
         setState([...rows, createRow(columns)]);
     };
 
     const reorder = (fromKey: string, toKey: string, pos: "before" | "after") => {
         if (fromKey === toKey) return;
-        const keys = rowKeys.slice();
-        const from = keys.indexOf(fromKey);
+        const order = keys.slice();
+        const from = order.indexOf(fromKey);
         if (from < 0) return;
         const nextRows = rows.slice();
         const [row] = nextRows.splice(from, 1);
-        keys.splice(from, 1);
-        let to = keys.indexOf(toKey);
+        order.splice(from, 1);
+        let to = order.indexOf(toKey);
         if (to < 0) return;
         if (pos === "after") to += 1;
         nextRows.splice(to, 0, row);
-        keys.splice(to, 0, fromKey);
-        setRowKeys(keys);
+        order.splice(to, 0, fromKey);
+        setRowKeys(order);
         setState(nextRows);
     };
 
     const moveBy = (key: string, delta: number) => {
-        const index = rowKeys.indexOf(key);
+        const index = keys.indexOf(key);
         const target = index + delta;
-        if (index < 0 || target < 0 || target >= rowKeys.length) return;
-        reorder(key, rowKeys[target], delta < 0 ? "before" : "after");
+        if (index < 0 || target < 0 || target >= keys.length) return;
+        reorder(key, keys[target], delta < 0 ? "before" : "after");
     };
 
     return (
@@ -360,7 +354,7 @@ export default function Table(props: TableProps) {
                         <div role="columnheader"><span className="bd-table-sr">Actions</span></div>
                     </div>
                     {rows.map((row, index) => {
-                        const key = rowKeys[index] ?? `row-${index}`;
+                        const key = keys[index];
                         const rowClass = clsx(
                             "bd-table-grid",
                             "bd-table-row",

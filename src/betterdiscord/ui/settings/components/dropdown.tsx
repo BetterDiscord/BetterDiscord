@@ -74,18 +74,11 @@ export default function Select(props: SelectProps) {
     const [query, setQuery] = useState("");
     const [ordered, setOrdered] = useState(options);
     const valueRef = useRef<HTMLSpanElement>(null);
-    const [summarize, setSummarize] = useState(false);
+    const [summarizedKey, setSummarizedKey] = useState<string | null>(null);
     const picked = multiple && Array.isArray(state) ? state : [];
     const chosen = multiple ? options.filter(option => picked.some(value => value == option.value)) : [];
     const chosenKey = chosen.map(option => String(option.value)).join("\0");
-    const [fitKey, setFitKey] = useState(chosenKey);
-
-    React.useEffect(() => {
-        if (fitKey !== chosenKey) {
-            setFitKey(chosenKey);
-            setSummarize(false);
-        }
-    }, [chosenKey, fitKey]);
+    const summarize = summarizedKey === chosenKey;
 
     const change = useCallbackRef((val: any) => {
         setState(val);
@@ -97,7 +90,7 @@ export default function Select(props: SelectProps) {
     useLayoutEffect(() => {
         if (!multiple || summarize || chosen.length < 2) return;
         const box = valueRef.current;
-        if (box && box.scrollWidth > box.clientWidth) setSummarize(true);
+        if (box && box.scrollWidth > box.clientWidth) setSummarizedKey(chosenKey);
     }, [multiple, summarize, chosen.length, chosenKey]);
 
     useLayoutEffect(() => {
