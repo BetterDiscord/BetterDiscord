@@ -75,7 +75,7 @@ class BrowserWindow extends electron.BrowserWindow {
 
         const backgroundMaterial = BetterDiscord.getSetting("window", "backgroundMaterial");
         if (process.platform === "win32" && backgroundMaterial) {
-            options.backgroundColor = "#00000000";
+            options.backgroundColor = backgroundMaterial === "none" ? "FFFFFF" : "#00000000";
             options.backgroundMaterial = backgroundMaterial;
         }
 
