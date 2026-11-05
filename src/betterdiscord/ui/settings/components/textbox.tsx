@@ -7,12 +7,13 @@ interface BaseTextboxProps {
     onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
     onChange?(newValue: string): void;
     disabled?: boolean;
+    ariaLabel?: string;
 }
 
 export type TextboxProps = BaseTextboxProps & BaseSettingProps<string>;
 
 export default function Textbox(props: TextboxProps) {
-    const {maxLength, placeholder, onKeyDown} = props;
+    const {maxLength, placeholder, onKeyDown, ariaLabel} = props;
 
     const {state, setState, disabled} = useItemProps<string, ChangeEvent<HTMLInputElement>>(props, e => e.currentTarget.value);
 
@@ -23,6 +24,7 @@ export default function Textbox(props: TextboxProps) {
             type="text"
             className="bd-text-input"
             placeholder={placeholder}
+            aria-label={ariaLabel}
             maxLength={maxLength}
             value={state}
             disabled={disabled}

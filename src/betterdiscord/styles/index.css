@@ -5,6 +5,7 @@
 @import "./builtins/customcss.css";
 @import "./ui/addonlist.css";
 @import "./ui/addonstore.css";
+@import "./ui/addonsettings.css";
 @import "./ui/bdsettings.css";
 @import "./ui/changelog.css";
 @import "./ui/checkbox.css";
@@ -25,6 +26,7 @@
 @import "./ui/sidebar.css";
 @import "./ui/slider.css";
 @import "./ui/switch.css";
+@import "./ui/table.css";
 @import "./ui/tabbar.css";
 @import "./ui/textbox.css";
 @import "./ui/toasts.css";
