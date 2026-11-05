@@ -196,7 +196,7 @@ const MenuComponents = {
 startupComplete = Object.values(MenuComponents).every(v => v);
 
 if (!startupComplete) {
-    const REGEX = /(function .{1,3}\(.{1,3}\){return null}){5}/;
+    const REGEX = /(([$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*):function\((.{1,3})?\)\{return null\},?){5}|(function .{1,3}\(.{1,3}\)\{return null\}){5}/u;
     const EXTRACT_REGEX = /\.type===.{1,3}\.(.{1,3})\)return .{1,3}\.push\((?:null!=.{1,3}\.props\..+?)?{type:"(.+?)",/g;
     const EXTRACT_GROUP_REGEX = /\.type===.{1,3}\.(.{1,3})\){.+{type:"groupstart"/;
     const EXTRACT_GROUP_ITEM_REGEX = /\.type===.{1,3}\.(.{1,3})\){.+{type:"(groupstart|customitem)".+\.type===.{1,3}\.(.{1,3})\){.+?{type:"(groupstart|customitem)"/;
