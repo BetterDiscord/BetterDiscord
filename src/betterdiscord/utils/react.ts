@@ -1,4 +1,5 @@
 import type {Fiber} from "react-reconciler";
+import type {Webpack} from "@typed/discord";
 import DiscordModules from "@modules/discordmodules";
 import React, {type RefObject} from "react";
 
@@ -241,4 +242,70 @@ export function wrapInHooks<T extends React.FC<P>, P>(
             Object.assign(reactDispatcher, originalDispatcher);
         }
     };
+}
+
+/**
+ * React's `SyncLane`, its highest priority, so the fiber renders right away. Queuing and scheduling the render
+ * have to use the same lane, otherwise React stops rendering new components.
+ */
+const SYNC_LANE = 2;
+
+/**
+ * React's `ForceUpdateForLegacySuspense` fiber flag. A fiber with it counts as changed, so it renders even when its
+ * props are the same, which a memoized component would otherwise skip.
+ */
+const FORCE_UPDATE_FLAG = 131072;
+
+function forceUpdateFiber(fiber: Fiber) {
+    const reconciler = DiscordModules.ReactConciler;
+    if (!reconciler?.enqueueConcurrentRenderForLane || !reconciler.scheduleUpdateOnFiber) return;
+
+    fiber.flags |= FORCE_UPDATE_FLAG;
+    if (fiber.alternate) fiber.alternate.flags |= FORCE_UPDATE_FLAG;
+
+    const root = reconciler.enqueueConcurrentRenderForLane(fiber, SYNC_LANE);
+    if (root) reconciler.scheduleUpdateOnFiber(root, fiber, SYNC_LANE);
+}
+
+/**
+ * Patched functions keep the function they replaced in `__originalFunction`, so a component
+ * and all its patched versions lead back to the same function.
+ */
+function getOriginalFunction(component: any) {
+    return component?.__originalFunction ?? component;
+}
+
+function getRootFiber(): Fiber | undefined {
+    const container = document.getElementById("app-mount");
+    if (!container) return;
+
+    const key = Object.keys(container).find(k => k.startsWith("__reactContainer$"));
+    if (!key) return;
+
+    const root = container[key as keyof typeof container] as Fiber;
+    return root.stateNode?.current ?? root;
+}
+
+export function rerenderComponent(component: Webpack.ModuleWithKey | unknown, filter?: (fiber: Fiber) => boolean) {
+    if (Array.isArray(component)) component = component[0]?.[component[1]];
+
+    const original = getOriginalFunction(component);
+    if (typeof original !== "function") return;
+
+    const stack: Array<Fiber | null | undefined> = [getRootFiber()];
+    while (stack.length) {
+        const fiber = stack.pop();
+        if (!fiber) continue;
+
+        stack.push(fiber.sibling, fiber.child);
+        if (getOriginalFunction(fiber.type) !== original || (filter && !filter(fiber))) continue;
+
+        for (const instance of [fiber, fiber.alternate]) {
+            if (!instance) continue;
+            if (instance.elementType === instance.type) instance.elementType = component;
+            instance.type = component;
+        }
+
+        forceUpdateFiber(fiber);
+    }
 }

@@ -1,5 +1,5 @@
 import NodePatcher from "@modules/nodepatcher";
-import {getInternalInstance, getOwnerInstance, getType, wrapElement, wrapInHooks} from "@utils/react";
+import {getInternalInstance, getOwnerInstance, getType, rerenderComponent, wrapElement, wrapInHooks} from "@utils/react";
 
 /**
  * `ReactUtils` is a utility class for interacting with React internals. An instance is available on {@link BdApi}.
@@ -56,6 +56,22 @@ class ReactUtils {
      * Gets the type of a React component, going through things such as forwardRef and memo
      */
     getType = getType;
+
+    /**
+     * Re-renders every mounted instance of a component, using the component as it is now.
+     * Mounted components keep the function they were created with, so patching or unpatching
+     * a component only shows once it mounts again. Call this right after patching or unpatching
+     * to apply the change immediately.
+     *
+     * @example
+     * const [module, key] = BdApi.Webpack.getModule(filter, {withKey: true});
+     * BdApi.Patcher.after("MyPlugin", module, key, (_, args, ret) => {...});
+     * BdApi.ReactUtils.rerenderComponent([module, key]);
+     *
+     * @param component The component, or the `[module, key]` it is exported under
+     * @param filter Optional filter to only re-render matching fibers
+     */
+    rerenderComponent = rerenderComponent;
 
     /**
      * Creates a NodePatcher instance which is used to patch React nodes
