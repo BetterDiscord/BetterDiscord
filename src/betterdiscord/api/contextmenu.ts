@@ -213,17 +213,21 @@ if (!startupComplete) {
     }
 
     for (const key in webpackRequire.m) {
+        if (menuItemsId === undefined) break;
         if (Object.prototype.hasOwnProperty.call(webpackRequire.m, key)) {
             const string = webpackRequire.m[key].toString();
 
-            if (string.includes(menuItemsId!) && string.includes("Menu API only allows Items and groups of Items as children")) {
+            if (string.includes(menuItemsId) && string.includes("Menu API only allows Items and groups of Items as children")) {
                 menuParser = string;
                 break;
             }
         }
     }
 
-    const contextMenuComponents = webpackRequire(menuItemsId!);
+    // Requiring an unknown id throws inside Discord's webpack runtime and aborts all of BetterDiscord's startup,
+    // so a miss here leaves the components unset and lets initialize() skip the context menu API instead.
+    if (menuItemsId === undefined) Logger.error("ContextMenu~Components", "Could not find the menu item components module.");
+    const contextMenuComponents: Record<string, any> = menuItemsId === undefined ? {} : webpackRequire(menuItemsId);
 
     for (const [, key, type] of menuParser.matchAll(EXTRACT_REGEX)) {
         switch (type) {
