@@ -6,6 +6,7 @@ interface SwitchPropsBase {
     id?: string;
     value: boolean;
     disabled?: boolean;
+    ariaLabel?: string;
     onChange?(newValue?: boolean): void;
 }
 
@@ -21,7 +22,7 @@ export default function Switch(props: SwitchProps) {
                 "bd-switch-checked": state
             })}
         >
-            <input id={props.id} type="checkbox" disabled={disabled} checked={state} onChange={toggle} />
+            <input id={props.id} type="checkbox" aria-label={props.ariaLabel} disabled={disabled} checked={state} onChange={toggle} />
 
             <div className="bd-switch-body">
                 <svg className="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet">

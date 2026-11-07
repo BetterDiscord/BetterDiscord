@@ -43,7 +43,7 @@ const effect = (require: Webpack.Require) => {
         }
     };
 
-    const IS_CLASSNAME_MODULE = /^\d+(?:e\d+)?\((.{1,3}),.{1,3},.{1,3}\){("use strict";)?\1.exports={.+}}$/;
+    const IS_CLASSNAME_MODULE = /^\d+\((.{1,3})(?:,.{1,3},.{1,3})?\){\1\.exports={.+}}$/;
     const EXTRACT_CLASS = /^(.+?)_/;
 
     const USES_STEMMER = /\((\d+)\)\.newStemmer\("[^"]+"\);/;
