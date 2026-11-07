@@ -73,7 +73,7 @@ class JsonStore extends Store {
 
     // Plugin data
     #getPluginFile(pluginName: string) {
-        return path.resolve(Config.get("pluginsPath"), pluginName + ".config.json");
+        return path.resolve(Config.get("pluginDataPath"), pluginName + ".config.json");
     }
 
     #ensurePluginData(pluginName: string) {
@@ -250,6 +250,28 @@ class JsonStore extends Store {
         }
 
         listeners.all.delete(callback);
+    }
+
+    public transferPluginConfigs() {
+        try {
+            const files: string[] = fs.readdirSync(path.resolve(Config.get("pluginsPath")))
+                .filter((file: string) => file.endsWith(".config.json"));
+            if (files.length) {
+                files.forEach(file => {
+                    const oldPath = path.join(Config.get("pluginsPath"), file);
+                    const newPath = path.join(Config.get("pluginDataPath"), file);
+                    try {
+                        fs.renameSync(oldPath, newPath);
+                    }
+                    catch (err) {
+                        Logger.err("JsonStore", `Failed to transfer ${file}`, err);
+                    }
+                });
+            }
+        }
+        catch (err) {
+            Logger.err("JsonStore", "Failed to transfer config files", err);
+        }
     }
 };
 
