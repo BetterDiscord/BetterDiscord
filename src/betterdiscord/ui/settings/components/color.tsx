@@ -37,6 +37,7 @@ const getRGB = (color: HexString) => {
 
 const luma = (color: HexString | number[]) => {
     const rgb = (typeof (color) === "string") ? getRGB(color) : color;
+    if (!rgb) return 0;
     return (0.2126 * rgb![0]) + (0.7152 * rgb![1]) + (0.0722 * rgb![2]); // SMPTE C, Rec. 709 weightings
 };
 

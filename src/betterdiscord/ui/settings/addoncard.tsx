@@ -8,6 +8,9 @@ import React, {type MouseEvent, type ReactNode} from "react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
+import DropdownInput from "@ui/settings/components/dropdown";
+import TextInput from "@ui/settings/components/textbox";
+
 import Switch from "./components/switch";
 
 import Modals from "@ui/modals";
@@ -16,6 +19,20 @@ import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, H
 import {getByKeys} from "@webpack";
 import type {default as AddonManager} from "@modules/addonmanager";
 import type {Addon, AddonType} from "@typed/addon";
+import Thememanager, {
+    Manager,
+    type Theme,
+    type ThemePropertyState,
+    type ThemePropertyStateSlider
+} from "@modules/thememanager.ts";
+import SettingItem from "@ui/settings/components/item";
+import ConfirmationModal from "@ui/modals/confirmation.tsx";
+import ModalRoot from "@ui/modals/root.tsx";
+import Slider from "@ui/settings/components/slider.tsx";
+import Number from "@ui/settings/components/number.tsx";
+import Color from "@ui/settings/components/color.tsx";
+import fs from "fs";
+import path from "path";
 import type {PluginInstance} from "@modules/pluginmanager";
 
 const {useCallback, useMemo} = React;
@@ -96,25 +113,105 @@ export interface AddonCardProps {
     deleteAddon(): void;
     getSettingsPanel?: PluginInstance["getSettingsPanel"];
     store: AddonManager;
+    hasThemeSettings?: boolean;
 }
 
-export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}: AddonCardProps) {
+function ThemeSettingsParse({name, data, addon}: {name: string, data: ThemePropertyState, addon: Theme}) {
+    const initial = (Manager.getValue(addon.slug, name) ?? data["initial-value"]) as string | boolean;
+    const [value, setValue] = React.useState(initial);
 
+    const onChange = (e: string) => {
+        let newValue = e;
+        if (data.syntax === "<percentage>") {
+            newValue += "%";
+        }
+        else if (data.syntax === "<length>") {
+            newValue += "px";
+        }
+        else if (data.file) {
+            const ext = path.extname(e).slice(1).toLowerCase();
+            const mime = ext === "jpg" ? "image/jpeg" : `image/${ext}`;
+            const base64 = fs.readFileSync(e, "base64");
+            newValue = `url(data:${mime};base64,${base64})`;
+        }
+        setValue(newValue);
+        Thememanager.updateStyleSheet(name, newValue, data);
+        Manager.updateFile(addon.slug, name, newValue);
+    };
+
+    if (data.options) {
+        const options = data.options.split("|").map(s => s.trim()).filter(Boolean).map(entry => {
+            const eqIndex = entry.indexOf("=");
+            if (eqIndex === -1) return {value: entry, label: entry};
+            return {value: entry.slice(0, eqIndex).trim(), label: entry.slice(eqIndex + 1).trim()};
+        });
+
+        return <DropdownInput onChange={onChange} value={value} options={options}/>;
+    }
+
+    switch (data.syntax) {
+        case "<color>":
+            return <Color onChange={onChange} value={value} />;
+        case "<length>":
+        {
+            const c = data as ThemePropertyStateSlider;
+            return <Slider onChange={onChange} type={"range"} max={parseFloat(c.max)} min={parseFloat(c.min)} step={c.step} value={parseFloat(value)} />;
+        }
+        case "<percentage>":
+            return <Number onChange={onChange} value={parseInt(value, 10)} />;
+        case "<integer>":
+        {
+            const c = data as ThemePropertyStateSlider;
+            return <Slider onChange={onChange} type={"range"} max={parseFloat(c.max)} min={parseFloat(c.min)} step={c.step ?? "1"} value={parseInt(value, 10)} />;
+        }
+        case "<number>":
+            return <Number onChange={onChange} value={parseFloat(value)} />;
+        case "<boolean>":
+            return <Switch onChange={onChange} value={value}/>;
+        case "<custom-ident>":
+        case "<url>":
+        case "*":
+        {
+            // if (kekbox.file) return <Filepicker multiple={false} accept={"image/*"} onChange={onChange}/>;
+            return <TextInput onChange={onChange} value={value} />;
+        }
+        default:
+            return null;
+    }
+}
+export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel, hasThemeSettings}: AddonCardProps) {
     const onChange = useCallback(() => {
         if (parentChange) parentChange(addon.id);
     }, [addon.id, parentChange]);
 
     const showSettings = useCallback(() => {
-        if (!hasSettings || !enabled) return;
         const name = getString(addon.name);
         try {
-            Modals.showAddonSettingsModal(name, getSettingsPanel!());
+            if (hasThemeSettings && type === "theme") {
+                Modals.openModal((props) => {
+                    const properties = (addon as Theme).properties;
+
+                    return <ConfirmationModal size={ModalRoot.Sizes.MEDIUM} {...props} className="bd-settings">
+                        {Object.entries(properties).map(([key, value]) => {
+                            const parsed = SimpleMarkdown.parseToReact(value.note);
+
+                            return <SettingItem id={key} note={parsed} name={value.name} inline={true}>
+                                    <ThemeSettingsParse name={key} data={value} addon={addon} />
+                                </SettingItem>;
+                        })}
+                    </ConfirmationModal>;
+                });
+            }
+            if (hasSettings && type === "plugin") {
+                Modals.showAddonSettingsModal(name, getSettingsPanel!());
+            }
+            return;
         }
         catch (err) {
             Toasts.show(t("Addons.settingsError", {name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err as Error);
         }
-    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
+    }, [hasSettings, hasThemeSettings, addon, type, getSettingsPanel]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;
@@ -155,12 +252,12 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         return <div className="bd-footer">
             <span className="bd-links">{linkComponents}</span>
             <div className="bd-controls">
-                {hasSettings && makeButton(t("Addons.addonSettings"), <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
+                {(hasSettings || hasThemeSettings) && makeButton(t("Addons.addonSettings"), <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
                 {editAddon && makeButton(t("Addons.editAddon"), <PencilIcon size={"20px"} />, editAddon, {isControl: true})}
                 {deleteAddon && makeButton(t("Addons.deleteAddon"), <Trash2Icon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
             </div>
         </div>;
-    }, [hasSettings, editAddon, deleteAddon, addon, enabled, showSettings]);
+    }, [hasSettings, hasThemeSettings, showSettings, enabled, editAddon, deleteAddon, addon]);
 
     return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
         <div className="bd-addon-header">
