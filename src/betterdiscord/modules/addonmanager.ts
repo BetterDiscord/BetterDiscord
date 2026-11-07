@@ -123,14 +123,10 @@ export default abstract class AddonManager<T extends Addon = Addon> extends Stor
                 if (this.timeCache[filename] == stats.mtimeMs) return;
                 this.timeCache[filename] = stats.mtimeMs;
 
-                // Load/reload the addon if it's been created/updated
-                if (eventType == "rename") {
-                    this.unloadAddon(filename);
-                    this.readAddon(filename, true);
-                }
-                else if (eventType == "change") {
-                    this.reloadAddon(filename);
-                }
+                // Editors that save atomically replace the file, which arrives as a `rename` instead of a `change`
+                // So any event on a file that's already loaded is a reload, which keeps the addon enabled
+                if (this.resolveAddon(filename)) this.reloadAddon(filename);
+                else this.readAddon(filename, true);
             }
             catch (err) {
                 // Unload the addon if it's been deleted
