@@ -14,7 +14,7 @@ export default {
             type: "fixed",
             title: "BetterDiscord works",
             items: [
-                "BetterDiscord loads on new rspack changes"
+                "BetterDiscord fully works"
             ]
         },
         {
@@ -22,6 +22,13 @@ export default {
             title: "Updated Translations",
             items: [
                 "BetterDiscord translations are in sync with https://translate.betterdiscord.app/"
+            ]
+        },
+        {
+            type: "improved",
+            title: "Plugin Settings Change",
+            items: [
+                "Plugin settings are no longer in a modal"
             ]
         }
     ]
