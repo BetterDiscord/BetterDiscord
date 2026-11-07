@@ -1,7 +1,3 @@
-import Logger from "@common/logger";
-
-import Toasts from "@stores/toasts";
-
 import SimpleMarkdown from "@structs/markdown";
 
 import React, {type MouseEvent, type ReactNode} from "react";
@@ -15,8 +11,9 @@ import Modals from "@ui/modals";
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 import {getByKeys} from "@webpack";
 import type {default as AddonManager} from "@modules/addonmanager";
+import AddonSettingsRoute from "@stores/addonsettings";
 import type {Addon, AddonType} from "@typed/addon";
-import type {PluginInstance} from "@modules/pluginmanager";
+import {addonText, authorByline} from "./addonshared";
 
 const {useCallback, useMemo} = React;
 
@@ -59,8 +56,6 @@ const ChannelActions = getByKeys<{selectPrivateChannel(id: string): void;}>(["se
     firstId: 956793,
     cacheId: "core-addoncard-ChannelActions"
 });
-const getString = (value: string | {toString(): string;}) => typeof value == "string" ? value : value?.toString?.() || "";
-
 function makeButton(title: string, children: ReactNode, action?: () => void, {isControl = false, danger = false, disabled = false} = {}) {
     const ButtonType = isControl ? "button" : "div";
     return <DiscordModules.Tooltip color="primary" position="top" text={title}>
@@ -94,11 +89,10 @@ export interface AddonCardProps {
     hasSettings: boolean;
     editAddon(): void;
     deleteAddon(): void;
-    getSettingsPanel?: PluginInstance["getSettingsPanel"];
     store: AddonManager;
 }
 
-export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}: AddonCardProps) {
+export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon}: AddonCardProps) {
 
     const onChange = useCallback(() => {
         if (parentChange) parentChange(addon.id);
@@ -106,15 +100,8 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
 
     const showSettings = useCallback(() => {
         if (!hasSettings || !enabled) return;
-        const name = getString(addon.name);
-        try {
-            Modals.showAddonSettingsModal(name, getSettingsPanel!());
-        }
-        catch (err) {
-            Toasts.show(t("Addons.settingsError", {name}), {type: "error"});
-            Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err as Error);
-        }
-    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
+        AddonSettingsRoute.open(type, addon.id);
+    }, [hasSettings, enabled, type, addon.id]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;
@@ -129,22 +116,17 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
 
 
     const title = useMemo(() => {
-        const authorArray: Array<string | React.JSX.Element> = t("Addons.byline").split(/({{[A-Za-z]+}})/);
         const authorComponent = addon.authorLink || addon.authorId
-            ? <a className="bd-link bd-link-website" href={addon.authorLink || ""} onClick={messageAuthor} target="_blank" rel="noopener noreferrer">{getString(addon.author)}</a>
-            : <span className="bd-author">{getString(addon.author)}</span>;
-
-        const authorIndex = authorArray.findIndex(s => s == "{{author}}");
-        if (authorIndex) authorArray[authorIndex] = authorComponent;
+            ? <a className="bd-link bd-link-website" href={addon.authorLink || ""} onClick={messageAuthor} target="_blank" rel="noopener noreferrer">{addonText(addon.author)}</a>
+            : <span className="bd-author">{addonText(addon.author)}</span>;
 
         return [
             <div className="bd-name">
-                {/* {AddonStore.isOfficial(addon.filename) && <FlowerStar />} */}
-                {getString(addon.name)}
+                {addonText(addon.name)}
             </div>,
             <div className="bd-meta">
-                <span className="bd-version">v{getString(addon.version)}</span>
-                {authorArray}
+                <span className="bd-version">v{addonText(addon.version)}</span>
+                {authorByline(authorComponent)}
             </div>
         ];
     }, [addon.name, addon.version, addon.authorLink, addon.authorId, addon.author, messageAuthor]);
@@ -170,7 +152,7 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         </div>
         <div className="bd-description-wrap">
             {disabled && <div className="banner banner-danger"><ShieldAlertIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
-            <div className="bd-description">{SimpleMarkdown.parseToReact(getString(addon.description))}</div>
+            <div className="bd-description">{SimpleMarkdown.parseToReact(addonText(addon.description))}</div>
         </div>
         {footer}
     </div>;
