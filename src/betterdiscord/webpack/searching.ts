@@ -5,13 +5,13 @@ import WebpackCache from "./cache";
 import {mapObject} from "@utils/object";
 
 export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.ModuleFilter, options: Webpack.Options): T | undefined {
-    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, withKey = false, map, mapDeclarations} = options;
+    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, withKey = false, map, mapDeclarations = false, mapExports = false} = options;
 
     if (shouldSkipModule(module.exports)) return;
 
     if (filter(module.exports, module, module.id)) {
         if (options.declarationFilter) return getDeclaration(module, options.declarationFilter, withKey);
-        if (map) return mapObject(module[mapDeclarations ? "declarations" : "exports"], map) as T;
+        if (map) return mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map) as T;
         return raw ? module as T : withKey ? [module, "exports"] as T : module.exports;
     }
 
@@ -30,7 +30,7 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Modul
 
         if (filter(exported, module, module.id)) {
             if (options.declarationFilter) return getDeclaration(module, options.declarationFilter, withKey);
-            if (map) return mapObject(raw ? module.exports : mapDeclarations ? module.declarations : exported, map) as T;
+            if (map) return mapObject(raw ? module.exports : mapDeclarations ? mapExports ? Object.assign({}, module.declarations, exported) : module.declarations : exported, map) as T;
             if (raw) return module as T;
             if (!defaultExport && defaultKey === key) return withKey ? [module, "exports"] as T : module.exports;
             return withKey ? [module.exports, key] as T : exported;
@@ -78,7 +78,7 @@ export function getModule<T>(filter: Webpack.ModuleFilter, options: Webpack.Opti
 }
 
 export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter, options: Webpack.Options = {}): T {
-    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, fatal = false, withKey = false, map, mapDeclarations} = options;
+    const {defaultExport = true, searchExports = false, searchDefault = true, raw = false, fatal = false, withKey = false, map, mapDeclarations, mapExports} = options;
 
     filter = wrapModuleFilter(filter);
     const modules = [] as unknown as T;
@@ -95,7 +95,7 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter,
                 if (declared) modules.push(declared);
             }
             else if (map) {
-                modules.push(mapObject(module[mapDeclarations ? "declarations" : "exports"], map));
+                modules.push(mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map));
             }
             else {
                 modules.push(raw ? module : withKey ? [module, "exports"] : module.exports);
@@ -123,12 +123,12 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter,
                 }
 
                 if (!defaultExport && defaultKey === key) {
-                    if (map) modules.push(mapObject(module[mapDeclarations ? "declarations" : "exports"], map));
+                    if (map) modules.push(mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map));
                     else modules.push(withKey ? [module, "exports"] : module.exports);
                     continue;
                 }
 
-                if (map) modules.push(mapObject(raw ? module.exports : mapDeclarations ? module.declarations : exported, map));
+                if (map) modules.push(mapObject(raw ? module.exports : mapDeclarations ? mapExports ? Object.assign({}, module.declarations, exported) : module.declarations : exported, map));
                 else modules.push(raw ? module : withKey ? [module.exports, key] : exported);
             }
         }
