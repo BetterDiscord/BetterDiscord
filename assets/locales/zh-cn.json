@@ -472,5 +472,26 @@
         "report": "在 GitHub 上报告问题",
         "safeMode": "在安全模式下重启",
         "joinSupport": "加入支持服务器！"
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "other": ""
+        },
+        "selected": {
+            "other": ""
+        }
     }
 }

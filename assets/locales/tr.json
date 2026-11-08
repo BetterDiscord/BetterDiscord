@@ -23,27 +23,27 @@
                     "note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
                 },
                 "themeAttributes": {
-                    "name": "",
-                    "note": ""
+                    "name": "Tema özellikleri",
+                    "note": "Tema oluşumunda destek olmak için çeşitli öğelere özellik ekler."
                 },
                 "notificationPosition": {
                     "name": "Bildirim",
-                    "note": ""
+                    "note": "Bildirimlerin nereye açılacağını seçmeni sağlar."
                 },
                 "notificationEnabled": {
                     "name": "Bildirimleri göster",
-                    "note": ""
+                    "note": "Bildirimlerin ekranda gözükmesine izin verir veya engeller."
                 }
             },
             "store": {
-                "name": "",
+                "name": "Eklenti mağazası",
                 "alwaysEnable": {
-                    "name": "",
-                    "note": ""
+                    "name": "Her zaman aktif",
+                    "note": "Eklenti mağazasından indirilen eklentileri varsayılan olarak aktif eder"
                 },
                 "addonEmbeds": {
-                    "name": "",
-                    "note": ""
+                    "name": "Eklenti iliştirmeleri (embed)",
+                    "note": "Eklenti mağazası kartlarını sohbete iliştirir."
                 }
             },
             "window": {
@@ -61,11 +61,11 @@
                     "note": "Yerel işletim sistemi penceresini ana pencereye ekler"
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Yuvarlak köşeler",
+                    "note": "Çerçevesiz pencerelerin köşelerinin yuvarlak oluşu"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
+                    "name": "İlk tıklamayı kabul et",
                     "note": ""
                 },
                 "vibrancy": {
@@ -481,5 +481,28 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "one": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "other": ""
+        }
     }
 }

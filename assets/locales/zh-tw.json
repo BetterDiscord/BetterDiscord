@@ -472,5 +472,26 @@
         "report": "於 GitHub 回報問題",
         "safeMode": "於安全模式下重新啟動",
         "joinSupport": "加入技術支援伺服器！"
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "other": ""
+        },
+        "selected": {
+            "other": ""
+        }
     }
 }
