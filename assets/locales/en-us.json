@@ -187,7 +187,7 @@
                 },
                 "devTools": {
                     "name": "DevTools",
-                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                    "note": "Enables toggling DevTools with ctrl+shift+i (cmd+option+i on macOS)"
                 },
                 "webpackSourceViewer": {
                     "name": "Webpack Source Viewer",
