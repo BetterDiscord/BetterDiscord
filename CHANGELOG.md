@@ -2,7 +2,22 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
-### 1.14.4
+### 1.14.6
+
+### Added
+- openSettings api on the addon manager apis
+
+### Removed
+
+### Changed
+- Addon settings now open in the settings layer
+
+### Fixed
+- Webpack className helper
+- Open settings
+- Fixed styling issues
+
+### 1.14.5
 
 ### Added
 - React error decoder

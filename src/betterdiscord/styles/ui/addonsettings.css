@@ -1,0 +1,99 @@
+.bd-addon-settings-host {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    align-self: stretch;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.bd-addon-title > .bd-addon-title-current {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    padding: 0;
+}
+
+.bd-addon-title > .bd-addon-title-current > svg {
+    flex: none;
+    color: var(--interactive-icon-default, var(--header-secondary));
+}
+
+.bd-addon-title > .bd-addon-title-current > span {
+    padding: 2px 4px;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bd-addon-title[data-showing-settings="true"] > span:first-child {
+    cursor: pointer;
+}
+
+.bd-addon-title[data-showing-settings="true"] > span:first-child:hover {
+    background: var(--interactive-background-hover);
+}
+
+.bd-addon-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    padding-bottom: 32px;
+}
+
+.bd-addon-settings-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: auto;
+    max-width: 640px;
+    min-width: 0;
+}
+
+.bd-addon-settings-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--header-secondary, var(--text-muted));
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+}
+
+.bd-addon-settings-name {
+    color: var(--header-primary, var(--text-default));
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.bd-addon-settings-version {
+    color: var(--text-default);
+    font-weight: 600;
+}
+
+.bd-addon-settings-description {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 18px;
+    word-break: break-word;
+}
+
+.bd-addon-settings-description p {
+    margin: 0;
+}
+
+.bd-addon-settings-panel,
+.bd-addon-settings-wrap {
+    width: 100%;
+    min-width: 0;
+}
