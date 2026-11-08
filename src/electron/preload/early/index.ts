@@ -24,9 +24,9 @@ const effect = (require: Webpack.Require) => {
                 Object.defineProperty(exports, key, {
                     enumerable: true,
                     configurable: true,
-                    get: getters[key],
+                    get: () => getters[key](),
                     set: (v) => {
-                        getters[key] = v;
+                        getters[key] = () => v;
                     }
                 });
             }
@@ -36,13 +36,14 @@ const effect = (require: Webpack.Require) => {
                 Object.defineProperty(exports, key, {
                     enumerable: true,
                     configurable: true,
+                    writable: true,
                     value: values[key]
                 });
             }
         }
     };
 
-    const IS_CLASSNAME_MODULE = /^\d+(?:e\d+)?\((.{1,3}),.{1,3},.{1,3}\){("use strict";)?\1.exports={.+}}$/;
+    const IS_CLASSNAME_MODULE = /^\d+\((.{1,3})(?:,.{1,3},.{1,3})?\){\1\.exports={.+}}$/;
     const EXTRACT_CLASS = /^(.+?)_/;
 
     const USES_STEMMER = /\((\d+)\)\.newStemmer\("[^"]+"\);/;

@@ -19,10 +19,9 @@ import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, Stre
 import {useStateFromStores} from "@ui/hooks";
 import {type Addon, type AddonType} from "@typed/addon";
 import type AddonManager from "@modules/addonmanager";
-import type {Plugin, PluginInstance} from "@modules/pluginmanager";
+import type {Plugin} from "@modules/pluginmanager";
 import type {Theme} from "@modules/thememanager";
 import {themeHasSettings} from "@modules/themes/panel";
-import {showThemeSettings} from "./themesettings";
 
 
 
@@ -181,21 +180,13 @@ export default function AddonList({store}: {store: AddonManager;}) {
         }
 
         return sorted.map(addon => {
-            let hasSettings: boolean;
-            let getSettings: false | undefined | PluginInstance["getSettingsPanel"];
-            let openSettings: (() => void) | undefined;
-            if (store.prefix === "theme") {
-                hasSettings = themeHasSettings(addon as Theme);
-                openSettings = () => showThemeSettings(addon.name, addon.id);
-            }
-            else {
-                hasSettings = (addon as Plugin).instance
+            const hasSettings = store.prefix === "theme"
+                ? themeHasSettings(addon as Theme)
+                : (addon as Plugin).instance
                     ? typeof (addon as Plugin).instance?.getSettingsPanel === "function"
                     : Boolean(store.prefix === "plugin" && addon.fileContent?.includes("getSettingsPanel"));
-                getSettings = hasSettings && (addon as Plugin).instance?.getSettingsPanel?.bind((addon as Plugin).instance);
-            }
             return <ErrorBoundary id={addon.id} name="AddonCard">
-                <AddonCard store={store} disabled={addon.partial} type={store.prefix as AddonType} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} getSettingsPanel={getSettings ? getSettings : undefined} openSettings={openSettings} />
+                <AddonCard store={store} disabled={addon.partial} type={store.prefix as AddonType} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} hasSettings={hasSettings} />
             </ErrorBoundary>;
         });
     }, [store, addonList, addonState, onChange, triggerDelete, triggerEdit, query, ascending, sort]);

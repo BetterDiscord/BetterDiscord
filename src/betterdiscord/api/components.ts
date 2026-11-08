@@ -18,6 +18,7 @@ import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 import Modal from "@ui/modals/modal.tsx";
 import CheckBox from "@ui/settings/components/checkbox.tsx";
+import TableInput from "@ui/settings/components/table";
 
 /**
  * `Components` is a utility containing commonly used React components. An instance is available on {@link BdApi}.
@@ -39,6 +40,7 @@ class Components {
     TextInput = TextInput;
     SettingGroup = SettingGroup;
     Checkbox = CheckBox;
+    TableInput = TableInput;
     ErrorBoundary = ErrorBoundary;
     Text = Text;
     Flex = Flex;
