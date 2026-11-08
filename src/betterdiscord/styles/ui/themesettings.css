@@ -1,8 +1,3 @@
-/* The shared button puts its children in a content wrapper, so the gap goes there */
-.bd-theme-settings-reset-all .bd-button-content {
-    gap: 6px;
-}
-
 .bd-setting-title-wrap {
     display: flex;
     align-items: center;

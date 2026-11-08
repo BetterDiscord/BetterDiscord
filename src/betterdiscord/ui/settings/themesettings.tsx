@@ -1,6 +1,6 @@
 import {webUtils} from "electron";
 import React, {useMemo, useRef, useState, type ChangeEvent, type ReactNode} from "react";
-import {RotateCcwIcon, XIcon} from "lucide-react";
+import {ListRestartIcon, RotateCcwIcon, XIcon} from "lucide-react";
 
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
@@ -25,15 +25,21 @@ import ColorPicker from "./components/color";
 import type {HexString} from "@data/settings";
 
 
-/** Reset all for a theme's settings page. It's disabled until the theme has a saved value. */
+/**
+ * Reset all for a theme's settings page, an icon in the page title like the reset button on BD's own settings.
+ * It's disabled while the theme has nothing saved.
+ */
 export function ThemeResetAllButton({themeId}: {themeId: string;}) {
     const theme = useStateFromStores(ThemeManager, () => ThemeManager.resolveAddon(themeId) as Theme | undefined, [themeId]);
     const hasSaved = useStateFromStores(ThemeValues, () => Object.keys(ThemeValues.getSaved(themeId)).length > 0, [themeId]);
 
-    return <Button size={Button.Sizes.NONE} color={Button.Colors.PRIMARY} className="bd-theme-settings-reset-all" disabled={!theme || !hasSaved} onClick={() => theme && confirmResetAll(theme)}>
-        <RotateCcwIcon size="16px" />
-        {t("ThemeSettings.resetAll")}
-    </Button>;
+    return <DiscordModules.Tooltip color="primary" position="top" text={t("ThemeSettings.resetAll")}>
+        {props =>
+            <Button {...props} aria-label={t("ThemeSettings.resetAll")} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} disabled={!theme || !hasSaved} onClick={() => theme && confirmResetAll(theme)}>
+                <ListRestartIcon />
+            </Button>
+        }
+    </DiscordModules.Tooltip>;
 }
 
 /**
