@@ -109,7 +109,7 @@ class Utils {
     semverCompare = comparator;
 
     /**
-     * Maps the properties of one object onto another based on a set of filters
+     * Maps the properties of one or more objects onto another based on a set of filters
      */
     mapObject = mapObject;
 

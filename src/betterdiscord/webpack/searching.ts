@@ -11,7 +11,7 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Modul
 
     if (filter(module.exports, module, module.id)) {
         if (options.declarationFilter) return getDeclaration(module, options.declarationFilter, withKey);
-        if (map) return mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map) as T;
+        if (map) return mapObject(mapDeclarations ? mapExports ? [module.exports, module.declarations] : module.declarations : module.exports, map) as T;
         return raw ? module as T : withKey ? [module, "exports"] as T : module.exports;
     }
 
@@ -30,7 +30,7 @@ export function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Modul
 
         if (filter(exported, module, module.id)) {
             if (options.declarationFilter) return getDeclaration(module, options.declarationFilter, withKey);
-            if (map) return mapObject(raw ? module.exports : mapDeclarations ? mapExports ? Object.assign({}, module.declarations, exported) : module.declarations : exported, map) as T;
+            if (map) return mapObject(raw ? module.exports : mapDeclarations ? mapExports ? [exported, module.declarations] : module.declarations : exported, map) as T;
             if (raw) return module as T;
             if (!defaultExport && defaultKey === key) return withKey ? [module, "exports"] as T : module.exports;
             return withKey ? [module.exports, key] as T : exported;
@@ -95,7 +95,7 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter,
                 if (declared) modules.push(declared);
             }
             else if (map) {
-                modules.push(mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map));
+                modules.push(mapObject(mapDeclarations ? mapExports ? [module.exports, module.declarations] : module.declarations : module.exports, map));
             }
             else {
                 modules.push(raw ? module : withKey ? [module, "exports"] : module.exports);
@@ -123,12 +123,12 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.ModuleFilter,
                 }
 
                 if (!defaultExport && defaultKey === key) {
-                    if (map) modules.push(mapObject(mapDeclarations ? mapExports ? Object.assign({}, module.declarations, module.exports) : module.declarations : module.exports, map));
+                    if (map) modules.push(mapObject(mapDeclarations ? mapExports ? [module.exports, module.declarations] : module.declarations : module.exports, map));
                     else modules.push(withKey ? [module, "exports"] : module.exports);
                     continue;
                 }
 
-                if (map) modules.push(mapObject(raw ? module.exports : mapDeclarations ? mapExports ? Object.assign({}, module.declarations, exported) : module.declarations : exported, map));
+                if (map) modules.push(mapObject(raw ? module.exports : mapDeclarations ? mapExports ? [exported, module.declarations] : module.declarations : exported, map));
                 else modules.push(raw ? module : withKey ? [module.exports, key] : exported);
             }
         }
