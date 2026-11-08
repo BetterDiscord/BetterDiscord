@@ -484,5 +484,25 @@
         "report": "Report on Github",
         "safeMode": "Relaunch in Safe Mode",
         "joinSupport": "Join Support Server!"
+    },
+    "ErrorBoundary": {
+        "title": "Something went wrong",
+        "description": {
+            "default": "This part couldn't be shown. Click this message to open the console for details.",
+            "named": "{{name}} couldn't show this part. Click this message to open the console for details.",
+            "keybind": "This part couldn't be shown. Click this message or press {{keybind}} to open the console for details.",
+            "namedKeybind": "{{name}} couldn't show this part. Click this message or press {{keybind}} to open the console for details."
+        },
+        "short": {
+            "default": "Something ran into an error",
+            "named": "{{name}} ran into an error"
+        },
+        "retry": "Try Again",
+        "copy": "Copy Error",
+        "copied": "Copied",
+        "keys": {
+            "command": "Command",
+            "option": "Option"
+        }
     }
 }
