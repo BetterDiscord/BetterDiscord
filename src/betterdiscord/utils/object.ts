@@ -1,31 +1,37 @@
 import type {Webpack} from "../types/discord";
 
-export function mapObject<T extends object>(module: any, mappers: Record<keyof T, Webpack.ExportedOnlyFilter>): T {
-    const mapped = Object.create(null) as Partial<T>;
+export function mapObject<T extends object>(...args: [...modules: any[], mappers: Record<keyof T, Webpack.ExportedOnlyFilter>]): T {
+    const mappers = args.pop()!;
+    const modules = args;
 
-    const moduleKeys = Object.keys(module);
+    const mapped = Object.create(null) as Partial<T>;
     const mapperKeys = Object.keys(mappers) as Array<keyof T>;
 
-    for (let i = 0; i < moduleKeys.length; i++) {
-        const searchKey = moduleKeys[i];
-        if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
+    for (let i = 0; i < modules.length; i++) {
+        const module = modules[i];
+        const moduleKeys = Object.keys(module);
 
-        for (let j = 0; j < mapperKeys.length; j++) {
-            const key = mapperKeys[j];
-            if (!Object.prototype.hasOwnProperty.call(mappers, key)) continue;
-            if (Object.prototype.hasOwnProperty.call(mapped, key)) continue;
+        for (let j = 0; j < moduleKeys.length; j++) {
+            const searchKey = moduleKeys[j];
+            if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
 
-            if (mappers[key](module[searchKey])) {
-                Object.defineProperty(mapped, key, {
-                    get() {
-                        return module[searchKey];
-                    },
-                    set(value) {
-                        module[searchKey] = value;
-                    },
-                    enumerable: true,
-                    configurable: false
-                });
+            for (let k = 0; k < mapperKeys.length; k++) {
+                const key = mapperKeys[k];
+                if (!Object.prototype.hasOwnProperty.call(mappers, key)) continue;
+                if (Object.prototype.hasOwnProperty.call(mapped, key)) continue;
+
+                if (mappers[key](module[searchKey])) {
+                    Object.defineProperty(mapped, key, {
+                        get() {
+                            return module[searchKey];
+                        },
+                        set(value) {
+                            module[searchKey] = value;
+                        },
+                        enumerable: true,
+                        configurable: false
+                    });
+                }
             }
         }
     }
@@ -42,7 +48,7 @@ export function mapObject<T extends object>(module: any, mappers: Record<keyof T
     }
 
     Object.defineProperty(mapped, Symbol("betterdiscord.mapObject"), {
-        value: {module, mappers},
+        value: {modules, mappers},
         configurable: false
     });
 

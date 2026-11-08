@@ -58,6 +58,8 @@ export type Options = {
     map?: Record<string, ExportedOnlyFilter>;
     /** Whether the mapper should apply to the module's declarations instead of exports */
     mapDeclarations?: boolean;
+    /** Whether the mapper should apply to the module's exports as well as declarations. If an export has the same key as a declaration, the export will be mapped. Has no effect if `mapDeclarations` is not `true`. */
+    mapExports?: boolean;
 };
 
 export type LazyOptions = Options & {
