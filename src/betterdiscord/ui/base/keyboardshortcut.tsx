@@ -16,7 +16,7 @@ export interface KeyboardShortcutProps {
 }
 
 export default function KeyboardShortcut({keys, className}: KeyboardShortcutProps) {
-    return <span className={clsx("bd-keyboard-shortcut", className)}>
+    return <kbd className={clsx("bd-keyboard-shortcut", className)}>
         {keys.map(key => (
             <kbd key={key}>
                 {SYMBOLS[key]
@@ -24,5 +24,5 @@ export default function KeyboardShortcut({keys, className}: KeyboardShortcutProp
                     : key}
             </kbd>
         ))}
-    </span>;
+    </kbd>;
 }

@@ -2,6 +2,7 @@
     display: inline-flex;
     gap: 2px;
     margin: 0 2px;
+    font-family: inherit;
     vertical-align: text-bottom;
 }
 
