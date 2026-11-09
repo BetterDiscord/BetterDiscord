@@ -14,8 +14,10 @@ export default new class DevToolsListener extends Builtin {
     }
 
     toggleDevTools(e: KeyboardEvent) {
-        const metaKey = process.platform === "darwin" ? e.metaKey : e.ctrlKey;
-        if (metaKey && e.shiftKey && e.key === "I") {
+        const isShortcut = process.platform === "darwin"
+            ? e.metaKey && e.altKey && !e.shiftKey && e.code === "KeyI"
+            : e.ctrlKey && e.shiftKey && e.key === "I";
+        if (isShortcut) {
             e.stopPropagation();
             e.preventDefault();
             if (this.get(this.collection, this.category, this.id)) IPC.toggleDevTools();

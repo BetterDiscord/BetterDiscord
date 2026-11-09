@@ -236,14 +236,6 @@
   display: flex;
 }
 
-/* Error Boundary stuff */
-.react-error {
-  color: red;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-  cursor: pointer;
-}
-
 .settings-open .bd-close {
   cursor: pointer;
   float: right;

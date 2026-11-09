@@ -10,6 +10,7 @@
 @import "./ui/changelog.css";
 @import "./ui/checkbox.css";
 @import "./ui/colorpicker.css";
+@import "./ui/errorboundary.css";
 @import "./ui/errormodal.css";
 @import "./ui/file.css";
 @import "./ui/flex.css";
@@ -35,6 +36,7 @@
 @import "./blankslates/emptyimage.css";
 @import "./blankslates/noresults.css";
 @import "./buttons.css";
+@import "./keyboardshortcut.css";
 @import "./spinner.css";
 @import "./search.css";
 @import "./text.css";

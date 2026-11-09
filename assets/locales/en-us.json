@@ -187,7 +187,7 @@
                 },
                 "devTools": {
                     "name": "DevTools",
-                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                    "note": "Enables toggling DevTools with ctrl+shift+i (cmd+option+i on macOS)"
                 },
                 "webpackSourceViewer": {
                     "name": "Webpack Source Viewer",
@@ -484,6 +484,28 @@
         "report": "Report on Github",
         "safeMode": "Relaunch in Safe Mode",
         "joinSupport": "Join Support Server!"
+    },
+    "ErrorBoundary": {
+        "title": "Something went wrong",
+        "description": {
+            "default": "This component couldn't be shown. Click this message to open the console for details.",
+            "named": "This component from {{name}} couldn't be shown. Click this message to open the console for details.",
+            "keybind": "This component couldn't be shown. Click this message or press {{keybind}} to open the console for details.",
+            "namedKeybind": "This component from {{name}} couldn't be shown. Click this message or press {{keybind}} to open the console for details."
+        },
+        "short": {
+            "default": "Something ran into an error",
+            "named": "{{name}} ran into an error"
+        },
+        "retry": "Try Again",
+        "copy": "Copy Error",
+        "copied": "Copied"
+    },
+    "KeyboardShortcut": {
+        "command": "Command",
+        "option": "Option",
+        "shift": "Shift",
+        "control": "Control"
     },
     "Table": {
         "search": "Search",
