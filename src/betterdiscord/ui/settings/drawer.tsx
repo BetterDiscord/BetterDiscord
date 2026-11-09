@@ -23,7 +23,7 @@ export default function Drawer({name, collapsible, shown = true, showDivider, ch
     const [collapsed, setCollapsed] = useState<boolean>(!!collapsible && !shown);
     const toggleCollapse = useCallback(() => {
         const drawer = container.current!;
-        const timeout = collapsed ? 300 : 1;
+        const timeout = collapsed ? 168 : 1;
         drawer.style.setProperty("height", drawer.scrollHeight + "px");
         drawer.classList.add("animating");
         if (onDrawerToggle) onDrawerToggle(collapsed);
