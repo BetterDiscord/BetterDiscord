@@ -488,10 +488,10 @@
     "ErrorBoundary": {
         "title": "Something went wrong",
         "description": {
-            "default": "This part couldn't be shown. Click this message to open the console for details.",
-            "named": "{{name}} couldn't show this part. Click this message to open the console for details.",
-            "keybind": "This part couldn't be shown. Click this message or press {{keybind}} to open the console for details.",
-            "namedKeybind": "{{name}} couldn't show this part. Click this message or press {{keybind}} to open the console for details."
+            "default": "This component couldn't be shown. Click this message to open the console for details.",
+            "named": "This component from {{name}} couldn't be shown. Click this message to open the console for details.",
+            "keybind": "This component couldn't be shown. Click this message or press {{keybind}} to open the console for details.",
+            "namedKeybind": "This component from {{name}} couldn't be shown. Click this message or press {{keybind}} to open the console for details."
         },
         "short": {
             "default": "Something ran into an error",
@@ -499,11 +499,13 @@
         },
         "retry": "Try Again",
         "copy": "Copy Error",
-        "copied": "Copied",
-        "keys": {
-            "command": "Command",
-            "option": "Option"
-        }
+        "copied": "Copied"
+    },
+    "KeyboardShortcut": {
+        "command": "Command",
+        "option": "Option",
+        "shift": "Shift",
+        "control": "Control"
     },
     "Table": {
         "search": "Search",

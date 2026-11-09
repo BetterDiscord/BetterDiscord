@@ -15,6 +15,7 @@ import ErrorBoundary from "@ui/errorboundary";
 import Text from "@ui/base/text";
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
+import KeyboardShortcut from "@ui/base/keyboardshortcut";
 import Spinner from "@ui/spinner";
 import Modal from "@ui/modals/modal.tsx";
 import CheckBox from "@ui/settings/components/checkbox.tsx";
@@ -45,6 +46,7 @@ class Components {
     Text = Text;
     Flex = Flex;
     Button = Button;
+    KeyboardShortcut = KeyboardShortcut;
     Spinner = Spinner;
     Modal = Modal;
 }

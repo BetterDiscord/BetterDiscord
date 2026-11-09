@@ -4,8 +4,8 @@ import IPC from "@modules/ipc";
 import Config from "@stores/config";
 import Settings from "@stores/settings";
 import Button from "@ui/base/button";
+import KeyboardShortcut from "@ui/base/keyboardshortcut";
 import Text from "@ui/base/text";
-import Keybind, {CONSOLE_KEYS} from "@ui/errorboundary/keybind";
 import {useStateFromStores} from "@ui/hooks";
 import type {ErrorBoundaryProps} from "@ui/errorboundary";
 
@@ -21,6 +21,7 @@ interface FallbackProps extends Pick<ErrorBoundaryProps, "id" | "name" | "showSt
 
 const STACK_FRAMES = 2;
 const KEYBIND_PLACEHOLDER = "{{keybind}}";
+const CONSOLE_KEYS = process.platform === "darwin" ? ["⌘", "⌥", "I"] : ["Ctrl", "Shift", "I"];
 
 /**
  * @returns The error line and the first few stack frames with file names instead of full URLs,
@@ -44,7 +45,7 @@ function Description({name}: {name?: string;}) {
 
     return <>
         {parts[0]}
-        {parts.length > 1 && <Keybind keys={CONSOLE_KEYS} />}
+        {parts.length > 1 && <KeyboardShortcut keys={CONSOLE_KEYS} />}
         {parts[1]}
     </>;
 }
