@@ -240,7 +240,7 @@
 .bd-settings-container {
     height: auto;
     overflow: hidden;
-    transition: height 300ms cubic-bezier(0.47, 0, 0.745, 0.715);
+    transition: height 168ms cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 .bd-settings-group.collapsed .bd-settings-container {
@@ -306,7 +306,7 @@
 
 .bd-settings-group ~ .bd-settings-group .bd-settings-title {
     margin-top: 30px;
-    transition: margin-top 300ms ease;
+    transition: margin-top 168ms ease;
 }
 
 .bd-settings-group.collapsed + .bd-settings-group .bd-settings-title {
