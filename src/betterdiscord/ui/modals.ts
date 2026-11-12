@@ -38,12 +38,11 @@ export default class Modals {
 
     static _ModalActions: ModalActions;
     static get ModalActions() {
-        // currently the module is unmangled, but keeping this incase it gets mangled again
         return this._ModalActions ??= getBySource(["?.stackNextByDefault"], {
             map: {
                 openModal: Filters.byStrings("?.stackNextByDefault"),
                 closeModal: Filters.byStrings(".setState", ".getState()["),
-                closeAllModals: Filters.byStrings(".getState();for")
+                closeAllModals: Filters.byStrings(".key,", "getState();")
             },
             firstId: 192308,
             cacheId: "betterdiscord-modals"
