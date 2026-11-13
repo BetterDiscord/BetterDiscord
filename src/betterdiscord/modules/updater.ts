@@ -151,7 +151,7 @@ export class CoreUpdater {
          *
          * Otherwise canary is disabled, check for stable update.
          * But if the user is already on canary, then pass a
-         * flag to ignore remove version.
+         * flag to ignore remote version.
          */
         if (isCanaryEnabled) await this.checkForCanary(!isOnCanary);
         else await this.checkForStable(isOnCanary);
