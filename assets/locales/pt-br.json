@@ -12,7 +12,7 @@
                 "name": "Geral",
                 "voiceDisconnect": {
                     "name": "Desconexão de Voz",
-                    "note": "Desconecta do servidor de voz quando o discord é fechado"
+                    "note": "Desconecta do servidor de voz quando o Discord é fechado"
                 },
                 "showToasts": {
                     "name": "Mostrar Toasts",
@@ -20,7 +20,7 @@
                 },
                 "mediaKeys": {
                     "name": "Desabilitar Teclas de Media",
-                    "note": "Previne que o discord roube suas teclas de media depois de dar play em um vídeo"
+                    "note": "Previne que o Discord roube suas Teclas de Media após tocar um vídeo"
                 },
                 "themeAttributes": {
                     "name": "Atributos do Tema",
@@ -61,30 +61,30 @@
                     "note": "Adiciona a moldura nativa na janela principal"
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Cantos Arredondados",
+                    "note": "Se uma janela sem frameless deve ter cantos arredondados"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
+                    "name": "Aceitar Primeiro Clique do Mouse",
                     "note": ""
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Vibrância",
+                    "note": "Adicionar uma forma de efeito de vibrância à janela",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
+                        "none": "Nenhum",
+                        "titlebar": "Titulo",
                         "selection": "",
-                        "menu": "",
+                        "menu": "Ementa",
                         "popover": "",
-                        "sidebar": "",
-                        "header": "",
+                        "sidebar": "Barra Lateral",
+                        "header": "Cabeçalho",
                         "sheet": "",
-                        "window": "",
+                        "window": "Janela",
                         "hud": "",
                         "fullscreen-ui": "",
                         "tooltip": "",
-                        "content": "",
+                        "content": "Conteúdo",
                         "under-window": "",
                         "under-page": ""
                     }
@@ -94,18 +94,18 @@
                     "note": "",
                     "options": {
                         "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "active": "Ativo",
+                        "inactive": "Inativo"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
+                    "name": "Material do fundo",
                     "note": "",
                     "options": {
-                        "auto": "",
-                        "none": "",
+                        "auto": "Automático",
+                        "none": "Nenhum",
                         "mica": "",
-                        "acrylic": "",
+                        "acrylic": "Acrílico",
                         "tabbed": ""
                     }
                 }
@@ -239,82 +239,82 @@
                     "name": "",
                     "note": "",
                     "options": {
-                        "all": "",
-                        "none": "",
-                        "selection": ""
+                        "all": "Sempre",
+                        "none": "Nunca",
+                        "selection": "Seleção"
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Sempre no Topo",
+                    "note": "Fazer com que a janela do editor sempre esteja no topo"
                 }
             }
         }
     },
     "Addons": {
-        "title": "",
+        "title": "{{name}} v{{version}} por {{author}}",
         "byline": "por {{author}}",
         "openFolder": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Abrir Pasta de Plugins",
+            "theme": "Abrir Pasta de Temas"
         },
         "openStore": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Abrir Loja de Plugins",
+            "theme": "Abrir Loja de Temas"
         },
         "storeMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Procurar e instalar plugins oficiais da comunidade",
+            "theme": "Procurar e instalar temas oficiais da comunidade"
         },
-        "store": "",
+        "store": "Loja",
         "viewInstalled": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Ver Plugins Instalados",
+            "theme": "Ver Temas Instalados"
         },
         "reload": "Recarregar",
         "addonSettings": "Configurações",
         "website": "Site",
-        "source": "",
+        "source": "Fonte",
         "invite": "Servidor de Suporte",
         "donate": "Doar",
-        "patreon": "",
+        "patreon": "Patreon",
         "name": "Nome",
         "author": "Autor",
         "version": "Versão",
         "added": "Date de Adição",
         "modified": "Data de Modificação",
-        "releaseDate": "",
-        "lastUpdated": "",
-        "isEnabled": "",
-        "popularity": "",
-        "isInstalled": "",
-        "downloads": "",
-        "likes": "",
-        "listView": "",
-        "gridView": "",
-        "enableAll": "",
-        "disableAll": "",
+        "releaseDate": "Data de Lançamento",
+        "lastUpdated": "Última atualização",
+        "isEnabled": "Ativado",
+        "popularity": "Popularidade",
+        "isInstalled": "Instalado",
+        "downloads": "Downloads",
+        "likes": "Curtidas",
+        "listView": "Visualização em lista",
+        "gridView": "Visualição em grade",
+        "enableAll": "Ativar todos",
+        "disableAll": "Desativar todos",
         "enableAllWarning": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Ativar todos os plugins pode causar travamentos temporários e erros inesperados.\n\n(Seguro Shift enquanto clica para pular esse aviso!)",
+            "theme": "Ativar todos os temas pode causar travamentos temporários e erros inesperados.\n\n(Seguro Shift enquanto clica para pular esse aviso!)"
         },
         "search": {
             "plugin": {
-                "one": "",
-                "other": ""
+                "one": "Pesquisar um plugin",
+                "other": "Pesquisar  {{count}} plugins"
             },
             "theme": {
-                "one": "",
-                "other": ""
+                "one": "Pesquisar um tema",
+                "other": "Pesquisar {{count}} temas"
             }
         },
         "results": {
-            "one": "",
-            "other": ""
+            "one": "{{count}} Resultado",
+            "other": "{{count}} Resultados"
         },
         "editAddon": "Editar",
         "deleteAddon": "Remover",
-        "downloadAddon": "",
+        "downloadAddon": "Baixar",
         "confirmDelete": "Você tem certeza que quer remover o {{name}}?",
         "confirmationText": "Você tem mudanças ainda não salvas em {{name}}. Fechar essa janela fará você perder todas elas.",
         "enabled": "{{name}} foi ativado.",
@@ -327,11 +327,11 @@
         "methodError": "{{method}} não pode ser disparado.",
         "unknownAuthor": "Autor Desconhecido",
         "noDescription": "Descrição não fornecida.",
-        "noSettings": "",
-        "isDisabled": "",
+        "noSettings": "{{name}} não tem um painel de configurações.",
+        "isDisabled": "{{name}} está desativado.",
         "alreadyExists": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Já existe um plugin com o nome {{name}}",
+            "theme": "Já existe um tema com o nome {{name}}"
         },
         "metaError": "META não pode ser reconhecida.",
         "missingNameData": "META sem dados de nome.",
@@ -339,19 +339,19 @@
         "compileError": "Não foi possível compilar.",
         "wasUnloaded": "{{name}} foi descarregado.",
         "blankSlateHeader": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Você não tem nenhum plugin!",
+            "theme": "Você não tem nenhum tema!"
         },
         "blankSlateMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Pego um do [nosso site]({{link}}) e adicione para sua pasta de plugins.",
+            "theme": "Pego um do [nosso site]({{link}}) e adicione para sua pasta de temas."
         },
-        "blankSlateHeaderGeneric": "",
-        "blankSlateMessageGeneric": "",
-        "wasLoaded": "",
+        "blankSlateHeaderGeneric": "Você não tem nada!",
+        "blankSlateMessageGeneric": "Você deveria baixar alguns.",
+        "wasLoaded": "{{name}} v{{version}} foi carregado.",
         "failedToDownload": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Erro ao baixar o plugin {{name}}",
+            "theme": "Erro ao baixar tema {{name}}"
         },
         "successfullyDownload": "Baixado com sucesso {{name}}",
         "alreadyInstalled": "{{name}} já está instalado",
@@ -359,12 +359,12 @@
         "new": "Novo",
         "updated": "Atualizado",
         "downloadCount": {
-            "one": "Baixado {{count}} vezes",
-            "other": ""
+            "one": "Baixado {{count}} vez",
+            "other": "Baixado {{count}} vezes"
         },
         "likeCount": {
-            "one": "Curtido {{count}} vezes",
-            "other": ""
+            "one": "Curtido {{count}} vez",
+            "other": "Curtido {{count}} vezes"
         },
         "tags": "Marcadores",
         "preview": "Pré-visualização",
@@ -372,11 +372,11 @@
         "manyEnabled": {
             "plugin": {
                 "one": "Um plugin foi ativado.",
-                "other": ""
+                "other": "{{count}} plugins foram ativados."
             },
             "theme": {
                 "one": "Um tema foi ativado.",
-                "other": ""
+                "other": "{{count}} temas foram ativados."
             }
         }
     },
@@ -394,7 +394,7 @@
         "cssReverted": "CSS foi revertido.",
         "cssReverting": "As alterações serão revertidas em 10 segundos",
         "cssKept": "Alterações CSS mantidas permanentemente",
-        "cssIsDetached": ""
+        "cssIsDetached": "O editor está desanexado"
     },
     "Modals": {
         "confirmAction": "Você Tem Certeza?",
@@ -440,12 +440,12 @@
         "addonUpdaterNotificationTitle": "Atualizador de Complementos",
         "addonUpdatesAvailable": {
             "plugin": {
-                "one": "Um complemento tem uma atualização!",
-                "other": ""
+                "one": "Um plugin tem uma atualização!",
+                "other": "{{count}} plugins tem atualizações!"
             },
             "theme": {
                 "one": "Um tema tem uma atualização!",
-                "other": ""
+                "other": "{{count}} temas tem atualizações!"
             }
         },
         "addonUpdated": "{{name}} foi atualizado para a versão {{version}}!",
@@ -473,13 +473,36 @@
     },
     "Paginator": {
         "back": "Voltar",
-        "next": ""
+        "next": "Próximo"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "Tentativa de recuperação",
+        "suspect": "Addon suspeito",
+        "report": "Reportar no Github",
+        "safeMode": "Reiniciar no Modo Seguro",
+        "joinSupport": "Junte-se ao Servidor de Suporte!"
+    },
+    "Table": {
+        "search": "Busca",
+        "noMatches": "Nenhuma correspondência",
+        "none": "Nenhum",
+        "duplicate": "Duplicar",
+        "delete": "Deletar",
+        "emptyTitle": "Nada aqui ainda",
+        "emptyBody": "Adiciona uma linha para começar.",
+        "add": "Adicionar",
+        "rowActions": "",
+        "reorder": "Reordenar a linha {{index}}",
+        "actionsFor": "Ações para a linha {{index}}",
+        "remove": "Remover {{name}}",
+        "count": "{{count}}{{name}}",
+        "item": {
+            "one": "item",
+            "other": "itens"
+        },
+        "selected": {
+            "one": "{{count}} selecionado",
+            "other": "{{count}} selecionados"
+        }
     }
 }

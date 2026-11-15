@@ -61,52 +61,52 @@
                     "note": "Aggiunge il frame della finestra del sistema operativo nativo alla finestra principale."
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Angoli Arrotondati",
+                    "note": "Indica se una finestra senza bordi deve avere gli angoli arrotondati"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
-                    "note": ""
+                    "name": "Accetta il primo clic del mouse",
+                    "note": "Indica se facendo clic su una finestra inattiva il clic verrà trasmesso anche al contenuto della finestra"
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Effetto traslucido",
+                    "note": "Aggiunge un effetto di traslucenza alla finestra",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
-                        "popover": "",
-                        "sidebar": "",
-                        "header": "",
-                        "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
-                        "tooltip": "",
-                        "content": "",
-                        "under-window": "",
-                        "under-page": ""
+                        "none": "Nessuno",
+                        "titlebar": "Barra del titolo",
+                        "selection": "Selezione",
+                        "menu": "Menu",
+                        "popover": "Finestra a comparsa",
+                        "sidebar": "Barra laterale",
+                        "header": "Intestazione",
+                        "sheet": "Pannello",
+                        "window": "Finestra",
+                        "hud": "Hud",
+                        "fullscreen-ui": "Interfaccia a schermo intero",
+                        "tooltip": "Suggerimento",
+                        "content": "Contenuto",
+                        "under-window": "Sotto la finestra",
+                        "under-page": "Sotto la pagina"
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
-                    "note": "",
+                    "name": "Stato dell'effetto visivo",
+                    "note": "Specifica come l'aspetto del materiale deve riflettere lo stato di attività della finestra",
                     "options": {
-                        "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "followWindow": "Segui la finestra",
+                        "active": "Attiva",
+                        "inactive": "Inattiva"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
-                    "note": "",
+                    "name": "Materiale di sfondo",
+                    "note": "Imposta il materiale di sfondo della finestra gestito dal sistema, anche dietro l'area non client",
                     "options": {
-                        "auto": "",
-                        "none": "",
-                        "mica": "",
-                        "acrylic": "",
-                        "tabbed": ""
+                        "auto": "Automatico",
+                        "none": "Nessuno",
+                        "mica": "Mica",
+                        "acrylic": "Acrilico",
+                        "tabbed": "Con schede"
                     }
                 }
             },
@@ -190,8 +190,8 @@
                     "note": "Consente la commutazione di DevTools con CTRL+SHIFT+I."
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "Visualizzatore del codice sorgente Webpack",
+                    "note": "Visualizza rapidamente i moduli Webpack negli strumenti per sviluppatori"
                 }
             },
             "editor": {
@@ -245,8 +245,8 @@
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Sempre in primo piano",
+                    "note": "Mantieni sempre in primo piano la finestra dell'editor"
                 }
             }
         }
@@ -327,8 +327,8 @@
         "methodError": "{{method}} non può essere restituito.",
         "unknownAuthor": "Autore sconosciuto",
         "noDescription": "Descrizione non fornita.",
-        "noSettings": "",
-        "isDisabled": "",
+        "noSettings": "{{name}} non ha un pannello delle impostazioni.",
+        "isDisabled": "{{name}} è disabilitato.",
         "alreadyExists": {
             "plugin": "Esiste già un plugin con nome {{name}}",
             "theme": "C'è già un tema con nome {{name}}"
@@ -394,7 +394,7 @@
         "cssReverted": "CSS è stato ripristinato.",
         "cssReverting": "Le modifiche verranno ripristinate in 10 secondi",
         "cssKept": "Le modifiche CSS vengono mantenute permanentemente",
-        "cssIsDetached": ""
+        "cssIsDetached": "L'editor è scollegato"
     },
     "Modals": {
         "confirmAction": "Sei sicuro?",
@@ -476,10 +476,33 @@
         "next": "Avanti"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "Tentativo Di Recupero",
+        "suspect": "Componente aggiuntivo sospetto",
+        "report": "Segnala su Github",
+        "safeMode": "Riavvia in Modalità Provvisoria",
+        "joinSupport": "Entra nel server di supporto!"
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "one": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "other": ""
+        }
     }
 }

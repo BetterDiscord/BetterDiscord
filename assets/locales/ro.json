@@ -490,5 +490,30 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "few": "",
+            "other": ""
+        }
     }
 }

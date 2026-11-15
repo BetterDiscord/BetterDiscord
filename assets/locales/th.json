@@ -1,109 +1,109 @@
 {
     "Panels": {
-        "plugins": "",
-        "themes": "",
-        "customcss": "",
-        "updates": ""
+        "plugins": "ปลั๊กอิน",
+        "themes": "ธีม",
+        "customcss": "CSS กำหนดเอง",
+        "updates": "อัปเดต"
     },
     "Collections": {
         "settings": {
-            "name": "",
+            "name": "การตั้งค่า",
             "general": {
-                "name": "",
+                "name": "ทั่วไป",
                 "voiceDisconnect": {
-                    "name": "",
-                    "note": ""
+                    "name": "ตัดการเชื่อมต่อเสียง",
+                    "note": "ตัดการเชื่อมต่อจากเซิร์ฟเวอร์เสียงเมื่อปิด Discord"
                 },
                 "showToasts": {
-                    "name": "",
-                    "note": ""
+                    "name": "แสดงแถบแจ้งเตือน (Toast)",
+                    "note": "แสดงการแจ้งเตือนขนาดเล็กสำหรับข้อมูลสำคัญ"
                 },
                 "mediaKeys": {
-                    "name": "",
-                    "note": ""
+                    "name": "ปิดใช้งานปุ่มควบคุมสื่อ",
+                    "note": "ป้องกันไม่ให้ Discord ยึดการควบคุมปุ่มสื่อของคุณหลังจากเล่นวิดีโอ"
                 },
                 "themeAttributes": {
-                    "name": "",
-                    "note": ""
+                    "name": "แอตทริบิวต์ของธีม",
+                    "note": "เพิ่มแอตทริบิวต์ให้กับองค์ประกอบต่างๆ เพื่อช่วยในการสร้างธีม"
                 },
                 "notificationPosition": {
-                    "name": "",
-                    "note": ""
+                    "name": "การแจ้งเตือน",
+                    "note": "ให้คุณเลือกตำแหน่งที่ต้องการให้การแจ้งเตือนปรากฏขึ้น"
                 },
                 "notificationEnabled": {
-                    "name": "",
-                    "note": ""
+                    "name": "แสดงการแจ้งเตือน",
+                    "note": "อนุญาตหรือป้องกันไม่ให้แสดงการแจ้งเตือนบนหน้าจอ"
                 }
             },
             "store": {
-                "name": "",
+                "name": "ร้านค้าส่วนเสริม",
                 "alwaysEnable": {
-                    "name": "",
-                    "note": ""
+                    "name": "เปิดใช้งานเสมอ",
+                    "note": "เมื่อเปิดใช้งาน ส่วนเสริมที่ดาวน์โหลดผ่านร้านค้าส่วนเสริมจะถูกเปิดใช้งานโดยอัตโนมัติ"
                 },
                 "addonEmbeds": {
-                    "name": "",
-                    "note": ""
+                    "name": "การฝังการ์ดส่วนเสริม",
+                    "note": "ฝังการ์ดของร้านค้าส่วนเสริมลงในแชท"
                 }
             },
             "window": {
-                "name": "",
+                "name": "การตั้งค่าหน้าต่าง",
                 "removeMinimumSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "ยกเลิกขนาดหน้าต่างขั้นต่ำ",
+                    "note": "ยกเลิกการบังคับขนาดหน้าต่างขั้นต่ำ 800x500 ของ Discord"
                 },
                 "transparency": {
-                    "name": "",
-                    "note": ""
+                    "name": "เปิดใช้งานความโปร่งใส",
+                    "note": "ทำให้หน้าต่างหลักโปร่งใส (ต้องรีสตาร์ทโปรแกรม)"
                 },
                 "frame": {
-                    "name": "",
-                    "note": ""
+                    "name": "กรอบหน้าต่าง",
+                    "note": "เพิ่มกรอบหน้าต่างมาตรฐานของระบบปฏิบัติการให้กับหน้าต่างหลัก"
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "มุมโค้งมน",
+                    "note": "กำหนดให้หน้าต่างแบบไร้กรอบมีมุมโค้งมนหรือไม่"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
-                    "note": ""
+                    "name": "รับการคลิกเมาส์ครั้งแรก",
+                    "note": "กำหนดว่าการคลิกหน้าต่างที่ไม่ได้ใช้งานอยู่จะส่งผลไปยังเนื้อหาเว็บด้วยหรือไม่"
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "เอฟเฟกต์โปร่งแสง (Vibrancy)",
+                    "note": "เพิ่มรูปแบบเอฟเฟกต์ความโปร่งแสงให้กับหน้าต่าง",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
-                        "popover": "",
-                        "sidebar": "",
-                        "header": "",
-                        "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
-                        "tooltip": "",
-                        "content": "",
-                        "under-window": "",
-                        "under-page": ""
+                        "none": "ไม่มี",
+                        "titlebar": "แถบชื่อเรื่อง (Titlebar)",
+                        "selection": "ส่วนที่เลือก (Selection)",
+                        "menu": "เมนู (Menu)",
+                        "popover": "ป๊อปโอเวอร์ (Popover)",
+                        "sidebar": "แถบด้านข้าง (Sidebar)",
+                        "header": "ส่วนหัว (Header)",
+                        "sheet": "แผ่นงาน (Sheet)",
+                        "window": "หน้าต่าง (Window)",
+                        "hud": "HUD",
+                        "fullscreen-ui": "UI แบบเต็มหน้าจอ",
+                        "tooltip": "คำแนะนำเครื่องมือ (Tooltip)",
+                        "content": "เนื้อหา (Content)",
+                        "under-window": "ใต้หน้าต่าง (Under Window)",
+                        "under-page": "ใต้หน้า (Under Page)"
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
-                    "note": "",
+                    "name": "สถานะเอฟเฟกต์ภาพ",
+                    "note": "ระบุว่าลักษณะพื้นผิวควรแสดงผลตามสถานะการใช้งานของหน้าต่างอย่างไร",
                     "options": {
-                        "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "followWindow": "ตามหน้าต่าง",
+                        "active": "ใช้งานอยู่ (Active)",
+                        "inactive": "ไม่ได้ใช้งาน (Inactive)"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
-                    "note": "",
+                    "name": "พื้นผิวพื้นหลัง",
+                    "note": "ตั้งค่าพื้นผิวพื้นหลังที่ระบบวาดให้หน้าต่าง รวมถึงบริเวณนอกพื้นที่เนื้อหา",
                     "options": {
-                        "auto": "",
-                        "none": "",
+                        "auto": "อัตโนมัติ",
+                        "none": "ไม่มี",
                         "mica": "",
                         "acrylic": "",
                         "tabbed": ""
@@ -111,366 +111,387 @@
                 }
             },
             "addons": {
-                "name": "",
+                "name": "ตัวจัดการส่วนเสริม",
                 "addonErrors": {
-                    "name": "",
-                    "note": ""
+                    "name": "แสดงข้อผิดพลาดของส่วนเสริม",
+                    "note": "แสดงหน้าต่างป๊อปอัปพร้อมข้อผิดพลาดของปลั๊กอิน\/ธีม"
                 },
                 "editAction": {
-                    "name": "",
-                    "note": "",
+                    "name": "การกระทำเมื่อแก้ไข",
+                    "note": "ตำแหน่งที่ปลั๊กอินและธีมจะเปิดขึ้นเมื่อแก้ไข",
                     "options": {
-                        "detached": "",
-                        "external": "",
-                        "system": ""
+                        "detached": "หน้าต่างแยกต่างหาก",
+                        "external": "หน้าต่างภายนอก",
+                        "system": "โปรแกรมแก้ไขของระบบ"
                     }
                 },
                 "checkForUpdates": {
-                    "name": "",
-                    "note": ""
+                    "name": "ตรวจสอบอัปเดตอัตโนมัติ",
+                    "note": "ตรวจสอบการอัปเดตสำหรับส่วนเสริมและระบบหลักของ BD เป็นระยะ"
                 },
                 "updateInterval": {
-                    "name": "",
-                    "note": ""
+                    "name": "ระยะเวลาการตรวจสอบอัปเดต",
+                    "note": "ความถี่ในการตรวจสอบอัปเดตส่วนเสริมและระบบหลัก"
                 }
             },
             "customcss": {
-                "name": "",
+                "name": "CSS กำหนดเอง",
                 "customcss": {
-                    "name": "",
-                    "note": ""
+                    "name": "CSS กำหนดเอง",
+                    "note": "เปิดใช้งานแท็บ CSS กำหนดเอง"
                 },
                 "liveUpdate": {
-                    "name": "",
-                    "note": ""
+                    "name": "อัปเดตทันที",
+                    "note": "อัปเดต CSS ทันทีขณะที่คุณพิมพ์"
                 },
                 "startDetached": {
-                    "name": "",
-                    "note": ""
+                    "name": "เปิดแบบแยกหน้าต่าง",
+                    "note": "การคลิกแท็บ CSS กำหนดเองจะเปิดตัวแก้ไขในหน้าต่างแยกต่างหาก"
                 },
                 "nativeOpen": {
-                    "name": "",
-                    "note": ""
+                    "name": "เปิดในโปรแกรมแก้ไขของระบบ",
+                    "note": "การคลิกแท็บ CSS กำหนดเองจะเปิด CSS กำหนดเองของคุณในโปรแกรมแก้ไขของระบบ"
                 },
                 "openAction": {
-                    "name": "",
-                    "note": "",
+                    "name": "ตำแหน่งตัวแก้ไข",
+                    "note": "ตำแหน่งเริ่มต้นในการเปิด CSS กำหนดเอง",
                     "options": {
-                        "settings": "",
-                        "detached": "",
-                        "external": "",
-                        "system": ""
+                        "settings": "เมนูการตั้งค่า",
+                        "detached": "หน้าต่างแยกต่างหาก",
+                        "external": "หน้าต่างภายนอก",
+                        "system": "โปรแกรมแก้ไขของระบบ"
                     }
                 }
             },
             "developer": {
-                "name": "",
+                "name": "ตัวเลือกนักพัฒนา",
                 "debuggerHotkey": {
-                    "name": "",
-                    "note": ""
+                    "name": "ปุ่มลัดดีบักเกอร์",
+                    "note": "อนุญาตให้เปิดใช้งานดีบักเกอร์เมื่อกด F8 ขณะที่ DevTools เปิดอยู่"
                 },
                 "reactDevTools": {
                     "name": "",
-                    "note": ""
+                    "note": "แทรก React Developer Tools ที่ติดตั้งในเครื่องของคุณเข้าไปใน Discord"
                 },
                 "inspectElement": {
-                    "name": "",
-                    "note": ""
+                    "name": "ปุ่มลัดตรวจสอบองค์ประกอบ",
+                    "note": "เปิดใช้งานปุ่มลัดตรวจสอบองค์ประกอบ (ctrl + shift + c) ที่พบได้ทั่วไปในเบราว์เซอร์ส่วนใหญ่"
                 },
                 "devToolsWarning": {
-                    "name": "",
-                    "note": ""
+                    "name": "ปิดคำเตือน DevTools",
+                    "note": "หยุด Discord ไม่ให้แสดงข้อความเตือน \"Hold Up!\" ในคอนโซล"
                 },
                 "debugLogs": {
-                    "name": "",
-                    "note": ""
+                    "name": "บันทึกดีบัก (Debug Logs)",
+                    "note": "ส่งออกข้อมูลทั้งหมดจากคอนโซลลงในไฟล์ debug.log ในโฟลเดอร์ BetterDiscord"
                 },
                 "devTools": {
                     "name": "",
-                    "note": ""
+                    "note": "เปิดใช้งานการสลับเปิด\/ปิด DevTools ด้วยปุ่ม ctrl+shift+i"
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "ตัวดูซอร์สโค้ด Webpack",
+                    "note": "ดูโมดูลของ webpack อย่างรวดเร็วในเครื่องมือสำหรับนักพัฒนา"
                 }
             },
             "editor": {
-                "name": "",
+                "name": "ตัวเลือกตัวแก้ไขโค้ด",
                 "theme": {
-                    "name": "",
-                    "note": "",
+                    "name": "ธีม",
+                    "note": "ธีมสำหรับตัวแก้ไขโค้ด",
                     "options": {
-                        "system": "",
-                        "vs-dark": "",
-                        "vs": "",
-                        "hc-black": "",
-                        "hc-light": ""
+                        "system": "ตามระบบ",
+                        "vs-dark": "มืด",
+                        "vs": "สว่าง",
+                        "hc-black": "คอนทราสต์สูง (ดำ)",
+                        "hc-light": "คอนทราสต์สูง (สว่าง)"
                     }
                 },
                 "lineNumbers": {
-                    "name": "",
-                    "note": ""
+                    "name": "เลขบรรทัด",
+                    "note": "เปิดใช้งานการแสดงเลขบรรทัดที่ด้านข้างของตัวแก้ไขโค้ด"
                 },
                 "fontSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "ขนาดตัวอักษร",
+                    "note": "ขนาดตัวอักษร (pt) ที่ใช้ในตัวแก้ไขโค้ด"
                 },
                 "minimap": {
-                    "name": "",
-                    "note": ""
+                    "name": "แผนที่ย่อโค้ด (Minimap)",
+                    "note": "เปิดใช้งานการแสดงแผนที่ย่อโค้ดที่ด้านข้างของตัวแก้ไขโค้ด"
                 },
                 "hover": {
-                    "name": "",
-                    "note": ""
+                    "name": "คำแนะนำอ้างอิง",
+                    "note": "เปิดใช้งานการแสดงคำแนะนำอ้างอิงเมื่อวางเมาส์เหนือ rule และ selector"
                 },
                 "quickSuggestions": {
-                    "name": "",
-                    "note": ""
+                    "name": "คำแนะนำอัตโนมัติ",
+                    "note": "เปิดใช้งานการแสดงคำแนะนำเติมคำอัตโนมัติขณะที่คุณพิมพ์"
                 },
                 "insertSpaces": {
-                    "name": "",
-                    "note": ""
+                    "name": "แทรกช่องว่าง (Spaces)",
+                    "note": "แทรกช่องว่างแทนการใช้แท็บ (Tab)"
                 },
                 "tabSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "ขนาดแท็บ",
+                    "note": "จำนวนช่องว่างที่เท่ากับหนึ่งแท็บ"
                 },
                 "renderWhitespace": {
-                    "name": "",
-                    "note": "",
+                    "name": "แสดงอักขระช่องว่าง",
+                    "note": "กำหนดเวลาที่ตัวแก้ไขโค้ดควรแสดงอักขระช่องว่าง",
                     "options": {
-                        "all": "",
-                        "none": "",
-                        "selection": ""
+                        "all": "ตลอดเวลา",
+                        "none": "ไม่เลย",
+                        "selection": "เฉพาะส่วนที่เลือก"
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "อยู่ด้านบนเสมอ",
+                    "note": "ทำให้หน้าต่างตัวแก้ไขโค้ดอยู่ด้านบนสุดเสมอ"
                 }
             }
         }
     },
     "Addons": {
-        "title": "",
-        "byline": "",
+        "title": "{{name}} v{{version}} โดย {{author}}",
+        "byline": "โดย {{author}}",
         "openFolder": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "เปิดโฟลเดอร์ปลั๊กอิน",
+            "theme": "เปิดโฟลเดอร์ธีม"
         },
         "openStore": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "เปิดร้านค้าปลั๊กอิน",
+            "theme": "เปิดร้านค้าธีม"
         },
         "storeMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "เรียกดูและติดตั้งปลั๊กอินอย่างเป็นทางการจากชุมชน",
+            "theme": "เรียกดูและติดตั้งธีมอย่างเป็นทางการจากชุมชน"
         },
-        "store": "",
+        "store": "ร้านค้า",
         "viewInstalled": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "ดูปลั๊กอินที่ติดตั้งแล้ว",
+            "theme": "ดูธีมที่ติดตั้งแล้ว"
         },
-        "reload": "",
-        "addonSettings": "",
-        "website": "",
-        "source": "",
-        "invite": "",
-        "donate": "",
+        "reload": "โหลดใหม่",
+        "addonSettings": "การตั้งค่า",
+        "website": "เว็บไซต์",
+        "source": "ซอร์สโค้ด",
+        "invite": "เซิร์ฟเวอร์สนับสนุน",
+        "donate": "บริจาค",
         "patreon": "",
-        "name": "",
-        "author": "",
-        "version": "",
-        "added": "",
-        "modified": "",
-        "releaseDate": "",
-        "lastUpdated": "",
-        "isEnabled": "",
-        "popularity": "",
-        "isInstalled": "",
-        "downloads": "",
-        "likes": "",
-        "listView": "",
-        "gridView": "",
-        "enableAll": "",
-        "disableAll": "",
+        "name": "ชื่อ",
+        "author": "ผู้สร้าง",
+        "version": "เวอร์ชัน",
+        "added": "วันที่เพิ่ม",
+        "modified": "วันที่แก้ไข",
+        "releaseDate": "วันที่เผยแพร่",
+        "lastUpdated": "อัปเดตล่าสุด",
+        "isEnabled": "เปิดใช้งานอยู่",
+        "popularity": "ความนิยม",
+        "isInstalled": "ติดตั้งแล้ว",
+        "downloads": "ยอดดาวน์โหลด",
+        "likes": "ถูกใจ",
+        "listView": "มุมมองรายการ",
+        "gridView": "มุมมองตาราง",
+        "enableAll": "เปิดใช้งานทั้งหมด",
+        "disableAll": "ปิดใช้งานทั้งหมด",
         "enableAllWarning": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "การเปิดใช้งานปลั๊กอินทั้งหมดอาจทำให้เกิดอาการหน่วงชั่วคราวและข้อผิดพลาดที่ไม่คาดคิดได้\n\n(กด Shift ค้างไว้ขณะคลิกเพื่อข้ามหน้าต่างแจ้งเตือนนี้!)",
+            "theme": "การเปิดใช้งานธีมทั้งหมดอาจทำให้เกิดอาการหน่วงชั่วคราวและข้อผิดพลาดที่ไม่คาดคิดได้\n\n(กด Shift ค้างไว้ขณะคลิกเพื่อข้ามหน้าต่างแจ้งเตือนนี้!)"
         },
         "search": {
             "plugin": {
-                "other": ""
+                "other": "ค้นหาปลั๊กอิน {{count}} รายการ"
             },
             "theme": {
-                "other": ""
+                "other": "ค้นหาธีม {{count}} รายการ"
             }
         },
         "results": {
-            "other": ""
+            "other": "{{count}} ผลลัพธ์"
         },
-        "editAddon": "",
-        "deleteAddon": "",
-        "downloadAddon": "",
-        "confirmDelete": "",
-        "confirmationText": "",
-        "enabled": "",
-        "disabled": "",
-        "couldNotEnable": "",
-        "couldNotDisable": "",
-        "couldNotStart": "",
-        "couldNotStop": "",
-        "settingsError": "",
-        "methodError": "",
-        "unknownAuthor": "",
-        "noDescription": "",
-        "noSettings": "",
-        "isDisabled": "",
+        "editAddon": "แก้ไข",
+        "deleteAddon": "ลบ",
+        "downloadAddon": "ดาวน์โหลด",
+        "confirmDelete": "คุณแน่ใจหรือไม่ว่าต้องการลบ {{name}}?",
+        "confirmationText": "คุณมีการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใน {{name}} การปิดหน้าต่างนี้จะทำให้การเปลี่ยนแปลงทั้งหมดสูญหาย",
+        "enabled": "เปิดใช้งาน {{name}} แล้ว",
+        "disabled": "ปิดใช้งาน {{name}} แล้ว",
+        "couldNotEnable": "ไม่สามารถเปิดใช้งาน {{name}} ได้",
+        "couldNotDisable": "ไม่สามารถปิดใช้งาน {{name}} ได้",
+        "couldNotStart": "ไม่สามารถเริ่มการทำงาน {{name}} ได้",
+        "couldNotStop": "ไม่สามารถหยุดการทำงาน {{name}} ได้",
+        "settingsError": "ไม่สามารถเปิดการตั้งค่าสำหรับ {{name}} ได้",
+        "methodError": "ไม่สามารถเรียกใช้ {{method}} ได้",
+        "unknownAuthor": "ไม่ทราบผู้สร้าง",
+        "noDescription": "ไม่มีคำอธิบาย",
+        "noSettings": "{{name}} ไม่มีแผงการตั้งค่า",
+        "isDisabled": "{{name}} ถูกปิดใช้งานอยู่",
         "alreadyExists": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "มีปลั๊กอินชื่อ {{name}} อยู่แล้ว",
+            "theme": "มีธีมชื่อ {{name}} อยู่แล้ว"
         },
-        "metaError": "",
-        "missingNameData": "",
-        "metaNotFound": "",
-        "compileError": "",
-        "wasUnloaded": "",
+        "metaError": "ไม่สามารถแยกวิเคราะห์ META ได้",
+        "missingNameData": "META ขาดข้อมูลชื่อ",
+        "metaNotFound": "ไม่พบ META",
+        "compileError": "ไม่สามารถคอมไพล์ได้ โปรดดูรายละเอียดในคอนโซล",
+        "wasUnloaded": "ยกเลิกการโหลด {{name}} แล้ว",
         "blankSlateHeader": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "คุณยังไม่มีปลั๊กอินเลย!",
+            "theme": "คุณยังไม่มีธีมเลย!"
         },
         "blankSlateMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "ดาวน์โหลดได้จาก[เว็บไซต์ของเรา]({{link}}) แล้วนำไปใส่ในโฟลเดอร์ปลั๊กอินของคุณ",
+            "theme": "ดาวน์โหลดได้จาก[เว็บไซต์ของเรา]({{link}}) แล้วนำไปใส่ในโฟลเดอร์ธีมของคุณ"
         },
-        "blankSlateHeaderGeneric": "",
-        "blankSlateMessageGeneric": "",
-        "wasLoaded": "",
+        "blankSlateHeaderGeneric": "คุณยังไม่มีอะไรเลย!",
+        "blankSlateMessageGeneric": "คุณน่าจะลองหามาเพิ่มดูนะ",
+        "wasLoaded": "โหลด {{name}} v{{version}} แล้ว",
         "failedToDownload": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "ดาวน์โหลดปลั๊กอิน {{name}} ไม่สำเร็จ",
+            "theme": "ดาวน์โหลดธีม {{name}} ไม่สำเร็จ"
         },
-        "successfullyDownload": "",
-        "alreadyInstalled": "",
-        "failedToFetch": "",
-        "new": "",
-        "updated": "",
+        "successfullyDownload": "ดาวน์โหลด {{name}} สำเร็จแล้ว",
+        "alreadyInstalled": "{{name}} ถูกติดตั้งไว้แล้ว",
+        "failedToFetch": "ไม่สามารถดึงข้อมูลส่วนเสริมได้",
+        "new": "ใหม่",
+        "updated": "อัปเดตแล้ว",
         "downloadCount": {
-            "other": ""
+            "other": "ดาวน์โหลด {{count}} ครั้ง"
         },
         "likeCount": {
-            "other": ""
+            "other": "ถูกใจ {{count}} ครั้ง"
         },
-        "tags": "",
-        "preview": "",
-        "official": "",
+        "tags": "แท็ก",
+        "preview": "ดูตัวอย่าง",
+        "official": "อย่างเป็นทางการ",
         "manyEnabled": {
             "plugin": {
-                "other": ""
+                "other": "เปิดใช้งานปลั๊กอิน {{count}} รายการแล้ว"
             },
             "theme": {
-                "other": ""
+                "other": "เปิดใช้งานธีม {{count}} รายการแล้ว"
             }
         }
     },
     "CustomCSS": {
-        "confirmationText": "",
-        "update": "",
-        "save": "",
-        "openNative": "",
-        "openDetached": "",
-        "settings": "",
-        "editorTitle": "",
-        "cssInstallSuccess": "",
-        "cssInstalled": "",
-        "cssInstallError": "",
-        "cssReverted": "",
-        "cssReverting": "",
-        "cssKept": "",
-        "cssIsDetached": ""
+        "confirmationText": "คุณมีการเปลี่ยนแปลงที่ยังไม่ได้บันทึกใน CSS กำหนดเองของคุณ การปิดหน้าต่างนี้จะทำให้การเปลี่ยนแปลงทั้งหมดสูญหาย",
+        "update": "อัปเดต",
+        "save": "บันทึก",
+        "openNative": "เปิดในโปรแกรมแก้ไขของระบบ",
+        "openDetached": "แยกหน้าต่าง",
+        "settings": "การตั้งค่าตัวแก้ไขโค้ด",
+        "editorTitle": "ตัวแก้ไข CSS กำหนดเอง",
+        "cssInstallSuccess": "เพิ่ม CSS ลงใน CSS กำหนดเองเรียบร้อยแล้ว",
+        "cssInstalled": "ติดตั้ง CSS แล้ว!",
+        "cssInstallError": "เพิ่ม CSS ลงใน CSS กำหนดเองไม่สำเร็จ",
+        "cssReverted": "ย้อนกลับ CSS เรียบร้อยแล้ว",
+        "cssReverting": "การเปลี่ยนแปลงจะถูกย้อนกลับภายใน 10 วินาที",
+        "cssKept": "บันทึกการเปลี่ยนแปลง CSS แบบถาวรแล้ว",
+        "cssIsDetached": "ตัวแก้ไขโค้ดถูกแยกหน้าต่างอยู่"
     },
     "Modals": {
-        "confirmAction": "",
-        "installCss": "",
-        "addonCrashed": "",
-        "okay": "",
-        "done": "",
-        "cancel": "",
-        "nevermind": "",
-        "close": "",
-        "name": "",
-        "message": "",
-        "error": "",
-        "addonErrors": "",
-        "restartRequired": "",
-        "restartNow": "",
-        "restartLater": "",
-        "additionalInfo": "",
-        "restartPrompt": "",
-        "changelog": "",
-        "debuglog": "",
-        "automaticallyEnable": ""
+        "confirmAction": "คุณแน่ใจหรือไม่?",
+        "installCss": "คุณแน่ใจหรือไม่ว่าต้องการเพิ่ม CSS นี้ลงใน CSS กำหนดเองของคุณ?",
+        "addonCrashed": "ปลั๊กอินนี้ถูกปิดใช้งานเพื่อป้องกันการแครช โปรดรายงานปัญหานี้ให้นักพัฒนาทราบ",
+        "okay": "ตกลง",
+        "done": "เสร็จสิ้น",
+        "cancel": "ยกเลิก",
+        "nevermind": "ไม่เป็นไร",
+        "close": "ปิด",
+        "name": "ชื่อ",
+        "message": "ข้อความ",
+        "error": "ข้อผิดพลาด",
+        "addonErrors": "ข้อผิดพลาดของส่วนเสริม",
+        "restartRequired": "จำเป็นต้องรีสตาร์ท",
+        "restartNow": "รีสตาร์ททันที",
+        "restartLater": "รีสตาร์ทภายหลัง",
+        "additionalInfo": "ข้อมูลเพิ่มเติม",
+        "restartPrompt": "จำเป็นต้องรีสตาร์ท Discord เพื่อให้การตั้งค่ามีผล คุณต้องการรีสตาร์ทตอนนี้เลยหรือไม่?",
+        "changelog": "บันทึกการเปลี่ยนแปลง",
+        "debuglog": "ไฟล์ debug log ของคุณมีขนาดเกิน 100MB แล้ว คุณต้องการล้างไฟล์บันทึกหรือไม่?",
+        "automaticallyEnable": "เปิดใช้งานอัตโนมัติ"
     },
     "Sorting": {
-        "sortBy": "",
-        "order": "",
-        "ascending": "",
-        "descending": ""
+        "sortBy": "เรียงตาม",
+        "order": "ลำดับ",
+        "ascending": "จากน้อยไปมาก",
+        "descending": "จากมากไปน้อย"
     },
     "WindowPrefs": {
-        "enabledInfo": "",
-        "disabledInfo": ""
+        "enabledInfo": "ตัวเลือกนี้ต้องใช้ธีมแบบโปร่งใสจึงจะทำงานได้อย่างถูกต้อง บน Windows ตัวเลือกนี้อาจทำให้ระบบ Aero Snapping และการขยายเต็มหน้าจอทำงานผิดปกติได้\n\nจำเป็นต้องรีสตาร์ท Discord เพื่อให้การตั้งค่ามีผล คุณต้องการรีสตาร์ทตอนนี้เลยหรือไม่?",
+        "disabledInfo": "จำเป็นต้องรีสตาร์ท Discord เพื่อให้การตั้งค่ามีผล คุณต้องการรีสตาร์ทตอนนี้เลยหรือไม่?"
     },
     "Toasts": {
-        "recoveryFailed": ""
+        "recoveryFailed": "การกู้คืนไม่สมบูรณ์ การดำเนินการบางอย่างไม่สำเร็จ"
     },
     "Updater": {
-        "updateFailed": "",
-        "updateFailedMessage": "",
-        "updateSuccessful": "",
-        "updateAvailable": "",
-        "viewUpdates": "",
-        "addonUpdaterNotificationTitle": "",
+        "updateFailed": "อัปเดตไม่สำเร็จ!",
+        "updateFailedMessage": "อัปเดต BetterDiscord ไม่สำเร็จ โปรดดาวน์โหลดตัวติดตั้งเวอร์ชันล่าสุดจากเว็บไซต์ของเรา (https:\/\/betterdiscord.app\/) แล้วติดตั้งใหม่",
+        "updateSuccessful": "อัปเดตสำเร็จ!",
+        "updateAvailable": "BetterDiscord มีอัปเดตใหม่ (v{{version}})",
+        "viewUpdates": "ดูรายการอัปเดต",
+        "addonUpdaterNotificationTitle": "ตัวอัปเดตส่วนเสริม",
         "addonUpdatesAvailable": {
             "plugin": {
-                "other": ""
+                "other": "มีปลั๊กอิน {{count}} รายการที่มีอัปเดต!"
             },
             "theme": {
-                "other": ""
+                "other": "มีธีม {{count}} รายการที่มีอัปเดต!"
             }
         },
-        "addonUpdated": "",
-        "addonUpdateFailed": "",
-        "checking": "",
-        "finishedChecking": "",
-        "checkForUpdates": "",
-        "updateAll": "",
-        "noUpdatesAvailable": "",
-        "versionAvailable": "",
+        "addonUpdated": "อัปเดต {{name}} เป็นเวอร์ชัน {{version}} แล้ว!",
+        "addonUpdateFailed": "อัปเดต {{name}} ไม่สำเร็จ โปรดลองอีกครั้งในภายหลัง",
+        "checking": "กำลังตรวจสอบอัปเดต!",
+        "finishedChecking": "ตรวจสอบอัปเดตเสร็จสิ้น!",
+        "checkForUpdates": "ตรวจสอบอัปเดต!",
+        "updateAll": "อัปเดตทั้งหมด!",
+        "noUpdatesAvailable": "ไม่มีอัปเดตใหม่",
+        "versionAvailable": "เวอร์ชัน {{version}} พร้อมใช้งานแล้ว!",
         "upToDateBlankslate": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "ปลั๊กอินทั้งหมดของคุณเป็นเวอร์ชันล่าสุดแล้ว!",
+            "theme": "ธีมทั้งหมดของคุณเป็นเวอร์ชันล่าสุดแล้ว!"
         },
-        "updateButton": ""
+        "updateButton": "อัปเดต!"
     },
     "Settings": {
-        "customColor": "",
-        "resetSettings": "",
-        "resetSettingsWarning": ""
+        "customColor": "สีกำหนดเอง",
+        "resetSettings": "รีเซ็ตการตั้งค่า",
+        "resetSettingsWarning": "การรีเซ็ตการตั้งค่าจะคืนค่าทั้งหมดกลับสู่สภาพเดิม และไม่สามารถย้อนกลับได้"
     },
     "Socials": {
-        "twitter": "",
-        "github": ""
+        "twitter": "ติดตามเรา!",
+        "github": "ติดดาวให้เรา!"
     },
     "Paginator": {
-        "back": "",
-        "next": ""
+        "back": "ย้อนกลับ",
+        "next": "ถัดไป"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "พยายามกู้คืน",
+        "suspect": "ส่วนเสริมที่ต้องสงสัย",
+        "report": "รายงานบน GitHub",
+        "safeMode": "เปิดใหม่ใน Safe Mode",
+        "joinSupport": "เข้าร่วมเซิร์ฟเวอร์สนับสนุน!"
+    },
+    "Table": {
+        "search": "ค้นหา",
+        "noMatches": "ไม่พบรายการที่ตรงกัน",
+        "none": "ไม่มี",
+        "duplicate": "ทำซ้ำ",
+        "delete": "ลบ",
+        "emptyTitle": "ยังไม่มีอะไรที่นี่",
+        "emptyBody": "เพิ่มแถวเพื่อเริ่มต้นใช้งาน",
+        "add": "เพิ่ม",
+        "rowActions": "การดำเนินการของแถว",
+        "reorder": "จัดลำดับแถว {{index}} ใหม่",
+        "actionsFor": "การดำเนินการสำหรับแถว {{index}}",
+        "remove": "นำ {{name}} ออก",
+        "count": "",
+        "item": {
+            "other": "รายการ"
+        },
+        "selected": {
+            "other": "เลือกแล้ว {{count}} รายการ"
+        }
     }
 }
