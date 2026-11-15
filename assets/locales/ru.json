@@ -65,48 +65,48 @@
                     "note": ""
                 },
                 "acceptFirstMouse": {
-                    "name": "",
-                    "note": ""
+                    "name": "Принять первый клик мыши",
+                    "note": "Нажатие на неактивное окно также нажимает на веб содержимое"
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Вибрация",
+                    "note": "Добавить эффект вибрации в окно",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
-                        "popover": "",
-                        "sidebar": "",
-                        "header": "",
-                        "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
-                        "tooltip": "",
-                        "content": "",
-                        "under-window": "",
-                        "under-page": ""
+                        "none": "Не задано",
+                        "titlebar": "Заголовок",
+                        "selection": "Выбор",
+                        "menu": "Меню",
+                        "popover": "Всплывать",
+                        "sidebar": "Боковая панель",
+                        "header": "Заголовок",
+                        "sheet": "Лист",
+                        "window": "Окно",
+                        "hud": "Hud",
+                        "fullscreen-ui": "Полноэкранный интерфейс",
+                        "tooltip": "Всплывающая подсказка",
+                        "content": "Материал",
+                        "under-window": "Под окном",
+                        "under-page": "Под страницей"
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
-                    "note": "",
+                    "name": "Состояние визуального эффекта",
+                    "note": "Указать, как материал должен отражать состояние оконной активности",
                     "options": {
-                        "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "followWindow": "Перейти к окну",
+                        "active": "Активен",
+                        "inactive": "Неактивен"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
-                    "note": "",
+                    "name": "Фоновый материал",
+                    "note": "Установите рисунок фона окна в фоновом режиме, в том числе за пределами области",
                     "options": {
-                        "auto": "",
-                        "none": "",
-                        "mica": "",
-                        "acrylic": "",
-                        "tabbed": ""
+                        "auto": "Авто",
+                        "none": "Не задано",
+                        "mica": "Непрозрачный",
+                        "acrylic": "Полупрозрачный",
+                        "tabbed": "Размытый"
                     }
                 }
             },
@@ -190,8 +190,8 @@
                     "note": "Включает возможность открыть меню разработчика при нажатии ctrl+shift+i"
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "Просмотр исходного кода Webpack",
+                    "note": "Быстрый просмотр модулей webpack в инструментах разработчика"
                 }
             },
             "editor": {
@@ -245,8 +245,8 @@
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Всегда сверху",
+                    "note": "Сделать окно редактора всегда поверх него"
                 }
             }
         }
@@ -333,8 +333,8 @@
         "methodError": "{{method}} не может быть уволен.",
         "unknownAuthor": "Неизвестный автор",
         "noDescription": "Нету описания.",
-        "noSettings": "",
-        "isDisabled": "",
+        "noSettings": "{{name}} не имеет панели настроек.",
+        "isDisabled": "{{name}} выключен.",
         "alreadyExists": {
             "plugin": "Уже существует плагин с именем {{name}}",
             "theme": "Уже существует тема с именем {{name}}"
@@ -408,7 +408,7 @@
         "cssReverted": "CSS отменён.",
         "cssReverting": "Изменения будут отменены через 10 секунд",
         "cssKept": "Изменения CSS сохранены навсегда",
-        "cssIsDetached": ""
+        "cssIsDetached": "Редактор отсоединён"
     },
     "Modals": {
         "confirmAction": "Ты уверен?",
@@ -494,10 +494,37 @@
         "next": "Далее"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "Попытаться восстановить",
+        "suspect": "Подозреваемый аддон",
+        "report": "Сообщить об ошибке на GitHub",
+        "safeMode": "Перезапустить в безопасном режиме",
+        "joinSupport": "Присоединиться к Серверу Поддержки!"
+    },
+    "Table": {
+        "search": "Поиск",
+        "noMatches": "Нет совпадений",
+        "none": "Не задано",
+        "duplicate": "Дубликат",
+        "delete": "Удалить",
+        "emptyTitle": "Здесь ещё ничего нет",
+        "emptyBody": "Добавьте строку, чтобы начать.",
+        "add": "Добавить",
+        "rowActions": "Действия строк",
+        "reorder": "Изменить порядок строки {{index}}",
+        "actionsFor": "Действия для строки {{index}}",
+        "remove": "Удалить {{name}}",
+        "count": "{{count}} {{name}}",
+        "item": {
+            "one": "объект",
+            "few": "объекты",
+            "many": "объекты",
+            "other": "объекты"
+        },
+        "selected": {
+            "one": "{{count}} выбран",
+            "few": "{{count}} выбрано",
+            "many": "{{count}} выбрано",
+            "other": "{{count}} выбрано"
+        }
     }
 }
