@@ -47,7 +47,7 @@
     text-align: center;
 }
 
-/* An inline slider keeps a fixed width beside its label, with room under it for the markers */
+/* An inline slider keeps a fixed width beside its label */
 .bd-theme-slider {
     display: flex;
     align-items: center;
@@ -199,14 +199,6 @@
 
     /* As tall as the tallest field, so the row keeps its height when the control appears */
     min-height: 40px;
-}
-
-/*
- * slider.css pads the first row of a list to make room for a slider's hover label. Here the slider only appears
- * once Custom is picked, so the padding would push the row down at that moment.
- */
-.bd-theme-settings .bd-setting-item.inline:first-child:has(.bd-theme-custom-beside .bd-slider-wrap) {
-    padding-top: 0;
 }
 
 /* A link setting: the field or the picked image, with Browse beside it */
