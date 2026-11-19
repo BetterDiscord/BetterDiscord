@@ -79,13 +79,14 @@
     font-weight: 500;
 }
 
-/* On a narrow modal, a wide control drops under its label instead of squeezing it */
+/* On a narrow page, a wide control drops under its label instead of squeezing it */
 .bd-theme-settings .bd-setting-header {
     flex-wrap: wrap;
     gap: 8px 12px;
 }
 
 .bd-theme-settings .bd-setting-header > .bd-theme-setting-control {
+    max-width: 100%;
     margin-left: auto;
 }
 
@@ -185,11 +186,27 @@
     margin-top: 0;
 }
 
-/* Custom under a dropdown: the type's control on its own line, aligned right under the dropdown */
-.bd-theme-custom-below {
+/*
+ * Custom with a dropdown: the type's control sits left of the dropdown. When the two don't fit on one line, the
+ * reversed wrap keeps the dropdown on the first line and puts the control under it.
+ */
+.bd-theme-custom-beside {
     display: flex;
+    flex-wrap: wrap-reverse;
     justify-content: flex-end;
-    margin-top: 12px;
+    align-items: center;
+    gap: 12px;
+
+    /* As tall as the tallest field, so the row keeps its height when the control appears */
+    min-height: 40px;
+}
+
+/*
+ * slider.css pads the first row of a list to make room for a slider's hover label. Here the slider only appears
+ * once Custom is picked, so the padding would push the row down at that moment.
+ */
+.bd-theme-settings .bd-setting-item.inline:first-child:has(.bd-theme-custom-beside .bd-slider-wrap) {
+    padding-top: 0;
 }
 
 /* A link setting: the field or the picked image, with Browse beside it */

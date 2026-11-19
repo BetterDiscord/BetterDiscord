@@ -107,38 +107,20 @@ function SettingRow({theme, setting, savedValue}: SettingRowProps) {
 
     // `custom` is set exactly when the control is a `custom` one
     const custom = useCustomChoice(control, applied, apply);
-    const {element, below} = control.kind === "custom"
+    const element = control.kind === "custom"
         ? buildCustomControl(setting, control, custom!, applied, apply, savedValue)
         : buildControl(setting, control, applied, apply, savedValue);
     const reset = savedValue !== undefined && <ResetButton name={setting.name} onClick={() => ThemeValues.reset(theme, setting.property)} />;
 
-    // The error goes under the part that can take a refused value, which is the Custom control when it sits below
-    const controlClass = "bd-theme-setting-control" + (isInvalid ? " bd-theme-setting-invalid" : "");
-    const error = isInvalid && <div className="bd-theme-setting-error" role="alert">{t("ThemeSettings.invalid")}</div>;
-
-    return <SettingItem
-        id={setting.property}
-        name={setting.name}
-        note={setting.note}
-        inline={isInline(control)}
-        action={reset}
-        below={below && <div className={controlClass}>{below}{error}</div>}
-    >
-        <div className={below ? "bd-theme-setting-control" : controlClass}>
+    return <SettingItem id={setting.property} name={setting.name} note={setting.note} inline={isInline(control)} action={reset}>
+        <div className={"bd-theme-setting-control" + (isInvalid ? " bd-theme-setting-invalid" : "")}>
             {element}
-            {!below && error}
+            {isInvalid && <div className="bd-theme-setting-error" role="alert">{t("ThemeSettings.invalid")}</div>}
         </div>
     </SettingItem>;
 }
 
 const identity = (value: string) => value;
-
-interface BuiltControl {
-    element: ReactNode;
-
-    /** Shown under the setting's note, for an inline control that has more to show. */
-    below?: ReactNode;
-}
 
 type CustomControl = Extract<ThemeControl, {kind: "custom";}>;
 
@@ -146,34 +128,32 @@ type CustomControl = Extract<ThemeControl, {kind: "custom";}>;
  * Builds the control for a setting's current value. A number or color the control can't show, such as `calc()`
  * or `oklch()`, gets a text field instead.
  */
-function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, CustomControl>, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
-    const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => ({
-        element: <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />
-    });
+function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, CustomControl>, value: string, apply: ApplyValue, savedValue: string | undefined): ReactNode {
+    const textField = (read: (value: string) => string = identity, write: (text: string) => string = identity) => {
+        return <TextSetting id={setting.property} value={value} read={read} write={write} apply={apply} />;
+    };
 
     switch (control.kind) {
         case "switch":
-            return {element: <Switch id={setting.property} value={value === "true"} onChange={isOn => apply(isOn ? "true" : "false")} />};
+            return <Switch id={setting.property} value={value === "true"} onChange={isOn => apply(isOn ? "true" : "false")} />;
 
         case "radio": {
             const options = control.options.map(o => ({name: o.label, value: o.value}));
-            return {element: <Radio name={setting.property} options={options} value={value} onChange={apply} />};
+            return <Radio name={setting.property} options={options} value={value} onChange={apply} />;
         }
 
         case "dropdown":
-            return {element: <Dropdown options={control.options} value={value} onChange={apply} />};
+            return <Dropdown options={control.options} value={value} onChange={apply} />;
 
         case "slider": {
             const parsed = readNumber(value, control.units);
             if (!parsed) return textField();
             const {number, unit} = parsed;
             const markers = sliderMarkers(control.min, control.max, control.step).map(m => ({value: m, label: writeNumber(m, unit)}));
-            return {
-                element: <div className="bd-theme-slider">
-                    {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
-                    <Slider min={control.min} max={control.max} step={control.step} units={unit} markers={markers} value={number} onChange={n => apply(writeNumber(n, unit))} />
-                </div>
-            };
+            return <div className="bd-theme-slider">
+                {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
+                <Slider min={control.min} max={control.max} step={control.step} units={unit} markers={markers} value={number} onChange={n => apply(writeNumber(n, unit))} />
+            </div>;
         }
 
         case "number": {
@@ -183,14 +163,12 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
             const change = (n: number) => {
                 if (Number.isFinite(n)) apply(writeNumber(n, unit));
             };
-            return {
-                element: <div className="bd-theme-number">
-                    <NumberInput min={control.min} max={control.max} step={control.step} value={number} onChange={change} />
-                    {control.units.length > 1
-                        ? <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />
-                        : unit && <span className="bd-theme-number-unit">{unit}</span>}
-                </div>
-            };
+            return <div className="bd-theme-number">
+                <NumberInput min={control.min} max={control.max} step={control.step} value={number} onChange={change} />
+                {control.units.length > 1
+                    ? <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />
+                    : unit && <span className="bd-theme-number-unit">{unit}</span>}
+            </div>;
         }
 
         case "color": {
@@ -200,44 +178,38 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
             // The picker only takes hex, so a default or palette color it can't show, such as `oklch()`, is left out
             const defaultHex = pickerHex(setting.initialValue) ?? undefined;
             const palette = control.palette?.map(color => pickerHex(color)).filter(color => color !== null);
-            return {
-                element: <ColorPicker alpha={true} value={hex as HexString} defaultColor={defaultHex as HexString | undefined} colors={palette as HexString[] | undefined} onChange={color => apply(color as string)} />
-            };
+            return <ColorPicker alpha={true} value={hex as HexString} defaultColor={defaultHex as HexString | undefined} colors={palette as HexString[] | undefined} onChange={color => apply(color as string)} />;
         }
 
         case "string":
             return textField(readCssString, quoteCssString);
 
         case "url":
-            return {
-                element: <UrlSetting id={setting.property} value={value} savedValue={savedValue} initialValue={setting.initialValue} apply={apply} />
-            };
+            return <UrlSetting id={setting.property} value={value} savedValue={savedValue} initialValue={setting.initialValue} apply={apply} />;
     }
 }
 
 /**
- * Builds a `custom` control: its keywords and Custom, and the type's control. Under a dropdown the type's control
- * shows under the note once Custom is picked. Under radios it sits in the Custom option's row and is greyed out
- * until Custom is picked, showing the value Custom would apply.
+ * Builds a `custom` control: its keywords and Custom, and the type's control. With a dropdown the type's control
+ * shows beside it, on its left, once Custom is picked. Under radios it sits in the Custom option's row and is
+ * greyed out until Custom is picked, showing the value Custom would apply.
  */
-function buildCustomControl(setting: ThemeSetting, control: CustomControl, custom: CustomChoice, value: string, apply: ApplyValue, savedValue: string | undefined): BuiltControl {
+function buildCustomControl(setting: ThemeSetting, control: CustomControl, custom: CustomChoice, value: string, apply: ApplyValue, savedValue: string | undefined): ReactNode {
     const options = [...control.options, {value: customOption, label: t("ThemeSettings.custom")}];
     const typeValue = custom.isKeyword ? control.starter ?? "" : value;
-    const typeControl = buildControl(setting, control.control, typeValue, apply, savedValue).element;
+    const typeControl = buildControl(setting, control.control, typeValue, apply, savedValue);
 
     if (control.display === "dropdown") {
-        return {
-            element: <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>,
-            below: custom.isCustom && <div className="bd-theme-custom-below">{typeControl}</div>
-        };
+        return <div className="bd-theme-custom-beside">
+            {custom.isCustom && typeControl}
+            <div className="bd-theme-keyword-dropdown"><Dropdown options={options} value={custom.picked} onChange={custom.pick} /></div>
+        </div>;
     }
 
     // A disabled fieldset disables every field and button inside it, and the class stops clicks on the rest
     const customControl = <fieldset className="bd-theme-custom" disabled={!custom.isCustom}>{typeControl}</fieldset>;
     const radioOptions = options.map(o => ({name: o.label, value: o.value, control: o.value === customOption ? customControl : undefined}));
-    return {
-        element: <Radio name={setting.property} options={radioOptions} value={custom.picked} onChange={custom.pick} />
-    };
+    return <Radio name={setting.property} options={radioOptions} value={custom.picked} onChange={custom.pick} />;
 }
 
 interface UnitPickerProps {
