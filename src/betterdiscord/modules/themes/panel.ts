@@ -133,6 +133,16 @@ export function sliderMarkers(min: number, max: number, step: number) {
     return [...new Set([min, middle, max])];
 }
 
+/**
+ * The most characters a slider's value can take beside it, counting the longest unit, so the value can keep one
+ * width and the slider stays put as the digits change.
+ */
+export function sliderValueLength(min: number, max: number, step: number, units: readonly string[]) {
+    const decimals = Math.max(...[min, max, step].map(n => writeNumber(n, "").split(".")[1]?.length ?? 0));
+    const digits = Math.max(min.toFixed(decimals).length, max.toFixed(decimals).length);
+    return digits + Math.max(0, ...units.map(unit => unit.length));
+}
+
 /** Whether a control sits beside its label instead of on its own line under the note. */
 export function isInline(control: ThemeControl) {
     if (control.kind === "radio") return false;

@@ -116,6 +116,15 @@
     z-index: -1;
 }
 
-.bd-setting-item.inline:first-child:has(.bd-slider-wrap) {
-    padding-top: 50px;
+/*
+ * Beside its label, a slider with markers makes a row as tall as any other field's, with the track on the row's
+ * middle line. The markers hang under the track without adding height.
+ */
+.bd-setting-header .bd-slider-wrap.bd-slider-markers {
+    margin-block: 16px;
+    padding-bottom: 0;
+}
+
+.bd-setting-header .bd-slider-markers > .bd-slider-marker-container {
+    bottom: -10px;
 }

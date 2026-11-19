@@ -47,7 +47,7 @@
     text-align: center;
 }
 
-/* An inline slider keeps a fixed width beside its label, with room under it for the markers */
+/* An inline slider keeps a fixed width beside its label */
 .bd-theme-slider {
     display: flex;
     align-items: center;
@@ -60,6 +60,15 @@
 
 .bd-theme-slider .bd-slider-track {
     min-width: 0;
+}
+
+/* The slider's value, left of the slider, in a fixed width so the slider doesn't move as the digits change */
+.bd-theme-slider-value {
+    color: var(--text-strong);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .bd-theme-number {
@@ -79,13 +88,14 @@
     font-weight: 500;
 }
 
-/* On a narrow modal, a wide control drops under its label instead of squeezing it */
+/* On a narrow page, a wide control drops under its label instead of squeezing it */
 .bd-theme-settings .bd-setting-header {
     flex-wrap: wrap;
     gap: 8px 12px;
 }
 
 .bd-theme-settings .bd-setting-header > .bd-theme-setting-control {
+    max-width: 100%;
     margin-left: auto;
 }
 
@@ -135,16 +145,6 @@
     outline-offset: -2px;
 }
 
-/* The unit dropdown is only as wide as a unit, unlike a setting's own dropdown */
-.bd-setting-item .bd-theme-unit-dropdown .bd-select {
-    min-width: 0;
-    padding-inline: 10px;
-}
-
-.bd-theme-unit-dropdown .bd-select-arrow {
-    margin-left: 6px;
-}
-
 /* The keyword dropdown keeps its own width instead of stretching across the panel */
 .bd-theme-keyword-dropdown {
     display: flex;
@@ -185,11 +185,19 @@
     margin-top: 0;
 }
 
-/* Custom under a dropdown: the type's control on its own line, aligned right under the dropdown */
-.bd-theme-custom-below {
+/*
+ * Custom with a dropdown: the type's control sits left of the dropdown. When the two don't fit on one line, the
+ * reversed wrap keeps the dropdown on the first line and puts the control under it.
+ */
+.bd-theme-custom-beside {
     display: flex;
+    flex-wrap: wrap-reverse;
     justify-content: flex-end;
-    margin-top: 12px;
+    align-items: center;
+    gap: 12px;
+
+    /* As tall as the tallest field, so the row keeps its height when the control appears */
+    min-height: 40px;
 }
 
 /* A link setting: the field or the picked image, with Browse beside it */

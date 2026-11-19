@@ -11,13 +11,10 @@ export interface SettingItemProps {
 
     /** Shown right after the label, such as a reset button. */
     action?: React.ReactNode;
-
-    /** Shown under the note, after the children when the item isn't inline. */
-    below?: React.ReactNode;
 };
 
 export default function SettingItem(props: SettingItemProps) {
-    const {id, name, note, inline, children, divider = true, action, below} = props;
+    const {id, name, note, inline, children, divider = true, action} = props;
     const label = <label htmlFor={id} className={"bd-setting-title"}>{name}</label>;
     return <div className={"bd-setting-item" + (inline ? " inline" : "")}>
         <div className={"bd-setting-header"}>
@@ -26,7 +23,6 @@ export default function SettingItem(props: SettingItemProps) {
         </div>
         <div className={"bd-setting-note"}>{note}</div>
         {!inline && children}
-        {below}
         {divider && <Divider className="bd-setting-divider" />}
     </div>;
 }
