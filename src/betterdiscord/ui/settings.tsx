@@ -22,6 +22,8 @@ import Modals from "./modals";
 import AddonSettingsRoute from "@stores/addonsettings";
 import changelog from "@data/changelog";
 import {type Plugin} from "@modules/pluginmanager";
+import type {Theme} from "@modules/thememanager";
+import {themeHasSettings} from "@modules/themes/panel";
 import type AddonManager from "@modules/addonmanager";
 import toasts from "@stores/toasts";
 import ContextMenuPatcher from "@api/contextmenu";
@@ -628,7 +630,9 @@ function useAddonMenu(manager: AddonManager) {
                     return;
                 }
 
-                const hasSettings = (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
+                const hasSettings = manager.prefix === "theme"
+                    ? Boolean(addon && themeHasSettings(addon as Theme))
+                    : (addon as Plugin).instance && typeof ((addon as Plugin).instance.getSettingsPanel) === "function";
 
                 if (hasSettings && addon) {
                     AddonSettingsRoute.open(manager.prefix, addon.id);

@@ -1,6 +1,94 @@
 .bd-color-picker-container {
+    --bd-checkerboard: repeating-conic-gradient(#808080 0 25%, #C0C0C0 0 50%) 0 0 / 10px 10px;
+
     display: flex;
     justify-content: center;
+}
+
+.bd-color-picker-controls {
+    padding-left: 1px;
+    padding-top: 2px;
+    display: flex;
+}
+
+/* The faces and swatches are buttons that paint their color over a checkerboard, so transparency shows */
+.bd-color-picker-default,
+.bd-color-picker,
+.bd-color-picker-swatch-item {
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: linear-gradient(var(--bd-picker-face), var(--bd-picker-face)), var(--bd-checkerboard);
+    cursor: pointer;
+}
+
+.bd-color-picker-default {
+    width: 75px;
+    height: 60px;
+    margin-right: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.bd-color-picker-custom {
+    position: relative;
+}
+
+.bd-color-picker {
+    position: relative;
+    display: block;
+    width: 75px;
+    height: 60px;
+    margin-top: 1px;
+}
+
+.bd-color-picker svg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+/* Two rows of swatches, as many columns as the colors need, so the palette keeps its shape wherever it sits */
+.bd-color-picker-swatch {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    align-content: center;
+    margin-left: 5px !important;
+}
+
+.bd-color-picker-swatch-item {
+    width: 15px;
+    height: 15px;
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bd-color-picker-default:focus-visible,
+.bd-color-picker:focus-visible,
+.bd-color-picker-swatch-item:focus-visible {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 1px;
+}
+
+.bd-setting-item.inline .bd-color-picker-swatch {
+    margin-top: 1px;
+}
+
+.bd-setting-item.inline .bd-color-picker-default,
+.bd-setting-item.inline .bd-color-picker {
+    width: 50px;
+    height: 40px;
+}
+
+.bd-setting-item.inline .bd-color-picker-swatch-item {
+    height: 18px;
+    width: 18px;
+    margin: 2px;
 }
 
 .bd-color-picker-container.bd-color-picker-disabled {
@@ -13,84 +101,154 @@
     pointer-events: none;
 }
 
-.bd-color-picker-controls {
-    padding-left: 1px;
-    padding-top: 2px;
-    display: flex;
+.bd-color-picker[aria-expanded="true"] {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 2px;
 }
 
-.bd-color-picker-default {
-    cursor: pointer;
-    width: 75px;
-    height: 60px;
-    border-radius: 4px;
-    margin-right: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1px;
+/* The popout opens under the face, and flips above or to the other side when there's no room */
+.bd-color-popout {
+    --bd-checkerboard: repeating-conic-gradient(#808080 0 25%, #C0C0C0 0 50%) 0 0 / 10px 10px;
+
+    position: fixed;
+    /* stylelint-disable-next-line property-no-unknown */
+    position-anchor: auto;
+    /* stylelint-disable-next-line property-no-unknown */
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    inset: auto;
+    top: anchor(bottom);
+    left: anchor(left);
+    box-sizing: border-box;
+    width: 232px;
+    margin: 8px 0 0;
+    padding: 12px;
+    border: 1px solid var(--input-border-default);
+    border-radius: 8px;
+    background: var(--background-surface-higher);
+    box-shadow: var(--shadow-high, 0 8px 16px rgb(0 0 0 / 24%));
+    color: var(--text-default);
 }
 
-.bd-color-picker-custom {
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+.bd-color-popout:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bd-color-popout-area {
     position: relative;
-    display: inline-table;
+    height: 140px;
+    border-radius: 4px;
+    background: linear-gradient(to top, #000000, transparent), linear-gradient(to right, #FFFFFF, var(--bd-hue-color));
+    cursor: crosshair;
+    touch-action: none;
 }
 
-.bd-color-picker-custom svg {
+.bd-color-popout-area:focus-visible {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 2px;
+}
+
+.bd-color-popout-area-knob {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 40%);
+    box-sizing: border-box;
     pointer-events: none;
 }
 
-.bd-color-picker {
-    outline: none;
-    width: 75px;
-    border: none;
-    height: 60px;
-    margin-top: 1px;
-    border-radius: 4px;
+.bd-color-popout-strip {
+    width: 100%;
+    height: 12px;
+    margin: 0;
+    border-radius: 6px;
+    appearance: none;
     cursor: pointer;
 }
 
-.bd-color-picker::-webkit-color-swatch {
-    border: none;
+.bd-color-popout-hue {
+    background: linear-gradient(to right, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FF0000);
 }
 
-.bd-color-picker-swatch {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    margin-left: 5px !important;
-    max-width: 330px;
+.bd-color-popout-opacity {
+    background: linear-gradient(to right, transparent, var(--bd-opacity-color)), var(--bd-checkerboard);
 }
 
-.bd-color-picker-swatch-item {
-    cursor: pointer;
-    border-radius: 4px;
-    width: 15px;
-    height: 15px;
-    margin: 4px;
+.bd-color-popout-strip::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--white-500, #FFFFFF);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 25%), 0 1px 3px rgb(0 0 0 / 40%);
+    appearance: none;
+}
+
+.bd-color-popout-strip:focus-visible {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: 2px;
+}
+
+.bd-color-popout-fields {
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+.bd-color-popout-fields .bd-text-input {
+    box-sizing: border-box;
+    min-width: 0;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.bd-color-popout-hex {
+    flex: 1;
+}
+
+.bd-color-popout-percent {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+}
+
+.bd-color-popout-percent .bd-text-input {
+    width: 52px;
+}
+
+/* The browser's spin buttons crowd a field this narrow */
+.bd-color-popout-percent input::-webkit-inner-spin-button {
+    appearance: none;
+}
+
+.bd-color-popout-eyedropper {
+    display: flex;
+    flex: none;
+    align-items: center;
     justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
 }
 
-
-.bd-setting-item.inline .bd-color-picker-swatch {
-    max-width: 220px;
-    margin-top: 1px;
+.bd-color-popout-eyedropper:hover {
+    background: var(--interactive-background-hover);
+    color: var(--interactive-text-hover);
 }
 
-
-.bd-setting-item.inline .bd-color-picker-default,
-.bd-setting-item.inline .bd-color-picker {
-    width: 50px;
-    height: 40px
-}
-
-.bd-setting-item.inline .bd-color-picker-swatch-item {
-    height: 18px;
-    width: 18px;
-    margin: 2px 2px;
+.bd-color-popout-eyedropper:focus-visible {
+    outline: 2px solid var(--bd-brand);
 }

@@ -12,6 +12,7 @@ import {useStateFromStores} from "@ui/hooks";
 import {SettingsTitleContext} from "@ui/settings";
 import {addonContext, addonText, authorByline} from "./addonshared";
 import type {Plugin} from "@modules/pluginmanager";
+import ThemeSettingsPanel, {ThemeResetAllButton} from "./themesettings";
 
 function sameSnapshot(left: {addon: Plugin; instance: Plugin["instance"];} | null, right: {addon: Plugin; instance: Plugin["instance"];} | null) {
     return left?.addon === right?.addon && left?.instance === right?.instance;
@@ -33,6 +34,7 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
 
     const panel = useMemo<{content: ReactNode; error: Error | null;} | null>(() => {
         if (!snapshot) return null;
+        if (store.prefix === "theme") return {content: <ThemeSettingsPanel themeId={snapshot.addon.id} />, error: null};
         const instance = snapshot.instance;
         if (!instance || typeof instance.getSettingsPanel !== "function") return {content: null, error: new Error("No settings panel")};
         try {
@@ -43,7 +45,7 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
         catch (err) {
             return {content: null, error: err instanceof Error ? err : new Error(String(err))};
         }
-    }, [snapshot]);
+    }, [snapshot, store.prefix]);
 
     const titleName = snapshot ? addonText(snapshot.addon.name) : null;
 
@@ -70,9 +72,11 @@ export default function AddonSettingsPage({addonId}: {addonId: string;}) {
                         </span>
                     </div>
                 )}
-            />
+            >
+                {store.prefix === "theme" && <ThemeResetAllButton themeId={addonId} />}
+            </SettingsTitle>
         );
-    }, [set, close, title, titleName]);
+    }, [set, close, title, titleName, store.prefix, addonId]);
 
     useEffect(() => {
         if (!snapshot) closeSettings();

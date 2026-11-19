@@ -1,0 +1,285 @@
+.bd-setting-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.bd-theme-setting-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
+}
+
+.bd-theme-setting-reset:hover {
+    color: var(--interactive-text-hover);
+    background: var(--interactive-background-hover);
+}
+
+.bd-theme-setting-reset:focus-visible {
+    outline: 2px solid var(--bd-brand);
+}
+
+.bd-theme-setting-invalid .bd-text-input,
+.bd-theme-setting-invalid .bd-text-input:focus-within {
+    border-color: var(--status-danger);
+}
+
+.bd-theme-setting-error {
+    margin-top: 6px;
+    color: var(--text-feedback-critical);
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.bd-theme-settings-stopped {
+    padding: 24px 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+/* An inline slider keeps a fixed width beside its label */
+.bd-theme-slider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.bd-theme-slider .bd-slider-wrap {
+    width: 220px;
+}
+
+.bd-theme-slider .bd-slider-track {
+    min-width: 0;
+}
+
+/* The slider's value, left of the slider, in a fixed width so the slider doesn't move as the digits change */
+.bd-theme-slider-value {
+    color: var(--text-strong);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.bd-theme-number {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* BD's 65px number field cuts off values like 1.25 or 240 */
+.bd-theme-settings .bd-number-input-wrapper .bd-number-input {
+    width: 80px;
+}
+
+.bd-theme-number-unit {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* On a narrow page, a wide control drops under its label instead of squeezing it */
+.bd-theme-settings .bd-setting-header {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.bd-theme-settings .bd-setting-header > .bd-theme-setting-control {
+    max-width: 100%;
+    margin-left: auto;
+}
+
+/* Unit picker: a segmented row of radio buttons */
+.bd-theme-unit-picker {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid var(--input-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--input-background-default);
+}
+
+.bd-theme-unit-picker label {
+    position: relative;
+}
+
+.bd-theme-unit-picker label + label {
+    border-left: 1px solid var(--input-border-default);
+}
+
+.bd-theme-unit-picker input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.bd-theme-unit-picker span {
+    display: block;
+    min-width: 36px;
+    padding: 9px 10px;
+    color: var(--interactive-text-default);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    text-align: center;
+}
+
+.bd-theme-unit-picker input:checked + span {
+    background: var(--bd-brand);
+    color: var(--white-500);
+}
+
+.bd-theme-unit-picker input:focus-visible + span {
+    outline: 2px solid var(--bd-brand);
+    outline-offset: -2px;
+}
+
+/* The keyword dropdown keeps its own width instead of stretching across the panel */
+.bd-theme-keyword-dropdown {
+    display: flex;
+}
+
+/* Custom under radios: the type's control, greyed out and unclickable until Custom is picked */
+.bd-theme-custom {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.bd-theme-custom:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* A Custom option's row is as tight as an inline row, so its controls take the inline sizes */
+.bd-theme-custom .bd-color-picker-swatch {
+    margin-top: 1px;
+}
+
+.bd-theme-custom .bd-color-picker-default,
+.bd-theme-custom .bd-color-picker {
+    width: 50px;
+    height: 40px;
+}
+
+.bd-theme-custom .bd-color-picker-swatch-item {
+    width: 18px;
+    height: 18px;
+    margin: 2px;
+}
+
+/* Beats the top margin slider.css gives a slider that isn't inline */
+.bd-setting-item .bd-theme-custom .bd-slider-wrap {
+    margin-top: 0;
+}
+
+/*
+ * Custom with a dropdown: the type's control sits left of the dropdown. When the two don't fit on one line, the
+ * reversed wrap keeps the dropdown on the first line and puts the control under it.
+ */
+.bd-theme-custom-beside {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+
+    /* As tall as the tallest field, so the row keeps its height when the control appears */
+    min-height: 40px;
+}
+
+/* A link setting: the field or the picked image, with Browse beside it */
+.bd-theme-url {
+    display: inline-flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.bd-theme-url-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.bd-button.bd-theme-url-browse {
+    min-height: 40px;
+    padding: 2px 16px;
+}
+
+/* The message wraps at the row's width instead of widening it */
+.bd-theme-url .bd-theme-setting-error {
+    width: 0;
+    min-width: 100%;
+}
+
+.bd-theme-image {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 250px;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 4px;
+    border: 1px solid var(--input-border-default);
+    border-radius: var(--radius-sm);
+    background: var(--input-background-default);
+}
+
+/* The color picker's checkerboard shows through a see-through image */
+.bd-theme-image-thumb {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    object-fit: cover;
+    background: repeating-conic-gradient(#808080 0 25%, #C0C0C0 0 50%) 0 0 / 10px 10px;
+}
+
+.bd-theme-image-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text-default);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bd-theme-image-clear {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--interactive-text-default);
+    cursor: pointer;
+}
+
+.bd-theme-image-clear:hover {
+    color: var(--interactive-text-hover);
+    background: var(--interactive-background-hover);
+}
+
+.bd-theme-image-clear:focus-visible {
+    outline: 2px solid var(--bd-brand);
+}

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef, useState} from "react";
+import React, {useId, useLayoutEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import {CheckIcon, ChevronDown} from "lucide-react";
 import {t} from "@common/i18n";
@@ -80,12 +80,88 @@ export default function Select(props: SelectProps) {
     const chosenKey = chosen.map(option => String(option.value)).join("\0");
     const summarize = summarizedKey === chosenKey;
 
+    /** The option the arrow keys are on while the list is open, as an index into the shown options. */
+    const [activeIndex, setActiveIndex] = useState(-1);
+    const listId = useId();
+
+    const selected = options.find(option => option.value == state) ?? options[0];
+    const longest = options.reduce((best, option) => option.label.length > best.length ? option.label : best, "");
+    const needle = query.trim().toLowerCase();
+    const source = multiple ? ordered : options;
+    const shown = search && needle ? source.filter(option => option.label.toLowerCase().includes(needle)) : source;
+
     const change = useCallbackRef((val: any) => {
         setState(val);
         if (!multiple) optionsRef.current?.togglePopover(false);
     });
 
+    const choose = (option: SelectOption) => {
+        if (!multiple) {
+            change(option.value);
+            return;
+        }
+        const on = picked.some(value => value == option.value);
+        const next = on ? picked.filter(value => value != option.value) : [...picked, option.value];
+        change(options.filter(item => next.some(value => value == item.value)).map(item => item.value));
+    };
+
     useAnchorPopover(selectRef, optionsRef);
+
+    const toggle = useCallbackRef((event: React.ToggleEvent<HTMLDivElement>) => {
+        const open = event.newState === "open";
+        setIsOpen(open);
+        if (open && multiple) {
+            setOrdered(pinChosen(options, option => Array.isArray(state) && state.some(value => value == option.value)));
+        }
+        if (!open) setQuery("");
+
+        // A multiple choice list starts at the top, because the chosen options are pinned there
+        setActiveIndex(open ? (multiple ? 0 : Math.max(options.indexOf(selected), 0)) : -1);
+        if (open) {
+            if (!search) optionsRef.current?.focus();
+            return;
+        }
+
+        // The list had focus, so hiding it drops focus to the body unless Tab or a click already moved it on
+        const focus = document.activeElement;
+        if (!focus || focus === document.body || optionsRef.current?.contains(focus)) selectRef.current?.focus();
+    });
+
+    // The arrow keys open the list from the button, like a native select
+    const onButtonKeyDown = useCallbackRef((event: React.KeyboardEvent) => {
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        event.preventDefault();
+        optionsRef.current?.togglePopover(true);
+    });
+
+    const onListKeyDown = useCallbackRef((event: React.KeyboardEvent) => {
+        const last = shown.length - 1;
+        const isTyping = event.target === searchRef.current;
+        const moves: Record<string, number> = {
+            ArrowDown: Math.min(activeIndex + 1, last),
+            ArrowUp: Math.max(activeIndex - 1, 0),
+            PageDown: Math.min(activeIndex + 5, last),
+            PageUp: Math.max(activeIndex - 5, 0)
+        };
+        // Home and End move the caret while typing in the search field
+        if (!isTyping) Object.assign(moves, {Home: 0, End: last});
+
+        if (event.key in moves) {
+            event.preventDefault();
+            setActiveIndex(moves[event.key]);
+        }
+        else if (event.key === "Enter" || (event.key === " " && !isTyping)) {
+            event.preventDefault();
+            if (shown[activeIndex]) choose(shown[activeIndex]);
+        }
+        else if (event.key === "Tab") {
+            optionsRef.current?.togglePopover(false);
+        }
+        else if (event.key === "Escape") {
+            // The popover closes itself, and Discord's settings shouldn't also take the Escape
+            event.stopPropagation();
+        }
+    });
 
     useLayoutEffect(() => {
         if (!multiple || summarize || chosen.length < 2) return;
@@ -100,23 +176,14 @@ export default function Select(props: SelectProps) {
         else selectedRef.current?.scrollIntoView({block: "center", behavior: "instant"});
     }, [isOpen, search, multiple]);
 
+    useLayoutEffect(() => {
+        if (activeIndex < 0) return;
+        listRef.current?.children[activeIndex]?.scrollIntoView({block: "nearest", behavior: "instant"});
+    }, [activeIndex]);
+
     if (!options.length) return null;
 
-    const selected = options.find(option => option.value == state) ?? options[0];
-    const longest = options.reduce((best, option) => option.label.length > best.length ? option.label : best, "");
-    const needle = query.trim().toLowerCase();
-    const source = multiple ? ordered : options;
-    const shown = search && needle ? source.filter(option => option.label.toLowerCase().includes(needle)) : source;
-
-    const choose = (option: SelectOption) => {
-        if (!multiple) {
-            change(option.value);
-            return;
-        }
-        const on = picked.some(value => value == option.value);
-        const next = on ? picked.filter(value => value != option.value) : [...picked, option.value];
-        change(options.filter(item => next.some(value => value == item.value)).map(item => item.value));
-    };
+    const activeId = activeIndex >= 0 && shown[activeIndex] ? `${listId}-${activeIndex}` : undefined;
 
     return (
         <>
@@ -126,6 +193,10 @@ export default function Select(props: SelectProps) {
                 className={clsx("bd-select", className, multiple && "bd-select-multiple", disabled && "bd-select-disabled", style == "transparent" && "bd-select-transparent", isOpen && "is-open", multiple && !chosen.length && "is-empty")}
                 disabled={disabled}
                 aria-label={ariaLabel}
+                aria-haspopup="listbox"
+                aria-expanded={isOpen}
+                aria-controls={listId}
+                onKeyDown={onButtonKeyDown}
             >
                 <span className={clsx("bd-select-value", multiple && "bd-select-values")} title={summarize ? chosen.map(option => option.label).join(", ") : undefined}>
                     <span className="bd-select-sizer">{longest}</span>
@@ -141,14 +212,10 @@ export default function Select(props: SelectProps) {
             <div
                 ref={optionsRef}
                 popover="auto"
-                onToggle={(event) => {
-                    const open = event.newState === "open";
-                    setIsOpen(open);
-                    if (open && multiple) {
-                        setOrdered(pinChosen(options, option => Array.isArray(state) && state.some(value => value == option.value)));
-                    }
-                    if (!open) setQuery("");
-                }}
+                onToggle={toggle}
+                onKeyDown={onListKeyDown}
+                tabIndex={-1}
+                aria-activedescendant={search ? undefined : activeId}
                 className={clsx("bd-select-options", "bd-scroller-thin", search && "bd-select-options-search")}
             >
                 {search && (
@@ -158,26 +225,30 @@ export default function Select(props: SelectProps) {
                         type="text"
                         placeholder={t("Table.search")}
                         aria-label={t("Table.search")}
+                        aria-controls={listId}
+                        aria-activedescendant={activeId}
                         value={query}
                         spellCheck={false}
                         autoComplete="off"
-                        onChange={(event) => setQuery(event.currentTarget.value)}
-                        onKeyDown={(event) => {
-                            if (event.key === "Enter") event.preventDefault();
+                        onChange={(event) => {
+                            setQuery(event.currentTarget.value);
+                            setActiveIndex(0);
                         }}
                     />
                 )}
-                <ul ref={listRef} className={clsx("bd-select-list", search && "bd-scroller-thin")} role="listbox" aria-multiselectable={multiple || undefined}>
-                    {shown.map(option => {
+                <ul ref={listRef} id={listId} className={clsx("bd-select-list", search && "bd-scroller-thin")} role="listbox" aria-multiselectable={multiple || undefined}>
+                    {shown.map((option, i) => {
                         const isSelected = multiple ? picked.some(value => value == option.value) : selected?.value == option.value;
                         return (
                             <li
                                 key={option.id ?? String(option.value)}
+                                id={`${listId}-${i}`}
                                 ref={isSelected ? selectedRef : null}
-                                className={clsx("bd-select-option", isSelected && "selected")}
+                                className={clsx("bd-select-option", isSelected && "selected", i === activeIndex && "active")}
                                 role="option"
                                 aria-selected={isSelected}
                                 onClick={() => choose(option)}
+                                onMouseMove={() => setActiveIndex(i)}
                             >
                                 <OptionContent option={option} />
                                 {isSelected && multiple && <CheckIcon size="12px" strokeWidth={3} className="bd-select-check" />}
