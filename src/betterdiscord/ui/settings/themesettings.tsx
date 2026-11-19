@@ -7,7 +7,7 @@ import DiscordModules from "@modules/discordmodules";
 import ThemeManager, {type Theme} from "@modules/thememanager";
 import ThemeValues, {themeImages} from "@modules/themes/store";
 import {describeUrlValue, maxImageBytes, type CopyError} from "@modules/themes/images";
-import {customOption, groupSettings, isInline, maxRadioChoices, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
+import {customOption, groupSettings, isInline, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, sliderValueLength, writeCssUrl, writeNumber, type CustomChoiceState, type ThemeControl} from "@modules/themes/panel";
 import type {ThemeSetting} from "@modules/themes/types";
 import Modals from "@ui/modals";
 import {useStateFromStores} from "@ui/hooks";
@@ -150,9 +150,11 @@ function buildControl(setting: ThemeSetting, control: Exclude<ThemeControl, Cust
             if (!parsed) return textField();
             const {number, unit} = parsed;
             const markers = sliderMarkers(control.min, control.max, control.step).map(m => ({value: m, label: writeNumber(m, unit)}));
+            const valueLength = sliderValueLength(control.min, control.max, control.step, control.units);
             return <div className="bd-theme-slider">
-                {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
+                <span className="bd-theme-slider-value" style={{minWidth: `${valueLength}ch`}}>{writeNumber(number, unit)}</span>
                 <Slider min={control.min} max={control.max} step={control.step} units={unit} markers={markers} value={number} onChange={n => apply(writeNumber(n, unit))} />
+                {control.units.length > 1 && <UnitPicker setting={setting} units={control.units} value={unit} onChange={u => apply(writeNumber(number, u))} />}
             </div>;
         }
 
@@ -219,19 +221,9 @@ interface UnitPickerProps {
     onChange(unit: string): void;
 }
 
-/**
- * A row of radio buttons, one per unit, or a dropdown when there are too many units to fit beside a label.
- * Switching units keeps the number, so 12px becomes 12rem.
- */
+/** A row of radio buttons, one per unit. Switching units keeps the number, so 12px becomes 12rem. */
 function UnitPicker({setting, units, value, onChange}: UnitPickerProps) {
-    const label = t("ThemeSettings.unit", {name: setting.name});
-    if (units.length > maxRadioChoices) {
-        return <div className="bd-theme-unit-dropdown" role="group" aria-label={label}>
-            <Dropdown options={units.map(unit => ({value: unit, label: unit}))} value={value} onChange={onChange} />
-        </div>;
-    }
-
-    return <div className="bd-theme-unit-picker" role="radiogroup" aria-label={label}>
+    return <div className="bd-theme-unit-picker" role="radiogroup" aria-label={t("ThemeSettings.unit", {name: setting.name})}>
         {units.map(unit => <label key={unit}>
             <input type="radio" name={`${setting.property}-unit`} value={unit} checked={unit === value} onChange={() => onChange(unit)} />
             <span>{unit}</span>

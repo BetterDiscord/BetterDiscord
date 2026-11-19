@@ -62,6 +62,15 @@
     min-width: 0;
 }
 
+/* The slider's value, left of the slider, in a fixed width so the slider doesn't move as the digits change */
+.bd-theme-slider-value {
+    color: var(--text-strong);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+}
+
 .bd-theme-number {
     display: flex;
     flex-wrap: wrap;
@@ -134,16 +143,6 @@
 .bd-theme-unit-picker input:focus-visible + span {
     outline: 2px solid var(--bd-brand);
     outline-offset: -2px;
-}
-
-/* The unit dropdown is only as wide as a unit, unlike a setting's own dropdown */
-.bd-setting-item .bd-theme-unit-dropdown .bd-select {
-    min-width: 0;
-    padding-inline: 10px;
-}
-
-.bd-theme-unit-dropdown .bd-select-arrow {
-    margin-left: 6px;
 }
 
 /* The keyword dropdown keeps its own width instead of stretching across the panel */

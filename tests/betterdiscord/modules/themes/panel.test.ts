@@ -1,5 +1,5 @@
 import {describe, test, expect} from "bun:test";
-import {customOption, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
+import {customOption, groupSettings, isInline, keywordLabel, pickControl, pickCustomChoice, pickerHex, quoteCssString, readCssString, readCssUrl, readCustomChoice, readNumber, sliderMarkers, sliderValueLength, themeHasSettings, writeCssUrl, writeNumber} from "@modules/themes/panel";
 import {parseThemeSettings} from "@modules/themes/settings";
 
 function rule(property: string, group?: string) {
@@ -147,6 +147,24 @@ describe("sliderMarkers", () => {
 
     test("leaves out a middle that lands on an end", () => {
         expect(sliderMarkers(0, 1, 1)).toEqual([0, 1]);
+    });
+});
+
+describe("sliderValueLength", () => {
+    test("counts the longest value and the longest unit", () => {
+        expect(sliderValueLength(0, 24, 1, ["px"])).toBe(4);
+        expect(sliderValueLength(0, 500, 1, ["ms"])).toBe(5);
+        expect(sliderValueLength(0, 24, 1, ["px", "rem", "vw", "vh"])).toBe(5);
+    });
+
+    test("counts the decimals of the step and the ends", () => {
+        expect(sliderValueLength(0.5, 2, 0.05, [])).toBe(4);
+        expect(sliderValueLength(0, 1, 0.01, [])).toBe(4);
+        expect(sliderValueLength(0.25, 10, 1, [])).toBe(5);
+    });
+
+    test("counts a minus sign", () => {
+        expect(sliderValueLength(-10, 10, 1, ["deg"])).toBe(6);
     });
 });
 
