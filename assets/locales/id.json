@@ -61,52 +61,52 @@
                     "note": "Menambahkan bingkai jendela sistem operasi asli ke jendela utama"
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Sudut Bulat",
+                    "note": "Apakah jendela tanpa bingkai sebaiknya memiliki sudut yang membulat"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
-                    "note": ""
+                    "name": "Terima Klik Mouse Pertama",
+                    "note": "Apakah mengklik jendela yang tidak aktif juga akan membuka konten web tersebut"
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Kilauan",
+                    "note": "Tambahkan efek kilauan pada jendela",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
-                        "popover": "",
-                        "sidebar": "",
-                        "header": "",
-                        "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
-                        "tooltip": "",
-                        "content": "",
-                        "under-window": "",
-                        "under-page": ""
+                        "none": "Tidak ada",
+                        "titlebar": "Bilah judul",
+                        "selection": "Pilihan",
+                        "menu": "Menu",
+                        "popover": "Popover",
+                        "sidebar": "Bilah samping",
+                        "header": "Tajuk",
+                        "sheet": "Lembar",
+                        "window": "Jendela",
+                        "hud": "Hud",
+                        "fullscreen-ui": "Antarmuka Layar Penuh",
+                        "tooltip": "Keterangan alat",
+                        "content": "Konten",
+                        "under-window": "Dibawah Jendela",
+                        "under-page": "Dibawah Halaman"
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
-                    "note": "",
+                    "name": "Status Efek Visual",
+                    "note": "Tentukan bagaimana tampilan elemen tersebut harus mencerminkan status aktivitas jendela",
                     "options": {
-                        "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "followWindow": "Ikuti Jendela",
+                        "active": "Aktif",
+                        "inactive": "Tidak aktif"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
-                    "note": "",
+                    "name": "Materi Latar Belakang",
+                    "note": "Tetapkan bahan latar belakang jendela yang digambar oleh sistem, termasuk di bagian belakang area non-klien",
                     "options": {
-                        "auto": "",
-                        "none": "",
-                        "mica": "",
-                        "acrylic": "",
-                        "tabbed": ""
+                        "auto": "Otomatis",
+                        "none": "Tidak ada",
+                        "mica": "Mica",
+                        "acrylic": "Acrylic",
+                        "tabbed": "Tabbed"
                     }
                 }
             },
@@ -190,8 +190,8 @@
                     "note": "Aktifkan DevTools dengan Ctrl+Shift+I"
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "Penampil Sumber Webpack",
+                    "note": "Melihat modul Webpack dengan cepat di alat pengembang"
                 }
             },
             "editor": {
@@ -245,8 +245,8 @@
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Selalu Di Atas",
+                    "note": "Atur agar jendela editor selalu berada di atas jendela lain"
                 }
             }
         }
@@ -324,8 +324,8 @@
         "methodError": "{{method}} tidak dapat dipecat.",
         "unknownAuthor": "Pembuat Tidak Dikenal",
         "noDescription": "Deskripsi tidak ditunjukan.",
-        "noSettings": "",
-        "isDisabled": "",
+        "noSettings": "{{name}} tidak memiliki panel pengaturan.",
+        "isDisabled": "{{name}} dimatikan.",
         "alreadyExists": {
             "plugin": "Sudah ada plugin dengan nama {{name}}",
             "theme": "Sudah ada tema dengan nama {{name}}"
@@ -387,7 +387,7 @@
         "cssReverted": "CSS telah dikembalikan.",
         "cssReverting": "Perubahan akan dikembalikan dalam 10 detik",
         "cssKept": "Perubahan CSS disimpan secara permanen",
-        "cssIsDetached": ""
+        "cssIsDetached": "Editor telah terlepas"
     },
     "Modals": {
         "confirmAction": "Anda yakin?",
@@ -467,10 +467,31 @@
         "next": "Berikut"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "Kesempatan Pemulihan",
+        "suspect": "Addon yang Diduga",
+        "report": "Laporkan di Github",
+        "safeMode": "Jalankan Ulang dalam Mode Aman",
+        "joinSupport": "Gabung Server Dukungan!"
+    },
+    "Table": {
+        "search": "Cari",
+        "noMatches": "Tidak ada kecocokan",
+        "none": "Tidak ada",
+        "duplicate": "Duplikat",
+        "delete": "Hapus",
+        "emptyTitle": "Belum ada apa-apa di sini",
+        "emptyBody": "Tambahkan baris untuk memulai.",
+        "add": "Tambah",
+        "rowActions": "Aksi baris",
+        "reorder": "Atur ulang baris {{index}}",
+        "actionsFor": "Tindakan untuk baris {{index}}",
+        "remove": "Hapus {{name}}",
+        "count": "{{count}} {{name}}",
+        "item": {
+            "other": "item"
+        },
+        "selected": {
+            "other": "{{count}}"
+        }
     }
 }

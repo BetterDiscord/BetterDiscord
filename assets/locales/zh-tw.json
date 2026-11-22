@@ -69,8 +69,8 @@
                     "note": "點選非使用中視窗時是否會直接點到網頁內容"
                 },
                 "vibrancy": {
-                    "name": "振動效果",
-                    "note": "向視窗新增振動效果",
+                    "name": "活力半透明",
+                    "note": "向視窗新增毛玻璃半透明效果",
                     "options": {
                         "none": "無",
                         "titlebar": "標題列",
@@ -106,7 +106,7 @@
                         "none": "無",
                         "mica": "雲母",
                         "acrylic": "壓克力",
-                        "tabbed": "分頁"
+                        "tabbed": "分頁視窗"
                     }
                 }
             },
@@ -472,5 +472,26 @@
         "report": "於 GitHub 回報問題",
         "safeMode": "於安全模式下重新啟動",
         "joinSupport": "加入技術支援伺服器！"
+    },
+    "Table": {
+        "search": "搜尋",
+        "noMatches": "沒有相符項目",
+        "none": "無",
+        "duplicate": "再製",
+        "delete": "刪除",
+        "emptyTitle": "目前還沒有內容",
+        "emptyBody": "新增一欄以開始。",
+        "add": "新增",
+        "rowActions": "欄操作",
+        "reorder": "重新排列第 {{index}} 欄",
+        "actionsFor": "第 {{index}} 欄的操作",
+        "remove": "移除{{name}}",
+        "count": "{{count}} 個{{name}}",
+        "item": {
+            "other": "項目"
+        },
+        "selected": {
+            "other": "已選取 {{count}} 個"
+        }
     }
 }

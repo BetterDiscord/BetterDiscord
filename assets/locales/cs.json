@@ -61,12 +61,12 @@
                     "note": "Zobrazí kolem hlavního okna nativní systémový rámeček."
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Oblé rohy",
+                    "note": "Zda by okno aplikace bez rámečku mělo mít oblé rohy."
                 },
                 "acceptFirstMouse": {
-                    "name": "",
-                    "note": ""
+                    "name": "Přijímat první kliknutí myší",
+                    "note": "Zda by kliknutí na neaktivní okno mělo zároveň kliknout na prvek, co se zrovna nachází pod kurzorem."
                 },
                 "vibrancy": {
                     "name": "",
@@ -198,7 +198,7 @@
                 "name": "Předvolby editoru",
                 "theme": {
                     "name": "Motiv",
-                    "note": "Motiv, který se použije v editoru kódu",
+                    "note": "Motiv, který se použije v editoru kódu.",
                     "options": {
                         "system": "Motiv systému",
                         "vs-dark": "Tmavý",
@@ -499,5 +499,32 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        }
     }
 }
