@@ -1,15 +1,15 @@
 {
     "Panels": {
-        "plugins": "",
+        "plugins": "Plugins",
         "themes": "Temas",
         "customcss": "CSS Personalizado",
-        "updates": ""
+        "updates": "Actualizaciones"
     },
     "Collections": {
         "settings": {
             "name": "Ajustes",
             "general": {
-                "name": "",
+                "name": "General",
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -23,22 +23,22 @@
                     "note": "Evita que Discord se apropie de tus teclas multimedia después de reproducir un vídeo"
                 },
                 "themeAttributes": {
-                    "name": "",
+                    "name": "Atributos del tema",
                     "note": ""
                 },
                 "notificationPosition": {
-                    "name": "",
+                    "name": "Notificación",
                     "note": ""
                 },
                 "notificationEnabled": {
-                    "name": "",
+                    "name": "Mostrar notificaciones",
                     "note": ""
                 }
             },
             "store": {
-                "name": "",
+                "name": "Tienda de Addons",
                 "alwaysEnable": {
-                    "name": "",
+                    "name": "Habilitar siempre",
                     "note": ""
                 },
                 "addonEmbeds": {
@@ -69,44 +69,44 @@
                     "note": ""
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Vibrancia",
+                    "note": "Agregar un tipo de efecto de vibrancia a la ventana",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
+                        "none": "Ninguno",
+                        "titlebar": "Título",
+                        "selection": "Selección",
+                        "menu": "Menú",
                         "popover": "",
-                        "sidebar": "",
-                        "header": "",
+                        "sidebar": "Barra lateral",
+                        "header": "Encabezado",
                         "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
+                        "window": "Ventana",
+                        "hud": "Hud",
+                        "fullscreen-ui": "Interfaz en Pantalla Completa",
                         "tooltip": "",
-                        "content": "",
+                        "content": "Contenido",
                         "under-window": "",
                         "under-page": ""
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
+                    "name": "Estado del efecto visual",
                     "note": "",
                     "options": {
                         "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "active": "Activo",
+                        "inactive": "Inactivo"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
+                    "name": "Material de fondo",
                     "note": "",
                     "options": {
-                        "auto": "",
-                        "none": "",
-                        "mica": "",
-                        "acrylic": "",
-                        "tabbed": ""
+                        "auto": "Automático",
+                        "none": "Ninguno",
+                        "mica": "Mica",
+                        "acrylic": "Acrílico",
+                        "tabbed": "Tabulación"
                     }
                 }
             },
@@ -121,17 +121,17 @@
                     "note": "Donde aparecerán los plugins y temas al editarlos",
                     "options": {
                         "detached": "Ventana Independiente",
-                        "external": "",
+                        "external": "Ventana externa",
                         "system": "Editor del Sistema"
                     }
                 },
                 "checkForUpdates": {
-                    "name": "",
-                    "note": ""
+                    "name": "Buscar actualizaciones automáticamente",
+                    "note": "Comprueba periódicamente si hay actualizaciones para tu complemento y el núcleo de BD"
                 },
                 "updateInterval": {
-                    "name": "",
-                    "note": ""
+                    "name": "Intervalo de comprobación de actualización",
+                    "note": "Con qué frecuencia se deben buscar actualizaciones de complementos\/núcleo"
                 }
             },
             "customcss": {
@@ -158,7 +158,7 @@
                     "options": {
                         "settings": "Menú de Ajustes",
                         "detached": "Ventana Independiente",
-                        "external": "",
+                        "external": "Ventana externa",
                         "system": "Editor del Sistema"
                     }
                 }
@@ -170,7 +170,7 @@
                     "note": "Permite activar el depurador al presionar la tecla F8"
                 },
                 "reactDevTools": {
-                    "name": "",
+                    "name": "Herramientas para desarrolladores de React",
                     "note": "Inyecta tu instalación local de React Developer Tools en Discord"
                 },
                 "inspectElement": {
@@ -186,67 +186,67 @@
                     "note": "Envía todo lo que aparece en la consola a un archivo llamado debug.log en la carpeta de BetterDiscord"
                 },
                 "devTools": {
-                    "name": "",
-                    "note": ""
+                    "name": "Herramientas de desarrollador",
+                    "note": "Permite activar o desactivar las herramientas para desarrolladores con ctrl+máyus+i"
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "Visor de fuentes Webpack",
+                    "note": "Ver rápidamente los módulos webpack en herramientas de desarrollador"
                 }
             },
             "editor": {
-                "name": "",
+                "name": "Opciones de editor",
                 "theme": {
-                    "name": "",
-                    "note": "",
+                    "name": "Tema",
+                    "note": "El tema para el editor de código",
                     "options": {
-                        "system": "",
-                        "vs-dark": "",
-                        "vs": "",
-                        "hc-black": "",
-                        "hc-light": ""
+                        "system": "Sistema",
+                        "vs-dark": "Oscuro",
+                        "vs": "Claro",
+                        "hc-black": "Negro de alto contraste",
+                        "hc-light": "Blanco de alto contraste"
                     }
                 },
                 "lineNumbers": {
-                    "name": "",
-                    "note": ""
+                    "name": "Números en línea",
+                    "note": "Permite mostrar los números de línea en la pantalla del editor"
                 },
                 "fontSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "Tamaño de letra",
+                    "note": "Tamaño de la fuente (pt) que se utilizará en el editor"
                 },
                 "minimap": {
-                    "name": "",
-                    "note": ""
+                    "name": "Minimapa",
+                    "note": "Permite mostrar el minimapa del código en el lateral del editor"
                 },
                 "hover": {
-                    "name": "",
-                    "note": ""
+                    "name": "Información sobre herramientas de referencia",
+                    "note": "Permite mostrar las sugerencias de referencia al pasar el cursor sobre las reglas y selectores"
                 },
                 "quickSuggestions": {
-                    "name": "",
-                    "note": ""
+                    "name": "Sugerencias rápidas",
+                    "note": "Habilitar la visualización de sugerencias de autocompletar mientras escribe"
                 },
                 "insertSpaces": {
-                    "name": "",
-                    "note": ""
+                    "name": "Insertar espacios",
+                    "note": "Insertar espacios en lugar de tabulaciones"
                 },
                 "tabSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "Tamaño de tabulación",
+                    "note": "El número de espacios a los que equivale una tabulación"
                 },
                 "renderWhitespace": {
-                    "name": "",
-                    "note": "",
+                    "name": "Mostrar espacio en blanco",
+                    "note": "Cuando el editor debe mostrar el espacio en blanco",
                     "options": {
-                        "all": "",
-                        "none": "",
-                        "selection": ""
+                        "all": "Siempre",
+                        "none": "Nunca",
+                        "selection": "Selección"
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Siempre arriba",
+                    "note": "Hacer que la ventana del editor esté siempre arriba"
                 }
             }
         }
@@ -255,21 +255,21 @@
         "title": "{{name}} v{{version}} por {{author}}",
         "byline": "por {{author}}",
         "openFolder": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Abrir carpeta de plugins",
+            "theme": "Abrir la carpeta de temas"
         },
         "openStore": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Abrir tienda de plugins",
+            "theme": "Abrir tienda de temas"
         },
         "storeMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Navegar e instalar plugins oficiales de la comunidad",
+            "theme": "Explora e instala temas oficiales de la comunidad"
         },
-        "store": "",
+        "store": "Tienda",
         "viewInstalled": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Ver Plugins instalados",
+            "theme": "Ver temas instalados"
         },
         "reload": "Recargar",
         "addonSettings": "Ajustes",
@@ -277,25 +277,25 @@
         "source": "Fuente",
         "invite": "Servidor de Soporte",
         "donate": "Donar",
-        "patreon": "",
+        "patreon": "Patreon",
         "name": "Nombre",
         "author": "Autor",
         "version": "Versión",
         "added": "Fecha de Adición",
         "modified": "Fecha de Modificación",
-        "releaseDate": "",
-        "lastUpdated": "",
-        "isEnabled": "",
-        "popularity": "",
-        "isInstalled": "",
-        "downloads": "",
-        "likes": "",
-        "listView": "",
-        "gridView": "",
-        "enableAll": "",
-        "disableAll": "",
+        "releaseDate": "Fecha de lanzamiento",
+        "lastUpdated": "Última actualización",
+        "isEnabled": "Activado",
+        "popularity": "Popularidad",
+        "isInstalled": "Instalado",
+        "downloads": "Descargas",
+        "likes": "Me gusta",
+        "listView": "Vista de lista",
+        "gridView": "Vista de cuadrícula",
+        "enableAll": "Habilitar todo",
+        "disableAll": "Deshabilitar todo",
         "enableAllWarning": {
-            "plugin": "",
+            "plugin": "Activar todos los plugins puede causar lag temporal y errores inesperados.\n\n(Mantén pulsado Máyus al hacer clic para omitir este mensaje)",
             "theme": ""
         },
         "search": {
@@ -481,5 +481,28 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "one": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "other": ""
+        }
     }
 }

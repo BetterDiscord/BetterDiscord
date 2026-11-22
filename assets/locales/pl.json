@@ -12,7 +12,7 @@
                 "name": "Ogólne",
                 "voiceDisconnect": {
                     "name": "Rozłączaj z czatem głosowym",
-                    "note": "Rozłącza z serwerem czatu głosowego przy wyłączeniu Discorda"
+                    "note": "Rozłącz się z serwerem czatu głosowego przy wyłączeniu aplikacji Discord"
                 },
                 "showToasts": {
                     "name": "Wyświetlaj okienka powiadomień",
@@ -39,11 +39,11 @@
                 "name": "Sklep z dodatkami",
                 "alwaysEnable": {
                     "name": "Zawsze włączony",
-                    "note": ""
+                    "note": "Po włączeniu dodatki pobrane ze sklepu z dodatkami będą domyślnie aktywne."
                 },
                 "addonEmbeds": {
-                    "name": "",
-                    "note": ""
+                    "name": "Osadzone dodatki",
+                    "note": "Wyświetlaj karty ze sklepu z dodatkami w oknie czatu."
                 }
             },
             "window": {
@@ -61,51 +61,51 @@
                     "note": "Dodaje systemową ramkę do okna Discorda"
                 },
                 "roundedCorners": {
-                    "name": "",
-                    "note": ""
+                    "name": "Zaokrąglone rogi",
+                    "note": "Decyduje, czy okno bez ramki powinno mieć zaokrąglone rogi"
                 },
                 "acceptFirstMouse": {
-                    "name": "",
+                    "name": "Akceptuj pierwsze kliknięcie myszy",
                     "note": ""
                 },
                 "vibrancy": {
-                    "name": "",
-                    "note": "",
+                    "name": "Żywotność",
+                    "note": "Dodaj typ efektu głębi do okna",
                     "options": {
-                        "none": "",
-                        "titlebar": "",
-                        "selection": "",
-                        "menu": "",
-                        "popover": "",
-                        "sidebar": "",
-                        "header": "",
-                        "sheet": "",
-                        "window": "",
-                        "hud": "",
-                        "fullscreen-ui": "",
-                        "tooltip": "",
-                        "content": "",
-                        "under-window": "",
-                        "under-page": ""
+                        "none": "Żaden",
+                        "titlebar": "Pasek tytułu",
+                        "selection": "Selekcja",
+                        "menu": "Menu",
+                        "popover": "Dymek",
+                        "sidebar": "Pasek boczny",
+                        "header": "Nagłówek",
+                        "sheet": "Arkusz",
+                        "window": "Okno",
+                        "hud": "Interfejs gry",
+                        "fullscreen-ui": "Interfejs pełnoekranowy",
+                        "tooltip": "Podpowiedź",
+                        "content": "Treść",
+                        "under-window": "W oknie",
+                        "under-page": "Pod stroną"
                     }
                 },
                 "visualEffectState": {
-                    "name": "",
+                    "name": "Stan efektów wizualnych",
                     "note": "",
                     "options": {
-                        "followWindow": "",
-                        "active": "",
-                        "inactive": ""
+                        "followWindow": "Śledź okno",
+                        "active": "Aktywny",
+                        "inactive": "Nieaktywny"
                     }
                 },
                 "backgroundMaterial": {
-                    "name": "",
+                    "name": "Materiał tła",
                     "note": "",
                     "options": {
-                        "auto": "",
-                        "none": "",
-                        "mica": "",
-                        "acrylic": "",
+                        "auto": "Automatyczny",
+                        "none": "Żaden",
+                        "mica": "Mika",
+                        "acrylic": "Akrylowa",
                         "tabbed": ""
                     }
                 }
@@ -121,17 +121,17 @@
                     "note": "Ustawia domyślny edytor kodu wtyczek i motywów",
                     "options": {
                         "detached": "Osobne okno",
-                        "external": "",
+                        "external": "Okno zewnętrzne",
                         "system": "Edytor systemowy"
                     }
                 },
                 "checkForUpdates": {
-                    "name": "",
+                    "name": "Automatycznie sprawdzaj dostępność aktualizacji",
                     "note": ""
                 },
                 "updateInterval": {
-                    "name": "",
-                    "note": ""
+                    "name": "Częstotliwość sprawdzania aktualizacji",
+                    "note": "Jak często sprawdzać aktualizacje dodatku\/rdzenia"
                 }
             },
             "customcss": {
@@ -158,7 +158,7 @@
                     "options": {
                         "settings": "Ustawienia",
                         "detached": "Osobne okno",
-                        "external": "",
+                        "external": "Okno zewnętrzne",
                         "system": "Edytor systemowy"
                     }
                 }
@@ -170,7 +170,7 @@
                     "note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
                 },
                 "reactDevTools": {
-                    "name": "",
+                    "name": "Narzędzia programistów React",
                     "note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
                 },
                 "inspectElement": {
@@ -190,21 +190,21 @@
                     "note": "Umożliwia wyświetlenie panelu narzędzi dla programistów po użyciu skrótu klawiszowego Ctrl+Shift+I"
                 },
                 "webpackSourceViewer": {
-                    "name": "",
-                    "note": ""
+                    "name": "Przeglądarka źródeł Webpack",
+                    "note": "Szybko przeglądaj moduły webpack w narzędziach programistycznych"
                 }
             },
             "editor": {
                 "name": "Ustawienia edytora",
                 "theme": {
-                    "name": "",
-                    "note": "",
+                    "name": "Motyw",
+                    "note": "Motyw edytora kodu",
                     "options": {
-                        "system": "",
-                        "vs-dark": "",
-                        "vs": "",
-                        "hc-black": "",
-                        "hc-light": ""
+                        "system": "System",
+                        "vs-dark": "Ciemny",
+                        "vs": "Jasny",
+                        "hc-black": "Wysoki kontrast ciemnego",
+                        "hc-light": "Wysoki kontrast jasnego"
                     }
                 },
                 "lineNumbers": {
@@ -228,11 +228,11 @@
                     "note": "Włącza automatyczne podpowiadanie składni podczas pisania kodu"
                 },
                 "insertSpaces": {
-                    "name": "",
+                    "name": "Wstaw odstępy",
                     "note": ""
                 },
                 "tabSize": {
-                    "name": "",
+                    "name": "Rozmiar zakładki",
                     "note": ""
                 },
                 "renderWhitespace": {
@@ -245,8 +245,8 @@
                     }
                 },
                 "alwaysOnTop": {
-                    "name": "",
-                    "note": ""
+                    "name": "Zawsze na wierzchu",
+                    "note": "Zablokuj zawsze okno edytora na wierzchu"
                 }
             }
         }
@@ -255,21 +255,21 @@
         "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
         "byline": "autorstwa {{author}}",
         "openFolder": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Otwórz folder z pluginami",
+            "theme": "Otwórz folder z motywami"
         },
         "openStore": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Otwórz sklep pluginów",
+            "theme": "Otwórz sklep motywu"
         },
         "storeMessage": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Przeglądaj i instaluj oficjalne pluginy społeczności",
+            "theme": "Przeglądaj i instaluj oficjalne motywy społeczności"
         },
-        "store": "",
+        "store": "Sklep",
         "viewInstalled": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Zobacz zainstalowane pluginy",
+            "theme": "Zobacz zainstalowane motywy"
         },
         "reload": "Odśwież",
         "addonSettings": "Ustawienia",
@@ -277,26 +277,26 @@
         "source": "Źródło",
         "invite": "Wspomóż serwer",
         "donate": "Przekaż darowiznę",
-        "patreon": "",
+        "patreon": "Patreon",
         "name": "Nazwa",
         "author": "Twórca",
         "version": "Wersja",
         "added": "Data dodania",
         "modified": "Data modyfikacji",
-        "releaseDate": "",
-        "lastUpdated": "",
+        "releaseDate": "Data wydania",
+        "lastUpdated": "Ostatnia aktualizacja",
         "isEnabled": "Stan",
-        "popularity": "",
-        "isInstalled": "",
-        "downloads": "",
-        "likes": "",
-        "listView": "",
-        "gridView": "",
-        "enableAll": "",
-        "disableAll": "",
+        "popularity": "Popularność",
+        "isInstalled": "Zainstalowane",
+        "downloads": "Pobrane",
+        "likes": "Polubienia",
+        "listView": "Widok Listy",
+        "gridView": "Widok Siatki",
+        "enableAll": "Włącz wszystko",
+        "disableAll": "Wyłącz wszystko",
         "enableAllWarning": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Włączenie wszystkich pluginów może spowodować tymczasowe opóźnienie i nieoczekiwane błędy.\n\n(Przytrzymaj Shift podczas klikania, aby pominąć ten komunikat!)",
+            "theme": "Włączenie wszystkich motywów może spowodować tymczasowe opóźnienie i nieoczekiwane błędy.\n\n(Przytrzymaj Shift podczas klikania, aby pominąć ten komunikat!)"
         },
         "search": {
             "plugin": {
@@ -320,7 +320,7 @@
         },
         "editAddon": "Edytuj",
         "deleteAddon": "Usuń",
-        "downloadAddon": "",
+        "downloadAddon": "Pobierz",
         "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
         "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje odrzucenie wszystkich zmian.",
         "enabled": "Dodatek {{name}} został włączony.",
@@ -333,11 +333,11 @@
         "methodError": "Metoda {{method}} nie może zostać wywołana.",
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
-        "noSettings": "",
-        "isDisabled": "",
+        "noSettings": "{{name}} nie posiada panelu ustawień.",
+        "isDisabled": "Dodatek {{name}} został wyłączony.",
         "alreadyExists": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Istnieje już plugin z nazwą {{name}}",
+            "theme": "Istnieje już motyw z nazwą {{name}}"
         },
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
@@ -345,25 +345,25 @@
         "compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
         "blankSlateHeader": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Nie masz żadnych pluginów!",
+            "theme": "Nie masz żadnych motywów!"
         },
         "blankSlateMessage": {
             "plugin": "",
             "theme": ""
         },
-        "blankSlateHeaderGeneric": "",
+        "blankSlateHeaderGeneric": "Wygląda na to, że nic tu nie ma!",
         "blankSlateMessageGeneric": "",
         "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany.",
         "failedToDownload": {
-            "plugin": "",
+            "plugin": "Nie udało się pobrać pluginu {{name}}",
             "theme": ""
         },
-        "successfullyDownload": "",
-        "alreadyInstalled": "",
-        "failedToFetch": "",
-        "new": "",
-        "updated": "",
+        "successfullyDownload": "Pomyślnie pobrano {{name}}",
+        "alreadyInstalled": "{{name}} jest już zainstalowany",
+        "failedToFetch": "Nie udało się uzyskać dodatków",
+        "new": "Nowy",
+        "updated": "Zaktualizowano",
         "downloadCount": {
             "one": "",
             "few": "",
@@ -376,9 +376,9 @@
             "many": "",
             "other": ""
         },
-        "tags": "",
-        "preview": "",
-        "official": "",
+        "tags": "Tagi",
+        "preview": "Podgląd",
+        "official": "Oficjalny",
         "manyEnabled": {
             "plugin": {
                 "one": "",
@@ -402,18 +402,18 @@
         "openDetached": "Otwórz w osobnym oknie",
         "settings": "Ustawienia edytora",
         "editorTitle": "Edytor niestandardowego kodu CSS",
-        "cssInstallSuccess": "",
-        "cssInstalled": "",
-        "cssInstallError": "",
-        "cssReverted": "",
-        "cssReverting": "",
-        "cssKept": "",
-        "cssIsDetached": ""
+        "cssInstallSuccess": "CSS został pomyślnie dodany do CustomCSS.",
+        "cssInstalled": "CSS zainstalowany!",
+        "cssInstallError": "Nie udało się dodać CSS do CustomCSS.",
+        "cssReverted": "CSS został przywrócony.",
+        "cssReverting": "Zmiany zostaną przywrócone w ciągu 10 sekund",
+        "cssKept": "Zmiany CSS zostaną utrzymane na stałe",
+        "cssIsDetached": "Edytor jest odłączony"
     },
     "Modals": {
         "confirmAction": "Czy na pewno chcesz to zrobić?",
-        "installCss": "",
-        "addonCrashed": "",
+        "installCss": "Czy na pewno chcesz dodać ten kod CSS do custom CSS?",
+        "addonCrashed": "Ta wtyczka została wyłączona, aby zapobiec awariom. Zgłoś ten problem programistom.",
         "okay": "Tak",
         "done": "Potwierdź",
         "cancel": "Anuluj",
@@ -428,9 +428,9 @@
         "restartLater": "Uruchom ponownie później",
         "additionalInfo": "Dodatkowe informacje",
         "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
-        "changelog": "",
+        "changelog": "Rejestr zmian",
         "debuglog": "",
-        "automaticallyEnable": ""
+        "automaticallyEnable": "Włącz automatycznie"
     },
     "Sorting": {
         "sortBy": "Sortuj wg",
@@ -443,15 +443,15 @@
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
     },
     "Toasts": {
-        "recoveryFailed": ""
+        "recoveryFailed": "Odzyskiwanie nieukończone. Niektóre działania nie zostały zakończone."
     },
     "Updater": {
         "updateFailed": "Aktualizacja nie powiodła się!",
         "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https:\/\/betterdiscord.app\/) i zainstaluj aplikację ponownie.",
         "updateSuccessful": "Aktualizacja powiodła się!",
         "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
-        "viewUpdates": "",
-        "addonUpdaterNotificationTitle": "",
+        "viewUpdates": "Pokaż aktualizacje",
+        "addonUpdaterNotificationTitle": "Aktualizator dodatku",
         "addonUpdatesAvailable": {
             "plugin": {
                 "one": "",
@@ -467,7 +467,7 @@
             }
         },
         "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
-        "addonUpdateFailed": "",
+        "addonUpdateFailed": "Nie udało się zaktualizować {{name}}. Spróbuj ponownie później.",
         "checking": "Sprawdzanie dostępności aktualizacji!",
         "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
         "checkForUpdates": "Sprawdź dostępność aktualizacji",
@@ -475,29 +475,56 @@
         "noUpdatesAvailable": "Brak dostępnych aktualizacji.",
         "versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
         "upToDateBlankslate": {
-            "plugin": "",
-            "theme": ""
+            "plugin": "Wszystkie dodatki są aktualne!",
+            "theme": "Wszystkie motywy są aktualne!"
         },
         "updateButton": "Zaktualizuj"
     },
     "Settings": {
-        "customColor": "",
-        "resetSettings": "",
-        "resetSettingsWarning": ""
+        "customColor": "Własny kolor",
+        "resetSettings": "Przywróć ustawienia domyślne",
+        "resetSettingsWarning": "Resetowanie ustawień zwraca je do stanu oryginalnego, nie możesz tego później cofnąć."
     },
     "Socials": {
-        "twitter": "",
-        "github": ""
+        "twitter": "Obserwuj nas!",
+        "github": "Zostaw nam gwiazdkę!"
     },
     "Paginator": {
-        "back": "",
-        "next": ""
+        "back": "Wróć",
+        "next": "Dalej"
     },
     "Recovery": {
-        "button": "",
-        "suspect": "",
-        "report": "",
-        "safeMode": "",
-        "joinSupport": ""
+        "button": "Próba odzyskiwania",
+        "suspect": "Podejrzany dodatek",
+        "report": "Zgłoś na Githubie",
+        "safeMode": "Uruchom ponownie w trybie bezpiecznym",
+        "joinSupport": "Dołącz do serwera wsparcia!"
+    },
+    "Table": {
+        "search": "Szukaj",
+        "noMatches": "Nic nie pasuje",
+        "none": "Żaden",
+        "duplicate": "Duplikuj",
+        "delete": "Usuń",
+        "emptyTitle": "Jeszcze nic tutaj nie ma",
+        "emptyBody": "",
+        "add": "Dodaj",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "Usuń {{name}}",
+        "count": "{{count}}{{name}}",
+        "item": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        }
     }
 }

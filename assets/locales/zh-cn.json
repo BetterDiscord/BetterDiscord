@@ -69,8 +69,8 @@
                     "note": "单击不活跃窗口时是否允许直接点到网页内容"
                 },
                 "vibrancy": {
-                    "name": "振动效果",
-                    "note": "向窗口增加振动效果",
+                    "name": "活力半透明",
+                    "note": "向窗口增加毛玻璃半透明效果",
                     "options": {
                         "none": "无",
                         "titlebar": "标题栏",
@@ -79,7 +79,7 @@
                         "popover": "弹出式气泡",
                         "sidebar": "侧边栏",
                         "header": "标题",
-                        "sheet": "表格",
+                        "sheet": "窗口附着面板",
                         "window": "窗口",
                         "hud": "HUD",
                         "fullscreen-ui": "全屏界面",
@@ -106,7 +106,7 @@
                         "none": "无",
                         "mica": "云母",
                         "acrylic": "亚克力",
-                        "tabbed": "分页"
+                        "tabbed": "标签页窗口"
                     }
                 }
             },
@@ -472,5 +472,26 @@
         "report": "在 GitHub 上报告问题",
         "safeMode": "在安全模式下重启",
         "joinSupport": "加入支持服务器！"
+    },
+    "Table": {
+        "search": "搜索",
+        "noMatches": "无匹配",
+        "none": "无",
+        "duplicate": "复制为副本",
+        "delete": "删除",
+        "emptyTitle": "空空如也",
+        "emptyBody": "添加一行以开始。",
+        "add": "添加",
+        "rowActions": "行操作",
+        "reorder": "重新排列第 {{index}} 行",
+        "actionsFor": "第 {{index}} 行的操作",
+        "remove": "移除{{name}}",
+        "count": "{{count}} 个{{name}}",
+        "item": {
+            "other": "项目"
+        },
+        "selected": {
+            "other": "已选择 {{count}} 个"
+        }
     }
 }

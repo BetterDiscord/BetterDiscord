@@ -481,5 +481,28 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "{{count}} {{name}}",
+        "item": {
+            "one": "",
+            "other": ""
+        },
+        "selected": {
+            "one": "",
+            "other": ""
+        }
     }
 }

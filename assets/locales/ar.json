@@ -517,5 +517,36 @@
         "report": "",
         "safeMode": "",
         "joinSupport": ""
+    },
+    "Table": {
+        "search": "",
+        "noMatches": "",
+        "none": "",
+        "duplicate": "",
+        "delete": "",
+        "emptyTitle": "",
+        "emptyBody": "",
+        "add": "",
+        "rowActions": "",
+        "reorder": "",
+        "actionsFor": "",
+        "remove": "",
+        "count": "",
+        "item": {
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        "selected": {
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        }
     }
 }
