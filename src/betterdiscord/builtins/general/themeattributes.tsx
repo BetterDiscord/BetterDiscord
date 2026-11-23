@@ -214,7 +214,7 @@ export default new class ThemeAttributes extends Builtin {
                 // We could directly pass props to the Message component
                 // but we will not be doing that
                 baseChannelStreamMarkup[index] = (
-                    <MessageGroupingEvents value={createSubscriber(element.props.message.id, {first, last})}>
+                    <MessageGroupingEvents key={element.key} value={createSubscriber(element.props.message.id, {first, last})}>
                         {baseChannelStreamMarkup[index]}
                     </MessageGroupingEvents>
                 );
