@@ -104,7 +104,11 @@ export default new class Core {
     waitForConnection() {
         return new Promise<void>(done => {
             if (Stores.UserStore?.getCurrentUser()) return done();
-            DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", done);
+            const callback = () => {
+                DiscordModules.Dispatcher?.unsubscribe("CONNECTION_OPEN", callback);
+                done();
+            };
+            DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", callback);
         });
     }
 };

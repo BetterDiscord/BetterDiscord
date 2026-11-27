@@ -77,6 +77,7 @@ export interface Dispatcher {
     dispatch<T>(payload: T): void;
     isDispatching(): boolean;
     subscribe<T extends (...args: any[]) => void>(id: string, cb: T): void;
+    unsubscribe<T extends (...args: any[]) => void>(id: string, cb: T): void;
     addInterceptor<T>(callback: (payload: T) => void): string;
 }
 
